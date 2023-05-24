@@ -1,0 +1,1 @@
+export { DefaultSwaggerFactory } from './DefaultSwaggerFactory';

@@ -1,0 +1,10 @@
+/node_modules
+/npm-debug.log
+/.idea
+*.map
+/config/config.json
+/config/config.yaml
+/data/dummies.json
+package-lock.json
+.npmrc
+/docker/id_rsa*

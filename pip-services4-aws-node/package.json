@@ -1,0 +1,56 @@
+{
+    "name": "pip-services4-aws-node",
+    "version": "1.0.0",
+    "author": "Conceptual Vision Consulting LLC",
+    "description": "AWS-specific components for Pip.Services in Node.js / ES2017",
+    "contributors": [
+        {
+            "name": "Sergey Seroukhov",
+            "email": "seroukhov@gmail.com"
+        },
+        {
+            "name": "Dmitrii Uzdemir",
+            "email": "uzdemir.dmt@gmail.com"
+        }
+    ],
+    "main": "./obj/src/index.js",
+    "typings": "./obj/src/index.d.ts",
+    "keywords": [
+        "pip.services",
+        "microservice",
+        "aws",
+        "library",
+        "async"
+    ],
+    "noAnalyze": true,
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com:pip-services4-node/pip-services4-aws-node.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "private": false,
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+    },
+    "dependencies": {
+        "aws-sdk": "^2.1325.0",
+        "pip-services4-commons-node": "^1.0.1",
+        "pip-services4-components-node": "^1.4.2",
+        "pip-services4-container-node": "^1.0.2",
+        "pip-services4-rpc-node": "^1.3.2"
+    },
+    "devDependencies": {
+        "@types/aws-sdk": "^2.7.0",
+        "@types/chai": "^4.3.4",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "*",
+        "chai": "^4.3.4",
+        "mocha": "^10.2.0"
+    }
+}

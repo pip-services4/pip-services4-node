@@ -1,0 +1,12 @@
+/.vscode
+/.git
+/docker/Dockerfile*
+/docker/docker-compose*.yml
+/docs
+/node_modules
+/.gitignore
+/.dockerignore
+/*.sh
+/*.ps1
+/.github
+package-lock.json

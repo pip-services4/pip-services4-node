@@ -1,0 +1,300 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>pip-services4-container-node</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">pip-services4-container-node</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> pip-services4-container-node</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="-img-src-https-uploads-ssl-webflow-com-5ea5d3315186cf5ec60c3ee4-5edf1c94ce4c859f2b188094_logo-svg-alt-pip-services-logo-width-200-br-ioc-container-for-node-js-es2017"><img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> IoC container for Node.js / ES2017</h1>
+				<p>This module is a part of the <a href="http://pipservices.org">Pip.Services</a> polyglot microservices toolkit. It provides an inversion-of-control (IoC) container to facilitate the development of services and applications composed of loosely coupled components.</p>
+				<p>The module containes a basic in-memory container that can be embedded inside a service or application, or can be run by itself.
+					The second container type can run as a system level process and can be configured via command line arguments.
+				Also it can be used to create docker containers.</p>
+				<p>The containers can read configuration from JSON or YAML files use it as a recipe for instantiating and configuring components.
+					Component factories are used to create components based on their locators (descriptor) defined in the container configuration.
+				The factories shall be registered in containers or dynamically in the container configuration file.</p>
+				<p>The module contains the following packages:</p>
+				<ul>
+					<li><strong>Core</strong> - Basic in-memory and process containers</li>
+					<li><strong>Build</strong> - Default container factory</li>
+					<li><strong>Config</strong> - Container configuration components</li>
+					<li><strong>Refer</strong> - Inter-container reference management (implementation of the Referenceable pattern inside an IoC container)</li>
+				</ul>
+				<p><a name="links"></a> Quick links:</p>
+				<ul>
+					<li><a href="https://pip-services4-node.github.io/pip-services4-container-node/globals.html">API Reference</a></li>
+					<li><a href="CHANGELOG.md">Change Log</a></li>
+					<li><a href="https://www.pipservices.org/community/help">Get Help</a></li>
+					<li><a href="https://www.pipservices.org/community/contribute">Contribute</a></li>
+				</ul>
+				<h2 id="use">Use</h2>
+				<p>Install the NPM package as</p>
+				<pre><code class="lang-bash">npm install pip-services4-container-node --save
+</code></pre>
+				<p>Create a factory to create components based on their locators (descriptors).</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { Factory } <span class="hljs-keyword">from</span> <span class="hljs-string">'pip-services4-components-node'</span>;
+<span class="hljs-keyword">import</span> { Descriptor } <span class="hljs-keyword">from</span> <span class="hljs-string">'pip-services4-commons-node'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyFactory <span class="hljs-keyword">extends</span> Factory {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> MyComponentDescriptor = <span class="hljs-keyword">new</span> Descritor(<span class="hljs-string">"myservice"</span>, <span class="hljs-string">"mycomponent"</span>, <span class="hljs-string">"default"</span>, <span class="hljs-string">"*"</span>, <span class="hljs-string">"1.0"</span>);
+
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">super</span>();
+
+    <span class="hljs-keyword">this</span>.registerAsType(MyFactor.MyComponentDescriptor, MyComponent);
+  }
+}
+</code></pre>
+				<p>Then create a process container and register the factory there. You can also register factories defined in other
+				modules if you plan to include external components into your container.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { ProcessContainer } <span class="hljs-keyword">from</span> <span class="hljs-string">'pip-services4-container-node'</span>;
+<span class="hljs-keyword">import</span> { DefaultRpcFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'pip-services4-rpc-node'</span>; 
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyProcess <span class="hljs-keyword">extends</span> ProcessContainer {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">super</span>(<span class="hljs-string">'myservice'</span>, <span class="hljs-string">'My service running as a process'</span>);
+
+    <span class="hljs-keyword">this</span>._factories.add(<span class="hljs-keyword">new</span> DefaultRpcFactory());
+    <span class="hljs-keyword">this</span>._factories.add(<span class="hljs-keyword">new</span> MyFactory());
+  }
+}
+</code></pre>
+				<p>Define YAML configuration file with components and their descriptors.
+					The configuration file is pre-processed using <a href="https://handlebarsjs.com">Handlebars templating engine</a>
+					that allows to inject configuration parameters or dynamically include/exclude components using conditional blocks.
+					The values for the templating engine are defined via process command line arguments or via environment variables.
+				Support for environment variables works well in docker or other containers like AWS Lambda functions.</p>
+				<pre><code class="lang-yaml"><span class="hljs-meta">---</span>
+<span class="hljs-comment"># Context information</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:context-info:default:default:1.0"</span>
+<span class="hljs-attr">  name:</span> <span class="hljs-string">myservice</span>
+<span class="hljs-attr">  description:</span> <span class="hljs-string">My</span> <span class="hljs-string">service</span> <span class="hljs-string">running</span> <span class="hljs-string">in</span> <span class="hljs-string">a</span> <span class="hljs-string">process</span> <span class="hljs-string">container</span>
+
+<span class="hljs-comment"># Console logger</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:logger:console:default:1.0"</span>
+<span class="hljs-attr">  level:</span> <span class="hljs-string">{{LOG_LEVEL}}{{^LOG_LEVEL}}info{{/LOG_LEVEL}}</span>
+
+<span class="hljs-comment"># Performance counters that posts values to log</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:counters:log:default:1.0"</span>
+
+<span class="hljs-comment"># My component</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"myservice:mycomponent:default:default:1.0"</span>
+<span class="hljs-attr">  param1:</span> <span class="hljs-string">XYZ</span>
+<span class="hljs-attr">  param2:</span> <span class="hljs-number">987</span>
+
+<span class="hljs-string">{{#if</span> <span class="hljs-string">HTTP_ENABLED}}</span>
+<span class="hljs-comment"># HTTP endpoint version 1.0</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:endpoint:http:default:1.0"</span>
+<span class="hljs-attr">  connection:</span>
+<span class="hljs-attr">    protocol:</span> <span class="hljs-string">"http"</span>
+<span class="hljs-attr">    host:</span> <span class="hljs-string">"0.0.0.0"</span>
+<span class="hljs-attr">    port:</span> <span class="hljs-string">{{HTTP_PORT}}{{^HTTP_PORT}}8080{{/HTTP_PORT}}</span>
+
+ <span class="hljs-comment"># Default Status</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:status-service:http:default:1.0"</span>
+
+<span class="hljs-comment"># Default Heartbeat</span>
+<span class="hljs-attr">- descriptor:</span> <span class="hljs-string">"pip-services:heartbeat-service:http:default:1.0"</span>
+<span class="hljs-string">{{/if}}</span>
+</code></pre>
+				<p>To instantiate and run the container we need a simple process launcher.</p>
+				<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> MyProcess = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./MyProcess'</span>).MyProcess;
+
+<span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">let</span> proc = <span class="hljs-keyword">new</span> MyProcess();
+    proc._configPath = <span class="hljs-string">"./config/config.yml"</span>;
+    proc.run(process.argv);
+} <span class="hljs-keyword">catch</span> (ex) {
+    <span class="hljs-built_in">console</span>.error(ex);
+}
+</code></pre>
+				<p>And, finally, you can run your service launcher as</p>
+				<pre><code class="lang-bash">node ./service.js
+</code></pre>
+				<h2 id="develop">Develop</h2>
+				<p>For development you shall install the following prerequisites:</p>
+				<ul>
+					<li>Node.js 8+</li>
+					<li>Visual Studio Code or another IDE of your choice</li>
+					<li>Docker</li>
+					<li>Typescript</li>
+				</ul>
+				<p>Install dependencies:</p>
+				<pre><code class="lang-bash">npm install
+</code></pre>
+				<p>Compile the code:</p>
+				<pre><code class="lang-bash">tsc
+</code></pre>
+				<p>Run automated tests:</p>
+				<pre><code class="lang-bash">npm <span class="hljs-built_in">test</span>
+</code></pre>
+				<p>Generate API documentation:</p>
+				<pre><code class="lang-bash">./docgen.ps1
+</code></pre>
+				<p>Before committing changes run dockerized build and test as:</p>
+				<pre><code class="lang-bash">./build.ps1
+./test.ps1
+./clear.ps1
+</code></pre>
+				<h2 id="contacts">Contacts</h2>
+				<p>The Node.js version of Pip.Services is created and maintained by:</p>
+				<ul>
+					<li><strong>Sergey Seroukhov</strong></li>
+				</ul>
+				<p>The documentation is written by:</p>
+				<ul>
+					<li><strong>Mark Makarychev</strong></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/build.html">build</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/config.html">config</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/core.html">core</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/refer.html">refer</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
