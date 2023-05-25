@@ -11,14 +11,26 @@ import { IContext } from "./IContext";
  * @see [[IContext]]
  * @see [[AnyValueMap]]
  */
-export class Context extends AnyValueMap implements IContext {
+export class Context implements IContext {
+	private _values: AnyValueMap;
+
+    /**
+     * Gets a map element specified by its key.
+     * 
+     * @param key     a key of the element to get.
+     * @returns       the value of the map element.
+     */
+    public get(key: string): any {
+		return this._values.get(key);
+	}
+
 	/**
      * Creates a new instance of the map and assigns its value.
      * 
-     * @param value     (optional) values to initialize this map.
+     * @param values     (optional) values to initialize this map.
 	 */
-	public constructor(map: any = null) {
-		super(map);
+	public constructor(values: any = null) {
+		this._values = new AnyValueMap(values);
 	}
 
     /**
@@ -27,7 +39,7 @@ export class Context extends AnyValueMap implements IContext {
      * @returns  a trace id or <code>null</code> if it is not defined.
      */
     public getTraceId(): string {
-        let context = super.get("trace_id") || super.get("trace_id");
+        let context = this.get("trace_id") || this.get("trace_id");
         return context != null ? "" + context : null;
     }
 
@@ -37,7 +49,7 @@ export class Context extends AnyValueMap implements IContext {
      * @returns  a client name or <code>null</code> if it is not defined.
      */
     public getClient(): string {
-        let client = super.get("client");
+        let client = this.get("client");
         return client != null ? "" + client : null;
     }
 
@@ -47,7 +59,7 @@ export class Context extends AnyValueMap implements IContext {
      * @returns  a user reference or <code>null</code> if it is not defined.
      */
     public getUser(): any {
-        return super.get("user");
+        return this.get("user");
     }
 
 	/**
@@ -56,7 +68,7 @@ export class Context extends AnyValueMap implements IContext {
 	 * @returns	a JSON representation of this map.
 	 */
 	public toJson(): string {
-		return JsonConverter.toJson(this);
+		return JsonConverter.toJson(this._values);
 	}
 	
 	/**
@@ -104,19 +116,17 @@ export class Context extends AnyValueMap implements IContext {
 	 * 
 	 * @see [[ConfigParams]]
 	 */
-	public static fromConfig(config: ConfigParams): Context {
-		let result = new Context();
-		
+	public static fromConfig(config: ConfigParams): Context {		
 		if (config == null) {
-			return result;
+			return new Context();
 		}
 		
+		let values = new AnyValueMap();
 		for (let key in config) {
             if (config.hasOwnProperty(key)) {
-			    result.put(key, config[key]);
+			    values.put(key, config[key]);
 			}
-		}
-		
-		return result;
+		}		
+		return new Context(values);
 	}    
 }
