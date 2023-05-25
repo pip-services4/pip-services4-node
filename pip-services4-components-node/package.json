@@ -20,7 +20,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-components-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-components-node"
     },
     "license": "MIT",
     "engines": {

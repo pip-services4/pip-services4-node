@@ -2,8 +2,9 @@
 
 import { AnyValueMap } from 'pip-services4-commons-node';
 import { JsonConverter } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 import { IContext } from "./IContext";
+
+import { ConfigParams } from '../config/ConfigParams';
 
 /**
  * Basic implementation of an execution context.

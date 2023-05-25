@@ -1,8 +1,7 @@
 const assert = require('chai').assert;
 
+import { AnyValueArray, AnyValueMap } from 'pip-services4-commons-node';
 import { ConfigParams } from '../../src/config/ConfigParams';
-import { AnyValueMap } from '../../src/data/AnyValueMap';
-import { AnyValueArray } from '../../src/data/AnyValueArray';
 
 suite('ConfigParams', ()=> {
 
