@@ -4,8 +4,7 @@ const fs = require('fs');
 
 import { IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node'
-import { FileException } from 'pip-services4-commons-node'
+import { ConfigException, FileException } from 'pip-services4-commons-node'
 import { JsonConverter } from 'pip-services4-commons-node'
 
 import { FileConfigReader } from './FileConfigReader';
@@ -58,7 +57,7 @@ export class JsonConfigReader extends FileConfigReader {
     public readObject(context: IContext, parameters: ConfigParams): any {
         if (super.getPath() == null) {
             throw new ConfigException(
-                context,
+                context.getTraceId(),
                 "NO_PATH",
                 "Missing config file path"
             );
@@ -71,7 +70,7 @@ export class JsonConfigReader extends FileConfigReader {
             return JsonConverter.toNullableMap(data);
         } catch (e) {
             throw new FileException(
-                context,
+                context.getTraceId(),
                 "READ_FAILED",
                 "Failed reading configuration " + super.getPath() + ": " + e
             )

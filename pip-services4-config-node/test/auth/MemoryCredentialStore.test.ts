@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 
 import { CredentialParams } from '../../src/auth/CredentialParams';
 import { MemoryCredentialStore } from '../../src/auth/MemoryCredentialStore';
@@ -18,8 +18,8 @@ suite('MemoryCredentialStore', ()=> {
 		let credentialStore = new MemoryCredentialStore();
 		credentialStore.readCredentials(config);
 
-		let cred1 = await credentialStore.lookup('123', 'key1');
-		let cred2 = await credentialStore.lookup('123', 'key2');
+		let cred1 = await credentialStore.lookup(Context.fromTraceId("context"), 'key1');
+		let cred2 = await credentialStore.lookup(Context.fromTraceId("context"), 'key2');
 
 		assert.equal(cred1.getUsername(), "user1");
 		assert.equal(cred1.getPassword(), "pass1");
@@ -32,9 +32,9 @@ suite('MemoryCredentialStore', ()=> {
 			'access_id', '123'
 		);
 
-		await credentialStore.store(null, 'key3', credConfig);
+		await credentialStore.store(new Context(), 'key3', credConfig);
 
-		let cred3 = await credentialStore.lookup('123', 'key3');
+		let cred3 = await credentialStore.lookup(Context.fromTraceId("context"), 'key3');
 
 		assert.equal(cred3.getUsername(), "user3");
 		assert.equal(cred3.getPassword(), "pass3");

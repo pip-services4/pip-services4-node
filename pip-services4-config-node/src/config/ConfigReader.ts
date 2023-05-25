@@ -1,9 +1,6 @@
 /** @module config */
 
-import { IContext } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node'
-import { INotifiable } from 'pip-services4-commons-node';
+import { ConfigParams, IConfigurable, IContext, INotifiable } from 'pip-services4-components-node';
 import { MustacheTemplate } from 'pip-services4-expressions-node';
 import { IConfigReader } from './IConfigReader';
 

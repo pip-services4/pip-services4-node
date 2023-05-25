@@ -1,18 +1,18 @@
 /** @module connect */
 /** @hidden */
-const url = require('url');
+import url = require('url');
 
 import { IContext } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node';
 
 import { ConnectionResolver } from './ConnectionResolver';
 import { ConnectionParams } from './ConnectionParams';
 import { CredentialResolver } from '../auth/CredentialResolver';
 import { CredentialParams } from '../auth/CredentialParams';
+import { ConfigException } from 'pip-services4-commons-node';
 
 /**
  * Helper class to retrieve connections for HTTP-based services abd clients.
@@ -130,7 +130,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
                 throw new ConfigException(
                     context != null ? context.getTraceId() : null,
                     "NO_CREDENTIAL",
-                    "SSL certificates are not configured for HTTPS protocol
+                    "SSL certificates are not configured for HTTPS protocol"
                 );
             } else {
                 // Sometimes when we use https we are on an internal network and do not want to have to deal with security.
@@ -145,7 +145,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
                         );
                     } else if (credential.getAsNullableString('ssl_crt_file') == null) {
                         throw new ConfigException(
-                            context,
+                            context.getTraceId(),
                             "NO_SSL_CRT_FILE",
                             "SSL crt file is not configured in credentials"
                         );

@@ -1,13 +1,12 @@
 /** @module config */
 /** @hidden */ 
-const fs = require('fs');
+import fs = require('fs');
 /** @hidden */ 
-const yaml = require('js-yaml');
+import yaml = require('js-yaml');
 
 import { IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node';
-import { FileException } from 'pip-services4-commons-node';
+import { ConfigException, FileException } from 'pip-services4-commons-node';
 
 import { FileConfigReader } from './FileConfigReader';
 

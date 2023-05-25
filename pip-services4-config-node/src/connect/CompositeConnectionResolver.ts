@@ -5,12 +5,12 @@ import { IReferenceable } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node';
 
 import { CredentialParams } from '../auth/CredentialParams';
 import { CredentialResolver } from '../auth/CredentialResolver';
 import { ConnectionParams } from './ConnectionParams';
 import { ConnectionResolver } from './ConnectionResolver';
+import { ConfigException } from 'pip-services4-commons-node';
 
 /**
  * Helper class that resolves connection and credential parameters,

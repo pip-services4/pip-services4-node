@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 
 import { YamlConfigReader } from '../../src/config/YamlConfigReader';
 
@@ -11,7 +11,7 @@ suite('YamlConfigReader', ()=> {
             "param1", "Test Param 1",
             "param2", "Test Param 2"
         );
-        let config: ConfigParams = YamlConfigReader.readConfig(null, "./data/config.yaml", parameters);
+        let config: ConfigParams = YamlConfigReader.readConfig(new Context(), "./data/config.yaml", parameters);
 
         assert.equal(config.length(), 9);
         assert.equal(config.getAsInteger("field1.field11"), 123);

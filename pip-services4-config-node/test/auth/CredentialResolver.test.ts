@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 import { References } from 'pip-services4-components-node';
 
 import { CredentialResolver } from '../../src/auth/CredentialResolver';
@@ -25,7 +25,7 @@ suite('CredentialResolver', ()=> {
 		
     test('Lookup', async () => {
         let credentialResolver = new CredentialResolver();
-        let credential = await credentialResolver.lookup("context");
+        let credential = await credentialResolver.lookup(Context.fromTraceId("context"));
         assert.isNull(credential);
 
         let RestConfigWithoutStoreKey = ConfigParams.fromTuples(
@@ -36,7 +36,7 @@ suite('CredentialResolver', ()=> {
 
 
         credentialResolver = new CredentialResolver(RestConfigWithoutStoreKey);
-        credential = await credentialResolver.lookup("context");
+        credential = await credentialResolver.lookup(Context.fromTraceId("context"));
         assert.equal(credential.get("username"), "Negrienko");
         assert.equal(credential.get("password"), "qwerty");
         assert.equal(credential.get("access_key"), "key");
@@ -44,7 +44,7 @@ suite('CredentialResolver', ()=> {
 
         credentialResolver = new CredentialResolver(RestConfig);
         try {
-            credential = await credentialResolver.lookup("context");
+            credential = await credentialResolver.lookup(Context.fromTraceId("context"));
             assert.fail("Expected to fail");
         } catch {
             // Expected exception
@@ -53,7 +53,7 @@ suite('CredentialResolver', ()=> {
         credentialResolver = new CredentialResolver(RestConfig);
         credentialResolver.setReferences(new References());
         try {
-            credential = await credentialResolver.lookup("context");
+            credential = await credentialResolver.lookup(Context.fromTraceId("context"));
             assert.fail("Expected to fail");
         } catch {
             // Expected exception

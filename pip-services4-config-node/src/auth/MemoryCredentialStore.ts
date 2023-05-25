@@ -1,9 +1,7 @@
 /** @module auth */
 
-import { IContext } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams, IContext, IReconfigurable } from 'pip-services4-components-node';
 import { StringValueMap } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
 
 import { CredentialParams } from './CredentialParams';
 import { ICredentialStore } from './ICredentialStore';

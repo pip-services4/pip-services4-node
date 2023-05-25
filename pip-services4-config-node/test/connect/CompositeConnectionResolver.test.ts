@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 
 import { CompositeConnectionResolver } from '../../src/connect/CompositeConnectionResolver';
 
@@ -17,7 +17,7 @@ suite('CompositeConnectionResolver', ()=> {
 
         let connectionResolver = new CompositeConnectionResolver();
         connectionResolver.configure(config);
-        let options = await connectionResolver.resolve(null);
+        let options = await connectionResolver.resolve(new Context());
 		assert.equal(options.get("protocol"), "http");
 		assert.equal(options.get("host"), "localhost");
 		assert.equal(options.get("port"), "3000");

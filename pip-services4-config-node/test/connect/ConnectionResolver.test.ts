@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 import { References } from 'pip-services4-components-node';
 
 import { ConnectionParams } from '../../src/connect/ConnectionParams';
@@ -25,18 +25,18 @@ suite('ConnectionResolver', ()=> {
 		let connectionParams = new ConnectionParams();
 		let connectionResolver = new ConnectionResolver(RestConfig);
 
-        await connectionResolver.register("context", connectionParams);
+        await connectionResolver.register(Context.fromTraceId("context"), connectionParams);
         let configList = connectionResolver.getAll();
         assert.equal(configList.length, 1);
 
-        await connectionResolver.register("context", connectionParams);
+        await connectionResolver.register(Context.fromTraceId("context"), connectionParams);
         configList = connectionResolver.getAll();
         assert.equal(configList.length, 1);
 
         connectionParams.setDiscoveryKey("Discovery key value");
         let references = new References();
         connectionResolver.setReferences(references);
-        await connectionResolver.register("context", connectionParams);
+        await connectionResolver.register(Context.fromTraceId("context"), connectionParams);
         configList = connectionResolver.getAll();
         assert.equal(configList.length, 2);
         assert.equal(configList[0].get("protocol"), "http");
@@ -47,7 +47,7 @@ suite('ConnectionResolver', ()=> {
 	
     test('Resolve', async () => {
         let connectionResolver = new ConnectionResolver(RestConfig);
-        let connectionParams = await connectionResolver.resolve("context");
+        let connectionParams = await connectionResolver.resolve(Context.fromTraceId("context"));
         assert.equal(connectionParams.get("protocol"), "http");
         assert.equal(connectionParams.get("host"), "localhost");
         assert.equal(connectionParams.get("port"), "3000");
@@ -61,7 +61,7 @@ suite('ConnectionResolver', ()=> {
         let references = new References();
         connectionResolver = new ConnectionResolver(RestConfigDiscovery , references);		
         try {
-            let connectionParams = await connectionResolver.resolve("context");
+            let connectionParams = await connectionResolver.resolve(Context.fromTraceId("context"));
         } catch {
             // Expected exception
         }
