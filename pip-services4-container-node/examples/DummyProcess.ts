@@ -1,4 +1,4 @@
-import { ProcessContainer } from '../src/ProcessContainer';
+import { ProcessContainer } from '../src/containers/ProcessContainer';
 import { DummyFactory } from './DummyFactory';
 
 export class DummyProcess extends ProcessContainer {

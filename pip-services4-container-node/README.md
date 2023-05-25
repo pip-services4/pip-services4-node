@@ -11,10 +11,12 @@ Component factories are used to create components based on their locators (descr
 The factories shall be registered in containers or dynamically in the container configuration file.
 
 The module contains the following packages:
-- **Core** - Basic in-memory and process containers
+- **Containers** - Basic in-memory and process containers
 - **Build** - Default container factory
 - **Config** - Container configuration components
 - **Refer** - Inter-container reference management (implementation of the Referenceable pattern inside an IoC container)
+- **Info** - context info implementations that manage the saving of process information and sending additional parameter sets
+- **Test** - minimal set of test components to make testing easier
 
 <a name="links"></a> Quick links:
 * [API Reference](https://pip-services4-node.github.io/pip-services4-container-node/globals.html)

@@ -1,4 +1,4 @@
-# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Portable Abstractions and Patterns for Node.js
+# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Portable Component Model for Node.js
 
 This module is a part of the [Pip.Services](http://pip.services.org) polyglot microservices toolkit.
 It provides a set of basic patterns used in microservices or backend services.
@@ -6,6 +6,7 @@ Also the module implemenets a reasonably thin abstraction layer over most fundam
 all languages supported by the toolkit to facilitate symmetric implementation.
 
 The module contains the following packages:
+- **Build** - basic factories for constructing objects
 - **Commands** - commanding and eventing patterns
 - **Config** - configuration pattern
 - **Convert** - portable value converters
@@ -111,10 +112,37 @@ myComponentA.open("123", (err) => {
 });
 ```
 
+If you need to create components using their locators (descriptors) implement 
+component factories similar to the example below.
+
+```typescript
+import { Factory } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-commons-node';
+
+export class MyFactory extends Factory {
+  public static myComponentDescriptor: Descriptor = new Descriptor("myservice", "mycomponent", "default", "*", "1.0");
+  
+  public MyFactory() {
+    super();
+    
+    this.registerAsType(MyFactory.myComponentDescriptor, MyComponent);    
+  }
+}
+
+// Using the factory
+
+let myFactory = MyFactory();
+
+let myComponent1 = myFactory.create(new Descriptor("myservice", "mycomponent", "default", "myComponent1", "1.0");
+let myComponent2 = myFactory.create(new Descriptor("myservice", "mycomponent", "default", "myComponent2", "1.0");
+
+...
+```
+
 ## Develop
 
 For development you shall install the following prerequisites:
-* Node.js 8+
+* Node.js 14+
 * Visual Studio Code or another IDE of your choice
 * Docker
 * Typescript

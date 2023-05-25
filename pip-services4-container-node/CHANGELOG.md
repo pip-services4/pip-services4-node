@@ -1,11 +1,18 @@
 # <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> IoC container for Node.js / ES2017 Changelog
 
+## <a name="0.0.1"></a>Pip.Services 4 0.0.1 (2023-05-24)
+Moved code from PipService 3
+
+### Breaking Changes
+* Moved ContextInfo component from components module
+* Moved Shutdown component from components module
+
 ## <a name="1.0.3"></a> 1.0.3 (2022-02-07)
 
 ### Features
 * Updated dependencies
 
-## <a name="1.0.0"></a> 1.0.0 (2021-03-21)
+## <a name="1.0.0"></a>Pip.Services 4 1.0.0 (2021-03-21)
 
 Converted from pip-services4-container-node by moving to ES2017
 

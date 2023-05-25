@@ -1,8 +1,8 @@
 {
     "name": "pip-services4-commons-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Portable abstractions and patterns for Pip.Services in Node.js / ES2017",
+    "description": "Portable Component Model in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",
