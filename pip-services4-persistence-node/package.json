@@ -1,8 +1,8 @@
 {
-    "name": "pip-services4-data-node",
-    "version": "1.0.2",
+    "name": "pip-services4-persistence-node",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Data persistence for Pip.Services in Node.js / ES2017",
+    "description": "Persistence Components for Pip.Services in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",
@@ -20,7 +20,7 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-data-node.git"
+        "url": "ssh://git@github.com:pip-services4-node/pip-services4-persistence-node.git"
     },
     "license": "MIT",
     "engines": {
@@ -34,10 +34,8 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^1.0.4",
-        "pip-services4-components-node": "^1.0.2",
-        "service-orgprofiles-node": "^1.0.0",
-        "service-personalprofiles-node": "^1.0.0"
+        "pip-services4-components-node": "^0.0.1",
+        "pip-services4-persistence-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

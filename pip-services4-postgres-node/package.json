@@ -38,7 +38,7 @@
         "pg": "^8.4.1",
         "pip-services4-commons-node": "^1.0.0",
         "pip-services4-components-node": "^1.0.0",
-        "pip-services4-data-node": "^1.0.0"
+        "pip-services4-persistence-node": "^1.0.0"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

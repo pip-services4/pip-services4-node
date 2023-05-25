@@ -37,7 +37,7 @@
     "dependencies": {
         "pip-services4-commons-node": "^1.0.0",
         "pip-services4-components-node": "^1.0.0",
-        "pip-services4-data-node": "^1.0.0",
+        "pip-services4-persistence-node": "^1.0.0",
         "sqlite3": "^5.0.0"
     },
     "devDependencies": {

@@ -1,4 +1,4 @@
-# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Persistence components for Node.js / ES2017
+# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Persistence Components for Node.js / ES2017
 
 This module is a part of the [Pip.Services](http://pipservices.org) polyglot microservices toolkit. It contains generic interfaces for data access components as well as abstract implementations for in-memory and file persistence.
 
@@ -6,12 +6,13 @@ The persistence components come in two kinds. The first kind is a basic persiste
 The second kind is so called "identifieable" persistence with works with "identifable" data objects, i.e. objects that have unique ID field. The identifiable persistence provides a full set or CRUD operations that covers most common cases.
 
 The module contains the following packages:
-- **Core** - generic interfaces for data access components. 
+- **Read** - generic data reading interfaces.
+- **Write** - generic data writing interfaces.
 - **Persistence** - in-memory and file persistence components, as well as JSON persister class.
 
 <a name="links"></a> Quick links:
 * [Memory persistence](http://docs.pipservices.org/toolkit/recipes/memory_persistence/)
-* [API Reference](https://pip-services4-node.github.io/pip-services4-data-node/globals.html)
+* [API Reference](https://pip-services4-node.github.io/pip-services4-persistence-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](http://docs.pipservices.org/get_help/)
 * [Contribute](http://docs.pipservices.org/contribute/)
@@ -20,7 +21,7 @@ The module contains the following packages:
 
 Install the NPM package as
 ```bash
-npm install pip-services4-data-node --save
+npm install pip-services4-persistence-node --save
 ```
 
 As an example, lets implement persistence for the following data object.
@@ -58,7 +59,7 @@ Most CRUD operations will come from the base class. You only need to override `g
 And implement a `getOneByKey` custom persistence method that doesn't exist in the base class.
 
 ```typescript
-import { IdentifiableMemoryPersistence } from 'pip-services4-data-node';
+import { IdentifiableMemoryPersistence } from 'pip-services4-persistence-node';
 
 export class MyMemoryPersistence extends IdentifableMemoryPersistence {
   public constructor() {
@@ -107,7 +108,7 @@ It is easy to create file persistence by adding a persister object to the implem
 
 ```typescript
 import { ConfigParams } from 'pip-services4-commons-node';
-import { JsonFilePersister } from 'pip-services4-data-node';
+import { JsonFilePersister } from 'pip-services4-persistence-node';
 
 export class MyFilePersistence extends MyMemoryPersistence {
   protected _persister: JsonFilePersister<MyObject>;
@@ -144,7 +145,7 @@ Configuration for your microservice that includes memory and file persistence ma
 ## Develop
 
 For development you shall install the following prerequisites:
-* Node.js 10+
+* Node.js 14+
 * Visual Studio Code or another IDE of your choice
 * Docker
 * Typescript
@@ -178,8 +179,6 @@ Before committing changes run dockerized build and test as:
 
 ## Contacts
 
-The Node.js version of Pip.Services is created and maintained by:
-- **Sergey Seroukhov**
+The Node.js version of Pip.Services is created and maintained by **Sergey Seroukhov** and **Danil Prisyazhniy**.
 
-The documentation is written by:
-- **Mark Makarychev**
+The documentation is written by **Mark Makarychev** and **Eugenio Andrieu**.

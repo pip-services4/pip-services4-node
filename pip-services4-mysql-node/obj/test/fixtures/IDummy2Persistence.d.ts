@@ -2,9 +2,9 @@ import { FilterParams } from 'pip-services4-commons-node';
 import { PagingParams } from 'pip-services4-commons-node';
 import { DataPage } from 'pip-services4-commons-node';
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IGetter } from 'pip-services4-data-node';
-import { IWriter } from 'pip-services4-data-node';
-import { IPartialUpdater } from 'pip-services4-data-node';
+import { IGetter } from 'pip-services4-persistence-node';
+import { IWriter } from 'pip-services4-persistence-node';
+import { IPartialUpdater } from 'pip-services4-persistence-node';
 import { Dummy2 } from './Dummy2';
 export interface IDummy2Persistence extends IGetter<Dummy2, number>, IWriter<Dummy2, number>, IPartialUpdater<Dummy2, number> {
     getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy2>>;

@@ -1,5 +1,5 @@
 {
-    "name":  "pip-services4-data-node",
+    "name":  "pip-services4-persistence-node",
     "type": "module",
     "language": "node",
     "version": "1.0.2",

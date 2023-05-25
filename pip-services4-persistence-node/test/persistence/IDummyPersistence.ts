@@ -5,7 +5,7 @@ import { AnyValueMap } from 'pip-services4-commons-node';
 
 import { IGetter } from '../../src/IGetter';
 import { IWriter } from '../../src/IWriter';
-import { IPartialUpdater } from '../../src/IPartialUpdater';
+import { IPartialUpdater } from '../../src/write/IPartialUpdater';
 import { Dummy } from '../Dummy';
 
 export interface IDummyPersistence extends IGetter<Dummy, String>, IWriter<Dummy, String>, IPartialUpdater<Dummy, String> {

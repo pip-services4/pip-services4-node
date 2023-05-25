@@ -3,9 +3,9 @@ import { PagingParams } from 'pip-services4-commons-node';
 import { DataPage } from 'pip-services4-commons-node';
 import { AnyValueMap } from 'pip-services4-commons-node';
 
-import { IGetter } from 'pip-services4-data-node';
-import { IWriter } from 'pip-services4-data-node';
-import { IPartialUpdater } from 'pip-services4-data-node';
+import { IGetter } from 'pip-services4-persistence-node';
+import { IWriter } from 'pip-services4-persistence-node';
+import { IPartialUpdater } from 'pip-services4-persistence-node';
 import { Dummy } from './Dummy';
 
 export interface IDummyPersistence /*extends IGetter<Dummy, String>, IWriter<Dummy, String>, IPartialUpdater<Dummy, String>*/ {

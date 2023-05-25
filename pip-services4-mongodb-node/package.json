@@ -37,7 +37,7 @@
         "mongodb": "^5.0.*",
         "pip-services4-commons-node": "^1.0.4",
         "pip-services4-components-node": "^1.4.2",
-        "pip-services4-data-node": "^1.0.2"
+        "pip-services4-persistence-node": "^1.0.2"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

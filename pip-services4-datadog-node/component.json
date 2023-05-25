@@ -1,5 +1,5 @@
 {
-    "name": "pip-services4-datadog-node",
+    "name": "pip-services4-persistencedog-node",
     "registry": "pipdevs",
     "version": "1.0.0",
     "build": 0

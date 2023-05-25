@@ -1,9 +1,9 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
 import { IIdentifiable } from 'pip-services4-commons-node';
-import { IWriter } from 'pip-services4-data-node';
-import { IGetter } from 'pip-services4-data-node';
-import { ISetter } from 'pip-services4-data-node';
+import { IWriter } from 'pip-services4-persistence-node';
+import { IGetter } from 'pip-services4-persistence-node';
+import { ISetter } from 'pip-services4-persistence-node';
 import { PostgresPersistence } from './PostgresPersistence';
 /**
  * Abstract persistence component that stores data in PostgreSQL
