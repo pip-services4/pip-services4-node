@@ -14,7 +14,7 @@ import { StatusRestService } from '../services/StatusRestService';
  * @see [[HeartbeatRestService]]
  * @see [[StatusRestService]] 
  */
-export class DefaultRpcFactory extends Factory {
+export class DefaultHttpFactory extends Factory {
     private static readonly HttpEndpointDescriptor: Descriptor = new Descriptor("pip-services", "endpoint", "http", "*", "1.0");
     private static readonly StatusServiceDescriptor = new Descriptor("pip-services", "status-service", "http", "*", "1.0");
     private static readonly HeartbeatServiceDescriptor = new Descriptor("pip-services", "heartbeat-service", "http", "*", "1.0");

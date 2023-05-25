@@ -1,6 +1,5 @@
 /** @module index */
 export * from './build';
-export * from './commands';
 export * from './config';
 export * from './convert';
 export * from './errors';

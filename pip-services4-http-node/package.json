@@ -1,8 +1,8 @@
 {
-    "name": "pip-services4-rpc-node",
+    "name": "pip-services4-http-node",
     "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Synchronous Communication Components in Node.js / ES2017",
+    "description": "HTTP/REST Communication Components in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",
@@ -22,7 +22,7 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-rpc-node.git"
+        "url": "ssh://git@github.com:pip-services4-node/pip-services4-http-node.git"
     },
     "license": "MIT",
     "engines": {
@@ -38,7 +38,12 @@
     "dependencies": {
         "pip-services4-commons-node": "^0.0.1",
         "pip-services4-components-node": "^0.0.1",
-        "pip-services4-observability-node": "^0.0.1"
+        "pip-services4-observability-node": "^0.0.1",
+        "pip-services4-rpc-node": "^0.0.1",
+        "restify": "^10.0.0",
+        "restify-clients": "^4.2.0",
+        "restify-cors-middleware2": "2.2.0",
+        "ts-node": "10.9.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

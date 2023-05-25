@@ -1,10 +1,10 @@
 /** @module commands */
 import { ICommand } from './ICommand';
-import { InvocationException } from '../errors/InvocationException';
-import { Schema } from '../validate/Schema';
-import { Parameters } from '../run/Parameters';
-import { ValidationResult } from '../validate/ValidationResult';
-import { IExecutable } from '../run/IExecutable';
+import { InvocationException } from '../../../pip-services4-commons-node/src/errors/InvocationException';
+import { Schema } from '../../../pip-services4-commons-node/src/validate/Schema';
+import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
+import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
+import { IExecutable } from '../../../pip-services4-commons-node/src/run/IExecutable';
 
 /**
  * Command action function.

@@ -1,6 +1,6 @@
 /** @module commands */
 import { IEvent } from './IEvent';
-import { Parameters } from '../run/Parameters';
+import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
 
 /**
  * An interface for listener objects that receive notifications on fired events.

@@ -4,12 +4,12 @@ import { IEvent } from './IEvent';
 import { IEventListener } from './IEventListener';
 import { ICommandInterceptor } from './ICommandInterceptor';
 import { InterceptedCommand } from './InterceptedCommand';
-import { BadRequestException } from '../errors/BadRequestException';
-import { ValidationException } from '../validate/ValidationException';
-import { ValidationResult } from '../validate/ValidationResult';
-import { ValidationResultType } from '../validate/ValidationResultType';
-import { Parameters } from '../run/Parameters';
-import { IdGenerator } from '../data/IdGenerator';
+import { BadRequestException } from '../../../pip-services4-commons-node/src/errors/BadRequestException';
+import { ValidationException } from '../../../pip-services4-commons-node/src/validate/ValidationException';
+import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
+import { ValidationResultType } from '../../../pip-services4-commons-node/src/validate/ValidationResultType';
+import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
+import { IdGenerator } from '../../../pip-services4-commons-node/src/data/IdGenerator';
 
 /**
  * Contains a set of commands and events supported by a [[ICommandable commandable]] object.

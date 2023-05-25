@@ -1,13 +1,15 @@
-# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Synchonous Communication Components in Node.js / ES2017
+# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> HTTP/REST Communication Components in Node.js / ES2017
 
 This module is a part of the [Pip.Services](http://pipservices.org) polyglot microservices toolkit.
 
-The rpc module provides the synchronous communication compoents. It contains both server and client side implementations.
+The rpc module provides the synchronous communication using local calls or the HTTP(S) protocol. It contains both server and client side implementations.
 
 The module contains the following packages:
+- **Auth** - authentication and authorization components
+- **Build** - HTTP service factory
 - **Clients** - mechanisms for retrieving connection settings from the microservice’s configuration and providing clients and services with these settings
-- **Commands** - commanding and eventing patterns
-- **Trace** - logging and tracing utilities
+- **Connect** - helper module to retrieve connections for HTTP-based services and clients
+- **Services** - basic implementation of services for connecting via the HTTP/REST protocol and using the Commandable pattern over HTTP
 
 <a name="links"></a> Quick links:
 
@@ -16,7 +18,7 @@ The module contains the following packages:
 * [Microservice Facade](http://docs.pipservices.org/toolkit/tutorials/microservice_facade/) 
 * [Client Library. Step 3](http://docs.pipservices.org/toolkit/tutorials/client_library/step2/)
 * [Client Library. Step 4](http://docs.pipservices.org/toolkit/tutorials/client_library/step3/)
-* [API Reference](https://pip-services4-node.github.io/pip-services4-rpc-node/globals.html)
+* [API Reference](https://pip-services4-node.github.io/pip-services4-http-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](http://docs.pipservices.org/get_help/)
 * [Contribute](http://docs.pipservices.org/contribute/)
@@ -26,7 +28,7 @@ The module contains the following packages:
 
 Install the NPM package as
 ```bash
-npm install pip-services4-rpc-node --save
+npm install pip-services4-http-node --save
 ```
 
 ## Develop

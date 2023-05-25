@@ -1,8 +1,8 @@
 /** @module commands */
 import { IEvent } from './IEvent';
 import { IEventListener } from './IEventListener';
-import { InvocationException } from '../errors/InvocationException';
-import { Parameters } from '../run/Parameters';
+import { InvocationException } from '../../../pip-services4-commons-node/src/errors/InvocationException';
+import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
 
 /**
  * Concrete implementation of [[IEvent IEvent]] interface.

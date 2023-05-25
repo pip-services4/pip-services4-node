@@ -1,7 +1,7 @@
-# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> Synchonous Communication Components in Node.js / ES2017 Changelog
+# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> HTTP/REST Communication Components in Node.js / ES2017 Changelog
 
 ## <a name="0.0.1"></a>Pip.Services 4 0.0.1 (2023-05-24)
-Moved code from PipService 3
+Moved code from rpc module in PipService 3
 
 ## <a name="1.3.2"></a> 1.3.2 (2023-02-28)
 
@@ -52,7 +52,7 @@ Moved code from PipService 3
 ### Features
 * **services** Added configuration of CORS headers to HttpEndpoint
 
-## <a name="1.0.0"></a>Pip.Services 4 1.0.0 (2021-04-11)
+## <a name="1.0.0"></a> Pip.Services 3 1.0.0 (2021-04-11)
 
 Initial public release
 

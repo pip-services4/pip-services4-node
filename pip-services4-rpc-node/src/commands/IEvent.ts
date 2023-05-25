@@ -1,7 +1,7 @@
 /** @module commands */
 import { ICommand } from './ICommand';
 import { IEventListener } from './IEventListener';
-import { INotifiable } from '../run/INotifiable';
+import { INotifiable } from '../../../pip-services4-commons-node/src/run/INotifiable';
 
 /**
  * An interface for Events, which are part of the Command design pattern.

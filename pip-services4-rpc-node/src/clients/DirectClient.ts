@@ -10,7 +10,7 @@ import { CompositeTracer } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-commons-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 
-import { InstrumentTiming } from '../services/InstrumentTiming';
+import { InstrumentTiming } from '../trace/InstrumentTiming';
 
 /**
  * Abstract client that calls controller directly in the same memory space.

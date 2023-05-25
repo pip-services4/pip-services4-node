@@ -7,7 +7,6 @@ all languages supported by the toolkit to facilitate symmetric implementation.
 
 The module contains the following packages:
 - **Build** - basic factories for constructing objects
-- **Commands** - commanding and eventing patterns
 - **Config** - configuration pattern
 - **Convert** - portable value converters
 - **Data** - data patterns
