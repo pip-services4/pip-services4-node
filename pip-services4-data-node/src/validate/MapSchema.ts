@@ -1,12 +1,13 @@
 /** @module validate */
+import { ObjectReader } from 'pip-services4-commons-node';
+import { TypeCode } from 'pip-services4-commons-node';
+import { TypeConverter } from 'pip-services4-commons-node';
+import { StringConverter } from 'pip-services4-commons-node';
+
 import { IValidationRule } from './IValidationRule';
 import { ValidationResult } from './ValidationResult';
 import { ValidationResultType } from './ValidationResultType';
 import { Schema } from './Schema';
-import { ObjectReader } from '../reflect/ObjectReader';
-import { TypeCode } from '../convert/TypeCode';
-import { TypeConverter } from '../convert/TypeConverter';
-import { StringConverter } from '../convert/StringConverter';
 
 /**
  * Schema to validate maps.

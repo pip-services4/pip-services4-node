@@ -1,9 +1,11 @@
 /** @module validate */
+
+import { ObjectReader } from 'pip-services4-commons-node';
+
 import { IValidationRule } from './IValidationRule';
 import { Schema } from './Schema';
 import { ValidationResult } from './ValidationResult';
 import { ValidationResultType } from './ValidationResultType';
-import { ObjectReader } from '../reflect/ObjectReader';
 
 /**
  * Validation rule that check that at exactly one of the object properties is not null.

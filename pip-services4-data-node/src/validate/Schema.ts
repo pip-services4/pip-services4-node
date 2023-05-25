@@ -1,12 +1,14 @@
 /** @module validate */
+
+import { ObjectReader } from 'pip-services4-commons-node';
+import { TypeMatcher } from 'pip-services4-commons-node';
+import { TypeCode } from 'pip-services4-commons-node';
+import { TypeConverter } from 'pip-services4-commons-node';
+
 import { IValidationRule } from './IValidationRule';
 import { ValidationResult } from './ValidationResult';
 import { ValidationResultType } from './ValidationResultType';
 import { ValidationException } from './ValidationException';
-import { ObjectReader } from '../reflect/ObjectReader';
-import { TypeMatcher } from '../reflect/TypeMatcher';
-import { TypeCode } from '../convert/TypeCode';
-import { TypeConverter } from '../convert/TypeConverter';
 
 /**
  * Basic schema that validates values against a set of validation rules.
@@ -228,27 +230,27 @@ export class Schema {
     /**
      * Validates the given value and returns a [[ValidationException]] if errors were found.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param traceId     (optional) transaction id to trace execution through call chain.
      * @param value             a value to be validated.
      * @param strict            true to treat warnings as errors.
      */
-    public validateAndReturnException(context: IContext, value: any, strict: boolean = false): ValidationException {
+    public validateAndReturnException(traceId: string, value: any, strict: boolean = false): ValidationException {
         let results: ValidationResult[] = this.validate(value);
-        return ValidationException.fromResults(context, results, strict);
+        return ValidationException.fromResults(traceId, results, strict);
     }
 
     /**
      * Validates the given value and throws a [[ValidationException]] if errors were found.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param traceId     (optional) transaction id to trace execution through call chain.
      * @param value             a value to be validated.
      * @param strict            true to treat warnings as errors.
      * 
      * @see [[ValidationException.throwExceptionIfNeeded]]
      */
-    public validateAndThrowException(context: IContext, value: any, strict: boolean = false): void {
+    public validateAndThrowException(traceId: string, value: any, strict: boolean = false): void {
         let results: ValidationResult[] = this.validate(value);
-        ValidationException.throwExceptionIfNeeded(context, results, strict);
+        ValidationException.throwExceptionIfNeeded(traceId, results, strict);
     }
 
 }

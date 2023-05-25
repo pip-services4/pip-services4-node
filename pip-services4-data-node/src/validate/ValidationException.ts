@@ -1,7 +1,8 @@
 /** @module validate */
+import { BadRequestException } from 'pip-services4-commons-node';
+
 import { ValidationResult } from './ValidationResult';
 import { ValidationResultType } from './ValidationResultType';
-import { BadRequestException } from '../errors/BadRequestException';
 
 /**
  * Errors in schema validation.
@@ -17,14 +18,14 @@ export class ValidationException extends BadRequestException {
      * Creates a new instance of validation exception and assigns its values.
      * 
      * @param category          (optional) a standard error category. Default: Unknown
-     * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
+     * @param traceId    (optional) a unique transaction id to trace execution through call chain.
      * @param results           (optional) a list of validation results
      * @param message           (optional) a human-readable description of the error.
      * 
      * @see [[ValidationResult]]
      */
-    public constructor(context: IContext, message?: string, results?: ValidationResult[]) {
-        super(context, "INVALID_DATA", message || ValidationException.composeMessage(results));
+    public constructor(traceId: string, message?: string, results?: ValidationResult[]) {
+        super(traceId, "INVALID_DATA", message || ValidationException.composeMessage(results));
 
         if (results) {
             this.withDetails("results", results);
@@ -64,14 +65,14 @@ export class ValidationException extends BadRequestException {
      * Creates a new ValidationException based on errors in validation results.
      * If validation results have no errors, than null is returned.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param traceId     (optional) transaction id to trace execution through call chain.
      * @param results           list of validation results that may contain errors
      * @param strict            true to treat warnings as errors.
      * @returns a newly created ValidationException or null if no errors in found.
      * 
      * @see [[ValidationResult]]
      */
-    public static fromResults(context: IContext, results: ValidationResult[], strict: boolean): ValidationException {
+    public static fromResults(traceId: string, results: ValidationResult[], strict: boolean): ValidationException {
         let hasErrors = false;
 
         for (let i = 0; i < results.length; i++) {
@@ -86,22 +87,22 @@ export class ValidationException extends BadRequestException {
             }
         }
 
-        return hasErrors ? new ValidationException(context, null, results) : null;
+        return hasErrors ? new ValidationException(traceId, null, results) : null;
     }
 
     /**
      * Throws ValidationException based on errors in validation results.
      * If validation results have no errors, than no exception is thrown.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param traceId     (optional) transaction id to trace execution through call chain.
      * @param results           list of validation results that may contain errors
      * @param strict            true to treat warnings as errors.
      * 
      * @see [[ValidationResult]]
      * @see [[ValidationException]]
      */
-    public static throwExceptionIfNeeded(context: IContext, results: ValidationResult[], strict: boolean): void {
-        let ex = ValidationException.fromResults(context, results, strict);
+    public static throwExceptionIfNeeded(traceId: string, results: ValidationResult[], strict: boolean): void {
+        let ex = ValidationException.fromResults(traceId, results, strict);
         if (ex) throw ex;
     }
 

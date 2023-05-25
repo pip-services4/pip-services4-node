@@ -1,6 +1,6 @@
 /** @module validate */
-import { DoubleConverter } from '../convert/DoubleConverter';
-import { StringConverter } from '../convert/StringConverter';
+import { DoubleConverter } from 'pip-services4-commons-node';
+import { StringConverter } from 'pip-services4-commons-node';
 
 /**
  * Helper class to perform comparison operations over arbitrary values.

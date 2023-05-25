@@ -1,5 +1,5 @@
 /** @module validate */
-import { TypeCode } from '../convert/TypeCode';
+import { TypeCode } from 'pip-services4-commons-node';
 import { MapSchema } from './MapSchema';
 
 /**

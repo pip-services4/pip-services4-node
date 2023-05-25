@@ -1,11 +1,13 @@
 /** @module validate */
+
+import { ObjectReader } from 'pip-services4-commons-node';
+
 import { IValidationRule } from './IValidationRule';
 import { ValidationResult } from './ValidationResult';
 import { ValidationResultType } from './ValidationResultType';
 import { Schema } from './Schema';
 import { PropertySchema } from './PropertySchema';
 import { ObjectComparator } from './ObjectComparator';
-import { ObjectReader } from '../reflect/ObjectReader';
 
 /**
  * Schema to validate user defined objects.

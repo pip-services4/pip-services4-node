@@ -1,11 +1,12 @@
 /** @module validate */
+import { ObjectReader } from 'pip-services4-commons-node';
+import { TypeCode } from 'pip-services4-commons-node';
+import { TypeConverter } from 'pip-services4-commons-node';
+
 import { Schema } from './Schema';
 import { ValidationResult } from './ValidationResult';
 import { IValidationRule } from './IValidationRule';
 import { ValidationResultType } from './ValidationResultType';
-import { ObjectReader } from '../reflect/ObjectReader';
-import { TypeCode } from '../convert/TypeCode';
-import { TypeConverter } from '../convert/TypeConverter';
 
 /**
  * Schema to validate arrays.

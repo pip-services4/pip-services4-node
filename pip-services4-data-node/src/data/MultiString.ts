@@ -1,6 +1,6 @@
 /** @module data */
 
-import { StringConverter } from '../convert/StringConverter';
+import { StringConverter } from 'pip-services4-commons-node';
 
 /**
  * An object that contains string translations for multiple languages.
