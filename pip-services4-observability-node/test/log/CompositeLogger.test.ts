@@ -43,8 +43,8 @@ suite('CompositeLogger', ()=> {
             // Raise an exception
             throw new Error();
         } catch (ex) {
-            _logger.fatal(Context.fromTuples("trace_id", "123"), ex, "Fatal error");
-            _logger.error(Context.fromTuples("trace_id", "123"), ex, "Recoverable error");
+            _logger.fatal(Context.fromTraceId("123"), ex, "Fatal error");
+            _logger.error(Context.fromTraceId("123"), ex, "Recoverable error");
 
             assert.isNotNull(ex);
         }

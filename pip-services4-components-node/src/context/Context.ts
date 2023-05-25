@@ -3,6 +3,7 @@
 import { AnyValueMap } from 'pip-services4-commons-node';
 import { JsonConverter } from 'pip-services4-commons-node';
 import { IContext } from "./IContext";
+import { Parameters } from '../run';
 
 import { ConfigParams } from '../config/ConfigParams';
 
@@ -97,10 +98,10 @@ export class Context implements IContext {
 	}
 	
 	/**
-	 * Creates new Parameters from JSON object.
+	 * Creates new Context from JSON object.
 	 * 
 	 * @param json 	a JSON string containing parameters.
-	 * @returns a new Parameters object.
+	 * @returns a new Context object.
 	 * 
 	 * @see [[JsonConverter.toNullableMap]]
 	 */
@@ -130,4 +131,16 @@ export class Context implements IContext {
 		}		
 		return new Context(values);
 	}    
+
+	/**
+	 * Creates new Context from trace id.
+	 * 
+	 * @param traceId 	a transaction id to trace execution through call chain.
+	 * @returns a new Parameters object.
+	 */
+	public static fromTraceId(traceId: string): Context {
+		let map = Parameters.fromTuples("trace_id", traceId);
+		return new Context(map);
+	}
+
 }
