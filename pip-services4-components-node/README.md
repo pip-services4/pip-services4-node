@@ -7,12 +7,10 @@ The Components module contains standard component definitions that can be used t
 The module contains the following packages:
 - **Auth** - authentication credential stores
 - **Build** - basic factories for constructing objects
-- **Cache** - distributed cache
 - **Config** - configuration readers and managers, whose main task is to deliver configuration parameters to the application from wherever they are being stored
 - **Connect** - connection discovery and configuration services
 - **Count** - performance counters
 - **Info** - context info implementations that manage the saving of process information and sending additional parameter sets
-- **Lock** -  distributed lock components
 - **Log** - basic logging components that provide console and composite logging, as well as an interface for developing custom loggers
 - **Test** - minimal set of test components to make testing easier
 - **Component** - the root package
@@ -130,62 +128,6 @@ myComponent.configure(ConfigParams.fromTuples(
 ));
 
 await myComponent.open(null);
-```
-
-Example how to use caching and locking.
-Here we assume that references are passed externally.
-
-```typescript
-import { Descriptor } from 'pip-services4-commons-node'; 
-import { References } from 'pip-services4-commons-node'; 
-import { IReferences } from 'pip-services4-commons-node'; 
-import { IReferenceable } from 'pip-services4-commons-node'; 
-import { ILock } from 'pip-services4-components-node'; 
-import { MemoryLock } from 'pip-services4-components-node'; 
-import { ICache } from 'pip-services4-components-node'; 
-import { MemoryCache } from 'pip-services4-components-node'; 
-
-export class MyComponent implements IReferenceable {
-  private _cache: ICache;
-  private _lock: ILock;
-  
-  public setReferences(refs: IReferences): void {
-    this._cache = refs.getOneRequired<ICache>(new Descriptor("*", "cache", "*", "*", "1.0"));
-    this._lock = refs.getOneRequired<ILock>(new Descriptor("*", "lock", "*", "*", "1.0"));
-  }
-  
-  public async myMethod(correlationId: string, param1: any): Promise<any> {
-    // First check cache for result
-    result := await this._cache.retrieve(correlationId, "mykey");
-    if (result != null) {
-      return result;
-    }
-      
-    // Lock..
-    await this._lock.acquireLock(correlationId, "mykey", 1000, 1000);
-    
-    // Do processing
-    ...
-    
-    // Store result to cache async
-    this._cache.store(correlationId, "mykey", result, 3600000);
-
-    // Release lock async
-    this._lock.releaseLock(correlationId, "mykey");
-
-    return result;
-  }
-}
-
-// Use the component
-let myComponent = new MyComponent();
-
-myComponent.setReferences(References.fromTuples(
-  new Descriptor("pip-services", "cache", "memory", "default", "1.0"), new MemoryCache(),
-  new Descriptor("pip-services", "lock", "memory", "default", "1.0"), new MemoryLock(),
-);
-
-result := await myComponent.myMethod(null);
 ```
 
 If you need to create components using their locators (descriptors) implement 

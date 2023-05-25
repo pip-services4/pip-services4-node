@@ -7,7 +7,6 @@ exports.MustacheErrorCode = void 0;
  */
 class MustacheErrorCode {
 }
-exports.MustacheErrorCode = MustacheErrorCode;
 /**
  * The unknown
  */
@@ -48,4 +47,5 @@ MustacheErrorCode.NotClosedSection = "NOT_CLOSED_SECTION";
  * Unexpected section end
  */
 MustacheErrorCode.UnexpectedSectionEnd = "UNEXPECTED_SECTION_END";
+exports.MustacheErrorCode = MustacheErrorCode;
 //# sourceMappingURL=MustacheErrorCode.js.map

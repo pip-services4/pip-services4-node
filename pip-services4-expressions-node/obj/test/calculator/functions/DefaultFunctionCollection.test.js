@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const DefaultFunctionCollection_1 = require("../../../src/calculator/functions/DefaultFunctionCollection");
 const Variant_1 = require("../../../src/variants/Variant");
 const VariantType_1 = require("../../../src/variants/VariantType");
@@ -51,7 +51,7 @@ suite('DefaultFunctionCollection', () => {
         assert.isNotNull(func);
         result = yield func.calculate(params, operations);
         assert.equal(VariantType_1.VariantType.DateTime, result.type);
-        assert.equal(pip_services3_commons_node_1.StringConverter.toString(new Date(1975, 3, 8)), pip_services3_commons_node_1.StringConverter.toString(result.asDateTime));
+        assert.equal(pip_services4_commons_node_1.StringConverter.toString(new Date(1975, 3, 8)), pip_services4_commons_node_1.StringConverter.toString(result.asDateTime));
     }));
 });
 //# sourceMappingURL=DefaultFunctionCollection.test.js.map

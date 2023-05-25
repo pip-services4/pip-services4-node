@@ -21,8 +21,8 @@ class CharValidator {
         return value >= CharValidator.Zero && value <= CharValidator.Nine;
     }
 }
-exports.CharValidator = CharValidator;
 CharValidator.Eof = 0xffff;
 CharValidator.Zero = '0'.charCodeAt(0);
 CharValidator.Nine = '9'.charCodeAt(0);
+exports.CharValidator = CharValidator;
 //# sourceMappingURL=CharValidator.js.map

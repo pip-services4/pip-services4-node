@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TypeUnsafeVariantOperations = void 0;
 /** @module variants */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_commons_node_7 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_commons_node_4 = require("pip-services4-commons-node");
+const pip_services4_commons_node_5 = require("pip-services4-commons-node");
+const pip_services4_commons_node_6 = require("pip-services4-commons-node");
+const pip_services4_commons_node_7 = require("pip-services4-commons-node");
 const Variant_1 = require("./Variant");
 const VariantType_1 = require("./VariantType");
 const AbstractVariantOperations_1 = require("./AbstractVariantOperations");
@@ -32,7 +32,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
         }
         if (newType == VariantType_1.VariantType.String) {
             let result = new Variant_1.Variant();
-            result.asString = pip_services3_commons_node_1.StringConverter.toString(value.asObject);
+            result.asString = pip_services4_commons_node_1.StringConverter.toString(value.asObject);
             return result;
         }
         switch (value.type) {
@@ -187,25 +187,25 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
         let result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
-                result.asInteger = pip_services3_commons_node_2.IntegerConverter.toInteger(value.asString);
+                result.asInteger = pip_services4_commons_node_2.IntegerConverter.toInteger(value.asString);
                 return result;
             case VariantType_1.VariantType.Long:
-                result.asLong = pip_services3_commons_node_3.LongConverter.toLong(value.asString);
+                result.asLong = pip_services4_commons_node_3.LongConverter.toLong(value.asString);
                 return result;
             case VariantType_1.VariantType.Float:
-                result.asFloat = pip_services3_commons_node_4.FloatConverter.toFloat(value.asString);
+                result.asFloat = pip_services4_commons_node_4.FloatConverter.toFloat(value.asString);
                 return result;
             case VariantType_1.VariantType.Double:
-                result.asDouble = pip_services3_commons_node_5.DoubleConverter.toDouble(value.asString);
+                result.asDouble = pip_services4_commons_node_5.DoubleConverter.toDouble(value.asString);
                 return result;
             case VariantType_1.VariantType.DateTime:
-                result.asDateTime = pip_services3_commons_node_6.DateTimeConverter.toDateTime(value.asString);
+                result.asDateTime = pip_services4_commons_node_6.DateTimeConverter.toDateTime(value.asString);
                 return result;
             case VariantType_1.VariantType.TimeSpan:
-                result.asTimeSpan = pip_services3_commons_node_3.LongConverter.toLong(value.asString);
+                result.asTimeSpan = pip_services4_commons_node_3.LongConverter.toLong(value.asString);
                 return result;
             case VariantType_1.VariantType.Boolean:
-                result.asBoolean = pip_services3_commons_node_7.BooleanConverter.toBoolean(value.asString);
+                result.asBoolean = pip_services4_commons_node_7.BooleanConverter.toBoolean(value.asString);
                 return result;
         }
         throw new Error("Variant convertion from " + this.typeToString(value.type)
@@ -243,7 +243,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
                 result.asLong = value.asDateTime.getTime();
                 return result;
             case VariantType_1.VariantType.String:
-                result.asString = pip_services3_commons_node_1.StringConverter.toString(value.asDateTime);
+                result.asString = pip_services4_commons_node_1.StringConverter.toString(value.asDateTime);
                 return result;
         }
         throw new Error("Variant convertion from " + this.typeToString(value.type)
@@ -259,7 +259,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
                 result.asLong = value.asTimeSpan;
                 return result;
             case VariantType_1.VariantType.String:
-                result.asString = pip_services3_commons_node_1.StringConverter.toString(value.asTimeSpan);
+                result.asString = pip_services4_commons_node_1.StringConverter.toString(value.asTimeSpan);
                 return result;
         }
         throw new Error("Variant convertion from " + this.typeToString(value.type)

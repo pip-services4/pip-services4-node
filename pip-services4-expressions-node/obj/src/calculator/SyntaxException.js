@@ -2,11 +2,11 @@
 /** @module calculator */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SyntaxException = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
  * Exception that can be thrown by Expression Parser.
  */
-class SyntaxException extends pip_services3_commons_node_1.BadRequestException {
+class SyntaxException extends pip_services4_commons_node_1.BadRequestException {
     constructor(correlationId, code, message, line, column) {
         if (line != 0 || column != 0) {
             message = message + " at line " + line + " and column " + column;

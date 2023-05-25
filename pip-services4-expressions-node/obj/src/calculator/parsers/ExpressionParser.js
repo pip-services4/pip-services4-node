@@ -9,8 +9,8 @@ const ExpressionToken_1 = require("./ExpressionToken");
 const SyntaxException_1 = require("../SyntaxException");
 const SyntaxErrorCode_1 = require("../SyntaxErrorCode");
 const Variant_1 = require("../../variants/Variant");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 /**
  * Implements an expression parser class.
  */
@@ -254,13 +254,13 @@ class ExpressionParser {
                 case TokenType_1.TokenType.Integer:
                     {
                         tokenType = ExpressionTokenType_1.ExpressionTokenType.Constant;
-                        tokenValue = Variant_1.Variant.fromInteger(pip_services3_commons_node_1.IntegerConverter.toInteger(token.value));
+                        tokenValue = Variant_1.Variant.fromInteger(pip_services4_commons_node_1.IntegerConverter.toInteger(token.value));
                         break;
                     }
                 case TokenType_1.TokenType.Float:
                     {
                         tokenType = ExpressionTokenType_1.ExpressionTokenType.Constant;
-                        tokenValue = Variant_1.Variant.fromFloat(pip_services3_commons_node_2.FloatConverter.toFloat(token.value));
+                        tokenValue = Variant_1.Variant.fromFloat(pip_services4_commons_node_2.FloatConverter.toFloat(token.value));
                         break;
                     }
                 case TokenType_1.TokenType.Quoted:

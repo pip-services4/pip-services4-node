@@ -31,6 +31,6 @@ class MustacheSpecialState {
         return new Token_1.Token(TokenType_1.TokenType.Special, tokenValue, line, column);
     }
 }
-exports.MustacheSpecialState = MustacheSpecialState;
 MustacheSpecialState.Bracket = "{".charCodeAt(0);
+exports.MustacheSpecialState = MustacheSpecialState;
 //# sourceMappingURL=MustacheSpecialState.js.map

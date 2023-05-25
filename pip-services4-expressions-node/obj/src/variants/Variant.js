@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Variant = void 0;
 /** @module variants */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const VariantType_1 = require("./VariantType");
 /**
  * Defines container for variant values.
@@ -288,7 +288,7 @@ class Variant {
      * @returns a string value for this object.
      */
     toString() {
-        return this._value == null ? "null" : pip_services3_commons_node_1.StringConverter.toString(this._value);
+        return this._value == null ? "null" : pip_services4_commons_node_1.StringConverter.toString(this._value);
     }
     /**
      * Compares this object to the specified one.
@@ -415,6 +415,6 @@ class Variant {
         return result;
     }
 }
-exports.Variant = Variant;
 Variant.Empty = new Variant(null);
+exports.Variant = Variant;
 //# sourceMappingURL=Variant.js.map
