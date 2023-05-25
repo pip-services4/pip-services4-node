@@ -31,35 +31,35 @@ export abstract class Lock implements ILock, IReconfigurable {
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns                 <code>true</code> if the lock was acquired and <code>false</code> otherwise.
      */
-    public abstract tryAcquireLock(correlationId: string, key: string, ttl: number): Promise<boolean>;
+    public abstract tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean>;
 
 
     /**
      * Releases prevously acquired lock by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    public abstract releaseLock(correlationId: string, key: string): Promise<void>;
+    public abstract releaseLock(context: IContext, key: string): Promise<void>;
         
     /**
      * Makes multiple attempts to acquire a lock by its key within give time interval.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain. 
+     * @param context     (optional) transaction id to trace execution through call chain. 
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @param timeout           a lock acquisition timeout.
      */
-    public async acquireLock(correlationId: string, key: string, ttl: number, timeout: number): Promise<void> {
+    public async acquireLock(context: IContext, key: string, ttl: number, timeout: number): Promise<void> {
         let retryTime = new Date().getTime() + timeout;
 
         // Try to get lock first
-        let ok = await this.tryAcquireLock(correlationId, key, ttl);
+        let ok = await this.tryAcquireLock(context, key, ttl);
         if (ok) {
             return;
         }
@@ -73,13 +73,13 @@ export abstract class Lock implements ILock, IReconfigurable {
             let now = new Date().getTime();
             if (now > retryTime) {
                 throw new ConflictException(
-                    correlationId,
+                    context,
                     "LOCK_TIMEOUT",
                     "Acquiring lock " + key + " failed on timeout"
                 ).withDetails("key", key);
             }
 
-            ok = await this.tryAcquireLock(correlationId, key, ttl);
+            ok = await this.tryAcquireLock(context, key, ttl);
         }
     }
 }

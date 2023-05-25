@@ -120,9 +120,9 @@ export class RabbitMQMessageQueue extends MessageQueue
         this._noQueue = config.getAsBooleanWithDefault("options.no_queue", this._noQueue);     
     }
 
-    private checkOpened(correlationId: string): void {
+    private checkOpened(context: IContext): void {
         if (this._mqChanel == null)
-            throw new InvalidStateException(correlationId, "NOT_OPENED", "The queue is not opened");
+            throw new InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
     }
 
     /**
@@ -137,16 +137,16 @@ export class RabbitMQMessageQueue extends MessageQueue
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-    	let connection = await this._connectionResolver.resolve(correlationId);
-        let credential = await this._credentialResolver.lookup(correlationId);
+    public async open(context: IContext): Promise<void> {
+    	let connection = await this._connectionResolver.resolve(context);
+        let credential = await this._credentialResolver.lookup(context);
 
-        let options = await this._optionsResolver.compose(correlationId, connection, credential)
+        let options = await this._optionsResolver.compose(context, connection, credential)
 
         if (this._queue == "" && this._exchange == "") {
-            throw new ConfigException(correlationId,
+            throw new ConfigException(context,
                 "NO_QUEUE",
                 "Queue or exchange are not defined in connection parameters");
         }
@@ -200,9 +200,9 @@ export class RabbitMQMessageQueue extends MessageQueue
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (this._mqChanel != null) {
             await this._mqChanel.close();
         }
@@ -214,7 +214,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         this._mqChanel = null;
         this._connection = null;
 
-        this._logger.trace(correlationId, "Closed queue %s", this._queue);
+        this._logger.trace(context, "Closed queue %s", this._queue);
     }
 
     /**
@@ -237,7 +237,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     protected toMessage(msg: amqplib.Message): MessageEnvelope {
         if (msg == null) return null;
 
-        let message = new MessageEnvelope(msg.properties.correlationId, msg.properties.type, msg.content.toString());
+        let message = new MessageEnvelope(msg.properties.context, msg.properties.type, msg.content.toString());
         message.message_type = msg.properties.type;
         message.sent_time = new Date();
         message.setReference(msg);
@@ -248,11 +248,11 @@ export class RabbitMQMessageQueue extends MessageQueue
     /**
      * Sends a message into the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    public async send(correlationId: string, message: MessageEnvelope): Promise<void> {
-        this.checkOpen(correlationId);
+    public async send(context: IContext, message: MessageEnvelope): Promise<void> {
+        this.checkOpen(context);
 
         let options: Options.Publish = {
             contentType: "text/plain"
@@ -260,8 +260,8 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         this._mqChanel.publish
 
-        if (message.correlation_id)
-            options.correlationId = message.correlation_id;
+        if (message.trace_id)
+            options.context = message.trace_id;
 
         if (message.message_id)
             options.messageId = message.message_id;
@@ -275,9 +275,9 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         if (ok) {
             this._counters.incrementOne("queue." + this._name + ".sent_messages");
-            this._logger.debug(message.correlation_id, "Sent message %s via %s", message, this._name);
+            this._logger.debug(message.trace_id, "Sent message %s via %s", message, this._name);
         } else {
-            this._logger.debug(message.correlation_id, "Message %s was not sent to %s", message, this._name);
+            this._logger.debug(message.trace_id, "Message %s was not sent to %s", message, this._name);
         }
     }
 
@@ -285,11 +285,11 @@ export class RabbitMQMessageQueue extends MessageQueue
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-     public async peek(correlationId: string): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+     public async peek(context: IContext): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         let envelope = await this._mqChanel.get(this._queue, { noAck: false})
 
@@ -298,7 +298,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         let message = this.toMessage(envelope);
 
         if (message != null) {
-            this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this._name)
+            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this._name)
         }
 
         return message;
@@ -310,12 +310,12 @@ export class RabbitMQMessageQueue extends MessageQueue
      * 
      * Important: This method is not supported by RabbitMQ.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    public async peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]> {
-        this.checkOpen(correlationId);
+    public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
+        this.checkOpen(context);
 
         let messages: MessageEnvelope[] = [];
 
@@ -328,19 +328,19 @@ export class RabbitMQMessageQueue extends MessageQueue
             messageCount--;
         }
 
-        this._logger.trace(correlationId, "Peeked %s messages on %s", messages.length, this._name);
+        this._logger.trace(context, "Peeked %s messages on %s", messages.length, this._name);
         return messages;
     }
 
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
-    public async receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         let message: MessageEnvelope;
         let timeout = waitTimeout;
@@ -359,7 +359,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         if (message != null) {
             this._counters.incrementOne("queue." + this._name + ".received_messages");
-            this._logger.debug(message.correlation_id, "Received message %s via %s", message, this._name);
+            this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
         }
 
         return message;
@@ -397,7 +397,7 @@ export class RabbitMQMessageQueue extends MessageQueue
             this._mqChanel.nack(envelope, false, true);
 
             message.setReference(null);
-            this._logger.trace(message.correlation_id, "Abandoned message %s at %c", message, this._name);
+            this._logger.trace(message.trace_id, "Abandoned message %s at %c", message, this._name);
         }
     }
 
@@ -418,7 +418,7 @@ export class RabbitMQMessageQueue extends MessageQueue
             this._mqChanel.ack(envelope, false);
 
             message.setReference(null);
-            this._logger.trace(message.correlation_id, "Completed message %s at %s", message, this._name);
+            this._logger.trace(message.trace_id, "Completed message %s at %s", message, this._name);
         }
     }
 
@@ -436,16 +436,16 @@ export class RabbitMQMessageQueue extends MessageQueue
      /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-      public listen(correlationId: string, receiver: IMessageReceiver): void {
-        this.checkOpen(correlationId);
+      public listen(context: IContext, receiver: IMessageReceiver): void {
+        this.checkOpen(context);
 
-        this._logger.debug(correlationId, "Started listening messages at %s", this._name);
+        this._logger.debug(context, "Started listening messages at %s", this._name);
         
         let options = {
             noLocal: false,
@@ -464,7 +464,7 @@ export class RabbitMQMessageQueue extends MessageQueue
                     if (msg != null) {
                         let message = this.toMessage(msg);
                         this._counters.incrementOne("queue." + this._name + ".received_messages");
-                        this._logger.debug(message.correlation_id, "Received message %s via %s", message, this._name);
+                        this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
                         await receiver.receiveMessage(message, this);
                         this._mqChanel.ack(msg, false);
                     }
@@ -478,18 +478,18 @@ export class RabbitMQMessageQueue extends MessageQueue
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public endListen(correlationId: string): void {
+    public endListen(context: IContext): void {
         this._listen = false;
     }   
 
     /**
      * Clear method are clears component state.
-     * @param correlationId (optional) transaction id to trace execution through call chain.
+     * @param context (optional) transaction id to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
-        this.checkOpened(correlationId);
+    public async clear(context: IContext): Promise<void> {
+        this.checkOpened(context);
 
         let count = 0;
         if (this._queue != "") {
@@ -497,6 +497,6 @@ export class RabbitMQMessageQueue extends MessageQueue
             count = res.messageCount;
         }
 
-        this._logger.trace(correlationId, "Cleared  %s messages in queue %s", count, this._name);
+        this._logger.trace(context, "Cleared  %s messages in queue %s", count, this._name);
     }
 }

@@ -115,25 +115,25 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
             }
             this._opened = true;
-            yield this._client.open(correlationId);
+            yield this._client.open(context);
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         this._opened = false;
-        return this._client.close(correlationId);
+        return this._client.close(context);
     }
     convertCounter(counter) {
         switch (counter.type) {

@@ -1,4 +1,6 @@
 /** @module run */
+
+import { IContext } from "./IContext";
 import { Parameters } from './Parameters';
 
 /**
@@ -13,7 +15,7 @@ import { Parameters } from './Parameters';
  * 
  *     class MyComponent implements INotifable {
  *         ...
- *         public notify(correlationId: string, args: Parameters): void {
+ *         public notify(context: IContext, args: Parameters): void {
  *             console.log("Occured event " + args.getAsString("event"));
  *         }
  *     }
@@ -26,8 +28,8 @@ export interface INotifiable {
 	/**
 	 * Notifies the component about occured event.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param args 				notification arguments.
 	 */
-	notify(correlationId: string, args: Parameters): void;
+	notify(context: IContext, args: Parameters): void;
 }

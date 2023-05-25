@@ -25,72 +25,72 @@ export interface ILogger {
      * Logs a message at specified log level.
      * 
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    log(level: LogLevel, correlationId: string, error: Error, message: string, ...args: any[]) : void;
+    log(level: LogLevel, context: IContext, error: Error, message: string, ...args: any[]) : void;
 
     /**
      * Logs fatal (unrecoverable) message that caused the process to crash.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    fatal(correlationId: string, error: Error, message: string, ...args: any[]) : void;
+    fatal(context: IContext, error: Error, message: string, ...args: any[]) : void;
     // Todo: these overloads are not supported in TS
-    //fatal(correlationId: string, error: Error) : void;
-    //fatal(correlationId: string, message: string, ...args: any[]) : void;
+    //fatal(context: IContext, error: Error) : void;
+    //fatal(context: IContext, message: string, ...args: any[]) : void;
 
     /**
      * Logs recoverable application error.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    error(correlationId: string, error: Error, message: string, ...args: any[]) : void;
+    error(context: IContext, error: Error, message: string, ...args: any[]) : void;
     // Todo: these overloads are not supported in TS
-    //error(correlationId: string, error: Error) : void;
-    //error(correlationId: string, message: string, ...args: any[]) : void;    
+    //error(context: IContext, error: Error) : void;
+    //error(context: IContext, message: string, ...args: any[]) : void;    
 
     /**
      * Logs a warning that may or may not have a negative impact.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    warn(correlationId: string, message: string, ...args: any[]) : void;
+    warn(context: IContext, message: string, ...args: any[]) : void;
 
     /**
      * Logs an important information message
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    info(correlationId: string, message: string, ...args: any[]) : void;
+    info(context: IContext, message: string, ...args: any[]) : void;
 
     /**
      * Logs a high-level debug information for troubleshooting.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    debug(correlationId: string, message: string, ...args: any[]) : void;
+    debug(context: IContext, message: string, ...args: any[]) : void;
 
     /**
      * Logs a low-level debug information for troubleshooting. 
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-    trace(correlationId: string, message: string, ...args: any[]) : void;
+    trace(context: IContext, message: string, ...args: any[]) : void;
 }

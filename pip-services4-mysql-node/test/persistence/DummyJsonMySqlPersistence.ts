@@ -21,7 +21,7 @@ export class DummyJsonMySqlPersistence
         this.ensureIndex(this._tableName + '_json_key', { "data_key": 1 }, { unique: true });
     }
 
-    public async getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+    public async getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
 
@@ -30,10 +30,10 @@ export class DummyJsonMySqlPersistence
             filterCondition += "data->key='" + key + "'";
         }
 
-        return await super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return await super.getPageByFilter(context, filterCondition, paging, null, null);
     }
 
-    public async getCountByFilter(correlationId: string, filter: FilterParams): Promise<number> {
+    public async getCountByFilter(context: IContext, filter: FilterParams): Promise<number> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
 
@@ -42,6 +42,6 @@ export class DummyJsonMySqlPersistence
             filterCondition += "data->key='" + key + "'";
         }
 
-        return await super.getCountByFilter(correlationId, filterCondition);
+        return await super.getCountByFilter(context, filterCondition);
     }
 }

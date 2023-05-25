@@ -6,29 +6,29 @@ class DummyCommandableGrpcClient extends CommandableGrpcClient_1.CommandableGrpc
     constructor() {
         super('dummy');
     }
-    getDummies(correlationId, filter, paging) {
-        return this.callCommand('get_dummies', correlationId, {
+    getDummies(context, filter, paging) {
+        return this.callCommand('get_dummies', context, {
             filter: filter,
             paging: paging
         });
     }
-    getDummyById(correlationId, dummyId) {
-        return this.callCommand('get_dummy_by_id', correlationId, {
+    getDummyById(context, dummyId) {
+        return this.callCommand('get_dummy_by_id', context, {
             dummy_id: dummyId
         });
     }
-    createDummy(correlationId, dummy) {
-        return this.callCommand('create_dummy', correlationId, {
+    createDummy(context, dummy) {
+        return this.callCommand('create_dummy', context, {
             dummy: dummy
         });
     }
-    updateDummy(correlationId, dummy) {
-        return this.callCommand('update_dummy', correlationId, {
+    updateDummy(context, dummy) {
+        return this.callCommand('update_dummy', context, {
             dummy: dummy
         });
     }
-    deleteDummy(correlationId, dummyId) {
-        return this.callCommand('delete_dummy', correlationId, {
+    deleteDummy(context, dummyId) {
+        return this.callCommand('delete_dummy', context, {
             dummy_id: dummyId
         });
     }

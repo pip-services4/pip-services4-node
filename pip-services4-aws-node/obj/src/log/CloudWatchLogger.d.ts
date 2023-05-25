@@ -88,11 +88,11 @@ export declare class CloudWatchLogger extends CachedLogger implements IReference
      * Writes a log message to the logger destination.
      *
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-    protected write(level: LogLevel, correlationId: string, ex: Error, message: string): void;
+    protected write(level: LogLevel, context: IContext, ex: Error, message: string): void;
     /**
      * Checks if the component is opened.
      *
@@ -102,15 +102,15 @@ export declare class CloudWatchLogger extends CachedLogger implements IReference
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     private formatMessageText;
     /**
      * Saves log messages from the cache.

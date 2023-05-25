@@ -35,8 +35,8 @@ import { AzureFunctionClient } from './AzureFunctionClient';
  *     class MyCommandableAzureClient extends CommandableAzureFunctionClient implements IMyClient {
  *         ...
  *      
- *         public async getData(correlationId: string, id: string): Promise<any> {
- *             return this.callCommand("get_data", correlationId, { id: id });
+ *         public async getData(context: IContext, id: string): Promise<any> {
+ *             return this.callCommand("get_data", context, { id: id });
  *         }
  *         ...
  *     }
@@ -72,14 +72,14 @@ export class CommandableAzureFunctionClient extends AzureFunctionClient {
      * to the action parameters. 
      * 
      * @param cmd               an action name
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @return {any}            action result.
      */
-    public async callCommand<T>(cmd: string, correlationId: string, params: any): Promise<T> {
-        const timing = this.instrument(correlationId, this._name + '.' + cmd);
+    public async callCommand<T>(cmd: string, context: IContext, params: any): Promise<T> {
+        const timing = this.instrument(context, this._name + '.' + cmd);
         try {
-            const result = await this.call<T>(cmd, correlationId, params);
+            const result = await this.call<T>(cmd, context, params);
             timing.endTiming();
             return result;
         } catch (err) {

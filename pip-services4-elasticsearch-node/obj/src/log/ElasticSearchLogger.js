@@ -120,16 +120,16 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_2.ConfigException(correlationId, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
             }
             let uri = connection.getAsString("uri");
             let options = {
@@ -140,16 +140,16 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
             };
             let elasticsearch = require('elasticsearch');
             this._client = new elasticsearch.Client(options);
-            yield this.createIndexIfNeeded(correlationId, true);
+            yield this.createIndexIfNeeded(context, true);
             this._timer = setInterval(() => { this.dump(); }, this._interval);
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
             if (this._timer) {
@@ -167,7 +167,7 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
         let datePattern = moment(today).format(this._dateFormat);
         return this._index + "-" + datePattern;
     }
-    createIndexIfNeeded(correlationId, force) {
+    createIndexIfNeeded(context, force) {
         return __awaiter(this, void 0, void 0, function* () {
             let newIndex = this.getCurrentIndex();
             if (!force && this._currentIndex == newIndex) {
@@ -220,7 +220,7 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
                 time: { type: "date", index: true },
                 source: { type: "keyword", index: true },
                 level: { type: "keyword", index: true },
-                correlation_id: { type: "text", index: true },
+                trace_id: { type: "text", index: true },
                 error: {
                     type: "object",
                     properties: {
@@ -230,7 +230,7 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
                         code: { type: "keyword", index: true },
                         message: { type: "text", index: false },
                         details: { type: "object" },
-                        correlation_id: { type: "text", index: false },
+                        trace_id: { type: "text", index: false },
                         cause: { type: "text", index: false },
                         stack_trace: { type: "text", index: false }
                     }

@@ -40,35 +40,35 @@ class DummyAzureFunctionService extends AzureFunctionService_1.AzureFunctionServ
     }
     getPageByFilter(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const page = yield this._controller.getPageByFilter(req.body.correlation_id, new pip_services3_commons_node_2.FilterParams(req.body.filter), new pip_services3_commons_node_3.PagingParams(req.body.paging));
+            const page = yield this._controller.getPageByFilter(req.body.trace_id, new pip_services3_commons_node_2.FilterParams(req.body.filter), new pip_services3_commons_node_3.PagingParams(req.body.paging));
             return { body: page, headers: this._headers };
         });
     }
     getOneById(req) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.getBodyData(req);
-            const dummy = yield this._controller.getOneById(params.correlation_id, params.dummy_id);
+            const dummy = yield this._controller.getOneById(params.trace_id, params.dummy_id);
             return { body: dummy, headers: this._headers };
         });
     }
     create(req) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.getBodyData(req);
-            const dummy = yield this._controller.create(params.correlation_id, params.dummy);
+            const dummy = yield this._controller.create(params.trace_id, params.dummy);
             return { body: dummy, headers: this._headers };
         });
     }
     update(req) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.getBodyData(req);
-            const dummy = yield this._controller.update(params.correlation_id, params.dummy);
+            const dummy = yield this._controller.update(params.trace_id, params.dummy);
             return { body: dummy, headers: this._headers };
         });
     }
     deleteById(req) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.getBodyData(req);
-            const dummy = yield this._controller.deleteById(params.correlation_id, params.dummy_id);
+            const dummy = yield this._controller.deleteById(params.trace_id, params.dummy_id);
             return { body: dummy, headers: this._headers };
         });
     }

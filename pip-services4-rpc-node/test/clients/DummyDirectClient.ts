@@ -16,10 +16,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         this._dependencyResolver.put('controller', new Descriptor("pip-services-dummies", "controller", "*", "*", "*"))
     }
 
-    public async getDummies(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
-        let timing = this.instrument(correlationId, 'dummy.get_page_by_filter');
+    public async getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+        let timing = this.instrument(context, 'dummy.get_page_by_filter');
         try {
-            return await this._controller.getPageByFilter(correlationId, filter, paging);
+            return await this._controller.getPageByFilter(context, filter, paging);
         } catch (ex) {
             timing.endFailure(ex);
         } finally {
@@ -27,10 +27,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         }
     }
 
-    public async getDummyById(correlationId: string, dummyId: string): Promise<Dummy> {
-        let timing = this.instrument(correlationId, 'dummy.get_one_by_id');
+    public async getDummyById(context: IContext, dummyId: string): Promise<Dummy> {
+        let timing = this.instrument(context, 'dummy.get_one_by_id');
         try {
-            return await this._controller.getOneById(correlationId, dummyId);
+            return await this._controller.getOneById(context, dummyId);
         } catch (ex) {
             timing.endFailure(ex);
         } finally {
@@ -38,10 +38,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         }
     }
 
-    public async createDummy(correlationId: string, dummy: any): Promise<Dummy> {        
-        let timing = this.instrument(correlationId, 'dummy.create');
+    public async createDummy(context: IContext, dummy: any): Promise<Dummy> {        
+        let timing = this.instrument(context, 'dummy.create');
         try {
-            return await this._controller.create(correlationId, dummy);
+            return await this._controller.create(context, dummy);
         } catch (ex) {
             timing.endFailure(ex);
         } finally {
@@ -49,10 +49,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         }
     }
 
-    public async updateDummy(correlationId: string, dummy: any): Promise<Dummy> {        
-        let timing = this.instrument(correlationId, 'dummy.update');
+    public async updateDummy(context: IContext, dummy: any): Promise<Dummy> {        
+        let timing = this.instrument(context, 'dummy.update');
         try {
-            return await this._controller.update(correlationId, dummy);
+            return await this._controller.update(context, dummy);
         } catch (ex) {
             timing.endFailure(ex);
         } finally {
@@ -60,10 +60,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         }
     }
 
-    public async deleteDummy(correlationId: string, dummyId: string): Promise<Dummy> {        
-        let timing = this.instrument(correlationId, 'dummy.delete_by_id');
+    public async deleteDummy(context: IContext, dummyId: string): Promise<Dummy> {        
+        let timing = this.instrument(context, 'dummy.delete_by_id');
         try {
-            return await this._controller.deleteById(correlationId, dummyId);
+            return await this._controller.deleteById(context, dummyId);
         } catch (ex) {
             timing.endFailure(ex);
         } finally {
@@ -71,10 +71,10 @@ export class DummyDirectClient extends DirectClient<IDummyController> implements
         }
     }
 
-    public async checkCorrelationId(correlationId: string): Promise<string> {
-        let timing = this.instrument(correlationId, 'dummy.check_correlation_id');
+    public async checkTraceId(context: IContext): Promise<string> {
+        let timing = this.instrument(context, 'dummy.check_trace_id');
         try {
-            return await this._controller.checkCorrelationId(correlationId); 
+            return await this._controller.checkTraceId(context); 
         } catch (ex) {
             timing.endFailure(ex);
         } finally {

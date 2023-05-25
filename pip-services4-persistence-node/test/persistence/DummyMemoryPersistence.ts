@@ -26,19 +26,19 @@ export class DummyMemoryPersistence
         };
     }
 
-    public async getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
-        return await super.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+    public async getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+        return await super.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
     }
 
-    public async getCountByFilter(correlationId: string, filter: FilterParams): Promise<number> {
-        return await super.getCountByFilter(correlationId, this.composeFilter(filter));
+    public async getCountByFilter(context: IContext, filter: FilterParams): Promise<number> {
+        return await super.getCountByFilter(context, this.composeFilter(filter));
     }
 
-    public async getSortedPage(correlationId: string, sort: any): Promise<DataPage<Dummy>> {
-        return await super.getPageByFilter(correlationId, null, null, sort, null);
+    public async getSortedPage(context: IContext, sort: any): Promise<DataPage<Dummy>> {
+        return await super.getPageByFilter(context, null, null, sort, null);
     }
 
-    public async getSortedList(correlationId: string, sort: any): Promise<Dummy[]> {
-        return await super.getListByFilter(correlationId, null, sort, null);
+    public async getSortedList(context: IContext, sort: any): Promise<Dummy[]> {
+        return await super.getListByFilter(context, null, sort, null);
     }
 }

@@ -57,7 +57,7 @@ import { PostgresConnection } from '../connect/PostgresConnection';
  *           base("mydata");
  *       }
  * 
- *       public getByName(correlationId: string, name: string): Promise<MyData> {
+ *       public getByName(context: IContext, name: string): Promise<MyData> {
  *         let criteria = { name: name };
  *         return new Promise((resolve, reject) => {
  *           this._model.findOne(criteria, (err, item) => {
@@ -341,9 +341,9 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -354,12 +354,12 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         }
 
         if (this._localConnection) {
-            await this._connection.open(correlationId);
+            await this._connection.open(context);
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'PostgreSQL connection is missing'
             );
@@ -367,7 +367,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "PostgreSQL connection is not opened"
             );
@@ -382,33 +382,33 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         this.defineSchema();
 
         // Recreate objects
-        await this.createSchema(correlationId);
+        await this.createSchema(context);
 
         this._opened = true;
-        this._logger.debug(correlationId, "Connected to postgres database %s, collection %s",
+        this._logger.debug(context, "Connected to postgres database %s, collection %s",
             this._databaseName, this._tableName);                        
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId, 
+                context, 
                 'NO_CONNECTION', 
                 'Postgres connection is missing'
             );
         }
 
         if (this._localConnection) {
-            await this._connection.close(correlationId);
+            await this._connection.close(context);
         }
 
         this._opened = false;
@@ -418,9 +418,9 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._tableName == null) {
             throw new Error('Table name is not defined');
@@ -432,7 +432,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             this._client.query(query, (err, result) => {
                 if (err) {
                     err = new ConnectionException(
-                        correlationId,
+                        context,
                         "CONNECT_FAILED",
                         "Connection to postgres failed"
                     ).withCause(err);
@@ -445,7 +445,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         });
     }
 
-    protected async createSchema(correlationId: string): Promise<void> {
+    protected async createSchema(context: IContext): Promise<void> {
         if (this._schemaStatements == null || this._schemaStatements.length == 0) {
             return null;
         }
@@ -468,7 +468,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             return;
         }
 
-        this._logger.debug(correlationId, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
+        this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
 
         try {
             // Run all DML commands
@@ -484,7 +484,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
                 });
             }
         } catch (ex) {
-            this._logger.error(correlationId, ex, 'Failed to autocreate database object');
+            this._logger.error(context, ex, 'Failed to autocreate database object');
             throw ex;
         }
     }
@@ -557,14 +557,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns                 the requested data page
      */
-    protected async getPageByFilter(correlationId: string, filter: any, paging: PagingParams, 
+    protected async getPageByFilter(context: IContext, filter: any, paging: PagingParams, 
         sort: any, select: any): Promise<DataPage<T>> {
         
         select = select != null ? select : "*"
@@ -600,7 +600,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         });
 
         if (items != null) {
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
         }
 
         items = items.map(this.convertToPublic);
@@ -636,11 +636,11 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of items that satisfy the filter.
      */
-    protected async getCountByFilter(correlationId: string, filter: any): Promise<number> {
+    protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
         let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
 
         if (filter && filter != "") {
@@ -660,7 +660,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             });
         });
 
-        this._logger.trace(correlationId, "Counted %d items in %s", count, this._tableName);
+        this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             
         return count;
     }
@@ -671,14 +671,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns                a list with requested data items.
      */
-    protected async getListByFilter(correlationId: string, filter: any,
+    protected async getListByFilter(context: IContext, filter: any,
         sort: any, select: any): Promise<T[]> {
 
         select = select != null ? select : "*"
@@ -704,7 +704,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             });
         });
 
-        this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);            
+        this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);            
         items = items.map(this.convertToPublic);
         return items;
     }
@@ -715,11 +715,11 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
-    protected async getOneRandom(correlationId: string, filter: any): Promise<T> {
+    protected async getOneRandom(context: IContext, filter: any): Promise<T> {
         let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
         if (filter != null) {
             query += " WHERE " + filter;
@@ -757,9 +757,9 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         });
 
         if (item == null) {
-            this._logger.trace(correlationId, "Random item wasn't found from %s", this._tableName);
+            this._logger.trace(context, "Random item wasn't found from %s", this._tableName);
         } else {
-            this._logger.trace(correlationId, "Retrieved random item from %s", this._tableName);
+            this._logger.trace(context, "Retrieved random item from %s", this._tableName);
         }
                 
         item = this.convertToPublic(item);
@@ -769,11 +769,11 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     /**
      * Creates a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    public async create(correlationId: string, item: T): Promise<T> {
+    public async create(context: IContext, item: T): Promise<T> {
         if (item == null) {
             return;
         }
@@ -798,7 +798,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             });
         });
 
-        this._logger.trace(correlationId, "Created in %s with id = %s", this._tableName, row.id);
+        this._logger.trace(context, "Created in %s with id = %s", this._tableName, row.id);
 
         newItem = this.convertToPublic(newItem);
         return newItem;
@@ -810,10 +810,10 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    public async deleteByFilter(correlationId: string, filter: any): Promise<void> {
+    public async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let query = "DELETE FROM " + this.quotedTableName();
         if (filter != null && filter != "") {
             query += " WHERE " + filter;
@@ -831,7 +831,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             });
         });
 
-        this._logger.trace(correlationId, "Deleted %d items from %s", count, this._tableName);
+        this._logger.trace(context, "Deleted %d items from %s", count, this._tableName);
     }
 
 }

@@ -60,10 +60,10 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         this._credentialResolver.setReferences(references);
     }
 
-    private validateConnection(correlationId: string, connection: ConnectionParams): void {
+    private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION",
                 "MQTT connection is not set"
             );
@@ -77,7 +77,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
         if (protocol == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -86,7 +86,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -95,7 +95,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         let port = connection.getAsIntegerWithDefault("port", 1883);
         if (port == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -123,15 +123,15 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves MQTT connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved MQTT connection options.
      */
-    public async resolve(correlationId: string): Promise<any> {
-        let connection = await this._connectionResolver.resolve(correlationId);
+    public async resolve(context: IContext): Promise<any> {
+        let connection = await this._connectionResolver.resolve(context);
         // Validate connections
-        this.validateConnection(correlationId, connection);
+        this.validateConnection(context, connection);
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
         let options = this.composeOptions(connection, credential);
@@ -141,14 +141,14 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Composes MQTT connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved MQTT connection options.
      */
-    public compose(correlationId: string, connection: ConnectionParams, credential: CredentialParams): any {
+    public compose(context: IContext, connection: ConnectionParams, credential: CredentialParams): any {
         // Validate connections
-        this.validateConnection(correlationId, connection);
+        this.validateConnection(context, connection);
 
         let options = this.composeOptions(connection, credential);
         return options;

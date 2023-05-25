@@ -54,17 +54,17 @@ export declare class RabbitMQConnectionResolver implements IReferenceable, IConf
     /**
      * Resolves RabbitMQ connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved RabbitMQ connection options.
      */
-    resolve(correlationId: string): Promise<any>;
+    resolve(context: IContext): Promise<any>;
     /**
      * Composes RabbitMQ connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved RabbitMQ connection options.
      */
-    compose(correlationId: string, connection: ConnectionParams, credential: CredentialParams): ConfigParams;
+    compose(context: IContext, connection: ConnectionParams, credential: CredentialParams): ConfigParams;
 }

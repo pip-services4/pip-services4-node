@@ -76,11 +76,11 @@ export class MemoryCredentialStore implements ICredentialStore, IReconfigurable 
     /**
      * Stores credential parameters into the store.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param credential        a credential parameters to be stored.
      */
-    public async store(correlationId: string, key: string, credential: CredentialParams): Promise<void> {
+    public async store(context: IContext, key: string, credential: CredentialParams): Promise<void> {
         if (credential != null) {
             this._items[key] = credential;
         } else {
@@ -91,11 +91,11 @@ export class MemoryCredentialStore implements ICredentialStore, IReconfigurable 
     /**
      * Lookups credential parameters by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param callback          callback function that receives found credential parameters or error.
      */
-    public async lookup(correlationId: string, key: string): Promise<CredentialParams> {
+    public async lookup(context: IContext, key: string): Promise<CredentialParams> {
         if (typeof this._items[key] === 'string' || this._items[key] instanceof String) {
             return CredentialParams.fromString(this._items[key]);
         }

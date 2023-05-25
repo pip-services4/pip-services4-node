@@ -24,7 +24,7 @@ class DummyController {
             this._commandSet = new DummyCommandSet_1.DummyCommandSet(this);
         return this._commandSet;
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
             filter = filter != null ? filter : new pip_services3_commons_node_1.FilterParams();
             let key = filter.getAsNullableString("key");
@@ -47,7 +47,7 @@ class DummyController {
             return new pip_services3_commons_node_3.DataPage(result);
         });
     }
-    getOneById(correlationId, id) {
+    getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             for (let index = 0; index < this._entities.length; index++) {
                 let entity = this._entities[index];
@@ -58,7 +58,7 @@ class DummyController {
             return null;
         });
     }
-    create(correlationId, entity) {
+    create(context, entity) {
         return __awaiter(this, void 0, void 0, function* () {
             if (entity.id == null) {
                 entity.id = pip_services3_commons_node_4.IdGenerator.nextLong();
@@ -67,7 +67,7 @@ class DummyController {
             return entity;
         });
     }
-    update(correlationId, newEntity) {
+    update(context, newEntity) {
         return __awaiter(this, void 0, void 0, function* () {
             for (let index = 0; index < this._entities.length; index++) {
                 let entity = this._entities[index];
@@ -79,7 +79,7 @@ class DummyController {
             return null;
         });
     }
-    deleteById(correlationId, id) {
+    deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             for (let index = 0; index < this._entities.length; index++) {
                 let entity = this._entities[index];

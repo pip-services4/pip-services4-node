@@ -66,11 +66,11 @@ class CommandableLambdaFunction extends LambdaFunction_1.LambdaFunction {
         for (let index = 0; index < commands.length; index++) {
             let command = commands[index];
             this.registerAction(command.getName(), null, (params) => __awaiter(this, void 0, void 0, function* () {
-                let correlationId = params.correlation_id;
+                let context = params.trace_id;
                 let args = pip_services3_commons_node_1.Parameters.fromValue(params);
-                let timing = this.instrument(correlationId, this._info.name + '.' + command.getName());
+                let timing = this.instrument(context, this._info.name + '.' + command.getName());
                 try {
-                    const result = yield command.execute(correlationId, args);
+                    const result = yield command.execute(context, args);
                     timing.endTiming();
                     return result;
                 }

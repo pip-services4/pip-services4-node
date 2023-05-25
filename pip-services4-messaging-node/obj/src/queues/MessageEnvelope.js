@@ -17,12 +17,12 @@ class MessageEnvelope {
      * Creates a new MessageEnvelope, which adds a correlation id, message id, and a type to the
      * data being sent/received.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a string value that defines the message's type.
      * @param message           the data being sent/received.
      */
-    constructor(correlationId, messageType, message) {
-        this.correlation_id = correlationId;
+    constructor(context, messageType, message) {
+        this.trace_id = context;
         this.message_type = messageType;
         if (message instanceof Buffer)
             this.message = message;
@@ -93,7 +93,7 @@ class MessageEnvelope {
     /**
      * Convert's this MessageEnvelope to a string, using the following format:
      *
-     * <code>"[<correlation_id>,<message_type>,<message.toString>]"</code>.
+     * <code>"[<trace_id>,<message_type>,<message.toString>]"</code>.
      *
      * If any of the values are <code>null</code>, they will be replaced with <code>---</code>.
      *
@@ -101,7 +101,7 @@ class MessageEnvelope {
      */
     toString() {
         let builder = '[';
-        builder += this.correlation_id || "---";
+        builder += this.trace_id || "---";
         builder += ',';
         builder += this.message_type || "---";
         builder += ',';
@@ -118,7 +118,7 @@ class MessageEnvelope {
         let payload = this.message != null ? this.message.toString('base64') : null;
         let json = {
             message_id: this.message_id,
-            correlation_id: this.correlation_id,
+            trace_id: this.trace_id,
             message_type: this.message_type,
             sent_time: pip_services3_commons_node_2.StringConverter.toString(this.sent_time || new Date()),
             message: payload
@@ -137,7 +137,7 @@ class MessageEnvelope {
         let json = JSON.parse(value);
         if (json == null)
             return null;
-        let message = new MessageEnvelope(json.correlation_id, json.message_type, null);
+        let message = new MessageEnvelope(json.trace_id, json.message_type, null);
         message.message_id = json.message_id;
         message.message = json.message != null ? Buffer.from(json.message, 'base64') : null;
         message.sent_time = pip_services3_commons_node_3.DateTimeConverter.toNullableDateTime(json.sent_time);

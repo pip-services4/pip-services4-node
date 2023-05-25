@@ -56,8 +56,8 @@ export declare class PostgresConnectionResolver implements IReferenceable, IConf
     /**
      * Resolves PostgreSQL config from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved connection config.
      */
-    resolve(correlationId: string): Promise<any>;
+    resolve(context: IContext): Promise<any>;
 }

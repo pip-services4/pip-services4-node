@@ -40,37 +40,37 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
             try {
                 if (this._autoSubscribe) {
-                    yield this.subscribe(correlationId);
+                    yield this.subscribe(context);
                 }
-                this._logger.debug(correlationId, "Opened queue " + this.getName());
+                this._logger.debug(context, "Opened queue " + this.getName());
             }
             catch (ex) {
-                yield this.close(correlationId);
+                yield this.close(context);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isOpen()) {
                 return;
             }
             try {
                 // Unsubscribe from the broker
-                yield this.unsubscribe(correlationId);
+                yield this.unsubscribe(context);
             }
             finally {
                 this._messages = [];
@@ -81,9 +81,9 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
         });
@@ -102,21 +102,21 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    peek(correlationId) {
+    peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             // Peek a message from the top
             let message = null;
             if (this._messages.length > 0) {
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -127,33 +127,33 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
      *
      * Important: This method is not supported by MQTT.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
-    peekBatch(correlationId, messageCount) {
+    peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             // Peek a batch of messages
             let messages = this._messages.slice(0, messageCount);
-            this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+            this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
     }
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    receive(correlationId, waitTimeout) {
+    receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             let checkIntervalMs = 100;
             let elapsedTime = 0;
             // Get message the the queue
@@ -170,35 +170,35 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     }
     sendMessageToReceiver(receiver, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            let correlationId = message != null ? message.correlation_id : null;
+            let context = message != null ? message.trace_id : null;
             if (message == null || receiver == null) {
-                this._logger.warn(correlationId, "Message was skipped.");
+                this._logger.warn(context, "Message was skipped.");
                 return;
             }
             try {
                 yield this._receiver.receiveMessage(message, this);
             }
             catch (ex) {
-                this._logger.error(correlationId, ex, "Failed to process the message");
+                this._logger.error(context, ex, "Failed to process the message");
             }
         });
     }
     /**
     * Listens for incoming messages and blocks the current thread until queue is closed.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param receiver          a receiver to receive incoming messages.
     *
     * @see [[IMessageReceiver]]
     * @see [[receive]]
     */
-    listen(correlationId, receiver) {
+    listen(context, receiver) {
         if (!this.isOpen()) {
             return;
         }
         let listenFunc = () => __awaiter(this, void 0, void 0, function* () {
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
@@ -218,9 +218,9 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId) {
+    endListen(context) {
         this._receiver = null;
     }
 }

@@ -9,10 +9,10 @@ export declare class DataDogMetricsClient extends RestClient {
     constructor(config?: ConfigParams);
     configure(config: ConfigParams): void;
     setReferences(refs: IReferences): void;
-    open(correlationId: any): Promise<void>;
+    open(context: any): Promise<void>;
     private convertTags;
     private convertPoints;
     private convertMetric;
     private convertMetrics;
-    sendMetrics(correlationId: string, metrics: DataDogMetric[]): Promise<void>;
+    sendMetrics(context: IContext, metrics: DataDogMetric[]): Promise<void>;
 }

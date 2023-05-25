@@ -62,9 +62,9 @@ import { SqlServerPersistence } from './SqlServerPersistence';
  *         return criteria.length > 0 ? criteria.join(" AND ") : null;
  *     }
  * 
- *     public getPageByFilter(correlationId: string, filter: FilterParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams,
  *         paging: PagingParams): Promise<DataPage<MyData>> {
- *         return base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         return base.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *     }
  * 
  *     }
@@ -118,11 +118,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Gets a list of data items retrieved by given unique ids.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns a list with requested data items.
      */
-    public async getListByIds(correlationId: string, ids: K[]): Promise<T[]> {
+    public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
         let params = this.generateParameters(ids);
         let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id] IN(" + params + ")";
 
@@ -138,7 +138,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });
         });
 
-        this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+        this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
                 
         items = items.map(this.convertToPublic);
         return items;
@@ -147,11 +147,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Gets a data item by its unique id.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns the requested data item or <code>null</code> if nothing was found.
      */
-    public async getOneById(correlationId: string, id: K): Promise<T> {
+    public async getOneById(context: IContext, id: K): Promise<T> {
         let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id]=@1";
         let params = [ id ];
 
@@ -168,9 +168,9 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
         });
 
         if (item == null) {
-            this._logger.trace(correlationId, "Nothing found from %s with id = %s", this._tableName, id);
+            this._logger.trace(context, "Nothing found from %s with id = %s", this._tableName, id);
         } else {
-            this._logger.trace(correlationId, "Retrieved from %s with id = %s", this._tableName, id);
+            this._logger.trace(context, "Retrieved from %s with id = %s", this._tableName, id);
         }
 
         item = this.convertToPublic(item);
@@ -180,11 +180,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Creates a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns a created item.
      */
-    public create(correlationId: string, item: T): Promise<T> {
+    public create(context: IContext, item: T): Promise<T> {
         if (item == null) {
             return null;
         }
@@ -196,18 +196,18 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             newItem.id = item.id || IdGenerator.nextLong();
         }
 
-        return super.create(correlationId, newItem);
+        return super.create(context, newItem);
     }
 
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns the updated item.
      */
-    public async set(correlationId: string, item: T): Promise<T> {
+    public async set(context: IContext, item: T): Promise<T> {
         if (item == null) {
             return null;
         }
@@ -246,7 +246,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
         });
 
         if (newItem != null) {
-            this._logger.trace(correlationId, "Set in %s with id = %s", this._tableName, item.id);
+            this._logger.trace(context, "Set in %s with id = %s", this._tableName, item.id);
 
             newItem = this.convertToPublic(newItem);
             return newItem;
@@ -268,7 +268,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });
         });
 
-        this._logger.trace(correlationId, "Set in %s with id = %s", this._tableName, item.id);
+        this._logger.trace(context, "Set in %s with id = %s", this._tableName, item.id);
         
         newItem = this.convertToPublic(newItem);
         return newItem;
@@ -278,11 +278,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Updates a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns the updated item.
      */
-    public async update(correlationId: string, item: T): Promise<T> {
+    public async update(context: IContext, item: T): Promise<T> {
         if (item == null || item.id == null) {
             return null;
         }
@@ -308,7 +308,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });
         });
 
-        this._logger.trace(correlationId, "Updated in %s with id = %s", this._tableName, item.id);
+        this._logger.trace(context, "Updated in %s with id = %s", this._tableName, item.id);
 
         newItem = this.convertToPublic(newItem);
         return newItem;
@@ -317,12 +317,12 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Updates only few selected fields in a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns the updated item.
      */
-    public async updatePartially(correlationId: string, id: K, data: AnyValueMap): Promise<T> {
+    public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {
         if (data == null || id == null) {
             return null;
         }
@@ -348,7 +348,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });
         });
 
-        this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._tableName, id);
+        this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
 
         newItem = this.convertToPublic(newItem);
         return newItem;
@@ -357,11 +357,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Deleted a data item by it's unique id.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns the deleted item.
      */
-    public async deleteById(correlationId: string, id: K): Promise<T> {
+    public async deleteById(context: IContext, id: K): Promise<T> {
         let values = [ id ];
 
         let query = "DELETE FROM " + this.quotedTableName() + " OUTPUT DELETED.* WHERE [id]=@1";
@@ -379,7 +379,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });
         });
 
-        this._logger.trace(correlationId, "Deleted from %s with id = %s", this._tableName, id);
+        this._logger.trace(context, "Deleted from %s with id = %s", this._tableName, id);
 
         oldItem = this.convertToPublic(oldItem);
         return oldItem;
@@ -388,10 +388,10 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Deletes multiple data items by their unique ids.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    public async deleteByIds(correlationId: string, ids: K[]): Promise<void> {
+    public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
         let params = this.generateParameters(ids);
         let query = "DELETE FROM " + this.quotedTableName() + " WHERE \"id\" IN(" + params + ")";
 
@@ -407,6 +407,6 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             });    
         });
 
-        this._logger.trace(correlationId, "Deleted %d items from %s", count, this._tableName);
+        this._logger.trace(context, "Deleted %d items from %s", count, this._tableName);
     }
 }

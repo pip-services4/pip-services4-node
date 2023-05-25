@@ -57,8 +57,8 @@ export declare class CouchbaseConnectionResolver implements IReferenceable, ICon
     /**
      * Resolves Couchbase connection URI from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns			        a resolved URI.
      */
-    resolve(correlationId: string): Promise<CouchbaseConnectionParams>;
+    resolve(context: IContext): Promise<CouchbaseConnectionParams>;
 }

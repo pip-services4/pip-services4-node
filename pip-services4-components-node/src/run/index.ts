@@ -9,6 +9,9 @@
  */
 export { Parameters } from './Parameters';
 
+export { IContext } from './IContext';
+export { Context } from './Context';
+
 export { IParameterized } from './IParameterized';
 export { IOpenable } from './IOpenable';
 export { IClosable } from './IClosable';

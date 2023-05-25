@@ -43,9 +43,9 @@ class TestMessageReceiver {
     }
     /**
      * Clears all received messagers.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
         });

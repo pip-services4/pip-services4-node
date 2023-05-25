@@ -123,12 +123,12 @@ class CassandraConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let config = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to cassandra");
+            let config = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to cassandra");
             try {
                 let options = this.composeOptions(config);
                 const cassandra = require('cassandra-driver');
@@ -140,16 +140,16 @@ class CassandraConnection {
                 this._keyspace = options.keyspace;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -160,7 +160,7 @@ class CassandraConnection {
                 this._datacenter = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
             }
         });
     }

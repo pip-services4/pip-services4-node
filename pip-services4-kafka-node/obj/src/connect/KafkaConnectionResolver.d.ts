@@ -55,17 +55,17 @@ export declare class KafkaConnectionResolver implements IReferenceable, IConfigu
     /**
      * Resolves Kafka connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved Kafka connection options.
      */
-    resolve(correlationId: string): Promise<any>;
+    resolve(context: IContext): Promise<any>;
     /**
      * Composes Kafka connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved Kafka connection options.
      */
-    compose(correlationId: string, connections: ConnectionParams[], credential: CredentialParams): Promise<any>;
+    compose(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<any>;
 }

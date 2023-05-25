@@ -16,7 +16,7 @@ suite('DummyRestClient', ()=> {
         "connection.protocol", "http",
         "connection.host", "localhost",
         "connection.port", 3000,
-        "options.correlation_id_place", "headers",
+        "options.trace_id_place", "headers",
     );
     
     suiteSetup(async () => {

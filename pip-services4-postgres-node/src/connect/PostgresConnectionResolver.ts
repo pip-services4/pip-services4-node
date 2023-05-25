@@ -63,33 +63,33 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
         this._credentialResolver.setReferences(references);
     }
     
-    private validateConnection(correlationId: string, connection: ConnectionParams): void {
+    private validateConnection(context: IContext, connection: ConnectionParams): void {
         let uri = connection.getUri();
         if (uri != null) return null;
 
         let host = connection.getHost();
         if (host == null) {
-            throw new ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new ConfigException(context, "NO_HOST", "Connection host is not set");
         }
 
         let port = connection.getPort();
         if (port == 0) {
-            throw new ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new ConfigException(context, "NO_PORT", "Connection port is not set");
         }
 
         let database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new ConfigException(correlationId, "NO_DATABASE", "Connection database is not set");
+            throw new ConfigException(context, "NO_DATABASE", "Connection database is not set");
         }
     }
 
-    private validateConnections(correlationId: string, connections: ConnectionParams[]): void {
+    private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
-            throw new ConfigException(correlationId, "NO_CONNECTION", "Database connection is not set");
+            throw new ConfigException(context, "NO_CONNECTION", "Database connection is not set");
         }
 
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
     }
 
@@ -126,15 +126,15 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
     /**
      * Resolves PostgreSQL config from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved connection config.
      */
-    public async resolve(correlationId: string): Promise<any> {
-        let connections = await this._connectionResolver.resolveAll(correlationId);
+    public async resolve(context: IContext): Promise<any> {
+        let connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
-        this.validateConnections(correlationId, connections);
+        this.validateConnections(context, connections);
         
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
         let config = this.composeConfig(connections, credential);

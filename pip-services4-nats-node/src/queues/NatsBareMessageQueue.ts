@@ -78,10 +78,10 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    public async peek(correlationId: string): Promise<MessageEnvelope> {
+    public async peek(context: IContext): Promise<MessageEnvelope> {
         // Not supported
         return null;
     }
@@ -92,11 +92,11 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * 
      * Important: This method is not supported by NATS.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    public async peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]> {
+    public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
         // Not supported
         return [];
     }
@@ -104,12 +104,12 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message or <code>null</code> if no message was received.
      */
-    public async receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
+        this.checkOpen(context);
         
         let message = await new Promise<MessageEnvelope>((resolve, reject) => {
             this._client.subscribe(
@@ -132,7 +132,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
 
         if (message != null) {
             this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-            this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());        
+            this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());        
         }
 
         return message;        
@@ -147,25 +147,25 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
 
         receiver.receiveMessage(message, this)
         .catch((err) => {
-            this._logger.error(message.correlation_id, err, "Failed to process the message");
+            this._logger.error(message.trace_id, err, "Failed to process the message");
         });
     }
 
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    public listen(correlationId: string, receiver: IMessageReceiver): void {
-        this.checkOpen(correlationId);
+    public listen(context: IContext, receiver: IMessageReceiver): void {
+        this.checkOpen(context);
 
         this._client.subscribe(
             this.getSubject(),
@@ -173,7 +173,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
                 queue: this._queueGroup,
                 callback: (err, msg) => {
                     if (err != null) {
-                        this._logger.error(correlationId, err, "Failed to subscribe to message queue");
+                        this._logger.error(context, err, "Failed to subscribe to message queue");
                     } else {
                         this.receiveMessage(msg, receiver); 
                     }
@@ -186,9 +186,9 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public endListen(correlationId: string): void {
+    public endListen(context: IContext): void {
         if (this._subscription) {
             this._subscription.unsubscribe();
             this._subscription = null;

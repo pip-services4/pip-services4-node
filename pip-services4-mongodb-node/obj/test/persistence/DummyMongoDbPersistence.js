@@ -10,21 +10,21 @@ class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence_1.Identifia
     defineSchema() {
         this.ensureIndex({ key: 1 });
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = {};
         if (key != null)
             filterCondition['key'] = key;
-        return super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = {};
         if (key != null)
             filterCondition['key'] = key;
-        return super.getCountByFilter(correlationId, filterCondition);
+        return super.getCountByFilter(context, filterCondition);
     }
 }
 exports.DummyMongoDbPersistence = DummyMongoDbPersistence;

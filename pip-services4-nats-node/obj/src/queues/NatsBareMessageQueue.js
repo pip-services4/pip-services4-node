@@ -82,10 +82,10 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    peek(correlationId) {
+    peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
             return null;
@@ -97,11 +97,11 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      *
      * Important: This method is not supported by NATS.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    peekBatch(correlationId, messageCount) {
+    peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
             return [];
@@ -110,13 +110,13 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message or <code>null</code> if no message was received.
      */
-    receive(correlationId, waitTimeout) {
+    receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let message = yield new Promise((resolve, reject) => {
                 this._client.subscribe(this.getSubject(), {
                     max: 1,
@@ -133,7 +133,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
             });
             if (message != null) {
                 this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-                this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+                this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
             }
             return message;
         });
@@ -146,28 +146,28 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
             return;
         }
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
         receiver.receiveMessage(message, this)
             .catch((err) => {
-            this._logger.error(message.correlation_id, err, "Failed to process the message");
+            this._logger.error(message.trace_id, err, "Failed to process the message");
         });
     }
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    listen(correlationId, receiver) {
-        this.checkOpen(correlationId);
+    listen(context, receiver) {
+        this.checkOpen(context);
         this._client.subscribe(this.getSubject(), {
             queue: this._queueGroup,
             callback: (err, msg) => {
                 if (err != null) {
-                    this._logger.error(correlationId, err, "Failed to subscribe to message queue");
+                    this._logger.error(context, err, "Failed to subscribe to message queue");
                 }
                 else {
                     this.receiveMessage(msg, receiver);
@@ -179,9 +179,9 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId) {
+    endListen(context) {
         if (this._subscription) {
             this._subscription.unsubscribe();
             this._subscription = null;

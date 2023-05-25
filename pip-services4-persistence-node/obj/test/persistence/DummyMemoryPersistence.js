@@ -25,36 +25,36 @@ class DummyMemoryPersistence extends IdentifiableMemoryPersistence_1.Identifiabl
             return true;
         };
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         const _super = Object.create(null, {
             getPageByFilter: { get: () => super.getPageByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return yield _super.getPageByFilter.call(this, correlationId, this.composeFilter(filter), paging, null, null);
+            return yield _super.getPageByFilter.call(this, context, this.composeFilter(filter), paging, null, null);
         });
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         const _super = Object.create(null, {
             getCountByFilter: { get: () => super.getCountByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return yield _super.getCountByFilter.call(this, correlationId, this.composeFilter(filter));
+            return yield _super.getCountByFilter.call(this, context, this.composeFilter(filter));
         });
     }
-    getSortedPage(correlationId, sort) {
+    getSortedPage(context, sort) {
         const _super = Object.create(null, {
             getPageByFilter: { get: () => super.getPageByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return yield _super.getPageByFilter.call(this, correlationId, null, null, sort, null);
+            return yield _super.getPageByFilter.call(this, context, null, null, sort, null);
         });
     }
-    getSortedList(correlationId, sort) {
+    getSortedList(context, sort) {
         const _super = Object.create(null, {
             getListByFilter: { get: () => super.getListByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return yield _super.getListByFilter.call(this, correlationId, null, sort, null);
+            return yield _super.getListByFilter.call(this, context, null, sort, null);
         });
     }
 }

@@ -46,17 +46,17 @@ export abstract class CachedLogger extends Logger {
      * Writes a log message to the logger destination.
      * 
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-	protected write(level: LogLevel, correlationId: string, error: Error, message: string): void {
+	protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
 		let errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
 		let logMessage: LogMessage = <LogMessage>{
             time: new Date(),
             level: LogLevelConverter.toString(level),
             source: this._source,
-            correlation_id: correlationId,
+            trace_id: context,
             error: errorDesc,
             message: message
         };

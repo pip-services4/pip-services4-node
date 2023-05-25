@@ -46,8 +46,8 @@ export class MyComponent implements IConfigurable, IReferenceable {
     this._logger.setReferences(refs);
   }
   
-  public myMethod(correlationId: string, param1: any, callback: (err: any, result: any) => void): void {
-    this._logger.trace(correlationId, "Executed method mycomponent.mymethod");
+  public myMethod(context: IContext, param1: any, callback: (err: any, result: any) => void): void {
+    this._logger.trace(context, "Executed method mycomponent.mymethod");
     ....
   }
 }

@@ -8,11 +8,11 @@ import { IExecutable } from '../../../pip-services4-commons-node/src/run/IExecut
 
 /**
  * Command action function.
- * @param correlationId (optional) transaction id to trace execution through call chain.
+ * @param context (optional) transaction id to trace execution through call chain.
  * @param args          the parameters (arguments) to pass to this command for execution.
  * @returns             the execution result
  */
-type CommandAction = (correlationId: string, args: Parameters) => Promise<any>;
+type CommandAction = (context: IContext, args: Parameters) => Promise<any>;
 
 /**
  * Concrete implementation of [[ICommand ICommand]] interface. Command allows to call a method
@@ -20,7 +20,7 @@ type CommandAction = (correlationId: string, args: Parameters) => Promise<any>;
  * 
  * ### Example ###
  *  
- *     let command = new Command("add", null, async (correlationId, args) => {
+ *     let command = new Command("add", null, async (context, args) => {
  *         let param1 = args.getAsFloat("param1");
  *         let param2 = args.getAsFloat("param2");
  *         let result = param1 + param2;
@@ -87,22 +87,22 @@ export class Command implements ICommand {
      * Executes the command. Before execution it validates [[Parameters args]] using
      * the defined schema.
      * 
-     * @param correlationId (optional) transaction id to trace execution through call chain.
+     * @param context (optional) transaction id to trace execution through call chain.
      * @param args          the parameters (arguments) to pass to this command for execution.
      * @returns             the execution result
      * 
      * @see [[Parameters]]
      */
-    public async execute(correlationId: string, args: Parameters): Promise<any> {
+    public async execute(context: IContext, args: Parameters): Promise<any> {
         if (this._schema) {
-            this._schema.validateAndThrowException(correlationId, args);
+            this._schema.validateAndThrowException(context, args);
         }
 
         try {
-            return await this._action(correlationId, args);
+            return await this._action(context, args);
         } catch (ex) {
             throw new InvocationException(
-                correlationId,
+                context,
                 "EXEC_FAILED",
                 "Execution " + this.getName() + " failed: " + ex
             ).withDetails("command", this.getName()).wrap(ex);

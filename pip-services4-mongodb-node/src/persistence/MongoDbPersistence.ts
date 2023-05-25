@@ -65,7 +65,7 @@ import { MongoDbIndex } from './MongoDbIndex';
  *           base("mydata");
  *       }
  * 
- *       public async getByName(correlationId: string, name: string) {
+ *       public async getByName(context: IContext, name: string) {
  *         let criteria = { name: name };
  *         return await new Promise((resolve, reject) => {
  *            this._model.findOne(criteria, (err, item) => {
@@ -297,9 +297,9 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -310,15 +310,15 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         }
 
         if (this._localConnection) {
-            await this._connection.open(correlationId);
+            await this._connection.open(context);
         }
 
         if (this._connection == null) {
-            throw new InvalidStateException(correlationId, 'NO_CONNECTION', 'MongoDB connection is missing');
+            throw new InvalidStateException(context, 'NO_CONNECTION', 'MongoDB connection is missing');
         }
 
         if (!this._connection.isOpen()) {
-            throw new ConnectionException(correlationId, "CONNECT_FAILED", "MongoDB connection is not opened");
+            throw new ConnectionException(context, "CONNECT_FAILED", "MongoDB connection is not opened");
         }
 
         this._opened = false;
@@ -339,35 +339,35 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 
                 let options = index.options || {};
                 let indexName = options.name || Object.keys(index.keys).join(',');
-                this._logger.debug(correlationId, "Created index %s for collection %s", indexName, this._collectionName);
+                this._logger.debug(context, "Created index %s for collection %s", indexName, this._collectionName);
             }
 
             this._opened = true;
             this._collection = collection;        
-            this._logger.debug(correlationId, "Connected to mongodb database %s, collection %s", this._databaseName, this._collectionName);                        
+            this._logger.debug(context, "Connected to mongodb database %s, collection %s", this._databaseName, this._collectionName);                        
         } catch (ex) {
             this._db = null;
             this._client == null;
-            throw new ConnectionException(correlationId, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+            throw new ConnectionException(context, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
         }
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
-            throw new InvalidStateException(correlationId, 'NO_CONNECTION', 'MongoDb connection is missing');
+            throw new InvalidStateException(context, 'NO_CONNECTION', 'MongoDb connection is missing');
         }
 
         if (this._localConnection) {
-            await this._connection.close(correlationId);
+            await this._connection.close(context);
         }
 
         this._opened = false;
@@ -379,9 +379,9 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._collectionName == null) {
             throw new Error('Collection name is not defined');
@@ -396,14 +396,14 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns                 a data page.
      */
-    protected async getPageByFilter(correlationId: string, filter: any, paging: PagingParams, 
+    protected async getPageByFilter(context: IContext, filter: any, paging: PagingParams, 
         sort: any, select: any): Promise<DataPage<T>> {
 
         // Adjust max item count based on configuration
@@ -422,7 +422,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         let items: any = await this._collection.find(filter, options).project(select).toArray();
 
         if (items != null) {
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._collectionName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._collectionName);
         }
 
         items = items || [];
@@ -443,15 +443,15 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of filtered items.
      */
-    protected async getCountByFilter(correlationId: string, filter: any): Promise<number> {
+    protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
         let count = await this._collection.countDocuments(filter);
 
         if (count != null) {
-            this._logger.trace(correlationId, "Counted %d items in %s", count, this._collectionName);
+            this._logger.trace(context, "Counted %d items in %s", count, this._collectionName);
         }
 
         return count;
@@ -463,14 +463,14 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns                a filtered data list.
      */
-    protected async getListByFilter(correlationId: string, filter: any, sort: any, select: any): Promise<T[]> {
+    protected async getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]> {
         // Configure options
         let options: FindOptions = {};
         if (sort != null) options.sort = sort;
@@ -478,7 +478,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         let items: any = await this._collection.find(filter, options).project(select).toArray();
 
         if (items != null) {
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._collectionName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._collectionName);
         }
 
         items = items || [];
@@ -493,11 +493,11 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item.
      */
-    protected async getOneRandom(correlationId: string, filter: any): Promise<T> {
+    protected async getOneRandom(context: IContext, filter: any): Promise<T> {
         let count = await this._collection.countDocuments(filter);
 
         let pos = Math.trunc(Math.random() * count);
@@ -512,9 +512,9 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         let item: any = (items != null && items.length > 0) ? items[0] : null;
 
         if (item == null) {
-            this._logger.trace(correlationId, "Random item wasn't found from %s", this._collectionName);
+            this._logger.trace(context, "Random item wasn't found from %s", this._collectionName);
         } else {
-            this._logger.trace(correlationId, "Retrieved random item from %s", this._collectionName);
+            this._logger.trace(context, "Retrieved random item from %s", this._collectionName);
         }
                 
         item = this.convertToPublic(item);
@@ -524,11 +524,11 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
     /**
      * Creates a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    public async create(correlationId: string, item: T): Promise<T> {
+    public async create(context: IContext, item: T): Promise<T> {
         if (item == null) {
             return null;
         }
@@ -537,7 +537,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 
         let result = await this._collection.insertOne(newItem);
 
-        this._logger.trace(correlationId, "Created in %s with id = %s", this._collectionName, newItem._id);
+        this._logger.trace(context, "Created in %s with id = %s", this._collectionName, newItem._id);
 
         if (result.acknowledged) {
             newItem = Object.assign({}, item);
@@ -554,14 +554,14 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    public async deleteByFilter(correlationId: string, filter: any): Promise<void> {
+    public async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let result = await this._collection.deleteMany(filter);
 
         let count = result != null ? result.deletedCount : 0;
-        this._logger.trace(correlationId, "Deleted %d items from %s", count, this._collectionName);
+        this._logger.trace(context, "Deleted %d items from %s", count, this._collectionName);
     }
 
 }

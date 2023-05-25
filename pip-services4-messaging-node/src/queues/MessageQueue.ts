@@ -114,35 +114,35 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let connections = await this._connectionResolver.resolveAll(correlationId);
-        let credential = await this._credentialResolver.lookup(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let connections = await this._connectionResolver.resolveAll(context);
+        let credential = await this._credentialResolver.lookup(context);
 
-        await this.openWithParams(correlationId, connections, credential);
+        await this.openWithParams(context, connections, credential);
     }
 
     /**
      * Opens the component with given connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
-     protected async openWithParams(correlationId: string,
+     protected async openWithParams(context: IContext,
         connections: ConnectionParams[], credential: CredentialParams): Promise<void> {
         throw new Error("Not supported");
     }   
 
     /**
      * Checks if the queue has been opened and throws an exception is it's not.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    protected checkOpen(correlationId: string): void {
+    protected checkOpen(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 "NOT_OPENED",
                 "The queue is not opened"
             );
@@ -152,16 +152,16 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public abstract close(correlationId: string): Promise<void>;
+    public abstract close(context: IContext): Promise<void>;
 
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public abstract clear(correlationId: string): Promise<void>;
+    public abstract clear(context: IContext): Promise<void>;
 
     /**
      * Reads the current number of messages in the queue to be delivered.
@@ -173,53 +173,53 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     /**
      * Sends a message into the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
-    public abstract send(correlationId: string, envelope: MessageEnvelope): Promise<void>;
+    public abstract send(context: IContext, envelope: MessageEnvelope): Promise<void>;
 
     /**
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      * 
      * @see [[send]]
      */
-    public sendAsObject(correlationId: string, messageType: string, message: any): Promise<void> {
-        let envelope = new MessageEnvelope(correlationId, messageType, message);
-        return this.send(correlationId, envelope);
+    public sendAsObject(context: IContext, messageType: string, message: any): Promise<void> {
+        let envelope = new MessageEnvelope(context, messageType, message);
+        return this.send(context, envelope);
     }
 
     /**
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    public abstract peek(correlationId: string): Promise<MessageEnvelope>;
+    public abstract peek(context: IContext): Promise<MessageEnvelope>;
 
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list of peeked messages
      */
-    public abstract peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>;
+    public abstract peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>;
 
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    public abstract receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    public abstract receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
 
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
@@ -258,34 +258,34 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    public abstract listen(correlationId: string, receiver: IMessageReceiver): void;
+    public abstract listen(context: IContext, receiver: IMessageReceiver): void;
 
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public abstract endListen(correlationId: string): void;
+    public abstract endListen(context: IContext): void;
 
     /**
      * Listens for incoming messages without blocking the current thread.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[listen]]
      * @see [[IMessageReceiver]]
      */
-    public beginListen(correlationId: string, receiver: IMessageReceiver): void {
+    public beginListen(context: IContext, receiver: IMessageReceiver): void {
         setImmediate(() => {
-            this.listen(correlationId, receiver);
+            this.listen(context, receiver);
         });
     }
 

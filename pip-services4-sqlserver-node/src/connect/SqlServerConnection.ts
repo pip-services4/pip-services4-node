@@ -149,12 +149,12 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let uri = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let uri = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to SQLServer...");
+        this._logger.debug(context, "Connecting to SQLServer...");
 
         try {
             uri = this.composeUriSettings(uri);
@@ -174,13 +174,13 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
                 });
             });
 
-            this._logger.info(correlationId, "Connected to SQLServer database %s", this._databaseName);
+            this._logger.info(context, "Connected to SQLServer database %s", this._databaseName);
 
             this._connection = pool;                        
             this._databaseName = pool.config.database;
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to SQLServer failed"
             ).withCause(ex);
@@ -190,9 +190,9 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -208,13 +208,13 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
                 });
             });
 
-            this._logger.info(correlationId, "Disconnected from SQLServer database %s", this._databaseName);
+            this._logger.info(context, "Disconnected from SQLServer database %s", this._databaseName);
 
             this._connection = null;
             this._databaseName = null;
     } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 'DISCONNECT_FAILED',
                 'Disconnect from sqlserver failed: '
             ).withCause(ex);

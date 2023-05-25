@@ -16,7 +16,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         super(services.DummiesClient)
     }
 
-    public async getDummies(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+    public async getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
         paging = paging || new PagingParams();
         let pagingParams = new messages.PagingParams();
         pagingParams.setSkip(paging.skip);
@@ -34,10 +34,10 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
             }
         }
 
-        this.instrument(correlationId, 'dummy.get_page_by_filter');
+        this.instrument(context, 'dummy.get_page_by_filter');
 
         let result = await this.call<any>('get_dummies',
-            correlationId, 
+            context, 
             request
         );
 
@@ -50,14 +50,14 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async getDummyById(correlationId: string, dummyId: string): Promise<Dummy> {
+    public async getDummyById(context: IContext, dummyId: string): Promise<Dummy> {
         let request = new messages.DummyIdRequest();
         request.setDummyId(dummyId);
 
-        this.instrument(correlationId, 'dummy.get_one_by_id');
+        this.instrument(context, 'dummy.get_one_by_id');
 
         let result = await this.call<any>('get_dummy_by_id',
-            correlationId,
+            context,
             request
         );
 
@@ -69,7 +69,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async createDummy(correlationId: string, dummy: any): Promise<Dummy> {
+    public async createDummy(context: IContext, dummy: any): Promise<Dummy> {
         let dummyObj = new messages.Dummy();
         dummyObj.setId(dummy.id);
         dummyObj.setKey(dummy.key);
@@ -78,10 +78,10 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         let request = new messages.DummyObjectRequest();
         request.setDummy(dummyObj);
 
-        this.instrument(correlationId, 'dummy.create');
+        this.instrument(context, 'dummy.create');
 
         let result = await this.call<any>('create_dummy',
-            correlationId,
+            context,
             request
         );
 
@@ -93,7 +93,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async updateDummy(correlationId: string, dummy: any): Promise<Dummy> {
+    public async updateDummy(context: IContext, dummy: any): Promise<Dummy> {
         let dummyObj = new messages.Dummy();
         dummyObj.setId(dummy.id);
         dummyObj.setKey(dummy.key);
@@ -102,10 +102,10 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         let request = new messages.DummyObjectRequest();
         request.setDummy(dummyObj);
     
-        this.instrument(correlationId, 'dummy.update');
+        this.instrument(context, 'dummy.update');
 
         let result = await this.call<any>('update_dummy',
-            correlationId, 
+            context, 
             request
         );
 
@@ -117,14 +117,14 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async deleteDummy(correlationId: string, dummyId: string): Promise<Dummy> {
+    public async deleteDummy(context: IContext, dummyId: string): Promise<Dummy> {
         let request = new messages.DummyIdRequest();
         request.setDummyId(dummyId);
 
-        this.instrument(correlationId, 'dummy.delete_by_id');
+        this.instrument(context, 'dummy.delete_by_id');
 
         let result = await this.call<any>('delete_dummy_by_id',
-            correlationId, 
+            context, 
             request
         );
 

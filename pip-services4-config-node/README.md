@@ -55,9 +55,9 @@ export class MyComponent implements IConfigurable, IReferenceable, IOpenable {
   
   ...
   
-  public async open(correlationId: string): Promise<void> {
-    let connection = await this._connectionResolver.resolve(correlationId);
-    let credential = await this._credentialResolver.lookup(correlationId);
+  public async open(context: IContext): Promise<void> {
+    let connection = await this._connectionResolver.resolve(context);
+    let credential = await this._credentialResolver.lookup(context);
 
     let host = connection.getHost();
     let port = connection.getPort();

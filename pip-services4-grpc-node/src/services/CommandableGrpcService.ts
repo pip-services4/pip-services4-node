@@ -78,10 +78,10 @@ export abstract class CommandableGrpcService extends GrpcService {
         this._dependencyResolver.put('controller', 'none');
     }
 
-    private applyCommand(schema: Schema, action: (correlationId: string, data: any) => Promise<any>): (call: any) => Promise<any> {
+    private applyCommand(schema: Schema, action: (context: IContext, data: any) => Promise<any>): (call: any) => Promise<any> {
         let actionWrapper = async (call) => {
             let method = call.request.method;
-            let correlationId = call.request.correlation_id;
+            let context = call.request.trace_id;
 
             try {
                 // Convert arguments
@@ -96,7 +96,7 @@ export abstract class CommandableGrpcService extends GrpcService {
 
                 // Call command action
                 try {
-                    let result = await action(correlationId, args);
+                    let result = await action(context, args);
 
                     // Process result and generate response
                     return {
@@ -114,7 +114,7 @@ export abstract class CommandableGrpcService extends GrpcService {
             } catch (ex) {
                 // Handle unexpected exception
                 let err = new InvocationException(
-                    correlationId,
+                    context,
                     "METHOD_FAILED",
                     "Method " + method + " failed"
                 ).wrap(ex).withDetails("method", method);
@@ -138,7 +138,7 @@ export abstract class CommandableGrpcService extends GrpcService {
      * @param action        the action to perform at the given route.
      */
      protected registerCommadableMethod(method: string, schema: Schema,
-        action: (correlationId: string, data: any) => Promise<any>): void {
+        action: (context: IContext, data: any) => Promise<any>): void {
 
         let actionWrapper = this.applyCommand(schema, action);
         actionWrapper = this.applyInterceptors(actionWrapper);
@@ -159,10 +159,10 @@ export abstract class CommandableGrpcService extends GrpcService {
 
             let method = '' + this._name + '.' + command.getName();
 
-            this.registerCommadableMethod(method, null, (correlationId, args) => {
-                let timing = this.instrument(correlationId, method);
+            this.registerCommadableMethod(method, null, (context, args) => {
+                let timing = this.instrument(context, method);
                 try {
-                    return command.execute(correlationId, args);
+                    return command.execute(context, args);
                 } catch (ex) {
                     timing.endFailure(ex);
                 } finally {

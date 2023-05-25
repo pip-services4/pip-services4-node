@@ -20,7 +20,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
     }
 
     public async testReceiveSendMessage() {
@@ -34,7 +34,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
     }
 
     public async testReceiveCompleteMessage() {
@@ -49,7 +49,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
 
         await this._queue.complete(envelope2);
         assert.isNull(envelope2.getReference());
@@ -63,7 +63,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
 
         await this._queue.abandon(envelope2);
 
@@ -71,7 +71,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
     }
 
     public async testSendPeekMessage() {
@@ -82,7 +82,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
     }
 
     public async testPeekNoMessage() {
@@ -98,7 +98,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
 
         await this._queue.moveToDeadLetter(envelope2);
     }
@@ -118,7 +118,7 @@ export class MessageQueueFixture {
         assert.isNotNull(envelope2);
         assert.equal(envelope1.message_type, envelope2.message_type);
         assert.equal(envelope1.message, envelope2.message);
-        assert.equal(envelope1.correlation_id, envelope2.correlation_id);
+        assert.equal(envelope1.trace_id, envelope2.trace_id);
 
         this._queue.endListen(null);
     }
@@ -143,7 +143,7 @@ export class MessageQueueFixture {
         let envelope = messageReceiver.messages[0];
         assert.isNotNull(envelope);
         assert.equal('messagetype', envelope.message_type);
-        assert.equal('123', envelope.correlation_id);
+        assert.equal('123', envelope.trace_id);
 
         let message = envelope.getMessageAs<string[]>();
         assert.isArray(message);
@@ -159,7 +159,7 @@ export class MessageQueueFixture {
         envelope = messageReceiver.messages[0];
         assert.isNotNull(envelope);
         assert.equal('messagetype', envelope.message_type);
-        assert.equal('123', envelope.correlation_id);
+        assert.equal('123', envelope.trace_id);
 
         let message2 = envelope.getMessageAsString();
         assert.equal('string2', message2);
@@ -174,7 +174,7 @@ export class MessageQueueFixture {
         // envelope = messageReceiver.messages[0];
         // assert.isNotNull(envelope);
         // assert.equal('messagetype', envelope.message_type);
-        // assert.equal('123', envelope.correlation_id);
+        // assert.equal('123', envelope.trace_id);
 
         // let message3 = envelope.getMessageAs<any>();
         // assert.isNotNull(message);

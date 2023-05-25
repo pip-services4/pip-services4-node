@@ -107,7 +107,7 @@ export class ConnectionResolver {
         this._connections.push(connection);
     }
 
-    private async resolveInDiscovery(correlationId: string, connection: ConnectionParams): Promise<ConnectionParams> {
+    private async resolveInDiscovery(context: IContext, connection: ConnectionParams): Promise<ConnectionParams> {
         if (!connection.useDiscovery()) {
             return null;
         }
@@ -120,12 +120,12 @@ export class ConnectionResolver {
         let discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
         let discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
         if (discoveries.length == 0) {
-            throw new ReferenceException(correlationId, discoveryDescriptor);
+            throw new ReferenceException(context, discoveryDescriptor);
         }
 
         for (let discovery of discoveries) {
             let discoveryTyped: IDiscovery = discovery;
-            let result = await discoveryTyped.resolveOne(correlationId, key);
+            let result = await discoveryTyped.resolveOne(context, key);
             if (result != null) {
                 return result;
             }
@@ -138,12 +138,12 @@ export class ConnectionResolver {
      * Resolves a single component connection. If connections are configured to be retrieved
      * from Discovery service it finds a [[IDiscovery]] and resolves the connection there.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      * 
      * @see [[IDiscovery]]
      */
-    public async resolve(correlationId: string): Promise<ConnectionParams> {
+    public async resolve(context: IContext): Promise<ConnectionParams> {
         if (this._connections.length == 0) {
             return null;
         }
@@ -164,7 +164,7 @@ export class ConnectionResolver {
 
         let resolved: ConnectionParams = null;
         for (let connection of connections) {
-            let result = await this.resolveInDiscovery(correlationId, connection);
+            let result = await this.resolveInDiscovery(context, connection);
             if (result != null) {
                 resolved = new ConnectionParams(ConfigParams.mergeConfigs(connection, result));
             }
@@ -172,7 +172,7 @@ export class ConnectionResolver {
         return resolved;
     }
 
-    private async resolveAllInDiscovery(correlationId: string, connection: ConnectionParams): Promise<ConnectionParams[]> {
+    private async resolveAllInDiscovery(context: IContext, connection: ConnectionParams): Promise<ConnectionParams[]> {
         let resolved: ConnectionParams[] = [];
         let key: string = connection.getDiscoveryKey();
 
@@ -187,12 +187,12 @@ export class ConnectionResolver {
         let discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
         let discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
         if (discoveries.length == 0) {
-            throw new ReferenceException(correlationId, discoveryDescriptor);
+            throw new ReferenceException(context, discoveryDescriptor);
         }
 
         for (let discovery of discoveries) {
             let discoveryTyped: IDiscovery = discovery;
-            let result = await discoveryTyped.resolveAll(correlationId, key);
+            let result = await discoveryTyped.resolveAll(context, key);
             if (result != null) {
                 resolved = resolved.concat(result);
             }
@@ -205,12 +205,12 @@ export class ConnectionResolver {
      * Resolves all component connection. If connections are configured to be retrieved
      * from Discovery service it finds a [[IDiscovery]] and resolves the connection there.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 all found connection parameters
      * 
      * @see [[IDiscovery]]
      */
-    public async resolveAll(correlationId: string): Promise<ConnectionParams[]> {
+    public async resolveAll(context: IContext): Promise<ConnectionParams[]> {
         let resolved: ConnectionParams[] = [];
         let toResolve: ConnectionParams[] = [];
 
@@ -226,7 +226,7 @@ export class ConnectionResolver {
         }
 
         for (let connection of toResolve) {
-            let result = await this.resolveAllInDiscovery(correlationId, connection);
+            let result = await this.resolveAllInDiscovery(context, connection);
             if (result != null) {
                 for (let index = 0; index < result.length; index++) {
                     let localResolvedConnection: ConnectionParams = new ConnectionParams(ConfigParams.mergeConfigs(connection, result[index]));
@@ -238,7 +238,7 @@ export class ConnectionResolver {
         return resolved;
     }
 
-    private async registerInDiscovery(correlationId: string, connection: ConnectionParams): Promise<boolean> {
+    private async registerInDiscovery(context: IContext, connection: ConnectionParams): Promise<boolean> {
         if (!connection.useDiscovery()) {
             return false;
         }
@@ -254,7 +254,7 @@ export class ConnectionResolver {
         }
 
         for (let discovery of discoveries) {
-            await discovery.register(correlationId, key, connection);
+            await discovery.register(context, key, connection);
         }
 
         return true;
@@ -264,14 +264,14 @@ export class ConnectionResolver {
      * Registers the given connection in all referenced discovery services.
      * This method can be used for dynamic service discovery.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        a connection to register.
      * @returns 			    the registered connection parameters.
      * 
      * @see [[IDiscovery]]
      */
-    public async register(correlationId: string, connection: ConnectionParams): Promise<void> {
-        let ok = await this.registerInDiscovery(correlationId, connection);
+    public async register(context: IContext, connection: ConnectionParams): Promise<void> {
+        let ok = await this.registerInDiscovery(context, connection);
         if (ok) {
             this._connections.push(connection);
         }

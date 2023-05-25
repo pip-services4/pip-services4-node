@@ -48,7 +48,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
 	/**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      * @param callback 			callback function that receives error or null no errors occured.
 	 */
     private cleanup(): void {
@@ -70,11 +70,11 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
      * Loads stored value from the store using its key.
      * If value is missing in the store it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique state key.
      * @returns                 the state value or <code>null</code> if value wasn't found.
      */
-    public async load<T>(correlationId: string, key: string): Promise<T> {
+    public async load<T>(context: IContext, key: string): Promise<T> {
         if (key == null) {
             throw new Error('Key cannot be null');
         }
@@ -96,18 +96,18 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
     /**
      * Loads an array of states from the store using their keys.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param keys              unique state keys.
      * @returns                 an array with state values.
      */
-    public async loadBulk<T>(correlationId: string, keys: string[]): Promise<StateValue<T>[]> {
+    public async loadBulk<T>(context: IContext, keys: string[]): Promise<StateValue<T>[]> {
         // Cleanup the stored states
         this.cleanup();
 
         let result: StateValue<T>[] = [];
         
         for (let key of keys) {
-            let value = await this.load<T>(correlationId, key);
+            let value = await this.load<T>(context, key);
             result.push({ key: key, value: value });
         }
 
@@ -117,12 +117,12 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
 	/**
      * Saves state into the store
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique state key.
      * @param value             a state value to store.
      * @returns                 The value that was stored in the cache.
 	 */
-    public async save<T>(correlationId: string, key: string, value: any): Promise<T> {
+    public async save<T>(context: IContext, key: string, value: any): Promise<T> {
         if (key == null) {
             throw new Error('Key cannot be null');
         }
@@ -155,10 +155,10 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
 	/**
      * Deletes a state from the store by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique state key.
 	 */
-    public async delete<T>(correlationId: string, key: string): Promise<T> {
+    public async delete<T>(context: IContext, key: string): Promise<T> {
         if (key == null) {
             throw new Error('Key cannot be null');
         }

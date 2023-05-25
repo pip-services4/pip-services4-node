@@ -117,13 +117,13 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let connections = await this._connectionResolver.resolveAll(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let connections = await this._connectionResolver.resolveAll(context);
         if (connections.length == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -157,16 +157,16 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         this._client = null;
     }
 
-    private checkOpened(correlationId: string): void {
+    private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
@@ -177,13 +177,13 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfull and <code>false</code> otherwise.
      */
-    public tryAcquireLock(correlationId: string, key: string, ttl: number): Promise<boolean> {
-        this.checkOpened(correlationId);
+    public tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean> {
+        this.checkOpened(context);
 
         let lifetimeInSec = ttl / 1000;
         return new Promise<boolean>((resolve, reject) => {
@@ -202,11 +202,11 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
     /**
      * Releases prevously acquired lock by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    public releaseLock(correlationId: string, key: string): Promise<void> {
-        this.checkOpened(correlationId);
+    public releaseLock(context: IContext, key: string): Promise<void> {
+        this.checkOpened(context);
 
         return new Promise<void>((resolve, reject) => {
             this._client.del(key, (err) => {

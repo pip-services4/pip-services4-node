@@ -66,9 +66,9 @@ const IdentifiableMySqlPersistence_1 = require("./IdentifiableMySqlPersistence")
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams,
  *         callback: (err: any, page: DataPage<MyData>) => void): void {
- *         base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null, callback);
+ *         base.getPageByFilter(context, this.composeFilter(filter), paging, null, null, callback);
  *     }
  *
  *     }
@@ -152,12 +152,12 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns the updated item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (data == null || id == null) {
                 return null;
@@ -176,7 +176,7 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._tableName, id);
+            this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });

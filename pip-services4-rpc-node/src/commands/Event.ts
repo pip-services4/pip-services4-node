@@ -84,18 +84,18 @@ export class Event implements IEvent {
     /**
      * Fires this event and notifies all registred listeners.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param args              the parameters to raise this event with.
      * @throws an [[InvocationException]] if the event fails to be raised.  
      */
-    public notify(correlationId: string, args: Parameters): void {
+    public notify(context: IContext, args: Parameters): void {
         for (let i = 0; i < this._listeners.length; i++) {
             try {
                 let listener: IEventListener = this._listeners[i];
-                listener.onEvent(correlationId, this, args);
+                listener.onEvent(context, this, args);
             } catch (ex) {
                 throw new InvocationException(
-                    correlationId,
+                    context,
                     "EXEC_FAILED",
                     "Raising event " + this.getName() + " failed: " + ex)
                     .withDetails("event", this.getName())

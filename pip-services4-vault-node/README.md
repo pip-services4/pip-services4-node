@@ -49,8 +49,8 @@ export class MyComponent implements IConfigurable, IReferenceable {
     this._counters.setReferences(refs);
   }
   
-  public async myMethod(correlationId: string, param1: any): Promise<void> {
-    this._logger.trace(correlationId, "Executed method mycomponent.mymethod");
+  public async myMethod(context: IContext, param1: any): Promise<void> {
+    this._logger.trace(context, "Executed method mycomponent.mymethod");
     this._counters.increment("mycomponent.mymethod.exec_count", 1);
     let timing = this._counters.beginTiming("mycomponent.mymethod.exec_time");
     try {
@@ -59,7 +59,7 @@ export class MyComponent implements IConfigurable, IReferenceable {
       timing.endTiming();
     } catch (err) {
       if (err) {
-        this._logger.error(correlationId, err, "Failed to execute mycomponent.mymethod");
+        this._logger.error(context, err, "Failed to execute mycomponent.mymethod");
         this._counters.increment("mycomponent.mymethod.error_count", 1);
       }
     }
@@ -99,9 +99,9 @@ export class MyComponent implements IConfigurable, IReferenceable, IOpenable {
   
   ...
   
-  public async open(correlationId: string): Promise<void> {
-    let connection = await this._connectionResolver.resolve(correlationId);
-    let credential = await this._credentialResolver.lookup(correlationId);
+  public async open(context: IContext): Promise<void> {
+    let connection = await this._connectionResolver.resolve(context);
+    let credential = await this._credentialResolver.lookup(context);
 
     let host = connection.getHost();
     let port = connection.getPort();
@@ -145,24 +145,24 @@ export class MyComponent implements IReferenceable {
     this._lock = refs.getOneRequired<ILock>(new Descriptor("*", "lock", "*", "*", "1.0"));
   }
   
-  public async myMethod(correlationId: string, param1: any): Promise<any> {
+  public async myMethod(context: IContext, param1: any): Promise<any> {
     // First check cache for result
-    result := await this._cache.retrieve(correlationId, "mykey");
+    result := await this._cache.retrieve(context, "mykey");
     if (result != null) {
       return result;
     }
       
     // Lock..
-    await this._lock.acquireLock(correlationId, "mykey", 1000, 1000);
+    await this._lock.acquireLock(context, "mykey", 1000, 1000);
     
     // Do processing
     ...
     
     // Store result to cache async
-    this._cache.store(correlationId, "mykey", result, 3600000);
+    this._cache.store(context, "mykey", result, 3600000);
 
     // Release lock async
-    this._lock.releaseLock(correlationId, "mykey");
+    this._lock.releaseLock(context, "mykey");
 
     return result;
   }

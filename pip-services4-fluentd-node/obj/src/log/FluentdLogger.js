@@ -98,16 +98,16 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_1.ConfigException(correlationId, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services3_commons_node_1.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
             }
             let host = connection.getAsString("host");
             let port = connection.getAsIntegerWithDefault("port", 24224);
@@ -125,9 +125,9 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
             if (this._timer) {
@@ -152,7 +152,7 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
                 let record = {
                     level: message.level,
                     source: message.source,
-                    correlation_id: message.correlation_id,
+                    trace_id: message.trace_id,
                     error: message.error,
                     message: message.message
                 };

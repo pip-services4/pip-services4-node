@@ -35,10 +35,10 @@ import { RestClient } from './RestClient';
  *     class MyCommandableHttpClient extends CommandableHttpClient implements IMyClient {
  *        ...
  * 
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *            return await this.callCommand(
  *                "get_data",
- *                correlationId,
+ *                context,
  *                { id: id }
  *            );        
  *         }
@@ -72,14 +72,14 @@ export abstract class CommandableHttpClient extends RestClient {
      * The complete route to remote method is defined as baseRoute + "/" + name.
      * 
      * @param name              a name of the command to call. 
-     * @param correlationId     (optional) transaction id to trace execution through the call chain.
+     * @param context     (optional) transaction id to trace execution through the call chain.
      * @param params            command parameters.
      * @returns                 a command execution result.
      */
-    protected async callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
-        let timing = this.instrument(correlationId, this._baseRoute + '.' + name);
+    protected async callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
+        let timing = this.instrument(context, this._baseRoute + '.' + name);
         try {
-            let response = await this.call<T>('post', name, correlationId, {}, params || {});
+            let response = await this.call<T>('post', name, context, {}, params || {});
             timing.endTiming();
             return response;
         } catch (ex) {

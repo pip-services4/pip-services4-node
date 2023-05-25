@@ -76,14 +76,14 @@ export abstract class CommandableLambdaService extends LambdaService {
             let name = command.getName();
 
             this.registerAction(name, null, (params) => {
-                let correlationId = params != null ? params.correlation_id : null;
+                let context = params != null ? params.trace_id : null;
  
                 let args = Parameters.fromValue(params);
-                args.remove("correlation_id");
+                args.remove("trace_id");
 
-                let timing = this.instrument(correlationId, name);
+                let timing = this.instrument(context, name);
                 try {
-                    let res = command.execute(correlationId, args);
+                    let res = command.execute(context, args);
                     timing.endTiming();
                     return res;
                 } catch (ex) {

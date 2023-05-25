@@ -15,18 +15,18 @@ class DummyCloudFunctionClient extends CloudFunctionClient_1.CloudFunctionClient
     constructor() {
         super();
     }
-    getDummies(correlationId, filter, paging) {
+    getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.call('dummies.get_dummies', correlationId, {
+            const response = yield this.call('dummies.get_dummies', context, {
                 filter: filter,
                 paging: paging
             });
             return response;
         });
     }
-    getDummyById(correlationId, dummyId) {
+    getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.call('dummies.get_dummy_by_id', correlationId, {
+            const response = yield this.call('dummies.get_dummy_by_id', context, {
                 dummy_id: dummyId
             });
             if (response == null || Object.keys(response).length === 0) {
@@ -35,25 +35,25 @@ class DummyCloudFunctionClient extends CloudFunctionClient_1.CloudFunctionClient
             return response;
         });
     }
-    createDummy(correlationId, dummy) {
+    createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.call('dummies.create_dummy', correlationId, {
+            const response = yield this.call('dummies.create_dummy', context, {
                 dummy: dummy
             });
             return response;
         });
     }
-    updateDummy(correlationId, dummy) {
+    updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.call('dummies.update_dummy', correlationId, {
+            const response = yield this.call('dummies.update_dummy', context, {
                 dummy: dummy
             });
             return response;
         });
     }
-    deleteDummy(correlationId, dummyId) {
+    deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.call('dummies.delete_dummy', correlationId, {
+            const response = yield this.call('dummies.delete_dummy', context, {
                 dummy_id: dummyId
             });
             return response;

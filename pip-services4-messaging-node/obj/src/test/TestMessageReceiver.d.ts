@@ -26,7 +26,7 @@ export declare class TestMessageReceiver implements IMessageReceiver, ICleanable
     receiveMessage(envelope: MessageEnvelope, queue: IMessageQueue): Promise<void>;
     /**
      * Clears all received messagers.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    clear(correlationId: string): Promise<void>;
+    clear(context: IContext): Promise<void>;
 }

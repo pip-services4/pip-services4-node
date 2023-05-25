@@ -40,9 +40,9 @@ export class TestMessageReceiver implements IMessageReceiver, ICleanable {
 
     /**
      * Clears all received messagers.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
 }

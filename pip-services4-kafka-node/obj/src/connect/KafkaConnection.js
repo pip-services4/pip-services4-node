@@ -129,14 +129,14 @@ class KafkaConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection != null) {
                 return;
             }
-            let config = yield this._connectionResolver.resolve(correlationId);
+            let config = yield this._connectionResolver.resolve(context);
             try {
                 let options = {
                     clientId: this._clientId,
@@ -167,20 +167,20 @@ class KafkaConnection {
                 yield producer.connect();
                 this._connection = connection;
                 this._producer = producer;
-                this._logger.debug(correlationId, "Connected to Kafka broker at " + brokers);
+                this._logger.debug(context, "Connected to Kafka broker at " + brokers);
             }
             catch (ex) {
-                this._logger.error(correlationId, ex, "Failed to connect to Kafka server");
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to Kafka service failed").withCause(ex);
+                this._logger.error(context, ex, "Failed to connect to Kafka server");
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to Kafka service failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -201,7 +201,7 @@ class KafkaConnection {
             }
             this._subscriptions = [];
             this._connection = null;
-            this._logger.debug(correlationId, "Disconnected from Kafka server");
+            this._logger.debug(context, "Disconnected from Kafka server");
         });
     }
     getConnection() {

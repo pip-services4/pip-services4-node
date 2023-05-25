@@ -38,9 +38,9 @@ import { IdGenerator } from '../../../pip-services4-commons-node/src/data/IdGene
  *             return new Command(
  *               'get_mydata',
  *               null,
- *               async (correlationId: string, args: Parameters) => Promise<any> {
+ *               async (context: IContext, args: Parameters) => Promise<any> {
  *                   let param = args.getAsString('param');
- *                   return await this._controller.getMyData(correlationId, param);
+ *                   return await this._controller.getMyData(context, param);
  *               }
  *             );
  *         }
@@ -223,7 +223,7 @@ export class CommandSet {
     /**
      * Executes a [[ICommand command]] specificed by its name.
      * 
-     * @param correlationId (optional) transaction id to trace execution through call chain.
+     * @param context (optional) transaction id to trace execution through call chain.
      * @param commandName   the name of that command that is to be executed.
      * @param args          the parameters (arguments) to pass to the command for execution.
      * @returns             the execution result
@@ -231,26 +231,26 @@ export class CommandSet {
      * @see [[ICommand]]
      * @see [[Parameters]]
      */
-    public async execute(correlationId: string, commandName: string, args: Parameters): Promise<any> {
+    public async execute(context: IContext, commandName: string, args: Parameters): Promise<any> {
         let cref = this.findCommand(commandName);
 
         if (cref == null) {
             throw new BadRequestException(
-                correlationId,
+                context,
                 "CMD_NOT_FOUND",
                 "Request command does not exist"
             )
             .withDetails("command", commandName);
         }
 
-        if (correlationId != null && correlationId != "") {
-            correlationId = IdGenerator.nextShort();
+        if (context != null && context != "") {
+            context = IdGenerator.nextShort();
         }
 
         let results = cref.validate(args);
-        ValidationException.throwExceptionIfNeeded(correlationId, results, false);
+        ValidationException.throwExceptionIfNeeded(context, results, false);
 
-        return await cref.execute(correlationId, args);
+        return await cref.execute(context, args);
     }
 
     /**
@@ -292,14 +292,14 @@ export class CommandSet {
      * Fires event specified by its name and notifies all registered
      * [[IEventListener listeners]]
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param eventName         the name of the event that is to be fired.
      * @param args              the event arguments (parameters).
      */
-    public notify(correlationId: string, eventName: string, args: Parameters): void {
+    public notify(context: IContext, eventName: string, args: Parameters): void {
         let event = this.findEvent(eventName);
         if (event != null) {
-            event.notify(correlationId, args);
+            event.notify(context, args);
         }
     }
 }

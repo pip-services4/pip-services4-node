@@ -6,8 +6,8 @@ export interface ILoader<T> {
     /**
      * Loads data items.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @returns a list with loaded data items.
      */
-    load(correlationId: string): Promise<T[]>;
+    load(context: IContext): Promise<T[]>;
 }

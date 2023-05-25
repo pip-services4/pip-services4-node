@@ -144,12 +144,12 @@ class MongoDbConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let uri = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to mongodb");
+            let uri = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to mongodb");
             try {
                 let settings = this.composeSettings();
                 let client = yield new mongodb_1.MongoClient(uri, settings).connect();
@@ -158,16 +158,16 @@ class MongoDbConnection {
                 this._databaseName = this._db.databaseName;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -176,7 +176,7 @@ class MongoDbConnection {
             this._connection = null;
             this._db = null;
             this._databaseName = null;
-            this._logger.debug(correlationId, "Disconnected from mongodb database %s", this._databaseName);
+            this._logger.debug(context, "Disconnected from mongodb database %s", this._databaseName);
         });
     }
     getConnection() {

@@ -62,12 +62,12 @@ export abstract class CommandableLambdaFunction extends LambdaFunction {
             let command = commands[index];
 
             this.registerAction(command.getName(), null, async params => {
-                let correlationId = params.correlation_id;
+                let context = params.trace_id;
                 let args = Parameters.fromValue(params);
-                let timing = this.instrument(correlationId, this._info.name + '.' + command.getName());
+                let timing = this.instrument(context, this._info.name + '.' + command.getName());
 
                 try {
-                    const result = await command.execute(correlationId, args);
+                    const result = await command.execute(context, args);
                     timing.endTiming();
                     return result;
                 } catch (err) {

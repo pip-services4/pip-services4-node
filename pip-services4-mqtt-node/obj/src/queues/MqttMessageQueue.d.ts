@@ -131,26 +131,26 @@ export declare class MqttMessageQueue extends MessageQueue implements IReference
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     protected getTopic(): string;
-    protected subscribe(correlationId: string): Promise<void>;
+    protected subscribe(context: IContext): Promise<void>;
     protected fromMessage(message: MessageEnvelope): any;
     protected toMessage(topic: string, data: any, packet: any): MessageEnvelope;
     onMessage(topic: string, data: any, packet: any): void;
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId: string): Promise<void>;
+    clear(context: IContext): Promise<void>;
     /**
      * Reads the current number of messages in the queue to be delivered.
      *
@@ -161,36 +161,36 @@ export declare class MqttMessageQueue extends MessageQueue implements IReference
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    peek(correlationId: string): Promise<MessageEnvelope>;
+    peek(context: IContext): Promise<MessageEnvelope>;
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
      * Important: This method is not supported by MQTT.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>;
+    peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>;
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
-    receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    send(correlationId: string, message: MessageEnvelope): Promise<void>;
+    send(context: IContext, message: MessageEnvelope): Promise<void>;
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
      * This method is usually used to extend the message processing time.
@@ -233,18 +233,18 @@ export declare class MqttMessageQueue extends MessageQueue implements IReference
     /**
     * Listens for incoming messages and blocks the current thread until queue is closed.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param receiver          a receiver to receive incoming messages.
     *
     * @see [[IMessageReceiver]]
     * @see [[receive]]
     */
-    listen(correlationId: string, receiver: IMessageReceiver): void;
+    listen(context: IContext, receiver: IMessageReceiver): void;
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId: string): void;
+    endListen(context: IContext): void;
 }

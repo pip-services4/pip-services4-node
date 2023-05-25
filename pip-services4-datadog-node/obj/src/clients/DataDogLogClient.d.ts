@@ -9,9 +9,9 @@ export declare class DataDogLogClient extends RestClient {
     constructor(config?: ConfigParams);
     configure(config: ConfigParams): void;
     setReferences(refs: IReferences): void;
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     private convertTags;
     private convertMessage;
     private convertMessages;
-    sendLogs(correlationId: string, messages: DataDogLogMessage[]): Promise<void>;
+    sendLogs(context: IContext, messages: DataDogLogMessage[]): Promise<void>;
 }

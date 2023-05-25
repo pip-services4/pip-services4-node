@@ -136,14 +136,14 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._connection != null) {
             return;
         }
 
-        let config = await this._connectionResolver.resolve(correlationId);
+        let config = await this._connectionResolver.resolve(context);
 
         try {
             let options: any = {
@@ -170,10 +170,10 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
 
             this._connection = await nats.connect(options);
 
-            this._logger.debug(correlationId, "Connected to NATS server at "+servers);
+            this._logger.debug(context, "Connected to NATS server at "+servers);
         } catch (ex) {
-            this._logger.error(correlationId, ex, "Failed to connect to NATS server");
-            let err = new ConnectionException(correlationId, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
+            this._logger.error(context, ex, "Failed to connect to NATS server");
+            let err = new ConnectionException(context, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
             throw err;
         }
     }
@@ -181,9 +181,9 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -191,7 +191,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
         this._connection.close();
         this._connection = null;
         this._subscriptions = [];
-        this._logger.debug(correlationId, "Disconnected from NATS server");
+        this._logger.debug(context, "Disconnected from NATS server");
     }
 
     public getConnection(): any {

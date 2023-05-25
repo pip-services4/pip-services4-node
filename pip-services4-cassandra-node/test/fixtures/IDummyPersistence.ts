@@ -9,14 +9,14 @@ import { IPartialUpdater } from 'pip-services4-persistence-node';
 import { Dummy } from './Dummy';
 
 export interface IDummyPersistence extends IGetter<Dummy, String>, IWriter<Dummy, String>, IPartialUpdater<Dummy, String> {
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
-    getCountByFilter(correlationId: string, filter: FilterParams): Promise<number>;
-    getListByIds(correlationId: string, ids: string[]): Promise<Dummy[]>;
-    getOneById(correlationId: string, id: string): Promise<Dummy>;
-    create(correlationId: string, item: Dummy): Promise<Dummy>;
-    update(correlationId: string, item: Dummy): Promise<Dummy>;
-    set(correlationId: string, item: Dummy): Promise<Dummy>;
-    updatePartially(correlationId: string, id: string, data: AnyValueMap): Promise<Dummy>;
-    deleteById(correlationId: string, id: string): Promise<Dummy>;
-    deleteByIds(correlationId: string, id: string[]): Promise<void>;
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
+    getCountByFilter(context: IContext, filter: FilterParams): Promise<number>;
+    getListByIds(context: IContext, ids: string[]): Promise<Dummy[]>;
+    getOneById(context: IContext, id: string): Promise<Dummy>;
+    create(context: IContext, item: Dummy): Promise<Dummy>;
+    update(context: IContext, item: Dummy): Promise<Dummy>;
+    set(context: IContext, item: Dummy): Promise<Dummy>;
+    updatePartially(context: IContext, id: string, data: AnyValueMap): Promise<Dummy>;
+    deleteById(context: IContext, id: string): Promise<Dummy>;
+    deleteByIds(context: IContext, id: string[]): Promise<void>;
 }

@@ -58,11 +58,11 @@ export class MemoryConfigReader implements IConfigReader, IReconfigurable {
     /**
      * Reads configuration and parameterize it with given values.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param parameters        values to parameters the configuration or null to skip parameterization.
      * @returns                 retrieved configuration parameters.
      */
-    public async readConfig(correlationId: string, parameters: ConfigParams): Promise<ConfigParams> {
+    public async readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams> {
         if (parameters != null) {
             let config = new ConfigParams(this._config).toString();
             let template = new MustacheTemplate(config);

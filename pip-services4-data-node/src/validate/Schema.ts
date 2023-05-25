@@ -228,27 +228,27 @@ export class Schema {
     /**
      * Validates the given value and returns a [[ValidationException]] if errors were found.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param value             a value to be validated.
      * @param strict            true to treat warnings as errors.
      */
-    public validateAndReturnException(correlationId: string, value: any, strict: boolean = false): ValidationException {
+    public validateAndReturnException(context: IContext, value: any, strict: boolean = false): ValidationException {
         let results: ValidationResult[] = this.validate(value);
-        return ValidationException.fromResults(correlationId, results, strict);
+        return ValidationException.fromResults(context, results, strict);
     }
 
     /**
      * Validates the given value and throws a [[ValidationException]] if errors were found.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param value             a value to be validated.
      * @param strict            true to treat warnings as errors.
      * 
      * @see [[ValidationException.throwExceptionIfNeeded]]
      */
-    public validateAndThrowException(correlationId: string, value: any, strict: boolean = false): void {
+    public validateAndThrowException(context: IContext, value: any, strict: boolean = false): void {
         let results: ValidationResult[] = this.validate(value);
-        ValidationException.throwExceptionIfNeeded(correlationId, results, strict);
+        ValidationException.throwExceptionIfNeeded(context, results, strict);
     }
 
 }

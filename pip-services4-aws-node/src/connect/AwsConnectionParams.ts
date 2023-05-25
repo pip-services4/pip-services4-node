@@ -268,13 +268,13 @@ export class AwsConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters 
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public validate(correlationId: string) {
+    public validate(context: IContext) {
         let arn = this.getArn();
         if (arn == "arn:aws::::") {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_AWS_CONNECTION",
                 "AWS connection is not set"
             );
@@ -282,7 +282,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessId() == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_ACCESS_ID",
                 "No access_id is configured in AWS credential"
             );
@@ -290,7 +290,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessKey() == null) {
             throw new ConfigException(
-                correlationId, 
+                context, 
                 "NO_ACCESS_KEY", 
                 "No access_key is configured in AWS credential"
             );

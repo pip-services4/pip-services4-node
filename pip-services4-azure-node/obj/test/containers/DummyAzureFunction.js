@@ -32,27 +32,27 @@ class DummyAzureFunction extends AzureFunction_1.AzureFunction {
     }
     getPageByFilter(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.getPageByFilter(req.body.correlation_id, new pip_services3_commons_node_2.FilterParams(req.body.filter), new pip_services3_commons_node_3.PagingParams(req.body.paging));
+            return this._controller.getPageByFilter(req.body.trace_id, new pip_services3_commons_node_2.FilterParams(req.body.filter), new pip_services3_commons_node_3.PagingParams(req.body.paging));
         });
     }
     getOneById(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.getOneById(req.body.correlation_id, req.body.dummy_id);
+            return this._controller.getOneById(req.body.trace_id, req.body.dummy_id);
         });
     }
     create(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.create(req.body.correlation_id, req.body.dummy);
+            return this._controller.create(req.body.trace_id, req.body.dummy);
         });
     }
     update(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.update(req.body.correlation_id, req.body.dummy);
+            return this._controller.update(req.body.trace_id, req.body.dummy);
         });
     }
     deleteById(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.deleteById(req.body.correlation_id, req.body.dummy_id);
+            return this._controller.deleteById(req.body.trace_id, req.body.dummy_id);
         });
     }
     register() {

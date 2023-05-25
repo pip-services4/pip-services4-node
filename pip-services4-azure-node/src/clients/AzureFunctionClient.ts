@@ -54,10 +54,10 @@ import { AzureFunctionConnectionResolver } from '../connect/AzureFunctionConnect
  *     class MyAzureFunctionClient extends AzureFunctionClient implements IMyClient {
  *         ...
  *      
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *
- *             let timing = this.instrument(correlationId, 'myclient.get_data');
- *             const result = await this.call("get_data" correlationId, { id: id });
+ *             let timing = this.instrument(context, 'myclient.get_data');
+ *             const result = await this.call("get_data" context, { id: id });
  *             timing.endTiming();
  *             return result;
  *         }
@@ -154,17 +154,17 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      * 
-     * @param correlationId         (optional) transaction id to trace execution through call chain.
+     * @param context         (optional) transaction id to trace execution through call chain.
      * @param name                  a method name.
      * @returns {InstrumentTiming}  object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
@@ -180,15 +180,15 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      *
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        this._connection = await this._connectionResolver.resolve(correlationId);
+        this._connection = await this._connectionResolver.resolve(context);
         this._headers['x-functions-key'] = this._connection.getAuthCode();
         this._uri = this._connection.getFunctionUri();
         try {
@@ -207,13 +207,13 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
                 version: '*'
             });
 
-            this._logger.debug(correlationId, "Azure function client connected to %s", this._connection.getFunctionUri());
+            this._logger.debug(context, "Azure function client connected to %s", this._connection.getFunctionUri());
 
         } catch (err) {
             this._client = null;
 
             throw new ConnectionException(
-                correlationId, "CANNOT_CONNECT", "Connection to Azure function service failed"
+                context, "CANNOT_CONNECT", "Connection to Azure function service failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }
@@ -221,18 +221,18 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (!this.isOpen()) {
             return;
         }
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(correlationId, "Closed Azure function service at %s", this._uri);
+                this._logger.debug(context, "Closed Azure function service at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(correlationId, "Failed while closing Azure function service: %s", ex);
+                this._logger.warn(context, "Failed while closing Azure function service: %s", ex);
             }
 
             this._client = null;
@@ -244,18 +244,18 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
      * Performs Azure Function invocation.
      * 
      * @param cmd               an action name to be called.
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      * @param args              action arguments
      * @return {any}            action result.
      */
-    protected async invoke<T>(cmd: string, correlationId: string, args: any): Promise<T> {
+    protected async invoke<T>(cmd: string, context: IContext, args: any): Promise<T> {
         if (cmd == null) {
             throw new UnknownException(null, 'NO_COMMAND', 'Cmd parameter is missing');
         }
 
         args = Object.assign({}, args);
         args.cmd = cmd;
-        args.correlation_id = correlationId || IdGenerator.nextShort();
+        args.trace_id = context || IdGenerator.nextShort();
 
         return new Promise((resolve, reject) => {
             let action = (err, req, res, data) => {
@@ -281,12 +281,12 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
      * Calls a Azure Function action.
      * 
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    protected async call<T>(cmd: string, correlationId: string, params: any = {}): Promise<T> {
-        return this.invoke<T>(cmd, correlationId, params);
+    protected async call<T>(cmd: string, context: IContext, params: any = {}): Promise<T> {
+        return this.invoke<T>(cmd, context, params);
     }
 
 }

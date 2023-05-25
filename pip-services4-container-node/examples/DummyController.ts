@@ -42,18 +42,18 @@ export class DummyController implements IReferenceable, IReconfigurable, IOpenab
         return this._timer.isStarted();
     }
 
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         this._timer.start();
-        this._logger.trace(correlationId, "Dummy controller opened");
+        this._logger.trace(context, "Dummy controller opened");
     }
 		
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         this._timer.stop();
-        this._logger.trace(correlationId, "Dummy controller closed");
+        this._logger.trace(context, "Dummy controller closed");
     }
 
-    public notify(correlationId: string, args: Parameters): void {
-        this._logger.info(correlationId, "%d - %s", this.counter++, this.message);
+    public notify(context: IContext, args: Parameters): void {
+        this._logger.info(context, "%d - %s", this.counter++, this.message);
     }
 
 }

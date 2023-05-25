@@ -61,9 +61,9 @@ import { IRegisterable } from './IRegisterable';
  *
  *        public register(): void {
  *            registerMethod("get_mydata", null, async (call) => {
- *                let correlationId = call.request.correlationId;
+ *                let context = call.request.context;
  *                let id = call.request.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -137,11 +137,11 @@ export declare abstract class GrpcService implements IOpenable, IConfigurable, I
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -151,15 +151,15 @@ export declare abstract class GrpcService implements IOpenable, IConfigurable, I
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     private registerService;
     private getServiceByName;
     protected applyValidation(schema: Schema, action: (call: any) => Promise<any>): (call: any) => Promise<any>;

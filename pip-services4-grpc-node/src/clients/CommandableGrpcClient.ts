@@ -33,11 +33,11 @@ import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
  *     class MyCommandableGrpcClient extends CommandableGrpcClient implements IMyClient {
  *        ...
  * 
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *        
  *            return await this.callCommand(
  *                "get_data",
- *                correlationId,
+ *                context,
  *                { id: id }
  *            );
  *         }
@@ -75,23 +75,23 @@ export class CommandableGrpcClient extends GrpcClient {
      * The complete route to remote method is defined as serviceName + "." + name.
      * 
      * @param name              a name of the command to call. 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @returns the received result.
      */
-    protected async callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
+    protected async callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
         let method = this._name + '.' + name;
-        let timing = this.instrument(correlationId, method);
+        let timing = this.instrument(context, method);
 
         let request = {
             method: method,
-            correlation_id: correlationId,
+            trace_id: context,
             args_empty: params == null,
             args_json: params != null ? JSON.stringify(params) : null
         };
 
         try {
-            let response = await this.call<any>("invoke", correlationId, request);
+            let response = await this.call<any>("invoke", context, request);
 
             // Handle error response
             if (response.error != null) {

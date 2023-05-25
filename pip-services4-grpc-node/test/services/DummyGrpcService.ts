@@ -39,7 +39,7 @@ export class DummyGrpcService extends GrpcService {
         let paging = PagingParams.fromValue(call.request.paging);
 
         return await this._controller.getPageByFilter(
-            call.request.correlation_id,
+            call.request.trace_id,
             filter,
             paging
         );
@@ -47,7 +47,7 @@ export class DummyGrpcService extends GrpcService {
 
     private async getOneById(call: any): Promise<any> {
         let result = await this._controller.getOneById(
-            call.request.correlation_id,
+            call.request.trace_id,
             call.request.dummy_id
         );
         return result || {};
@@ -55,21 +55,21 @@ export class DummyGrpcService extends GrpcService {
 
     private async create(call: any): Promise<any> {
         return await this._controller.create(
-            call.request.correlation_id,
+            call.request.trace_id,
             call.request.dummy,
         );
     }
 
     private async update(call: any): Promise<any> {
         return await this._controller.update(
-            call.request.correlation_id,
+            call.request.trace_id,
             call.request.dummy
         );
     }
 
     private async deleteById(call: any): Promise<any> {
         let result = await this._controller.deleteById(
-            call.request.correlation_id,
+            call.request.trace_id,
             call.request.dummy_id,
         );
         return result || {};

@@ -87,13 +87,13 @@ export abstract class CommandableCloudFunctionService extends CloudFunctionServi
             let name = command.getName();
 
             this.registerAction(name, null, async (req, res) => {
-                let correlationId = this.getCorrelationId(req);
+                let context = this.getTraceId(req);
                 let args = this.getParameters(req);
-                args.remove("correlation_id");
+                args.remove("trace_id");
 
-                let timing = this.instrument(correlationId, name);
+                let timing = this.instrument(context, name);
                 try {
-                    const result = await command.execute(correlationId, args);
+                    const result = await command.execute(context, args);
                     HttpResponseSender.sendResult(req, res, result);
                     timing.endTiming()
                 } catch (ex) {

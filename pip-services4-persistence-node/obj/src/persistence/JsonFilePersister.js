@@ -71,13 +71,13 @@ class JsonFilePersister {
     /**
      * Loads data items from external JSON file.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @returns                a list with loaded data items.
      */
-    load(correlationId) {
+    load(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._path == null) {
-                throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PATH", "Data file path is not set");
+                throw new pip_services3_commons_node_1.ConfigException(context, "NO_PATH", "Data file path is not set");
             }
             if (!fs.existsSync(this._path)) {
                 return [];
@@ -89,24 +89,24 @@ class JsonFilePersister {
                 return arr;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.FileException(correlationId, "READ_FAILED", "Failed to read data file: " + this._path).withCause(ex);
+                throw new pip_services3_commons_node_2.FileException(context, "READ_FAILED", "Failed to read data file: " + this._path).withCause(ex);
             }
         });
     }
     /**
      * Saves given data items to external JSON file.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param items             list if data items to save
      */
-    save(correlationId, items) {
+    save(context, items) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let json = pip_services3_commons_node_3.JsonConverter.toJson(items);
                 fs.writeFileSync(this._path, json);
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.FileException(correlationId, "WRITE_FAILED", "Failed to write data file: " + this._path).withCause(ex);
+                throw new pip_services3_commons_node_2.FileException(context, "WRITE_FAILED", "Failed to write data file: " + this._path).withCause(ex);
             }
         });
     }

@@ -178,9 +178,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -190,10 +190,10 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_3.ConnectionException(correlationId, "CONNECT_FAILED", "Kafka connection is not opened");
+                throw new pip_services3_commons_node_3.ConnectionException(context, "CONNECT_FAILED", "Kafka connection is not opened");
             }
             // create topic if it does not exist
             let topics = yield this._connection.readQueueNames();
@@ -201,7 +201,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 yield this._connection.createQueue(this.getTopic());
             // Subscribe right away
             if (this._autoSubscribe) {
-                yield this.subscribe(correlationId);
+                yield this.subscribe(context);
             }
             this._opened = true;
         });
@@ -209,18 +209,18 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(correlationId, 'NO_CONNECTION', 'Kafka connection is missing');
+                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Kafka connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             // Unsubscribe from the topic
             if (this._subscribed) {
@@ -236,7 +236,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     getTopic() {
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
-    subscribe(correlationId) {
+    subscribe(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._subscribed) {
                 return;
@@ -258,8 +258,8 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         if (message.message_type != null) {
             headers.message_type = Buffer.from(message.message_type);
         }
-        if (message.correlation_id != null) {
-            headers.correlation_id = Buffer.from(message.correlation_id);
+        if (message.trace_id != null) {
+            headers.trace_id = Buffer.from(message.trace_id);
         }
         let msg = {
             key: Buffer.from(message.message_id),
@@ -273,8 +273,8 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         if (msg == null)
             return null;
         let messageType = this.getHeaderByKey(msg.headers, "message_type");
-        let correlationId = this.getHeaderByKey(msg.headers, "correlation_id");
-        let message = new pip_services3_messaging_node_3.MessageEnvelope(correlationId, messageType, null);
+        let context = this.getHeaderByKey(msg.headers, "trace_id");
+        let message = new pip_services3_messaging_node_3.MessageEnvelope(context, messageType, null);
         message.message_id = msg.key.toString();
         message.sent_time = new Date(msg.timestamp);
         message.message = msg.value;
@@ -305,7 +305,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                     return;
                 }
                 this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-                this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+                this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
                 // Send message to receiver if its set or put it into the queue
                 if (this._receiver != null) {
                     this.sendMessageToReceiver(this._receiver, message);
@@ -319,9 +319,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
         });
@@ -340,21 +340,21 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    peek(correlationId) {
+    peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             // Peek a message from the top
             let message = null;
             if (this._messages.length > 0) {
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -365,33 +365,33 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * Important: This method is not supported by MQTT.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    peekBatch(correlationId, messageCount) {
+    peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             // Peek a batch of messages
             let messages = this._messages.slice(0, messageCount);
-            this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+            this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
     }
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
-    receive(correlationId, waitTimeout) {
+    receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             // Subscribe to topic if needed
-            yield this.subscribe(correlationId);
+            yield this.subscribe(context);
             let message = null;
             // Return message immediately if it exist
             if (this._messages.length > 0) {
@@ -419,14 +419,14 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    send(correlationId, message) {
+    send(context, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-            this._logger.debug(message.correlation_id, "Sent message %s via %s", message.toString(), this.toString());
+            this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
             let msg = this.fromMessage(message);
             let topic = this.getName() || this._topic;
             msg.partition = this._writePartition;
@@ -508,29 +508,29 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         });
     }
     sendMessageToReceiver(receiver, message) {
-        let correlationId = message != null ? message.correlation_id : null;
+        let context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(correlationId, "Kafka message was skipped.");
+            this._logger.warn(context, "Kafka message was skipped.");
             return;
         }
         this._receiver.receiveMessage(message, this)
             .catch((err) => {
-            this._logger.error(correlationId, err, "Failed to process the message");
+            this._logger.error(context, err, "Failed to process the message");
         });
     }
     /**
     * Listens for incoming messages and blocks the current thread until queue is closed.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param receiver          a receiver to receive incoming messages.
     *
     * @see [[IMessageReceiver]]
     * @see [[receive]]
     */
-    listen(correlationId, receiver) {
-        this.checkOpen(correlationId);
+    listen(context, receiver) {
+        this.checkOpen(context);
         // Subscribe to topic if needed
-        this.subscribe(correlationId)
+        this.subscribe(context)
             .then(() => {
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
@@ -550,9 +550,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId) {
+    endListen(context) {
         this._receiver = null;
     }
 }

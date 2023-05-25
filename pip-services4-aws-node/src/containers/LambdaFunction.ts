@@ -96,16 +96,16 @@ export abstract class LambdaFunction extends Container {
         return ConfigParams.fromValue(process.env);
     }
 
-    private captureErrors(correlationId: string): void {
+    private captureErrors(context: IContext): void {
         // Log uncaught exceptions
         process.on('uncaughtException', (ex) => {
-            this._logger.fatal(correlationId, ex, "Process is terminated");
+            this._logger.fatal(context, ex, "Process is terminated");
             process.exit(1);
         });
     }
 
-    private captureExit(correlationId: string): void {
-        this._logger.info(correlationId, "Press Control-C to stop the microservice...");
+    private captureExit(context: IContext): void {
+        this._logger.info(context, "Press Control-C to stop the microservice...");
 
         // Activate graceful exit
         process.on('SIGINT', () => {
@@ -114,8 +114,8 @@ export abstract class LambdaFunction extends Container {
 
         // Gracefully shutdown
         process.on('exit', () => {
-            this.close(correlationId);
-            this._logger.info(correlationId, "Goodbye!");
+            this.close(context);
+            this._logger.info(context, "Goodbye!");
         });
     }
 
@@ -135,12 +135,12 @@ export abstract class LambdaFunction extends Container {
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-     public async open(correlationId: string): Promise<void> {
+     public async open(context: IContext): Promise<void> {
          if (this.isOpen()) return;
 
-         await super.open(correlationId);
+         await super.open(context);
          this.registerServices();
      }
 
@@ -151,17 +151,17 @@ export abstract class LambdaFunction extends Container {
      * 
      * Note: This method has been deprecated. Use LambdaService instead.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
@@ -172,15 +172,15 @@ export abstract class LambdaFunction extends Container {
      *  
      */
     public async run(): Promise<void> {
-        let correlationId = this._info.name;
+        let context = this._info.name;
 
         let path = this.getConfigPath();
         let parameters = this.getParameters();
-        this.readConfigFromFile(correlationId, path, parameters);
+        this.readConfigFromFile(context, path, parameters);
 
-        this.captureErrors(correlationId);
-        this.captureExit(correlationId);
-    	await this.open(correlationId);
+        this.captureErrors(context);
+        this.captureExit(context);
+    	await this.open(context);
     }
 
     /**
@@ -246,8 +246,8 @@ export abstract class LambdaFunction extends Container {
         const actionCurl = (params) => {
             // Perform validation
             if (schema != null) {
-                let correlationId = params.correlaton_id;
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = params.correlaton_id;
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err != null) {
                     throw err;
                 }
@@ -270,11 +270,11 @@ export abstract class LambdaFunction extends Container {
      */
     protected async execute(event: any): Promise<any> {
         let cmd: string = event.cmd;
-        let correlationId = event.correlation_id;
+        let context = event.trace_id;
         
         if (cmd == null) {
             throw new BadRequestException(
-                correlationId, 
+                context, 
                 'NO_COMMAND', 
                 'Cmd parameter is missing'
             );
@@ -283,7 +283,7 @@ export abstract class LambdaFunction extends Container {
         const action: any = this._actions[cmd];
         if (action == null) {
             throw new BadRequestException(
-                correlationId, 
+                context, 
                 'NO_ACTION', 
                 'Action ' + cmd + ' was not found'
             )

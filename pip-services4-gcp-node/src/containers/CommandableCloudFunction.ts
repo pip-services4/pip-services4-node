@@ -73,12 +73,12 @@ export abstract class CommandableCloudFunction extends CloudFunction {
             let command = commands[index];
 
             this.registerAction(command.getName(), null, async (req, res) => {
-                let correlationId = this.getCorrelationId(req);
+                let context = this.getTraceId(req);
                 let args = this.getParameters(req);
-                let timing = this.instrument(correlationId, this._info.name + '.' + command.getName());
+                let timing = this.instrument(context, this._info.name + '.' + command.getName());
 
                 try {
-                    const result = await command.execute(correlationId, args);
+                    const result = await command.execute(context, args);
                     timing.endTiming();
                     HttpResponseSender.sendResult(req, res, result);
                 } catch (err) {

@@ -93,22 +93,22 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     /**
      * Opens the component.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
         try {
-            await super.open(correlationId);
+            await super.open(context);
 
             // Subscribe right away
             if (this._autoSubscribe) {
-                await this.subscribe(correlationId);
+                await this.subscribe(context);
             }
         } catch (ex) {
-            await this.close(correlationId);
+            await this.close(context);
             throw ex;
         }
     }
@@ -116,9 +116,9 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (!this.isOpen()) {
             return;
         }
@@ -130,7 +130,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
             this._subscribed = false;
         }
     
-        await super.close(correlationId);
+        await super.close(context);
 
         this._messages = [];
         this._receiver = null;
@@ -139,13 +139,13 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
 
-    protected async subscribe(correlationId: string): Promise<void> {
+    protected async subscribe(context: IContext): Promise<void> {
         if (this._subscribed) {
             return;
         }
@@ -174,14 +174,14 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    public async peek(correlationId: string): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async peek(context: IContext): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a message from the top
         let message: MessageEnvelope = null;
@@ -190,7 +190,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         }
 
         if (message != null) {
-            this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
         }
     
         return message;
@@ -202,20 +202,20 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
      * 
      * Important: This method is not supported by NATS.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    public async peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]> {
-        this.checkOpen(correlationId);
+    public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a batch of messages
         let messages = this._messages.slice(0, messageCount);
 
-        this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+        this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
 
         return messages;
     }
@@ -223,15 +223,15 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message or <code>null</code> if nothing was received.
      */
-    public async receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        this.subscribe(correlationId);
+        this.subscribe(context);
 
         let message: MessageEnvelope = null;
 
@@ -275,7 +275,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
 
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
@@ -286,32 +286,32 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     }
 
     private sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): void {
-        let correlationId = message != null ? message.correlation_id : null;
+        let context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(correlationId, "NATS message was skipped.");
+            this._logger.warn(context, "NATS message was skipped.");
             return;
         }
 
         this._receiver.receiveMessage(message, this)
         .catch((err) => {
-            this._logger.error(correlationId, err, "Failed to process the message");
+            this._logger.error(context, err, "Failed to process the message");
         });
     }
 
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    public listen(correlationId: string, receiver: IMessageReceiver): void {
-        this.checkOpen(correlationId);
+    public listen(context: IContext, receiver: IMessageReceiver): void {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        this.subscribe(correlationId)
+        this.subscribe(context)
         .then(() => {
             this._logger.trace(null, "Started listening messages at %s", this.getName());
 
@@ -334,9 +334,9 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public endListen(correlationId: string): void {
+    public endListen(context: IContext): void {
         this._receiver = null;
     }
 

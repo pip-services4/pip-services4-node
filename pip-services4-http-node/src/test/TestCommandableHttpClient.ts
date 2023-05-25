@@ -12,11 +12,11 @@ export class TestCommandableHttpClient extends CommandableHttpClient {
      * The complete route to remote method is defined as baseRoute + "/" + name.
      * 
      * @param name              a name of the command to call. 
-     * @param correlationId     (optional) transaction id to trace execution through the call chain.
+     * @param context     (optional) transaction id to trace execution through the call chain.
      * @param params            command parameters.
      * @returns                 a command execution result.
      */
-    public callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
-        return super.callCommand(name, correlationId, params);
+    public callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
+        return super.callCommand(name, context, params);
     }
 }

@@ -93,37 +93,37 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * Resolves connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved options.
      */
-     public async resolve(correlationId: string): Promise<ConfigParams> {
+     public async resolve(context: IContext): Promise<ConfigParams> {
         // Todo: Why Promise.all returns promises instead of resolved values??
         // let [connections, credential] = await Promise.all([
         //     async () => {
-                let connections = await this._connectionResolver.resolveAll(correlationId);
+                let connections = await this._connectionResolver.resolveAll(context);
                 connections = connections || [];
 
                 // Validate if cluster (multiple connections) is supported
                 if (connections.length > 0 && !this._clusterSupported) {
                     throw new ConfigException(
-                        correlationId, 
+                        context, 
                         "MULTIPLE_CONNECTIONS_NOT_SUPPORTED",
                         "Multiple (cluster) connections are not supported"
                     );
                 }
 
                 for (let connection of connections) {
-                    this.validateConnection(correlationId, connection);
+                    this.validateConnection(context, connection);
                 }
 
             //     return connections;
             // },
             // async () => {
-                let credential = await this._credentialResolver.lookup(correlationId);
+                let credential = await this._credentialResolver.lookup(context);
                 credential = credential || new CredentialParams();
 
                 // Validate credential
-                this.validateCredential(correlationId, credential);
+                this.validateCredential(context, credential);
 
         //         return credential;
         //     }
@@ -135,22 +135,22 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * Composes Composite connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @param parameters        optional parameters
      * @returns 			    resolved options.
      */
-    public compose(correlationId: string, connections: ConnectionParams[], credential: CredentialParams,
+    public compose(context: IContext, connections: ConnectionParams[], credential: CredentialParams,
         parameters: ConfigParams): ConfigParams {
 
         // Validate connection parameters
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
 
         // Validate credential parameters
-        this.validateCredential(correlationId, credential);
+        this.validateCredential(context, credential);
 
         // Compose final options
         return this.composeOptions(connections, credential, parameters);
@@ -160,12 +160,12 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * Validates connection parameters and throws an exception on error.
      * This method can be overriden in child classes.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection connection parameters to be validated
      */
-    protected validateConnection(correlationId: string, connection: ConnectionParams): void {
+    protected validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
-            throw new ConfigException(correlationId, "NO_CONNECTION", "Connection parameters are not set is not set");
+            throw new ConfigException(context, "NO_CONNECTION", "Connection parameters are not set is not set");
         }
 
         // URI usually contains all information
@@ -176,20 +176,20 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
 
         let protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
-            throw new ConfigException(correlationId, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
         }
         if (this._supportedProtocols != null && this._supportedProtocols.indexOf(protocol) < 0) {
-            throw new ConfigException(correlationId, "UNSUPPORTED_PROTOCOL", "The protocol "+protocol+" is not supported");
+            throw new ConfigException(context, "UNSUPPORTED_PROTOCOL", "The protocol "+protocol+" is not supported");
         }
 
         let host = connection.getHost();
         if (host == null) {
-            throw new ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new ConfigException(context, "NO_HOST", "Connection host is not set");
         }
 
         let port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
-            throw new ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new ConfigException(context, "NO_PORT", "Connection port is not set");
         }
     }
 
@@ -197,10 +197,10 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * Validates credential parameters and throws an exception on error.
      * This method can be overriden in child classes.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param credential  credential parameters to be validated
      */
-    protected validateCredential(correlationId: string, credential: CredentialParams): void {
+    protected validateCredential(context: IContext, credential: CredentialParams): void {
         // By default the rules are open
     }
 

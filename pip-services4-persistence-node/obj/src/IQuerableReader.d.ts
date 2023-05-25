@@ -7,10 +7,10 @@ export interface IQuerableReader<T> {
     /**
      * Gets a list of data items using a query string.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param query            (optional) a query string
      * @param sort             (optional) sort parameters
      * @returns                a list with found data items.
      */
-    getListByQuery(correlationId: string, query: string, sort: SortParams): Promise<T[]>;
+    getListByQuery(context: IContext, query: string, sort: SortParams): Promise<T[]>;
 }

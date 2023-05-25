@@ -22,16 +22,16 @@ class TestCommandableLambdaClient extends CommandableLambdaClient_1.CommandableL
      * to the action parameters.
      *
      * @param cmd               an action name
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @return {any}            action result.
      */
-    callCommand(name, correlationId, params) {
+    callCommand(name, context, params) {
         const _super = Object.create(null, {
             callCommand: { get: () => super.callCommand }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return _super.callCommand.call(this, name, correlationId, params);
+            return _super.callCommand.call(this, name, context, params);
         });
     }
 }

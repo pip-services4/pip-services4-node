@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 
+import { IContext } from "../../src/run/IContext";
 import { INotifiable } from '../../src/run/INotifiable';
 import { FixedRateTimer } from '../../src/run/FixedRateTimer';
 
@@ -9,7 +10,7 @@ suite('FixedRateTimer', ()=> {
         let counter = 0;
 
         let timer = new FixedRateTimer({
-            notify: (correlationId: string) => {
+            notify: (context: IContext) => {
                 counter++;
             }
         }, 100, 0);

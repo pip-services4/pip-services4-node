@@ -39,33 +39,33 @@ export class ApplicationExceptionFactory {
     	let category = description.category;
     	let code = description.code;
     	let message = description.message;
-    	let correlationId = description.correlation_id;
+    	let traceId = description.trace_id;
     	
     	// Create well-known exception type based on error category
     	if (ErrorCategory.Unknown == category)
-    		error = new UnknownException(correlationId, code, message);
+    		error = new UnknownException(traceId, code, message);
     	else if (ErrorCategory.Internal == category)
-    		error = new InternalException(correlationId, code, message);
+    		error = new InternalException(traceId, code, message);
     	else if (ErrorCategory.Misconfiguration == category)
-    		error = new ConfigException(correlationId, code, message);
+    		error = new ConfigException(traceId, code, message);
     	else if (ErrorCategory.NoResponse == category)
-    		error = new ConnectionException(correlationId, code, message);
+    		error = new ConnectionException(traceId, code, message);
     	else if (ErrorCategory.FailedInvocation == category)
-    		error = new InvocationException(correlationId, code, message);
+    		error = new InvocationException(traceId, code, message);
     	else if (ErrorCategory.FileError == category)
-    		error = new FileException(correlationId, code, message);
+    		error = new FileException(traceId, code, message);
     	else if (ErrorCategory.BadRequest == category)
-    		error = new BadRequestException(correlationId, code, message);
+    		error = new BadRequestException(traceId, code, message);
     	else if (ErrorCategory.Unauthorized == category)
-    		error = new UnauthorizedException(correlationId, code, message);
+    		error = new UnauthorizedException(traceId, code, message);
     	else if (ErrorCategory.Conflict == category)
-    		error = new ConflictException(correlationId, code, message);
+    		error = new ConflictException(traceId, code, message);
     	else if (ErrorCategory.NotFound == category)
-    		error = new NotFoundException(correlationId, code, message);
+    		error = new NotFoundException(traceId, code, message);
     	else if (ErrorCategory.InvalidState == category)
-    		error = new InvalidStateException(correlationId, code, message);
+    		error = new InvalidStateException(traceId, code, message);
     	else if (ErrorCategory.Unsupported == category)
-    		error = new UnsupportedException(correlationId, code, message);
+    		error = new UnsupportedException(traceId, code, message);
     	else {
     		error = new UnknownException();
     		error.category = category;

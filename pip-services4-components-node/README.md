@@ -61,13 +61,13 @@ export class MyComponentA implements IConfigurable, IReferenceable, IOpenable {
         return this._opened;
     }
 
-    public open(correlationId: string, callback: (err: any) => void): void {
+    public open(context: IContext, callback: (err: any) => void): void {
         this._opened = true;
         console.log("MyComponentA has been opened.");
         callback(null);
     }
 
-    public close(correlationId: string, callback: (err: any) => void): void {
+    public close(context: IContext, callback: (err: any) => void): void {
         this._opened = true;
         console.log("MyComponentA has been closed.");
         callback(null);

@@ -250,18 +250,18 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
     /**
      * Validates this connection parameters
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    validate(correlationId) {
+    validate(context) {
         let arn = this.getArn();
         if (arn == "arn:aws::::") {
-            throw new pip_services3_commons_node_3.ConfigException(correlationId, "NO_AWS_CONNECTION", "AWS connection is not set");
+            throw new pip_services3_commons_node_3.ConfigException(context, "NO_AWS_CONNECTION", "AWS connection is not set");
         }
         if (this.getAccessId() == null) {
-            throw new pip_services3_commons_node_3.ConfigException(correlationId, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
+            throw new pip_services3_commons_node_3.ConfigException(context, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
         }
         if (this.getAccessKey() == null) {
-            throw new pip_services3_commons_node_3.ConfigException(correlationId, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
+            throw new pip_services3_commons_node_3.ConfigException(context, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
         }
     }
     /**

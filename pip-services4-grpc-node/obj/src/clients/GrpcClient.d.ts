@@ -38,11 +38,11 @@ import { HttpConnectionResolver } from 'pip-services4-rpc-node';
  *     class MyGrpcClient extends GrpcClient implements IMyClient {
  *        ...
  *
- *        public getData(correlationId: string, id: string,
+ *        public getData(context: IContext, id: string,
  *            callback: (err: any, result: MyData) => void): void {
  *
- *            let timing = this.instrument(correlationId, 'myclient.get_data');
- *            this.call("get_data", correlationId, { id: id }, (err, result) => {
+ *            let timing = this.instrument(context, 'myclient.get_data');
+ *            this.call("get_data", context, { id: id }, (err, result) => {
  *                timing.endTiming();
  *                callback(err, result);
  *            });
@@ -120,11 +120,11 @@ export declare abstract class GrpcClient implements IOpenable, IConfigurable, IR
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns CounterTiming object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -134,23 +134,23 @@ export declare abstract class GrpcClient implements IOpenable, IConfigurable, IR
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     private getClientByName;
     /**
      * Calls a remote method via GRPC protocol.
      *
      * @param method            a method name to called
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */
-    protected call<T>(method: string, correlationId?: string, request?: any): Promise<T>;
+    protected call<T>(method: string, context?: string, request?: any): Promise<T>;
 }

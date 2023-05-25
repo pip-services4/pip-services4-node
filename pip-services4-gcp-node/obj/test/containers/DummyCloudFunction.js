@@ -34,14 +34,14 @@ class DummyCloudFunction extends CloudFunction_1.CloudFunction {
     getPageByFilter(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            let page = this._controller.getPageByFilter(params.correlation_id, new pip_services3_commons_node_2.FilterParams(params.filter), new pip_services3_commons_node_3.PagingParams(params.paging));
+            let page = this._controller.getPageByFilter(params.trace_id, new pip_services3_commons_node_2.FilterParams(params.filter), new pip_services3_commons_node_3.PagingParams(params.paging));
             pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, page);
         });
     }
     getOneById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            let dummy = yield this._controller.getOneById(params.correlation_id, params.dummy_id);
+            let dummy = yield this._controller.getOneById(params.trace_id, params.dummy_id);
             if (dummy != null) {
                 pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, dummy);
             }
@@ -53,21 +53,21 @@ class DummyCloudFunction extends CloudFunction_1.CloudFunction {
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            let dummy = yield this._controller.create(params.correlation_id, params.dummy);
+            let dummy = yield this._controller.create(params.trace_id, params.dummy);
             pip_services3_rpc_node_1.HttpResponseSender.sendCreatedResult(req, res, dummy);
         });
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            let dummy = yield this._controller.update(params.correlation_id, params.dummy);
+            let dummy = yield this._controller.update(params.trace_id, params.dummy);
             pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, dummy);
         });
     }
     deleteById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            let dummy = yield this._controller.deleteById(params.correlation_id, params.dummy_id);
+            let dummy = yield this._controller.deleteById(params.trace_id, params.dummy_id);
             pip_services3_rpc_node_1.HttpResponseSender.sendDeletedResult(req, res, dummy);
         });
     }

@@ -10,7 +10,7 @@ paths:
         - dummies
       operationId: 'get_dummies'
       parameters:
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false
@@ -52,7 +52,7 @@ paths:
         - dummies
       operationId: 'create_dummy'
       parameters:
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false
@@ -90,7 +90,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false
@@ -114,7 +114,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false
@@ -151,7 +151,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false

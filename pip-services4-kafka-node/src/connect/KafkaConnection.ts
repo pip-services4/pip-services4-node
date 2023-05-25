@@ -162,14 +162,14 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._connection != null) {
             return;
         }
 
-        let config = await this._connectionResolver.resolve(correlationId);
+        let config = await this._connectionResolver.resolve(context);
         try {                
             let options: any = {
                 clientId: this._clientId,
@@ -206,11 +206,11 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
             this._connection = connection;
             this._producer = producer;
 
-            this._logger.debug(correlationId, "Connected to Kafka broker at "+brokers);
+            this._logger.debug(context, "Connected to Kafka broker at "+brokers);
         } catch (ex) {
-            this._logger.error(correlationId, ex, "Failed to connect to Kafka server");
+            this._logger.error(context, ex, "Failed to connect to Kafka server");
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to Kafka service failed"
             ).withCause(ex);
@@ -220,9 +220,9 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -246,7 +246,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         this._subscriptions = [];
 
         this._connection = null;
-        this._logger.debug(correlationId, "Disconnected from Kafka server");
+        this._logger.debug(context, "Disconnected from Kafka server");
     }
 
     public getConnection(): any {

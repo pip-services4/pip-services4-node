@@ -50,9 +50,9 @@ import { ILambdaService } from './ILambdaService';
  *
  *        public register(): void {
  *            registerAction("get_mydata", null, async (params) => {
- *                let correlationId = params.correlation_id;
+ *                let context = params.trace_id;
  *                let id = params.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -118,11 +118,11 @@ export declare abstract class LambdaService implements ILambdaService, IOpenable
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -132,15 +132,15 @@ export declare abstract class LambdaService implements ILambdaService, IOpenable
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     protected applyValidation(schema: Schema, action: (params: any) => Promise<any>): (params: any) => Promise<any>;
     protected applyInterceptors(action: (params: any) => Promise<any>): (params: any) => Promise<any>;
     protected generateActionCmd(name: string): string;

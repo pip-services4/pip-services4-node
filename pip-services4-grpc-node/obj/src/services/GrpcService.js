@@ -66,9 +66,9 @@ const GrpcEndpoint_1 = require("./GrpcEndpoint");
  *
  *        public register(): void {
  *            registerMethod("get_mydata", null, async (call) => {
- *                let correlationId = call.request.correlationId;
+ *                let context = call.request.context;
  *                let id = call.request.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -175,30 +175,30 @@ class GrpcService {
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
-    //         this._logger.error(correlationId, err, "Failed to execute %s method", name);
+    //         this._logger.error(context, err, "Failed to execute %s method", name);
     //         this._counters.incrementOne(name + '.exec_errors');    
     //     }
     //     if (callback) callback(err, result);
@@ -214,9 +214,9 @@ class GrpcService {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -227,7 +227,7 @@ class GrpcService {
                 this._localEndpoint = true;
             }
             if (this._localEndpoint) {
-                yield this._endpoint.open(correlationId);
+                yield this._endpoint.open(context);
             }
             this._opened = true;
         });
@@ -235,18 +235,18 @@ class GrpcService {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._endpoint == null) {
-                throw new pip_services3_commons_node_1.InvalidStateException(correlationId, 'NO_ENDPOINT', 'GRPC endpoint is missing');
+                throw new pip_services3_commons_node_1.InvalidStateException(context, 'NO_ENDPOINT', 'GRPC endpoint is missing');
             }
             if (this._localEndpoint) {
-                yield this._endpoint.close(correlationId);
+                yield this._endpoint.close(context);
             }
             this._opened = false;
         });
@@ -303,8 +303,8 @@ class GrpcService {
                     value = value.toObject();
                 }
                 // Perform validation                    
-                let correlationId = value.correlation_id;
-                let err = schema.validateAndReturnException(correlationId, value, false);
+                let context = value.trace_id;
+                let err = schema.validateAndReturnException(context, value, false);
                 if (err) {
                     throw err;
                 }

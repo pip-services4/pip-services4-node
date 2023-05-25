@@ -32,12 +32,12 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
         this._dependencyResolver.setReferences(references);
     }
 
-    protected getCorrelationId(req: any): any {
-        let correlationId = req.query.correlation_id;
-        if (correlationId == null || correlationId == "") {
-            correlationId = req.headers['correlation_id']
+    protected getTraceId(req: any): any {
+        let context = req.query.trace_id;
+        if (context == null || context == "") {
+            context = req.headers['trace_id']
         }
-        return correlationId
+        return context
     }
 
     protected getFilterParams(req: any): FilterParams {
@@ -45,7 +45,7 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
         delete value.skip;
         delete value.take;
         delete value.total;
-        delete value.correlation_id;
+        delete value.trace_id;
 
         let filter = FilterParams.fromValue(value);
         return filter;
@@ -82,45 +82,45 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
     }
 
     protected sendBadRequest(req: any, res: any, message: string): void {
-        let correlationId = this.getCorrelationId(req);
-        let error = new BadRequestException(correlationId, 'BAD_REQUEST', message);
+        let context = this.getTraceId(req);
+        let error = new BadRequestException(context, 'BAD_REQUEST', message);
         this.sendError(req, res, error);
     }
 
     protected sendUnauthorized(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new UnauthorizedException(correlationId, 'UNAUTHORIZED', message);
+        let context = this.getTraceId(req);
+        let error = new UnauthorizedException(context, 'UNAUTHORIZED', message);
         this.sendError(req, res, error);
     }
 
     protected sendNotFound(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new NotFoundException(correlationId, 'NOT_FOUND', message);
+        let context = this.getTraceId(req);
+        let error = new NotFoundException(context, 'NOT_FOUND', message);
         this.sendError(req, res, error);
     }
 
     protected sendConflict(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new ConflictException(correlationId, 'CONFLICT', message);
+        let context = this.getTraceId(req);
+        let error = new ConflictException(context, 'CONFLICT', message);
         this.sendError(req, res, error);
     }
 
     protected sendSessionExpired(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new UnknownException(correlationId, 'SESSION_EXPIRED', message);
+        let context = this.getTraceId(req);
+        let error = new UnknownException(context, 'SESSION_EXPIRED', message);
         error.status = 440;
         this.sendError(req, res, error);
     }
 
     protected sendInternalError(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new UnknownException(correlationId, 'INTERNAL', message);
+        let context = this.getTraceId(req);
+        let error = new UnknownException(context, 'INTERNAL', message);
         this.sendError(req, res, error);
     }
 
     protected sendServerUnavailable(req: any, res: any, message: string): void  {
-        let correlationId = this.getCorrelationId(req);
-        let error = new ConflictException(correlationId, 'SERVER_UNAVAILABLE', message);
+        let context = this.getTraceId(req);
+        let error = new ConflictException(context, 'SERVER_UNAVAILABLE', message);
         error.status = 503;
         this.sendError(req, res, error);
     }

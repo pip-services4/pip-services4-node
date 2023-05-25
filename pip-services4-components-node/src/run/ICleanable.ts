@@ -1,5 +1,7 @@
 /** @module run */
 
+import { IContext } from "./IContext";
+
 /**
  * Interface for components that should clean their state.
  * 
@@ -13,7 +15,7 @@
  *     class MyObjectWithState implements ICleanable {
  *         private _state: any = {};
  *         ...
- *         public async clear(correlationId: string): void {
+ *         public async clear(context: IContext): void {
  *             this._state = {};
  *         }
  *     }
@@ -23,8 +25,8 @@ export interface ICleanable {
 	/**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      * @param callback 			callback function that receives error or null no errors occured.
 	 */
-	clear(correlationId: string): Promise<void>;
+	clear(context: IContext): Promise<void>;
 }

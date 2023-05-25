@@ -57,7 +57,7 @@ const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
  *             endpoint.setReferences(this._references);
  *         ...
  *
- *         await this._endpoint.open(correlationId);
+ *         await this._endpoint.open(context);
  *     }
  */
 class GrpcEndpoint {
@@ -122,14 +122,14 @@ class GrpcEndpoint {
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a GRPC server (service) using the set options and parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             this._uri = connection.getAsString("uri");
             try {
                 let options = {};
@@ -172,24 +172,24 @@ class GrpcEndpoint {
                     });
                 });
                 // Register the service URI
-                yield this._connectionResolver.register(correlationId);
-                this._logger.debug(correlationId, "Opened GRPC service at %s", this._uri);
+                yield this._connectionResolver.register(context);
+                this._logger.debug(context, "Opened GRPC service at %s", this._uri);
                 // Start operations
                 this.performRegistrations();
                 this._server.start();
             }
             catch (ex) {
                 this._server = null;
-                throw new pip_services3_commons_node_3.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC service failed").wrap(ex).withDetails("url", this._uri);
+                throw new pip_services3_commons_node_3.ConnectionException(context, "CANNOT_CONNECT", "Opening GRPC service failed").wrap(ex).withDetails("url", this._uri);
             }
         });
     }
     /**
      * Closes this endpoint and the GRPC server (service) that was opened earlier.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._server != null) {
                 this._uri = null;
@@ -207,11 +207,11 @@ class GrpcEndpoint {
                             resolve();
                         });
                     });
-                    this._logger.debug(correlationId, "Closed GRPC service at %s", this._uri);
+                    this._logger.debug(context, "Closed GRPC service at %s", this._uri);
                     this._server = null;
                 }
                 catch (ex) {
-                    this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
+                    this._logger.warn(context, "Failed while closing GRPC service: %s", ex);
                     throw ex;
                 }
             }
@@ -275,10 +275,10 @@ class GrpcEndpoint {
         return __awaiter(this, void 0, void 0, function* () {
             let method = call.request.method;
             let action = this._commandableMethods ? this._commandableMethods[method] : null;
-            let correlationId = call.request.correlation_id;
+            let context = call.request.trace_id;
             // Handle method not found
             if (action == null) {
-                let err = new pip_services3_commons_node_4.InvocationException(correlationId, "METHOD_NOT_FOUND", "Method " + method + " was not found").withDetails("method", method);
+                let err = new pip_services3_commons_node_4.InvocationException(context, "METHOD_NOT_FOUND", "Method " + method + " was not found").withDetails("method", method);
                 let response = {
                     error: pip_services3_commons_node_2.ErrorDescriptionFactory.create(err),
                     result_empty: true,

@@ -35,9 +35,9 @@ export class LinkReferencesDecorator extends ReferencesDecorator implements IOpe
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (!this._opened) {
             this._opened = true;
             let components = this.getAll();
@@ -48,9 +48,9 @@ export class LinkReferencesDecorator extends ReferencesDecorator implements IOpe
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._opened) {
             this._opened = false;
             let components = this.getAll();

@@ -74,11 +74,11 @@ export declare class AwsConnectionResolver implements IConfigurable, IReferencea
      * Resolves connection and credential parameters and generates a single
      * AWSConnectionParams value.
      *
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {AwsConnectionParams} 	callback function that receives AWSConnectionParams value or error.
      *
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    resolve(correlationId: string): Promise<AwsConnectionParams>;
+    resolve(context: IContext): Promise<AwsConnectionParams>;
 }

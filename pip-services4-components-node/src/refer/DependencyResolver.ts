@@ -1,5 +1,5 @@
 /** @module refer */
-import { StringConverter } from '../convert/StringConverter';
+import { StringConverter } from 'pip-services4-commons-node';
 import { ConfigParams } from '../config/ConfigParams';
 import { IReconfigurable } from '../config/IReconfigurable';
 import { IReferenceable } from './IReferenceable';

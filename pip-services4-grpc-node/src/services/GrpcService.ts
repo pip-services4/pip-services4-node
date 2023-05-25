@@ -64,9 +64,9 @@ import { IRegisterable } from './IRegisterable';
  * 
  *        public register(): void {
  *            registerMethod("get_mydata", null, async (call) => {
- *                let correlationId = call.request.correlationId;
+ *                let context = call.request.context;
  *                let id = call.request.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -205,33 +205,33 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-     protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+     protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
 		let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
-    //         this._logger.error(correlationId, err, "Failed to execute %s method", name);
+    //         this._logger.error(context, err, "Failed to execute %s method", name);
     //         this._counters.incrementOne(name + '.exec_errors');    
     //     }
 
@@ -250,9 +250,9 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-	public async open(correlationId: string): Promise<void> {
+	public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -264,7 +264,7 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
         }
 
         if (this._localEndpoint) {
-            await this._endpoint.open(correlationId);
+            await this._endpoint.open(context);
         }
 
         this._opened = true;
@@ -273,23 +273,23 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._endpoint == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_ENDPOINT',
                 'GRPC endpoint is missing'
             );
         }
         
         if (this._localEndpoint) {
-            await this._endpoint.close(correlationId);
+            await this._endpoint.close(context);
         }
 
         this._opened = false;
@@ -356,8 +356,8 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
                 }
 
                 // Perform validation                    
-                let correlationId = value.correlation_id;
-                let err = schema.validateAndReturnException(correlationId, value, false);
+                let context = value.trace_id;
+                let err = schema.validateAndReturnException(context, value, false);
                 if (err) {
                     throw err;
                 }

@@ -23,28 +23,28 @@ class TestLambdaClient extends LambdaClient_1.LambdaClient {
      * Calls a AWS Lambda Function action.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    call(cmd, correlationId, params = {}) {
+    call(cmd, context, params = {}) {
         const _super = Object.create(null, {
             call: { get: () => super.call }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            return _super.call.call(this, cmd, correlationId, params);
+            return _super.call.call(this, cmd, context, params);
         });
     }
     /**
      * Calls a AWS Lambda Function action asynchronously without waiting for response.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    callOneWay(cmd, correlationId, params = {}) {
-        return super.callOneWay(cmd, correlationId, params);
+    callOneWay(cmd, context, params = {}) {
+        return super.callOneWay(cmd, context, params);
     }
 }
 exports.TestLambdaClient = TestLambdaClient;

@@ -55,9 +55,9 @@ const CloudFunctionRequestHelper_1 = require("../containers/CloudFunctionRequest
  *        public register(): void {
  *            registerAction("get_mydata", null, async (req, res) => {
  *                let params = req.body;
- *                let correlationId = params.correlation_id;
+ *                let context = params.trace_id;
  *                let id = params.id;
- *                const result = await this._controller.getMyData(correlationId, id);
+ *                const result = await this._controller.getMyData(context, id);
  *
  *                res.send(result);
  *            });
@@ -133,16 +133,16 @@ class CloudFunctionService {
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -155,9 +155,9 @@ class CloudFunctionService {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -169,9 +169,9 @@ class CloudFunctionService {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
@@ -188,8 +188,8 @@ class CloudFunctionService {
             if (schema && req) {
                 // Perform validation
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let correlationId = this.getCorrelationId(req);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(req);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, err);
                 }
@@ -276,13 +276,13 @@ class CloudFunctionService {
         this._interceptors.push(interceptorWrapper);
     }
     /**
-     * Returns correlationId from Google Function request.
+     * Returns context from Google Function request.
      * This method can be overloaded in child classes
      * @param req - the function request
-     * @return returns correlationId from request
+     * @return returns context from request
      */
-    getCorrelationId(req) {
-        return CloudFunctionRequestHelper_1.CloudFunctionRequestHelper.getCorrelationId(req);
+    getTraceId(req) {
+        return CloudFunctionRequestHelper_1.CloudFunctionRequestHelper.getTraceId(req);
     }
     /**
      * Returns command from Google Function request.

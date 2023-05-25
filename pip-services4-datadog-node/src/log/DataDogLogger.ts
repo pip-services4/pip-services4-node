@@ -109,14 +109,14 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        await this._client.open(correlationId);
+        await this._client.open(context);
 
         this._timer = setInterval(() => { this.dump() }, this._interval);
     }
@@ -124,9 +124,9 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         await this.save(this._cache);
 
         if (this._timer) {
@@ -136,7 +136,7 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
         this._cache = [];
         this._timer = null;
 
-        await this._client.close(correlationId);
+        await this._client.close(context);
     }
 
     // private convertStatus(level: number): string {
@@ -162,7 +162,7 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
         let result: DataDogLogMessage = {
             time: message.time || new Date(),
             tags: {
-                correlation_id: message.correlation_id
+                trace_id: message.trace_id
             },
             host: this._instance,
             service: message.source || this._source,

@@ -11,7 +11,7 @@ suite('ErrorDescriptionFactory', ()=> {
         let key = "key";
         let details = "details";
 
-        let ex = new ApplicationException("category", "correlationId", "code", "message");
+        let ex = new ApplicationException("category", "trace_id", "code", "message");
         ex.status  = 777;
         ex.cause = "cause";
         ex.stack_trace = "stackTrace";
@@ -21,7 +21,7 @@ suite('ErrorDescriptionFactory', ()=> {
 
         assert.isNotNull(descr);
         assert.equal(ex.category, descr.category);
-        assert.equal(ex.correlation_id, descr.correlation_id);
+        assert.equal(ex.trace_id, descr.trace_id);
         assert.equal(ex.code, descr.code);
         assert.equal(ex.message, descr.message);
         assert.equal(ex.status, descr.status);

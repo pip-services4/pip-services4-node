@@ -1,5 +1,5 @@
 /** @module refer */
-import { ConfigException } from '../errors/ConfigException';
+import { ConfigException } from 'pip-services4-commons-node';
 
 /**
  * Locator type that most often used in PipServices toolkit.

@@ -1,5 +1,7 @@
 /** @module run */
 
+import { IContext } from "./IContext";
+
 /**
  * Helper class that opens components.
  * 
@@ -53,14 +55,14 @@ export class Opener {
 	 * To be opened components must implement [[IOpenable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param component 		the component that is to be opened.
 	 * 
 	 * @see [[IOpenable]]
 	 */
-	public static async openOne(correlationId: string, component: any): Promise<void> {
+	public static async openOne(context: IContext, component: any): Promise<void> {
         if (typeof component.open === "function") {
-			await component.open(correlationId);
+			await component.open(context);
 		}
 	}	
 
@@ -70,15 +72,15 @@ export class Opener {
 	 * To be opened components must implement [[IOpenable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param components 		the list of components that are to be closed.
 	 * 
 	 * @see [[openOne]]
 	 * @see [[IOpenable]]
 	 */
-	public static async open(correlationId: string, components: any[]): Promise<void> {
+	public static async open(context: IContext, components: any[]): Promise<void> {
 		for (let component of components) {
-			await Opener.openOne(correlationId, component);
+			await Opener.openOne(context, component);
 		}
 	}
 

@@ -162,9 +162,9 @@ export declare class AwsConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    validate(correlationId: string): void;
+    validate(context: IContext): void;
     /**
      * Retrieves AwsConnectionParams from configuration parameters.
      * The values are retrieves from "connection" and "credential" sections.

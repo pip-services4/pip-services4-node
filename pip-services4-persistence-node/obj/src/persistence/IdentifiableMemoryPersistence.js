@@ -46,8 +46,8 @@ const MemoryPersistence_1 = require("./MemoryPersistence");
  *             };
  *         }
  *
- *         public async getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): DataPage<MyData> {
- *             return await super.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         public async getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): DataPage<MyData> {
+ *             return await super.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *         }
  *
  *     }
@@ -78,34 +78,34 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with found data items.
      */
-    getListByIds(correlationId, ids) {
+    getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = (item) => {
                 return ids.some(id => id == item.id);
             };
-            return yield this.getListByFilter(correlationId, filter, null, null);
+            return yield this.getListByFilter(context, filter, null, null);
         });
     }
     /**
      * Gets a data item by its unique id.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item or <code>null</code> if nothing was found.
      */
-    getOneById(correlationId, id) {
+    getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let items = this._items.filter(item => item.id == id);
             let item = items.length > 0 ? items[0] : null;
             if (item != null) {
-                this._logger.trace(correlationId, "Retrieved item %s", id);
+                this._logger.trace(context, "Retrieved item %s", id);
             }
             else {
-                this._logger.trace(correlationId, "Cannot find item by %s", id);
+                this._logger.trace(context, "Cannot find item by %s", id);
             }
             return item;
         });
@@ -113,11 +113,11 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
     /**
      * Creates a data item.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                a created data item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         const _super = Object.create(null, {
             create: { get: () => super.create }
         });
@@ -127,18 +127,18 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
                 item = Object.assign({}, item);
                 pip_services3_commons_node_1.ObjectWriter.setProperty(item, "id", pip_services3_commons_node_2.IdGenerator.nextLong());
             }
-            return yield _super.create.call(this, correlationId, item);
+            return yield _super.create.call(this, context, item);
         });
     }
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 a set data item.
      */
-    set(correlationId, item) {
+    set(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             // Clone the object
             item = Object.assign({}, item);
@@ -152,89 +152,89 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
             else {
                 this._items[index] = item;
             }
-            this._logger.trace(correlationId, "Set item %s", item.id);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Set item %s", item.id);
+            yield this.save(context);
             return item;
         });
     }
     /**
      * Updates a data item.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated data item.
      */
-    update(correlationId, item) {
+    update(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             let index = this._items.map(item => item.id).indexOf(item.id);
             if (index < 0) {
-                this._logger.trace(correlationId, "Item %s was not found", item.id);
+                this._logger.trace(context, "Item %s was not found", item.id);
                 return null;
             }
             // Clone the object
             item = Object.assign({}, item);
             this._items[index] = item;
-            this._logger.trace(correlationId, "Updated item %s", item.id);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Updated item %s", item.id);
+            yield this.save(context);
             return item;
         });
     }
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated data item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             let index = this._items.map(item => item.id).indexOf(id);
             if (index < 0) {
-                this._logger.trace(correlationId, "Item %s was not found", id);
+                this._logger.trace(context, "Item %s was not found", id);
                 return null;
             }
             let item = this._items[index];
             item = Object.assign(item, data.getAsObject());
             this._items[index] = item;
-            this._logger.trace(correlationId, "Partially updated item %s", id);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Partially updated item %s", id);
+            yield this.save(context);
             return item;
         });
     }
     /**
      * Deleted a data item by it's unique id.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted data item.
      */
-    deleteById(correlationId, id) {
+    deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let index = this._items.map(item => item.id).indexOf(id);
             let item = this._items[index];
             if (index < 0) {
-                this._logger.trace(correlationId, "Item %s was not found", id);
+                this._logger.trace(context, "Item %s was not found", id);
                 return null;
             }
             this._items.splice(index, 1);
-            this._logger.trace(correlationId, "Deleted item by %s", id);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Deleted item by %s", id);
+            yield this.save(context);
             return item;
         });
     }
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    deleteByIds(correlationId, ids) {
+    deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = (item) => {
                 return ids.some(id => id == item.id);
             };
-            yield this.deleteByFilter(correlationId, filter);
+            yield this.deleteByFilter(context, filter);
         });
     }
 }

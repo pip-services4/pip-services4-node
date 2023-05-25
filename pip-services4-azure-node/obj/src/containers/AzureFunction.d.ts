@@ -85,20 +85,20 @@ export declare abstract class AzureFunction extends Container {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
      * Note: This method has been deprecated. Use AzureFunctionService instead.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Runs this Azure Function, loads container configuration,
      * instantiate components and manage their lifecycle,
@@ -127,12 +127,12 @@ export declare abstract class AzureFunction extends Container {
      */
     protected registerAction(cmd: string, schema: Schema, action: (context: any) => Promise<any>): void;
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * This method can be overloaded in child classes
      * @param context -  Azure Function context
-     * @return Returns correlationId from context
+     * @return Returns context from context
      */
-    protected getCorrelationId(context: any): string;
+    protected getTraceId(context: any): string;
     /**
      * Returns command from Azure Function context.
      * This method can be overloaded in child classes

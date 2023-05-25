@@ -20,7 +20,7 @@ export class DummyJsonSqlitePersistence
         this.ensureSchema("CREATE UNIQUE INDEX IF NOT EXISTS \"" + this._tableName + "_json_key\" ON dummies_json (JSON_EXTRACT(data, '$.key'))");
     }
 
-    public getPageByFilter(correlationId: string, filter: FilterParams,
+    public getPageByFilter(context: IContext, filter: FilterParams,
         paging: PagingParams): Promise<DataPage<Dummy>> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
@@ -29,10 +29,10 @@ export class DummyJsonSqlitePersistence
         if (key != null)
             filterCondition = "JSON_EXTRACT(data, '$.key')='" + key + "'";
 
-        return super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
 
-    public getCountByFilter(correlationId: string, filter: FilterParams): Promise<number> {
+    public getCountByFilter(context: IContext, filter: FilterParams): Promise<number> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
 
@@ -40,6 +40,6 @@ export class DummyJsonSqlitePersistence
         if (key != null)
             filterCondition = "JSON_EXTRACT(data, '$.key')='" + key + "'";
 
-        return super.getCountByFilter(correlationId, filterCondition);
+        return super.getCountByFilter(context, filterCondition);
     }
 }

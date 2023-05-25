@@ -201,19 +201,19 @@ class GcpConnectionParams extends pip_services3_commons_node_1.ConfigParams {
     /**
      * Validates this connection parameters
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    validate(correlationId) {
+    validate(context) {
         const uri = this.getUri();
         const protocol = this.getProtocol();
         const functionName = this.getFunction();
         const region = this.getRegion();
         const projectId = this.getProjectId();
         if (uri == null && (projectId == null || region == null || functionName == null || protocol == null)) {
-            throw new pip_services3_commons_node_3.ConfigException(correlationId, "NO_CONNECTION_URI", "No uri, project_id, region and function is configured in Google function uri");
+            throw new pip_services3_commons_node_3.ConfigException(context, "NO_CONNECTION_URI", "No uri, project_id, region and function is configured in Google function uri");
         }
         if (protocol != null && "http" != protocol && "https" != protocol) {
-            throw new pip_services3_commons_node_3.ConfigException(correlationId, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+            throw new pip_services3_commons_node_3.ConfigException(context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }

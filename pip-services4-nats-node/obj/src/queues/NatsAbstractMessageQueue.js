@@ -103,9 +103,9 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -115,10 +115,10 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "NATS connection is not opened");
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "NATS connection is not opened");
             }
             this._opened = true;
             this._client = this._connection.getConnection();
@@ -127,18 +127,18 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'NATS connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'NATS connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._client = null;
@@ -153,7 +153,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
         let data = message.message || nats.Empty;
         let headers = nats.headers();
         headers.append("message_id", message.message_id);
-        headers.append("correlation_id", message.correlation_id);
+        headers.append("trace_id", message.trace_id);
         headers.append("message_type", message.message_type);
         headers.append("sent_time", pip_services3_commons_node_2.StringConverter.toNullableString(message.sent_time || new Date()));
         return {
@@ -164,9 +164,9 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     toMessage(msg) {
         if (msg == null)
             return null;
-        let correlationId = msg.headers.get("correlation_id");
+        let context = msg.headers.get("trace_id");
         let messageType = msg.headers.get("message_type");
-        let message = new pip_services3_messaging_node_2.MessageEnvelope(correlationId, messageType, Buffer.from(msg.data));
+        let message = new pip_services3_messaging_node_2.MessageEnvelope(context, messageType, Buffer.from(msg.data));
         message.message_id = msg.headers.get("message_id");
         message.sent_time = pip_services3_commons_node_1.DateTimeConverter.toNullableDateTime(msg.headers.get("sent_time"));
         message.message = msg.data;
@@ -175,9 +175,9 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
         });
@@ -196,12 +196,12 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    send(correlationId, message) {
+    send(context, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let subject = this.getName() || this._subject;
             let msg = this.fromMessage(message);
             yield this._connection.publish(subject, msg);

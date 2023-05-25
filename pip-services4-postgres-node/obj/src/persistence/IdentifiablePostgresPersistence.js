@@ -65,9 +65,9 @@ const PostgresPersistence_1 = require("./PostgresPersistence");
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams,
  *         paging: PagingParams): Promise<DataPage<MyData>> {
- *         return base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         return base.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *     }
  *
  *     }
@@ -116,11 +116,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with requested data items.
      */
-    getListByIds(correlationId, ids) {
+    getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.generateParameters(ids);
             let query = "SELECT * FROM " + this.quotedTableName()
@@ -135,7 +135,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
             return items;
         });
@@ -143,11 +143,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Gets a data item by its unique id.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item or <code>null</code>.
      */
-    getOneById(correlationId, id) {
+    getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=$1";
             let params = [id];
@@ -162,10 +162,10 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                 });
             });
             if (item == null) {
-                this._logger.trace(correlationId, "Nothing found from %s with id = %s", this._tableName, id);
+                this._logger.trace(context, "Nothing found from %s with id = %s", this._tableName, id);
             }
             else {
-                this._logger.trace(correlationId, "Retrieved from %s with id = %s", this._tableName, id);
+                this._logger.trace(context, "Retrieved from %s with id = %s", this._tableName, id);
             }
             item = this.convertToPublic(item);
             return item;
@@ -174,11 +174,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         const _super = Object.create(null, {
             create: { get: () => super.create }
         });
@@ -192,18 +192,18 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                 newItem = Object.assign({}, newItem);
                 newItem.id = item.id || pip_services3_commons_node_1.IdGenerator.nextLong();
             }
-            return yield _super.create.call(this, correlationId, newItem);
+            return yield _super.create.call(this, context, newItem);
         });
     }
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 the updated item.
      */
-    set(correlationId, item) {
+    set(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return null;
@@ -232,7 +232,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Set in %s with id = %s", this._tableName, item.id);
+            this._logger.trace(context, "Set in %s with id = %s", this._tableName, item.id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -240,11 +240,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Updates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated item.
      */
-    update(correlationId, item) {
+    update(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null || item.id == null) {
                 return null;
@@ -266,7 +266,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Updated in %s with id = %s", this._tableName, item.id);
+            this._logger.trace(context, "Updated in %s with id = %s", this._tableName, item.id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -274,12 +274,12 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (data == null || id == null) {
                 return null;
@@ -301,7 +301,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._tableName, id);
+            this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -309,11 +309,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Deleted a data item by it's unique id.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted item.
      */
-    deleteById(correlationId, id) {
+    deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let values = [id];
             let query = "DELETE FROM " + this.quotedTableName()
@@ -329,7 +329,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Deleted from %s with id = %s", this._tableName, id);
+            this._logger.trace(context, "Deleted from %s with id = %s", this._tableName, id);
             oldItem = this.convertToPublic(oldItem);
             return oldItem;
         });
@@ -337,10 +337,10 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    deleteByIds(correlationId, ids) {
+    deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = this.generateParameters(ids);
             let query = "DELETE FROM " + this.quotedTableName()
@@ -355,7 +355,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._tableName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._tableName);
         });
     }
 }

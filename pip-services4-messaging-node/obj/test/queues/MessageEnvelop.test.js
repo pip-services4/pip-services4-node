@@ -8,7 +8,7 @@ suite('MessageEnvelop', () => {
         let json = JSON.stringify(message);
         let message2 = MessageEnvelope_1.MessageEnvelope.fromJSON(json);
         assert.equal(message.message_id, message2.message_id);
-        assert.equal(message.correlation_id, message2.correlation_id);
+        assert.equal(message.trace_id, message2.trace_id);
         assert.equal(message.message_type, message2.message_type);
         assert.equal(message.message.toString(), message2.message.toString());
     });

@@ -96,23 +96,23 @@ class CloudFunction extends pip_services3_container_node_1.Container {
     getConfigParameters() {
         return pip_services3_commons_node_2.ConfigParams.fromValue(process.env);
     }
-    captureErrors(correlationId) {
+    captureErrors(context) {
         // Log uncaught exceptions
         process.on('uncaughtException', (ex) => {
-            this._logger.fatal(correlationId, ex, "Process is terminated");
+            this._logger.fatal(context, ex, "Process is terminated");
             process.exit(1);
         });
     }
-    captureExit(correlationId) {
-        this._logger.info(correlationId, "Press Control-C to stop the microservice...");
+    captureExit(context) {
+        this._logger.info(context, "Press Control-C to stop the microservice...");
         // Activate graceful exit
         process.on('SIGINT', () => {
             process.exit();
         });
         // Gracefully shutdown
         process.on('exit', () => {
-            this.close(correlationId);
-            this._logger.info(correlationId, "Goodbye!");
+            this.close(context);
+            this._logger.info(context, "Goodbye!");
         });
     }
     /**
@@ -129,16 +129,16 @@ class CloudFunction extends pip_services3_container_node_1.Container {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         const _super = Object.create(null, {
             open: { get: () => super.open }
         });
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen())
                 return;
-            yield _super.open.call(this, correlationId);
+            yield _super.open.call(this, context);
             this.registerServices();
         });
     }
@@ -148,16 +148,16 @@ class CloudFunction extends pip_services3_container_node_1.Container {
      *
      * Note: This method has been deprecated. Use CloudFunctionService instead.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Runs this Google Function, loads container configuration,
@@ -167,13 +167,13 @@ class CloudFunction extends pip_services3_container_node_1.Container {
      */
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            let correlationId = this._info.name;
+            let context = this._info.name;
             let path = this.getConfigPath();
             let parameters = this.getConfigParameters();
-            this.readConfigFromFile(correlationId, path, parameters);
-            this.captureErrors(correlationId);
-            this.captureExit(correlationId);
-            yield this.open(correlationId);
+            this.readConfigFromFile(context, path, parameters);
+            this.captureErrors(context);
+            this.captureExit(context);
+            yield this.open(context);
         });
     }
     /**
@@ -228,8 +228,8 @@ class CloudFunction extends pip_services3_container_node_1.Container {
             // Perform validation
             if (schema != null) {
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let correlationId = this.getCorrelationId(req);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(req);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err != null) {
                     pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, err);
                 }
@@ -240,13 +240,13 @@ class CloudFunction extends pip_services3_container_node_1.Container {
         this._actions[cmd] = actionCurl;
     }
     /**
-     * Returns correlationId from Googel Function request.
+     * Returns context from Googel Function request.
      * This method can be overloaded in child classes
      * @param req -  Googel Function request
-     * @return Returns correlationId from request
+     * @return Returns context from request
      */
-    getCorrelationId(req) {
-        return CloudFunctionRequestHelper_1.CloudFunctionRequestHelper.getCorrelationId(req);
+    getTraceId(req) {
+        return CloudFunctionRequestHelper_1.CloudFunctionRequestHelper.getTraceId(req);
     }
     /**
      * Returns command from Google Function request.
@@ -269,14 +269,14 @@ class CloudFunction extends pip_services3_container_node_1.Container {
     execute(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let cmd = this.getCommand(req);
-            let correlationId = this.getCorrelationId(req);
+            let context = this.getTraceId(req);
             if (cmd == null) {
-                pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, new pip_services3_commons_node_1.BadRequestException(correlationId, 'NO_COMMAND', 'Cmd parameter is missing'));
+                pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, new pip_services3_commons_node_1.BadRequestException(context, 'NO_COMMAND', 'Cmd parameter is missing'));
                 return;
             }
             const action = this._actions[cmd];
             if (action == null) {
-                pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, new pip_services3_commons_node_1.BadRequestException(correlationId, 'NO_ACTION', 'Action ' + cmd + ' was not found').withDetails('command', cmd));
+                pip_services3_rpc_node_1.HttpResponseSender.sendError(req, res, new pip_services3_commons_node_1.BadRequestException(context, 'NO_ACTION', 'Action ' + cmd + ' was not found').withDetails('command', cmd));
                 return;
             }
             return yield action(req, res);

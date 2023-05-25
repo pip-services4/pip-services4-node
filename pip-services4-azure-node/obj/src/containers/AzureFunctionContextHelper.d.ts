@@ -2,11 +2,11 @@
 import { Parameters } from 'pip-services4-commons-node';
 export declare class AzureFunctionContextHelper {
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * @param context the Azure Function context
-     * @return returns correlationId from context
+     * @return returns context from context
      */
-    static getCorrelationId(context: any): string;
+    static getTraceId(context: any): string;
     /**
      * Returns command from Azure Function context.
      * @param context the Azure Function context

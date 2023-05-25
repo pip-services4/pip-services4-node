@@ -71,24 +71,24 @@ export declare abstract class NatsAbstractMessageQueue extends MessageQueue impl
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     protected getSubject(): string;
     protected fromMessage(message: MessageEnvelope): any;
     protected toMessage(msg: any): MessageEnvelope;
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId: string): Promise<void>;
+    clear(context: IContext): Promise<void>;
     /**
      * Reads the current number of messages in the queue to be delivered.
      *
@@ -98,10 +98,10 @@ export declare abstract class NatsAbstractMessageQueue extends MessageQueue impl
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    send(correlationId: string, message: MessageEnvelope): Promise<void>;
+    send(context: IContext, message: MessageEnvelope): Promise<void>;
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
      * This method is usually used to extend the message processing time.

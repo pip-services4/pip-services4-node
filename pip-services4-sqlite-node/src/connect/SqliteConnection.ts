@@ -98,12 +98,12 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let config = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let config = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to sqlite");
+        this._logger.debug(context, "Connecting to sqlite");
 
         try {
             let sqlite = require('sqlite3');
@@ -122,7 +122,7 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
             this._databaseName = config.database;
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to sqlite failed"
             ).withCause(ex);
@@ -132,9 +132,9 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -150,13 +150,13 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
                 });
             });
 
-            this._logger.debug(correlationId, "Disconnected from sqlite database %s", this._databaseName);
+            this._logger.debug(context, "Disconnected from sqlite database %s", this._databaseName);
 
             this._connection = null;
             this._databaseName = null;
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 'DISCONNECT_FAILED',
                 'Disconnect from sqlite failed: '
             ).withCause(ex);

@@ -56,8 +56,8 @@ export declare class MongoDbConnectionResolver implements IReferenceable, IConfi
     /**
      * Resolves MongoDB connection URI from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns			        a resolved URI.
      */
-    resolve(correlationId: string): Promise<string>;
+    resolve(context: IContext): Promise<string>;
 }

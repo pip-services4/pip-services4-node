@@ -38,11 +38,11 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
     /**
      * Reads configuration and parameterize it with given values.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param parameters        values to parameters the configuration or null to skip parameterization.
      * @returns                 retrieved configuration parameters.
      */
-    public abstract readConfig(correlationId: string, parameters: ConfigParams): Promise<ConfigParams>;
+    public abstract readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams>;
 
     /**
      * Parameterized configuration template given as string with dynamic parameters.

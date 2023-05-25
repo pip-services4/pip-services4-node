@@ -185,10 +185,10 @@ suite('DummyCommandableHttpService', () => {
         });
     });
 
-    test('Check correlationId', async () => {
+    test('Check context', async () => {
         // check transmit correllationId over params
         let result = await new Promise<any>((resolve, reject) => {
-            rest.post("/dummy/check_correlation_id?correlation_id=test_cor_id",
+            rest.post("/dummy/check_trace_id?trace_id=test_cor_id",
                 null,
                 (err, req, res, result) => {
                     if (err == null) resolve(result);
@@ -196,12 +196,12 @@ suite('DummyCommandableHttpService', () => {
                 }
             );
         });
-        assert.equal("test_cor_id", result["correlation_id"]);
+        assert.equal("test_cor_id", result["trace_id"]);
 
         // check transmit correllationId over header
-        headers["correlation_id"] = "test_cor_id_header"
+        headers["trace_id"] = "test_cor_id_header"
         result = await new Promise<any>((resolve, reject) => {
-            rest.post("/dummy/check_correlation_id",
+            rest.post("/dummy/check_trace_id",
                 null,
                 (err, req, res, result) => {
                     if (err == null) resolve(result);
@@ -209,7 +209,7 @@ suite('DummyCommandableHttpService', () => {
                 }
             );
         });
-        assert.equal("test_cor_id_header", result["correlation_id"]);
+        assert.equal("test_cor_id_header", result["trace_id"]);
     });
 
     test('Get OpenApi Spec', async () => {

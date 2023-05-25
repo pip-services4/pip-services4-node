@@ -74,11 +74,11 @@ class CommandableAzureFunction extends AzureFunction_1.AzureFunction {
         for (let index = 0; index < commands.length; index++) {
             let command = commands[index];
             this.registerAction(command.getName(), null, (context) => __awaiter(this, void 0, void 0, function* () {
-                let correlationId = this.getCorrelationId(context);
+                let context = this.getTraceId(context);
                 let args = this.getParametrs(context);
-                let timing = this.instrument(correlationId, this._info.name + '.' + command.getName());
+                let timing = this.instrument(context, this._info.name + '.' + command.getName());
                 try {
-                    let res = yield command.execute(correlationId, args);
+                    let res = yield command.execute(context, args);
                     timing.endTiming();
                     return res;
                 }

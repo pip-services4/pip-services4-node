@@ -93,15 +93,15 @@ class RedisCache {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_2.ConfigException(correlationId, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let credential = yield this._credentialResolver.lookup(correlationId);
+            let credential = yield this._credentialResolver.lookup(context);
             let options = {
                 // connect_timeout: this._timeout,
                 // max_attempts: this._retries,
@@ -124,9 +124,9 @@ class RedisCache {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._client == null)
                 return;
@@ -142,9 +142,9 @@ class RedisCache {
             this._client = null;
         });
     }
-    checkOpened(correlationId) {
+    checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(correlationId, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     retryStrategy(options) {
@@ -169,12 +169,12 @@ class RedisCache {
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns a retrieve cached value or <code>null</code> if nothing was found.
      */
-    retrieve(correlationId, key) {
-        this.checkOpened(correlationId);
+    retrieve(context, key) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.get(key, (err, value) => {
                 if (err != null) {
@@ -188,14 +188,14 @@ class RedisCache {
     /**
      * Stores value in the cache with expiration time.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
      * @returns the stored value.
      */
-    store(correlationId, key, value, timeout) {
-        this.checkOpened(correlationId);
+    store(context, key, value, timeout) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), 'PX', timeout, (err, value) => {
                 if (err != null) {
@@ -209,12 +209,12 @@ class RedisCache {
     /**
      * Removes a value from the cache by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns the removed value.
      */
-    remove(correlationId, key) {
-        this.checkOpened(correlationId);
+    remove(context, key) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.del(key, (err, value) => {
                 if (err != null) {

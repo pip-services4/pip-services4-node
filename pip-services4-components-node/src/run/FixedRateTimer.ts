@@ -1,4 +1,6 @@
 /** @module run */
+
+import { IContext } from "./IContext";
 import { IClosable } from './IClosable';
 import { INotifiable } from './INotifiable';
 import { Parameters } from './Parameters';
@@ -17,13 +19,13 @@ import { Parameters } from './Parameters';
  *     class MyComponent {
  *         private timer: FixedRateTimer = new FixedRateTimer(() => { this.cleanup }, 60000);
  *         ...
- *         public async open(correlationId: string): Promise<void> {
+ *         public async open(context: IContext): Promise<void> {
  *             ...
  *             timer.start();
  *             ...
  *         }
  *         
- *         public async close(correlationId: string): Promise<void> {
+ *         public async close(context: IContext): Promise<void> {
  *             ...
  *             timer.stop();
  *             ...
@@ -206,12 +208,12 @@ export class FixedRateTimer implements IClosable {
      * This is required by [[ICloseable]] interface,
      * but besides that it is identical to stop().
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param callback 			callback function that receives error or null no errors occured.
      * 
      * @see [[stop]]
      */
-	public async close(correlationId: string): Promise<void> {
+	public async close(context: IContext): Promise<void> {
 		this.stop();
 	}
 }

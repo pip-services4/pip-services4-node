@@ -1,6 +1,6 @@
 /** @module config */
-import { StringValueMap } from '../data/StringValueMap';
-import { RecursiveObjectReader } from '../reflect/RecursiveObjectReader';
+import { StringValueMap } from 'pip-services4-commons-node';
+import { RecursiveObjectReader } from 'pip-services4-commons-node';
 
 /**
  * Contains a key-value map with configuration parameters. 

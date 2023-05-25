@@ -3,3 +3,8 @@
 ## <a name="0.0.1"></a>Pip.Services 4 0.0.1 (2023-05-24)
 Moved code from commons module in PipService 3
 
+### New Features:
+* Added **IContext** interface and default **Context** implementation
+
+### Breaking Changes:
+* **correlationId** was replaced by **context**

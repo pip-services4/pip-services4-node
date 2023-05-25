@@ -7,23 +7,23 @@ import { Parameters } from 'pip-services4-commons-node';
  */
 export class CloudFunctionRequestHelper {
     /**
-     * Returns correlationId from Google Function request.
+     * Returns context from Google Function request.
      * @param req the Google Function request
-     * @return returns correlationId from request
+     * @return returns context from request
      */
-    public static getCorrelationId(req: any): string {
-        let correlationId: string = req.correlation_id || "";
+    public static getTraceId(req: any): string {
+        let context: IContext = req.trace_id || "";
         try {
-            if ((correlationId == null || correlationId == "") && req.hasOwnProperty('body')) {
-                correlationId = req.body.correlation_id;
-                if (correlationId == null || correlationId == "") {
-                    correlationId = req.query.correlation_id;
+            if ((context == null || context == "") && req.hasOwnProperty('body')) {
+                context = req.body.trace_id;
+                if (context == null || context == "") {
+                    context = req.query.trace_id;
                 }
             }
         } catch (e) {
             // Ignore the error
         }
-        return correlationId
+        return context
     }
 
     /**

@@ -67,12 +67,12 @@ export declare class AzureFunctionConnectionResolver implements IConfigurable, I
      * Resolves connection and credential parameters and generates a single
      * AzureConnectionParams value.
      *
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {AzureFunctionConnectionParams} 	AzureConnectionParams value or error.
      *
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    resolve(correlationId: string): Promise<AzureFunctionConnectionParams>;
+    resolve(context: IContext): Promise<AzureFunctionConnectionParams>;
     private composeConnection;
 }

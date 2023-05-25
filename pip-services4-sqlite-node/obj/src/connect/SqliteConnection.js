@@ -86,12 +86,12 @@ class SqliteConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let config = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to sqlite");
+            let config = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to sqlite");
             try {
                 let sqlite = require('sqlite3');
                 let db = yield new Promise((resolve, reject) => {
@@ -107,16 +107,16 @@ class SqliteConnection {
                 this._databaseName = config.database;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to sqlite failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to sqlite failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -131,12 +131,12 @@ class SqliteConnection {
                         resolve();
                     });
                 });
-                this._logger.debug(correlationId, "Disconnected from sqlite database %s", this._databaseName);
+                this._logger.debug(context, "Disconnected from sqlite database %s", this._databaseName);
                 this._connection = null;
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, 'DISCONNECT_FAILED', 'Disconnect from sqlite failed: ').withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from sqlite failed: ').withCause(ex);
             }
         });
     }

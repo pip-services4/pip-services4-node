@@ -96,19 +96,19 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let connection = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
 
         let options: any = {
             // connect_timeout: this._timeout,
@@ -134,9 +134,9 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     /**
      * Closes component and frees used resources.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._client == null) return;
 
         await new Promise<void>((resolve, reject) => {
@@ -152,10 +152,10 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
         this._client = null;
     }
 
-    private checkOpened(correlationId: string): void {
+    private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
@@ -185,12 +185,12 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns a retrieve cached value or <code>null</code> if nothing was found.
      */
-    public retrieve(correlationId: string, key: string): Promise<any> {
-        this.checkOpened(correlationId);
+    public retrieve(context: IContext, key: string): Promise<any> {
+        this.checkOpened(context);
 
         return new Promise<any>((resolve, reject) => {
             this._client.get(key, (err, value) => {
@@ -206,14 +206,14 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     /**
      * Stores value in the cache with expiration time.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
      * @returns the stored value.
      */
-    public store(correlationId: string, key: string, value: any, timeout: number): Promise<any> {
-        this.checkOpened(correlationId);
+    public store(context: IContext, key: string, value: any, timeout: number): Promise<any> {
+        this.checkOpened(context);
 
         return new Promise<any>((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), 'PX', timeout, (err, value) => {
@@ -229,12 +229,12 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     /**
      * Removes a value from the cache by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns the removed value.
      */
-    public remove(correlationId: string, key: string): Promise<any> {
-        this.checkOpened(correlationId);
+    public remove(context: IContext, key: string): Promise<any> {
+        this.checkOpened(context);
 
         return new Promise<any>((resolve, reject) => {
             this._client.del(key, (err, value) => {

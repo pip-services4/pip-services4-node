@@ -13,23 +13,23 @@ class DummyJsonSqlServerPersistence extends IdentifiableJsonSqlServerPersistence
         this.ensureSchema("ALTER TABLE [" + this._tableName + "] ADD [data_key] AS JSON_VALUE([data],'$.key')");
         this.ensureIndex(this._tableName + '_key', { data_key: 1 }, { unique: true });
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {
             filterCondition += "JSON_VALUE([data],'$.key')='" + key + "'";
         }
-        return super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {
             filterCondition += "JSON_VALUE([data],'$.key')='" + key + "'";
         }
-        return super.getCountByFilter(correlationId, filterCondition);
+        return super.getCountByFilter(context, filterCondition);
     }
 }
 exports.DummyJsonSqlServerPersistence = DummyJsonSqlServerPersistence;

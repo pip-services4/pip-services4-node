@@ -13,7 +13,7 @@ export class LogMessage {
 	/** This log level */
 	public level: string;
 	/** The transaction id to trace execution through call chain. */
-	public correlation_id: string;
+	public trace_id: string;
 	/** 
 	 * The description of the captured error
 	 * 

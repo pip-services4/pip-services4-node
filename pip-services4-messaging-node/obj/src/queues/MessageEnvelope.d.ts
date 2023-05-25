@@ -12,13 +12,13 @@ export declare class MessageEnvelope {
      * Creates a new MessageEnvelope, which adds a correlation id, message id, and a type to the
      * data being sent/received.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a string value that defines the message's type.
      * @param message           the data being sent/received.
      */
-    constructor(correlationId: string, messageType: string, message: any);
+    constructor(context: IContext, messageType: string, message: any);
     /** The unique business transaction id that is used to trace calls across components. */
-    correlation_id: string;
+    trace_id: string;
     /** The message's auto-generated ID. */
     message_id: string;
     /** String value that defines the stored message's type. */
@@ -67,7 +67,7 @@ export declare class MessageEnvelope {
     /**
      * Convert's this MessageEnvelope to a string, using the following format:
      *
-     * <code>"[<correlation_id>,<message_type>,<message.toString>]"</code>.
+     * <code>"[<trace_id>,<message_type>,<message.toString>]"</code>.
      *
      * If any of the values are <code>null</code>, they will be replaced with <code>---</code>.
      *

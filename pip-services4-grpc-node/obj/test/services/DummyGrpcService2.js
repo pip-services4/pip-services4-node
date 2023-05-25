@@ -56,35 +56,35 @@ class DummyGrpcService2 extends GrpcService_1.GrpcService {
             let request = call.request.toObject();
             let filter = pip_services3_commons_node_2.FilterParams.fromValue(request.filterMap);
             let paging = pip_services3_commons_node_3.PagingParams.fromValue(call.request.paging);
-            let page = yield this._controller.getPageByFilter(call.request.correlation_id, filter, paging);
+            let page = yield this._controller.getPageByFilter(call.request.trace_id, filter, paging);
             return this.dummyPageToObject(page);
         });
     }
     getOneById(call) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = call.request.toObject();
-            let result = yield this._controller.getOneById(request.correlation_id, request.dummy_id);
+            let result = yield this._controller.getOneById(request.trace_id, request.dummy_id);
             return this.dummyToObject(result);
         });
     }
     create(call) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = call.request.toObject();
-            let result = yield this._controller.create(request.correlation_id, request.dummy);
+            let result = yield this._controller.create(request.trace_id, request.dummy);
             return this.dummyToObject(result);
         });
     }
     update(call) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = call.request.toObject();
-            let result = yield this._controller.update(request.correlation_id, request.dummy);
+            let result = yield this._controller.update(request.trace_id, request.dummy);
             return this.dummyToObject(result);
         });
     }
     deleteById(call) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = call.request.toObject();
-            let result = yield this._controller.deleteById(request.correlation_id, request.dummy_id);
+            let result = yield this._controller.deleteById(request.trace_id, request.dummy_id);
             return this.dummyToObject(result);
         });
     }

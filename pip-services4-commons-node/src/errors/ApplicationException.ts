@@ -28,7 +28,7 @@ import { StringValueMap } from '../data/StringValueMap';
  * - category: one of 12 standard error categories of errors
  * - status: numeric HTTP status code for REST invocations
  * - code: a unique error code, usually defined as "MY_ERROR_CODE"
- * - correlation_id: a unique transaction id to trace execution through a call chain
+ * - trace_id: a unique transaction id to trace execution through a call chain
  * - details: map with error parameters that can help to recreate meaningful error description in other languages
  * - stack_trace: a stack trace
  * - cause: original error that is wrapped by this exception
@@ -52,7 +52,7 @@ export class ApplicationException extends Error {
     /** A map with additional details that can be used to restore error description in other languages */
     public details: StringValueMap; 
     /** A unique transaction id to trace execution throug call chain */   
-    public correlation_id: string;
+    public trace_id: string;
     /** Stack trace of the exception */ 
     public stack_trace: string;
     /** Original error wrapped by this exception */ 
@@ -62,11 +62,11 @@ export class ApplicationException extends Error {
      * Creates a new instance of application exception and assigns its values.
      * 
      * @param category          (optional) a standard error category. Default: Unknown
-     * @param correlation_id    (optional) a unique transaction id to trace execution through call chain.
+     * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
      * @param code              (optional) a unique error code. Default: "UNKNOWN"
      * @param message           (optional) a human-readable description of the error.
      */
-    constructor(category: string = null, correlation_id: string = null, code: string = null, message: string = null) {
+    constructor(category: string = null, trace_id: string = null, code: string = null, message: string = null) {
         super(message);
 
         // Set the prototype explicitly.
@@ -74,7 +74,7 @@ export class ApplicationException extends Error {
         (<any>this).__proto__ = ApplicationException.prototype;
 
         this.category = category || ErrorCategory.Unknown;
-        this.correlation_id = correlation_id;
+        this.trace_id = trace_id;
         this.code = code || 'UNKNOWN';
         if (!this.message) this.message = message || 'Unknown error';
         this.name = this.code;
@@ -184,11 +184,11 @@ export class ApplicationException extends Error {
      * This method returns reference to this exception to implement Builder pattern
      * to chain additional calls.
      * 
-     * @param correlationId a unique transaction id to trace error through call chain
+     * @param traceId a unique transaction id to trace error through call chain
      * @returns this exception object
      */ 
-    public withCorrelationId(correlationId: string): ApplicationException {
-        this.correlation_id = correlationId;
+    public withTraceId(traceId: string): ApplicationException {
+        this.trace_id = traceId;
         return this;
     }
 

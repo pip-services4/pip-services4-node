@@ -58,7 +58,7 @@ export class DummyClientFixture {
         assert.isNull(dummy || null);
 
         // Check correlation id
-        let result = await this._client.checkCorrelationId("test_cor_id");
+        let result = await this._client.checkTraceId("test_cor_id");
         assert.isNotNull(result);
         assert.equal("test_cor_id", result);
     }

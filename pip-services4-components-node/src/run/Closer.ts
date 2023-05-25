@@ -1,5 +1,7 @@
 /** @module run */
 
+import { IContext } from "./IContext";
+
 /**
  * Helper class that closes previously opened components.
  * 
@@ -12,14 +14,14 @@ export class Closer {
 	 * To be closed components must implement [[ICloseable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param component 		the component that is to be closed.
 	 * 
 	 * @see [[IClosable]]
 	 */
-	public static async closeOne(correlationId: string, component: any): Promise<void> {
+	public static async closeOne(context: IContext, component: any): Promise<void> {
         if (typeof component.close === "function") {
-			await component.close(correlationId);
+			await component.close(context);
 		}
 	}
 
@@ -29,15 +31,15 @@ export class Closer {
 	 * To be closed components must implement [[ICloseable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param components 		the list of components that are to be closed.
 	 * 
 	 * @see [[closeOne]]
 	 * @see [[IClosable]]
 	 */
-	public static async close(correlationId: string, components: any[]): Promise<void> {
+	public static async close(context: IContext, components: any[]): Promise<void> {
 		for (let component of components) {
-			await Closer.closeOne(correlationId, component);
+			await Closer.closeOne(context, component);
 		}
 	}
 }

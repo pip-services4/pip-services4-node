@@ -30,7 +30,7 @@ export class DummyRestService extends RestService {
     private async getPageByFilter(req: any, res: any) {
         try {
             let result = await this._controller.getPageByFilter(
-                req.params.correlation_id,
+                req.params.trace_id,
                 new FilterParams(req.params),
                 new PagingParams(req.params),
             );
@@ -43,7 +43,7 @@ export class DummyRestService extends RestService {
     private async getOneById(req, res) {
         try {
             let result = await this._controller.getOneById(
-                req.params.correlation_id,
+                req.params.trace_id,
                 req.params.dummy_id
             );
             this.sendResult(req, res, result);
@@ -55,7 +55,7 @@ export class DummyRestService extends RestService {
     private async create(req, res) {
         try {
             let result = await this._controller.create(
-                req.params.correlation_id,
+                req.params.trace_id,
                 req.body
             );
             this.sendCreatedResult(req, res, result);
@@ -67,7 +67,7 @@ export class DummyRestService extends RestService {
     private async update(req, res) {
         try {
             let result = await this._controller.update(
-                req.params.correlation_id,
+                req.params.trace_id,
                 req.body
             );
             this.sendResult(req, res, result);
@@ -79,7 +79,7 @@ export class DummyRestService extends RestService {
     private async deleteById(req, res) {
         try {
             let result  = await this._controller.deleteById(
-                req.params.correlation_id,
+                req.params.trace_id,
                 req.params.dummy_id
             );
             this.sendDeletedResult(req, res, result);

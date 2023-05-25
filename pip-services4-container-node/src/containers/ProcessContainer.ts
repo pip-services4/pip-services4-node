@@ -93,16 +93,16 @@ export class ProcessContainer extends Container {
         console.log("run [-h] [-c <config file>] [-p <param>=<value>]*");
     }
     
-    private captureErrors(correlationId: string): void {
+    private captureErrors(context: IContext): void {
         // Log uncaught exceptions
         process.on('uncaughtException', (ex) => {
-			this._logger.fatal(correlationId, ex, "Process is terminated");
+			this._logger.fatal(context, ex, "Process is terminated");
             process.exit(1);
         });
     }
 
-    private captureExit(correlationId: string): void {
-        this._logger.info(correlationId, "Press Control-C to stop the microservice...");
+    private captureExit(context: IContext): void {
+        this._logger.info(context, "Press Control-C to stop the microservice...");
 
         // Activate graceful exit
         process.on('SIGINT', () => {
@@ -111,8 +111,8 @@ export class ProcessContainer extends Container {
 
         // Gracefully shutdown
         process.on('exit', () => {
-            this.close(correlationId);
-            this._logger.info(correlationId, "Goodbye!");
+            this.close(context);
+            this._logger.info(context, "Goodbye!");
         });
     }
 
@@ -130,15 +130,15 @@ export class ProcessContainer extends Container {
             return;
         }
 
-        let correlationId = this._info.name;
+        let context = this._info.name;
         let path = this.getConfigPath(args);
         let parameters = this.getParameters(args);
-        this.readConfigFromFile(correlationId, path, parameters);
+        this.readConfigFromFile(context, path, parameters);
 
-        this.captureErrors(correlationId);
-        this.captureExit(correlationId);
+        this.captureErrors(context);
+        this.captureExit(context);
 
-    	this.open(correlationId);
+    	this.open(context);
     }
 
 }

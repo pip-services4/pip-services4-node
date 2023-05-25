@@ -125,12 +125,12 @@ class MySqlConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let uri = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to MySQL...");
+            let uri = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to MySQL...");
             try {
                 uri = this.composeUriSettings(uri);
                 let mysql = require('mysql');
@@ -150,16 +150,16 @@ class MySqlConnection {
                 connection.release();
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -174,12 +174,12 @@ class MySqlConnection {
                         resolve();
                     });
                 });
-                this._logger.debug(correlationId, "Disconnected from MySQL database %s", this._databaseName);
+                this._logger.debug(context, "Disconnected from MySQL database %s", this._databaseName);
                 this._connection = null;
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
             }
         });
     }

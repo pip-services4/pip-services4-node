@@ -40,28 +40,28 @@ class DummyGrpcService extends GrpcService_1.GrpcService {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = pip_services3_commons_node_2.FilterParams.fromValue(call.request.filter);
             let paging = pip_services3_commons_node_3.PagingParams.fromValue(call.request.paging);
-            return yield this._controller.getPageByFilter(call.request.correlation_id, filter, paging);
+            return yield this._controller.getPageByFilter(call.request.trace_id, filter, paging);
         });
     }
     getOneById(call) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield this._controller.getOneById(call.request.correlation_id, call.request.dummy_id);
+            let result = yield this._controller.getOneById(call.request.trace_id, call.request.dummy_id);
             return result || {};
         });
     }
     create(call) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this._controller.create(call.request.correlation_id, call.request.dummy);
+            return yield this._controller.create(call.request.trace_id, call.request.dummy);
         });
     }
     update(call) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this._controller.update(call.request.correlation_id, call.request.dummy);
+            return yield this._controller.update(call.request.trace_id, call.request.dummy);
         });
     }
     deleteById(call) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield this._controller.deleteById(call.request.correlation_id, call.request.dummy_id);
+            let result = yield this._controller.deleteById(call.request.trace_id, call.request.dummy_id);
             return result || {};
         });
     }

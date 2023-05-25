@@ -86,20 +86,20 @@ export declare abstract class LambdaFunction extends Container {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
      * Note: This method has been deprecated. Use LambdaService instead.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Runs this lambda function, loads container configuration,
      * instantiate components and manage their lifecycle,

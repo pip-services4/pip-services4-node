@@ -67,7 +67,7 @@ paths:
         - myservice
       operationId: 'greeting'
       parameters:
-      - name: correlation_id
+      - name: trace_id
         in: query
         description: Correlation ID
         required: false

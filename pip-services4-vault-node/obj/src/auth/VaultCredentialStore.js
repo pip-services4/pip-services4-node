@@ -101,13 +101,13 @@ class VaultCredentialStore {
     /**
      *  Helper method for resolve all additonal parameters
      */
-    resolveConfig(correlationId, connection, credential) {
+    resolveConfig(context, connection, credential) {
         // check configuration
         if (connection == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_CONNECTION", "Connection is not configured");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Connection is not configured");
         }
         if (credential == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_CREDENTIAL", "Credentials is not configured");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CREDENTIAL", "Credentials is not configured");
         }
         // resolve additional credential params
         this._auth_type = credential.getAsStringWithDefault("auth_type", "userpass");
@@ -122,7 +122,7 @@ class VaultCredentialStore {
     /**
      *  Helper method for compose uri
      */
-    composeUri(correlationId, connection) {
+    composeUri(context, connection) {
         if (connection.getUri() != null) {
             let uri = connection.getUri();
             if (uri)
@@ -130,15 +130,15 @@ class VaultCredentialStore {
         }
         let host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
         }
         let port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
         }
         let protocol = connection.getProtocol();
         if (protocol == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
         }
         return protocol + '://' + host + ':' + port + '/v1';
     }
@@ -184,16 +184,16 @@ class VaultCredentialStore {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(correlationId);
-            let credential = yield this._credentialResolver.lookup(correlationId);
-            this.resolveConfig(correlationId, connection, credential);
+            let connection = yield this._connectionResolver.resolve(context);
+            let credential = yield this._credentialResolver.lookup(context);
+            this.resolveConfig(context, connection, credential);
             let options = {
                 https: connection.getProtocol() === "https",
-                baseUrl: this.composeUri(correlationId, connection),
+                baseUrl: this.composeUri(context, connection),
                 timeout: this._timeout,
                 proxy: false,
             };
@@ -229,18 +229,18 @@ class VaultCredentialStore {
             const status = yield this._client.healthCheck();
             // resolve status
             if (status.isVaultError || status.response) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", correlationId, "OPEN_ERROR", status.vaultHelpMessage);
-                this._logger.error(correlationId, err, status.vaultHelpMessage, status.response);
+                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+                this._logger.error(context, err, status.vaultHelpMessage, status.response);
                 this._client = null;
                 throw err;
             }
             else if (status.sealed) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", correlationId, "OPEN_ERROR", "Vault server is sealed!");
-                this._logger.error(correlationId, err, "Vault server is sealed!");
+                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!");
+                this._logger.error(context, err, "Vault server is sealed!");
                 this._client = null;
                 throw err; // TODO: Decide, does need to throw error?
             }
-            this._logger.debug(correlationId, "Vault status:", status);
+            this._logger.debug(context, "Vault status:", status);
             // open connection and get API token
             try {
                 switch (this._auth_type) {
@@ -271,36 +271,36 @@ class VaultCredentialStore {
                 }
             }
             catch (ex) {
-                let err = new pip_services3_commons_node_1.ConnectionException(correlationId, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
-                this._logger.error(correlationId, ex, "Can't login to Vault server");
+                let err = new pip_services3_commons_node_1.ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+                this._logger.error(context, ex, "Can't login to Vault server");
                 this._client = null;
                 throw err;
             }
-            this._logger.info(correlationId, "Vault Credential Store opened with %s auth mode", this._auth_type);
+            this._logger.info(context, "Vault Credential Store opened with %s auth mode", this._auth_type);
             return;
         });
     }
     /**
     * Closes component and frees used resources.
     *
-    * @param correlationId 	(optional) transaction id to trace execution through call chain.
+    * @param context 	(optional) execution context to trace execution through call chain.
     */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 this._client = null;
             }
-            this._logger.info(correlationId, "Vault Credential Store closed");
+            this._logger.info(context, "Vault Credential Store closed");
         });
     }
     /**
      * Stores credential parameters into the store.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param credential        a credential parameters to be stored.
      */
-    store(correlationId, key, credential) {
+    store(context, key, credential) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
@@ -314,7 +314,7 @@ class VaultCredentialStore {
                             // Check if connection already exists
                             for (let conn of res.data.credentials) {
                                 if (credential.getUsername() == ((_a = conn.username) !== null && _a !== void 0 ? _a : conn.user) && credential.getPassword() == ((_b = conn.password) !== null && _b !== void 0 ? _b : conn.pass)) {
-                                    this._logger.info(correlationId, 'Credential already exists via key ' + key + ': ' + credential);
+                                    this._logger.info(context, 'Credential already exists via key ' + key + ': ' + credential);
                                     return;
                                 }
                             }
@@ -334,11 +334,11 @@ class VaultCredentialStore {
                     else {
                         yield this._client.createKVSecret(this._token, key, { credentials: credentials });
                     }
-                    this._logger.debug(correlationId, 'Stored key ' + key + ': ' + credential);
+                    this._logger.debug(context, 'Stored key ' + key + ': ' + credential);
                     return;
                 }
                 catch (ex) {
-                    this._logger.error(correlationId, ex, "Can't store KV to Vault with key: " + key);
+                    this._logger.error(context, ex, "Can't store KV to Vault with key: " + key);
                 }
             }
         });
@@ -346,11 +346,11 @@ class VaultCredentialStore {
     /**
      * Lookups credential parameters by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param callback          callback function that receives found credential parameters or error.
      */
-    lookup(correlationId, key) {
+    lookup(context, key) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
@@ -358,11 +358,11 @@ class VaultCredentialStore {
                     let credential;
                     if (res.data && res.data.credentials && res.data.credentials.length > 0)
                         credential = new pip_services3_components_node_1.CredentialParams(res.data.credentials[0]);
-                    this._logger.debug(correlationId, 'KVs for ' + key + ': ', credential);
+                    this._logger.debug(context, 'KVs for ' + key + ': ', credential);
                     return credential;
                 }
                 catch (ex) {
-                    this._logger.error(correlationId, ex, "Can't lookup KV from Vault with key: " + key);
+                    this._logger.error(context, ex, "Can't lookup KV from Vault with key: " + key);
                 }
             }
         });

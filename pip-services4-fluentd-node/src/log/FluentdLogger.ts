@@ -103,17 +103,17 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(correlationId);
+        let connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -138,9 +138,9 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         await this.save (this._cache);
 
         if (this._timer) {
@@ -166,7 +166,7 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
             let record = {
                 level: message.level,
                 source: message.source,
-                correlation_id: message.correlation_id,
+                trace_id: message.trace_id,
                 error: message.error,
                 message: message.message
             };

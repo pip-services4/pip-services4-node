@@ -106,12 +106,12 @@ class PostgresConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let config = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to postgres");
+            let config = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to postgres");
             try {
                 let settings = this.composeSettings();
                 let options = Object.assign(settings, config);
@@ -121,7 +121,7 @@ class PostgresConnection {
                 return new Promise((resolve, reject) => {
                     pool.connect((err, client, release) => {
                         if (err != null || client == null) {
-                            err = new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                            err = new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                             reject(err);
                             return;
                         }
@@ -133,16 +133,16 @@ class PostgresConnection {
                 });
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -150,11 +150,11 @@ class PostgresConnection {
             return new Promise((resolve, reject) => {
                 this._connection.end((err) => {
                     if (err) {
-                        err = new pip_services3_commons_node_2.ConnectionException(correlationId, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
+                        err = new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
                         reject(err);
                         return;
                     }
-                    this._logger.debug(correlationId, "Disconnected from postgres database %s", this._databaseName);
+                    this._logger.debug(context, "Disconnected from postgres database %s", this._databaseName);
                     this._connection = null;
                     this._databaseName = null;
                     resolve();

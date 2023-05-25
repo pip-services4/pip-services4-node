@@ -72,13 +72,13 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
     /**
      * Loads data items from external JSON file.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @returns                a list with loaded data items.
      */
-    public async load(correlationId: string): Promise<T[]> {
+    public async load(context: IContext): Promise<T[]> {
         if (this._path == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PATH",
                 "Data file path is not set"
             );
@@ -95,7 +95,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
             return arr;
         } catch (ex) {
             throw new FileException(
-                correlationId,
+                context,
                 "READ_FAILED",
                 "Failed to read data file: " + this._path
             ).withCause(ex);
@@ -105,16 +105,16 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
     /**
      * Saves given data items to external JSON file.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param items             list if data items to save
      */
-    public async save(correlationId: string, items: T[]): Promise<void> {
+    public async save(context: IContext, items: T[]): Promise<void> {
         try {
             let json = JsonConverter.toJson(items);
             fs.writeFileSync(this._path, json);
         } catch (ex) {
             throw new FileException(
-                correlationId,
+                context,
                 "WRITE_FAILED",
                 "Failed to write data file: " + this._path
             ).withCause(ex);

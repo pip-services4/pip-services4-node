@@ -63,9 +63,9 @@ class MqttConnectionResolver {
         this._connectionResolver.setReferences(references);
         this._credentialResolver.setReferences(references);
     }
-    validateConnection(correlationId, connection) {
+    validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_CONNECTION", "MQTT connection is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "MQTT connection is not set");
         }
         let uri = connection.getUri();
         if (uri != null) {
@@ -73,15 +73,15 @@ class MqttConnectionResolver {
         }
         let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
         if (protocol == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
         }
         let host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
         }
         let port = connection.getAsIntegerWithDefault("port", 1883);
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
         }
         return;
     }
@@ -101,15 +101,15 @@ class MqttConnectionResolver {
     /**
      * Resolves MQTT connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved MQTT connection options.
      */
-    resolve(correlationId) {
+    resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             // Validate connections
-            this.validateConnection(correlationId, connection);
-            let credential = yield this._credentialResolver.lookup(correlationId);
+            this.validateConnection(context, connection);
+            let credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
             let options = this.composeOptions(connection, credential);
             return options;
@@ -118,14 +118,14 @@ class MqttConnectionResolver {
     /**
      * Composes MQTT connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved MQTT connection options.
      */
-    compose(correlationId, connection, credential) {
+    compose(context, connection, credential) {
         // Validate connections
-        this.validateConnection(correlationId, connection);
+        this.validateConnection(context, connection);
         let options = this.composeOptions(connection, credential);
         return options;
     }

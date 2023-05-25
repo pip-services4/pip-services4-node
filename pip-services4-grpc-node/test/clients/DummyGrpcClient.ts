@@ -12,10 +12,10 @@ export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         super(__dirname + "../../../../test/protos/dummies.proto", "dummies.Dummies")
     }
 
-    public async getDummies(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
-        this.instrument(correlationId, 'dummy.get_page_by_filter');
+    public async getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+        this.instrument(context, 'dummy.get_page_by_filter');
         return await this.call('get_dummies',
-            correlationId, 
+            context, 
             { 
                 filter: filter,
                 paging: paging
@@ -23,10 +23,10 @@ export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         );
     }
 
-    public async getDummyById(correlationId: string, dummyId: string): Promise<Dummy> {
-        this.instrument(correlationId, 'dummy.get_one_by_id');
+    public async getDummyById(context: IContext, dummyId: string): Promise<Dummy> {
+        this.instrument(context, 'dummy.get_one_by_id');
         let result = await this.call<any>('get_dummy_by_id',
-            correlationId,
+            context,
             {
                 dummy_id: dummyId
             }
@@ -39,10 +39,10 @@ export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async createDummy(correlationId: string, dummy: any): Promise<Dummy> {
-        this.instrument(correlationId, 'dummy.create');
+    public async createDummy(context: IContext, dummy: any): Promise<Dummy> {
+        this.instrument(context, 'dummy.create');
         let result = await this.call<any>('create_dummy',
-            correlationId,
+            context,
             {
                 dummy: dummy
             }
@@ -55,10 +55,10 @@ export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async updateDummy(correlationId: string, dummy: any): Promise<Dummy> {
-        this.instrument(correlationId, 'dummy.update');
+    public async updateDummy(context: IContext, dummy: any): Promise<Dummy> {
+        this.instrument(context, 'dummy.update');
         let result = await this.call<any>('update_dummy',
-            correlationId, 
+            context, 
             {
                 dummy: dummy
             }
@@ -71,10 +71,10 @@ export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         return result;
     }
 
-    public async deleteDummy(correlationId: string, dummyId: string): Promise<Dummy> {
-        this.instrument(correlationId, 'dummy.delete_by_id');
+    public async deleteDummy(context: IContext, dummyId: string): Promise<Dummy> {
+        this.instrument(context, 'dummy.delete_by_id');
         let result = await this.call<any>('delete_dummy_by_id',
-            correlationId, 
+            context, 
             {
                 dummy_id: dummyId
             }

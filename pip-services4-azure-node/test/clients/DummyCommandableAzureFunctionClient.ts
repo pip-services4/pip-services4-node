@@ -12,15 +12,15 @@ export class DummyCommandableAzureFunctionClient extends CommandableAzureFunctio
         super("dummies");
     }
 
-    public async getDummies(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
-        return this.callCommand('get_dummies', correlationId, {
+    public async getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+        return this.callCommand('get_dummies', context, {
                 filter: filter,
                 paging: paging
         });
     }
 
-    public async getDummyById(correlationId: string, dummyId: string): Promise<Dummy> {
-        const response = await this.callCommand('get_dummy_by_id', correlationId, {
+    public async getDummyById(context: IContext, dummyId: string): Promise<Dummy> {
+        const response = await this.callCommand('get_dummy_by_id', context, {
                 dummy_id: dummyId
         });
 
@@ -30,20 +30,20 @@ export class DummyCommandableAzureFunctionClient extends CommandableAzureFunctio
         return response as Dummy;
     }
 
-    public async createDummy(correlationId: string, dummy: any): Promise<Dummy> {
-        return this.callCommand('create_dummy', correlationId, {
+    public async createDummy(context: IContext, dummy: any): Promise<Dummy> {
+        return this.callCommand('create_dummy', context, {
                 dummy: dummy
         });
     }
 
-    public async updateDummy(correlationId: string, dummy: any): Promise<Dummy> {
-        return this.callCommand('update_dummy', correlationId, {
+    public async updateDummy(context: IContext, dummy: any): Promise<Dummy> {
+        return this.callCommand('update_dummy', context, {
                 dummy: dummy
         });
     }
 
-    public async deleteDummy(correlationId: string, dummyId: string): Promise<Dummy> {
-        return this.callCommand('delete_dummy', correlationId, {
+    public async deleteDummy(context: IContext, dummyId: string): Promise<Dummy> {
+        return this.callCommand('delete_dummy', context, {
                 dummy_id: dummyId
         });
     }

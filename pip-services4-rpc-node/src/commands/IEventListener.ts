@@ -11,7 +11,7 @@ import { Parameters } from '../../../pip-services4-commons-node/src/run/Paramete
  * ### Example ###
  * 
  *     export class MyListener implements IEventListener {
- *         private onEvent(correlationId: string, event: IEvent, args: Parameters): void {
+ *         private onEvent(context: IContext, event: IEvent, args: Parameters): void {
  *             console.log("Fired event " + event.getName());
  *         }
  *     }
@@ -27,8 +27,8 @@ export interface IEventListener {
 	 * A method called when events this listener is subscrubed to are fired.
 	 * 
 	 * @param event 			a fired evemt
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param args 			    event arguments.
 	 */
-    onEvent(correlationId: string, event: IEvent, args: Parameters): void;
+    onEvent(context: IContext, event: IEvent, args: Parameters): void;
 }

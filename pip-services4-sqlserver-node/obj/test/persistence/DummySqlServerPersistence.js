@@ -12,23 +12,23 @@ class DummySqlServerPersistence extends IdentifiableSqlServerPersistence_1.Ident
         this.ensureSchema('CREATE TABLE [' + this._tableName + '] ([id] VARCHAR(32) PRIMARY KEY, [key] VARCHAR(50), [content] VARCHAR(MAX))');
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {
             filterCondition += "[key]='" + key + "'";
         }
-        return super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         filter = filter || new pip_services3_commons_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {
             filterCondition += "[key]='" + key + "'";
         }
-        return super.getCountByFilter(correlationId, filterCondition);
+        return super.getCountByFilter(context, filterCondition);
     }
 }
 exports.DummySqlServerPersistence = DummySqlServerPersistence;

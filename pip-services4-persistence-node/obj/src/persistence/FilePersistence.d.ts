@@ -30,7 +30,7 @@ import { MemoryPersistence } from './MemoryPersistence';
  *             super(new JsonPersister(path));
  *         }
  *
- *         public async getByName(correlationId: string, name: string): Promise<MyData> {
+ *         public async getByName(context: IContext, name: string): Promise<MyData> {
  *             let item = this._items.find((d) => d.name == name);
  *             retur item;
  *         });
@@ -38,7 +38,7 @@ import { MemoryPersistence } from './MemoryPersistence';
  *         public async set(correlatonId: string, item: MyData): Promise<MyData> {
  *             this._items = this._items.filter((d) => d.name != name);
  *             this._items.push(item);
- *             await this.save(correlationId);
+ *             await this.save(context);
  *             return item;
  *         }
  *

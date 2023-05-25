@@ -19,7 +19,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return this._commandSet;
 	}
 
-	public async getPageByFilter(correlationId: string, filter: FilterParams,
+	public async getPageByFilter(context: IContext, filter: FilterParams,
 		paging: PagingParams): Promise<DataPage<Dummy>> {
 			
 		filter = filter != null ? filter : new FilterParams();
@@ -46,7 +46,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return new DataPage<Dummy>(result);
 	}
 
-	public async getOneById(correlationId: string, id: string): Promise<Dummy> {
+	public async getOneById(context: IContext, id: string): Promise<Dummy> {
 		for (let entity of this._entities) {
 			if (id == entity.id) {
 				return entity;
@@ -55,7 +55,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return null;
 	}
 
-	public async create(correlationId: string, entity: Dummy): Promise<Dummy> {
+	public async create(context: IContext, entity: Dummy): Promise<Dummy> {
 		if (entity.id == null) {
 			entity.id = IdGenerator.nextLong();
 			this._entities.push(entity);
@@ -63,7 +63,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return entity;
 	}
 
-	public async update(correlationId: string, newEntity: Dummy): Promise<Dummy> {
+	public async update(context: IContext, newEntity: Dummy): Promise<Dummy> {
 		for (let index = 0; index < this._entities.length; index++) {
 			let entity: Dummy = this._entities[index];
 			if (entity.id == newEntity.id) {
@@ -74,7 +74,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return null;
 	}
 
-	public async deleteById(correlationId: string, id: string): Promise<Dummy> {
+	public async deleteById(context: IContext, id: string): Promise<Dummy> {
 		for (let index = 0; index < this._entities.length; index++) {
 			let entity: Dummy = this._entities[index];
 			if (entity.id == id) {
@@ -85,7 +85,7 @@ export class DummyController implements IDummyController, ICommandable {
 		return null;
 	}
 
-	public async checkCorrelationId(correlationId: string): Promise<string> {
-		return correlationId;
+	public async checkTraceId(context: IContext): Promise<string> {
+		return context;
 	}
 }

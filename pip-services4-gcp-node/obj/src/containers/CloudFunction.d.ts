@@ -86,20 +86,20 @@ export declare abstract class CloudFunction extends Container {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
      * Note: This method has been deprecated. Use CloudFunctionService instead.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Runs this Google Function, loads container configuration,
      * instantiate components and manage their lifecycle,
@@ -128,12 +128,12 @@ export declare abstract class CloudFunction extends Container {
      */
     protected registerAction(cmd: string, schema: Schema, action: (req: Request, res: Response) => Promise<any>): void;
     /**
-     * Returns correlationId from Googel Function request.
+     * Returns context from Googel Function request.
      * This method can be overloaded in child classes
      * @param req -  Googel Function request
-     * @return Returns correlationId from request
+     * @return Returns context from request
      */
-    protected getCorrelationId(req: any): string;
+    protected getTraceId(req: any): string;
     /**
      * Returns command from Google Function request.
      * This method can be overloaded in child classes

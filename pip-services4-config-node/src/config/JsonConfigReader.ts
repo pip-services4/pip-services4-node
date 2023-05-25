@@ -50,14 +50,14 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration file, parameterizes its content and converts it into JSON object.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param parameters        values to parameters the configuration.
      * @returns                 a JSON object with configuration.
      */
-    public readObject(correlationId: string, parameters: ConfigParams): any {
+    public readObject(context: IContext, parameters: ConfigParams): any {
         if (super.getPath() == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PATH",
                 "Missing config file path"
             );
@@ -70,7 +70,7 @@ export class JsonConfigReader extends FileConfigReader {
             return JsonConverter.toNullableMap(data);
         } catch (e) {
             throw new FileException(
-                correlationId,
+                context,
                 "READ_FAILED",
                 "Failed reading configuration " + super.getPath() + ": " + e
             )
@@ -82,12 +82,12 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration and parameterize it with given values.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param parameters        values to parameters the configuration
      * @param callback          callback function that receives configuration or error.
      */
-    public async readConfig(correlationId: string, parameters: ConfigParams): Promise<ConfigParams> {
-        let value = this.readObject(correlationId, parameters);
+    public async readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams> {
+        let value = this.readObject(context, parameters);
         let config = ConfigParams.fromValue(value);
         return config;
     }
@@ -95,25 +95,25 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration file, parameterizes its content and converts it into JSON object.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param file              a path to configuration file.
      * @param parameters        values to parameters the configuration.
      * @returns                 a JSON object with configuration.
      */
-    public static readObject(correlationId: string, path: string, parameters: ConfigParams): any {
-        return new JsonConfigReader(path).readObject(correlationId, parameters);
+    public static readObject(context: IContext, path: string, parameters: ConfigParams): any {
+        return new JsonConfigReader(path).readObject(context, parameters);
     }
 
     /**
      * Reads configuration from a file, parameterize it with given values and returns a new ConfigParams object.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param file              a path to configuration file.
      * @param parameters        values to parameters the configuration.
      * @returns                 retrieved configuration parameters.
      */
-    public static readConfig(correlationId: string, path: string, parameters: ConfigParams): ConfigParams {
-        let value: any = new JsonConfigReader(path).readObject(correlationId, parameters);
+    public static readConfig(context: IContext, path: string, parameters: ConfigParams): ConfigParams {
+        let value: any = new JsonConfigReader(path).readObject(context, parameters);
         let config = ConfigParams.fromValue(value);
         return config;
     }

@@ -127,12 +127,12 @@ class SqlServerConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let uri = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to SQLServer...");
+            let uri = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to SQLServer...");
             try {
                 uri = this.composeUriSettings(uri);
                 const sql = require('mssql');
@@ -148,21 +148,21 @@ class SqlServerConnection {
                         resolve();
                     });
                 });
-                this._logger.info(correlationId, "Connected to SQLServer database %s", this._databaseName);
+                this._logger.info(context, "Connected to SQLServer database %s", this._databaseName);
                 this._connection = pool;
                 this._databaseName = pool.config.database;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection == null) {
                 return;
@@ -177,12 +177,12 @@ class SqlServerConnection {
                         resolve();
                     });
                 });
-                this._logger.info(correlationId, "Disconnected from SQLServer database %s", this._databaseName);
+                this._logger.info(context, "Disconnected from SQLServer database %s", this._databaseName);
                 this._connection = null;
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
             }
         });
     }

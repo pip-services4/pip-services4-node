@@ -126,9 +126,9 @@ export class PrometheusCounters extends CachedCounters implements IReferenceable
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
@@ -140,7 +140,7 @@ export class PrometheusCounters extends CachedCounters implements IReferenceable
         this._opened = true;
 
         try {
-            let connection = await this._connectionResolver.resolve(correlationId);
+            let connection = await this._connectionResolver.resolve(context);
             let job = this._source || "unknown";
             let instance = this._instance || os.hostname();
             this._requestRoute = "/metrics/job/" + job + "/instance/" + instance;
@@ -149,16 +149,16 @@ export class PrometheusCounters extends CachedCounters implements IReferenceable
             this._client = restify.createStringClient({ url: connection.getAsString("uri") });
         } catch (ex) {
             this._client = null;
-            this._logger.warn(correlationId, "Connection to Prometheus server is not configured: " + ex);
+            this._logger.warn(context, "Connection to Prometheus server is not configured: " + ex);
         }
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         this._opened = false;
         this._client = null;
         this._requestRoute = null;

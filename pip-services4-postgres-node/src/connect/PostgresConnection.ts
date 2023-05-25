@@ -125,12 +125,12 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let config = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let config = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to postgres");
+        this._logger.debug(context, "Connecting to postgres");
 
         try {
             let settings = this.composeSettings();
@@ -145,7 +145,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
                 pool.connect((err, client, release) => {
                     if (err != null || client == null) {
                         err = new ConnectionException(
-                            correlationId,
+                            context,
                             "CONNECT_FAILED",
                             "Connection to postgres failed"
                         ).withCause(err);
@@ -163,7 +163,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             });
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to postgres failed"
             ).withCause(ex);
@@ -173,9 +173,9 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -184,7 +184,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             this._connection.end((err) => {
                 if (err) {
                     err = new ConnectionException(
-                        correlationId,
+                        context,
                         'DISCONNECT_FAILED',
                         'Disconnect from postgres failed: '
                     ) .withCause(err);
@@ -193,7 +193,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
                     return;
                 }
 
-                this._logger.debug(correlationId, "Disconnected from postgres database %s", this._databaseName);
+                this._logger.debug(context, "Disconnected from postgres database %s", this._databaseName);
 
                 this._connection = null;
                 this._databaseName = null;

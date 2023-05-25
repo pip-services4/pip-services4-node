@@ -18,12 +18,12 @@ class TestCommandableGrpcClient extends CommandableGrpcClient_1.CommandableGrpcC
      * The complete route to remote method is defined as serviceName + "." + name.
      *
      * @param name              a name of the command to call.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @returns the received result.
      */
-    callCommand(name, correlationId, params) {
-        return super.callCommand(name, correlationId, params);
+    callCommand(name, context, params) {
+        return super.callCommand(name, context, params);
     }
 }
 exports.TestCommandableGrpcClient = TestCommandableGrpcClient;

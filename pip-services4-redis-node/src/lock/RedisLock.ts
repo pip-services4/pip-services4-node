@@ -98,19 +98,19 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let connection = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
 
         let options: any = {
             // connect_timeout: this._timeout,
@@ -136,9 +136,9 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._client == null) return;
 
         await new Promise<void>((resolve, reject) => {
@@ -154,10 +154,10 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
         this._client = null;    
     }
 
-    private checkOpened(correlationId: string): void {
+    private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
@@ -187,13 +187,13 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfully acquired and <code>false</code> otherwise.
      */
-    public tryAcquireLock(correlationId: string, key: string, ttl: number): Promise<boolean> {
-        this.checkOpened(correlationId);
+    public tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean> {
+        this.checkOpened(context);
 
         return new Promise<boolean>((resolve, reject) => {
             this._client.set(key, this._lock, 'NX', 'PX', ttl, (err, result) => {
@@ -209,11 +209,11 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
     /**
      * Releases prevously acquired lock by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    public releaseLock(correlationId: string, key: string): Promise<void> {
-        this.checkOpened(correlationId);
+    public releaseLock(context: IContext, key: string): Promise<void> {
+        this.checkOpened(context);
 
         return new Promise<void>((resolve, reject) => {
             // Start transaction on key

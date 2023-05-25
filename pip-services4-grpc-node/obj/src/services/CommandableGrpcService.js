@@ -83,7 +83,7 @@ class CommandableGrpcService extends GrpcService_1.GrpcService {
     applyCommand(schema, action) {
         let actionWrapper = (call) => __awaiter(this, void 0, void 0, function* () {
             let method = call.request.method;
-            let correlationId = call.request.correlation_id;
+            let context = call.request.trace_id;
             try {
                 // Convert arguments
                 let argsEmpty = call.request.args_empty;
@@ -95,7 +95,7 @@ class CommandableGrpcService extends GrpcService_1.GrpcService {
                 }
                 // Call command action
                 try {
-                    let result = yield action(correlationId, args);
+                    let result = yield action(context, args);
                     // Process result and generate response
                     return {
                         error: null,
@@ -113,7 +113,7 @@ class CommandableGrpcService extends GrpcService_1.GrpcService {
             }
             catch (ex) {
                 // Handle unexpected exception
-                let err = new pip_services3_commons_node_2.InvocationException(correlationId, "METHOD_FAILED", "Method " + method + " failed").wrap(ex).withDetails("method", method);
+                let err = new pip_services3_commons_node_2.InvocationException(context, "METHOD_FAILED", "Method " + method + " failed").wrap(ex).withDetails("method", method);
                 return {
                     error: pip_services3_commons_node_1.ErrorDescriptionFactory.create(err),
                     result_empty: true,
@@ -145,10 +145,10 @@ class CommandableGrpcService extends GrpcService_1.GrpcService {
         for (let index = 0; index < commands.length; index++) {
             let command = commands[index];
             let method = '' + this._name + '.' + command.getName();
-            this.registerCommadableMethod(method, null, (correlationId, args) => {
-                let timing = this.instrument(correlationId, method);
+            this.registerCommadableMethod(method, null, (context, args) => {
+                let timing = this.instrument(context, method);
                 try {
-                    return command.execute(correlationId, args);
+                    return command.execute(context, args);
                 }
                 catch (ex) {
                     timing.endFailure(ex);

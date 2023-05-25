@@ -66,29 +66,29 @@ class PostgresConnectionResolver {
         this._connectionResolver.setReferences(references);
         this._credentialResolver.setReferences(references);
     }
-    validateConnection(correlationId, connection) {
+    validateConnection(context, connection) {
         let uri = connection.getUri();
         if (uri != null)
             return null;
         let host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
         }
         let port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
         }
         let database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_DATABASE", "Connection database is not set");
         }
     }
-    validateConnections(correlationId, connections) {
+    validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
         }
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
     }
     composeConfig(connections, credential) {
@@ -122,15 +122,15 @@ class PostgresConnectionResolver {
     /**
      * Resolves PostgreSQL config from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved connection config.
      */
-    resolve(correlationId) {
+    resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(correlationId);
+            let connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
-            this.validateConnections(correlationId, connections);
-            let credential = yield this._credentialResolver.lookup(correlationId);
+            this.validateConnections(context, connections);
+            let credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
             let config = this.composeConfig(connections, credential);
             return config;

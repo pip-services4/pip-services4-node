@@ -173,12 +173,12 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let uri = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let uri = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to mongodb");
+        this._logger.debug(context, "Connecting to mongodb");
 
         try {
             let settings: MongoClientOptions = this.composeSettings();
@@ -192,7 +192,7 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
             this._databaseName = this._db.databaseName;
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to mongodb failed"
             ).withCause(ex);
@@ -202,9 +202,9 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -215,7 +215,7 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
         this._db = null;
         this._databaseName = null;
 
-        this._logger.debug(correlationId, "Disconnected from mongodb database %s", this._databaseName);
+        this._logger.debug(context, "Disconnected from mongodb database %s", this._databaseName);
     }
 
     public getConnection(): MongoClient {

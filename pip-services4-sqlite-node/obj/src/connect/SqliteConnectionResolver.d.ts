@@ -50,8 +50,8 @@ export declare class SqliteConnectionResolver implements IReferenceable, IConfig
     /**
      * Resolves SQLite connection URI from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns 			    a resolved config.
      */
-    resolve(correlationId: string): Promise<any>;
+    resolve(context: IContext): Promise<any>;
 }

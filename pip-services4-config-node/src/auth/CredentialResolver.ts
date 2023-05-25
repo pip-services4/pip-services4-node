@@ -108,7 +108,7 @@ export class CredentialResolver {
         this._credentials.push(credential);
     }
 
-    private async lookupInStores(correlationId: string, credential: CredentialParams): Promise<CredentialParams> {
+    private async lookupInStores(context: IContext, credential: CredentialParams): Promise<CredentialParams> {
         if (!credential.useCredentialStore()) {
             return credential;
         }
@@ -121,11 +121,11 @@ export class CredentialResolver {
         let storeDescriptor = new Descriptor("*", "credential-store", "*", "*", "*")
         let stores = this._references.getOptional<ICredentialStore>(storeDescriptor)
         if (stores.length == 0) {
-            throw new ReferenceException(correlationId, storeDescriptor);
+            throw new ReferenceException(context, storeDescriptor);
         }
 
         for (let store of stores) {
-            let result = await store.lookup(correlationId, key);
+            let result = await store.lookup(context, key);
             if (result != null) {
                 return result;
             }
@@ -138,10 +138,10 @@ export class CredentialResolver {
      * Looks up component credential parameters. If credentials are configured to be retrieved
      * from Credential store it finds a [[ICredentialStore]] and lookups credentials there.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns 			    a looked up credential.
      */
-    public async lookup(correlationId: string): Promise<CredentialParams> {
+    public async lookup(context: IContext): Promise<CredentialParams> {
         if (this._credentials.length == 0) {
             return null;
         }
@@ -157,7 +157,7 @@ export class CredentialResolver {
         }
 
         for (let credential of lookupCredentials) {
-            let result = await this.lookupInStores(correlationId, credential);
+            let result = await this.lookupInStores(context, credential);
             if (result != null) {
                 return result;
             }

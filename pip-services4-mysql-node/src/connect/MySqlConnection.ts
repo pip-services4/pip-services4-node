@@ -146,12 +146,12 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let uri = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let uri = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to MySQL...");
+        this._logger.debug(context, "Connecting to MySQL...");
 
         try {
             uri = this.composeUriSettings(uri);
@@ -176,7 +176,7 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
             connection.release();
         } catch (ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to MySQL failed"
             ).withCause(ex);
@@ -186,9 +186,9 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -204,13 +204,13 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
                 });
             });
 
-            this._logger.debug(correlationId, "Disconnected from MySQL database %s", this._databaseName);
+            this._logger.debug(context, "Disconnected from MySQL database %s", this._databaseName);
 
             this._connection = null;
             this._databaseName = null;    
         } catch(ex) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 'DISCONNECT_FAILED',
                 'Disconnect from MySQL failed: '
             ) .withCause(ex);

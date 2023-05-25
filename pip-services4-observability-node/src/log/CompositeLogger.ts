@@ -33,8 +33,8 @@ import { LogLevel } from './LogLevel';
  *             ...
  *         }
  *     
- *         public myMethod(string correlationId): void {
- *             this._logger.debug(correlationId, "Called method mycomponent.mymethod");
+ *         public myMethod(string context): void {
+ *             this._logger.debug(context, "Called method mycomponent.mymethod");
  *             ...
  *         }
  *     }
@@ -76,13 +76,13 @@ export class CompositeLogger extends Logger implements IReferenceable {
      * Writes a log message to the logger destination(s).
      * 
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
 	 */
-	protected write(level: LogLevel, correlationId: string, error: Error, message: string): void {
+	protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
 		for (let logger of this._loggers)  {
-			logger.log(level, correlationId, error, message);
+			logger.log(level, context, error, message);
 		}
 	}
 }

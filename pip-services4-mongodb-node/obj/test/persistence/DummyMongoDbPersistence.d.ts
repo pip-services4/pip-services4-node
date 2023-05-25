@@ -7,6 +7,6 @@ import { IDummyPersistence } from '../fixtures/IDummyPersistence';
 export declare class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence<Dummy, string> implements IDummyPersistence {
     constructor();
     protected defineSchema(): void;
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
-    getCountByFilter(correlationId: string, filter: FilterParams): Promise<number>;
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
+    getCountByFilter(context: IContext, filter: FilterParams): Promise<number>;
 }

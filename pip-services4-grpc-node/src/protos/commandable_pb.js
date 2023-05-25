@@ -121,7 +121,7 @@ proto.commandable.ErrorDescription.toObject = function(includeInstance, msg) {
   var f, obj = {
     category: jspb.Message.getFieldWithDefault(msg, 1, ""),
     code: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    correlationId: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 3, ""),
     status: jspb.Message.getFieldWithDefault(msg, 4, 0),
     message: jspb.Message.getFieldWithDefault(msg, 5, ""),
     cause: jspb.Message.getFieldWithDefault(msg, 6, ""),
@@ -173,7 +173,7 @@ proto.commandable.ErrorDescription.deserializeBinaryFromReader = function(msg, r
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 4:
       var value = /** @type {number} */ (reader.readInt32());
@@ -240,7 +240,7 @@ proto.commandable.ErrorDescription.serializeBinaryToWriter = function(message, w
       f
     );
   }
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       3,
@@ -319,10 +319,10 @@ proto.commandable.ErrorDescription.prototype.setCode = function(value) {
 
 
 /**
- * optional string correlation_id = 3;
+ * optional string trace_id = 3;
  * @return {string}
  */
-proto.commandable.ErrorDescription.prototype.getCorrelationId = function() {
+proto.commandable.ErrorDescription.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -331,7 +331,7 @@ proto.commandable.ErrorDescription.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.commandable.ErrorDescription} returns this
  */
-proto.commandable.ErrorDescription.prototype.setCorrelationId = function(value) {
+proto.commandable.ErrorDescription.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -463,7 +463,7 @@ proto.commandable.InvokeRequest.prototype.toObject = function(opt_includeInstanc
 proto.commandable.InvokeRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     method: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    correlationId: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 2, ""),
     argsEmpty: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
     argsJson: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
@@ -508,7 +508,7 @@ proto.commandable.InvokeRequest.deserializeBinaryFromReader = function(msg, read
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
@@ -554,7 +554,7 @@ proto.commandable.InvokeRequest.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       2,
@@ -597,10 +597,10 @@ proto.commandable.InvokeRequest.prototype.setMethod = function(value) {
 
 
 /**
- * optional string correlation_id = 2;
+ * optional string trace_id = 2;
  * @return {string}
  */
-proto.commandable.InvokeRequest.prototype.getCorrelationId = function() {
+proto.commandable.InvokeRequest.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -609,7 +609,7 @@ proto.commandable.InvokeRequest.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.commandable.InvokeRequest} returns this
  */
-proto.commandable.InvokeRequest.prototype.setCorrelationId = function(value) {
+proto.commandable.InvokeRequest.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 

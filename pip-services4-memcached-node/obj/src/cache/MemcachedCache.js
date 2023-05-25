@@ -112,13 +112,13 @@ class MemcachedCache {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(correlationId);
+            let connections = yield this._connectionResolver.resolveAll(context);
             if (connections.length == 0) {
-                throw new pip_services3_commons_node_2.ConfigException(correlationId, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
             }
             let servers = [];
             for (let connection of connections) {
@@ -146,28 +146,28 @@ class MemcachedCache {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._client = null;
         });
     }
-    checkOpened(correlationId) {
+    checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(correlationId, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     /**
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns a cached value or <code>null</code> if nothing was found.
      */
-    retrieve(correlationId, key) {
-        this.checkOpened(correlationId);
+    retrieve(context, key) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.get(key, (err, result) => {
                 if (err != null) {
@@ -181,14 +181,14 @@ class MemcachedCache {
     /**
      * Stores value in the cache with expiration time.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
      * @returns the stored value
      */
-    store(correlationId, key, value, timeout) {
-        this.checkOpened(correlationId);
+    store(context, key, value, timeout) {
+        this.checkOpened(context);
         let timeoutInSec = timeout / 1000;
         return new Promise((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), timeoutInSec, (err, result) => {
@@ -203,12 +203,12 @@ class MemcachedCache {
     /**
      * Removes a value from the cache by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns the deleted value.
      */
-    remove(correlationId, key) {
-        this.checkOpened(correlationId);
+    remove(context, key) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.del(key, (err, result) => {
                 if (err != null) {

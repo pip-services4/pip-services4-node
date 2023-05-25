@@ -74,7 +74,7 @@ export class LogTracer implements IConfigurable, IReferenceable, ITracer {
         this._logger.setReferences(references);
     }
 
-    private logTrace(correlationId: string, component: string, operation: string, error: Error, duration: number) {
+    private logTrace(context: IContext, component: string, operation: string, error: Error, duration: number) {
         let builder = "";
 
         if (error != null) {
@@ -95,47 +95,47 @@ export class LogTracer implements IConfigurable, IReferenceable, ITracer {
         }
 
         if (error != null) {
-            this._logger.error(correlationId, error, builder);
+            this._logger.error(context, error, builder);
         } else {
-            this._logger.log(this._logLevel, correlationId, null, builder);
+            this._logger.log(this._logLevel, context, null, builder);
         }
     }
 
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
      */
-    public trace(correlationId: string, component: string, operation: string, duration: number) : void {
-        this.logTrace(correlationId, component, operation, null, duration);
+    public trace(context: IContext, component: string, operation: string, duration: number) : void {
+        this.logTrace(context, component, operation, null, duration);
     }
 
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
       * @param duration          execution duration in milliseconds. 
       */
-    public failure(correlationId: string, component: string, operation: string, error: Error, duration: number) : void {
-        this.logTrace(correlationId, component, operation, error, duration);
+    public failure(context: IContext, component: string, operation: string, error: Error, duration: number) : void {
+        this.logTrace(context, component, operation, error, duration);
     }
  
      /**
       * Begings recording an operation trace
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.
       */
-    public beginTrace(correlationId: string, component: string, operation: string) : TraceTiming {
-        return new TraceTiming(correlationId, component, operation, this);
+    public beginTrace(context: IContext, component: string, operation: string) : TraceTiming {
+        return new TraceTiming(context, component, operation, this);
     }
 
 }

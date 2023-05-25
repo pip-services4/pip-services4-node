@@ -30,14 +30,14 @@ export interface ICommandInterceptor {
      * The interceptor can use this method to intercept and alter the command execution.
      * Otherwise it shall just delete the call to the wrapped command.
      * 
-     * @param correlationId (optional) transaction id to trace execution through call chain.
+     * @param context (optional) transaction id to trace execution through call chain.
      * @param command       the next command in the call chain that is to be executed.
      * @param args          the parameters (arguments) to pass to the command for execution.
      * @returns             the execution result
      * 
      * @see [[Parameters]]
      */
-    execute(correlationId: string, command: ICommand, args: Parameters): Promise<any>;
+    execute(context: IContext, command: ICommand, args: Parameters): Promise<any>;
 
     /**
      * Validates arguments of the wrapped command before its execution.

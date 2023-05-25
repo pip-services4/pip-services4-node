@@ -54,10 +54,10 @@ const AwsConnectionResolver_1 = require("../connect/AwsConnectionResolver");
  *     class MyLambdaClient extends LambdaClient implements IMyClient {
  *         ...
  *
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *
- *             let timing = this.instrument(correlationId, 'myclient.get_data');
- *             const result = await this.call("get_data" correlationId, { id: id });
+ *             let timing = this.instrument(context, 'myclient.get_data');
+ *             const result = await this.call("get_data" context, { id: id });
  *             timing.endTiming();
  *             return result;
  *         }
@@ -127,16 +127,16 @@ class LambdaClient {
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param correlationId         (optional) transaction id to trace execution through call chain.
+     * @param context         (optional) transaction id to trace execution through call chain.
      * @param name                  a method name.
      * @returns {InstrumentTiming}  object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -149,15 +149,15 @@ class LambdaClient {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      *
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            this._connection = yield this._connectionResolver.resolve(correlationId);
+            this._connection = yield this._connectionResolver.resolve(context);
             aws_sdk_2.config.update({
                 accessKeyId: this._connection.getAccessId(),
                 secretAccessKey: this._connection.getAccessKey(),
@@ -168,15 +168,15 @@ class LambdaClient {
             };
             this._lambda = new aws_sdk_1.Lambda();
             this._opened = true;
-            this._logger.debug(correlationId, "Lambda client connected to %s", this._connection.getArn());
+            this._logger.debug(context, "Lambda client connected to %s", this._connection.getArn());
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Todo: close listening?
             if (!this.isOpen()) {
@@ -190,18 +190,18 @@ class LambdaClient {
      *
      * @param invocationType    an invocation type: "RequestResponse" or "Event"
      * @param cmd               an action name to be called.
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      * @param args              action arguments
      * @return {any}            action result.
      */
-    invoke(invocationType, cmd, correlationId, args) {
+    invoke(invocationType, cmd, context, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (cmd == null) {
                 throw new pip_services3_commons_node_2.UnknownException(null, 'NO_COMMAND', 'Missing Seneca pattern cmd');
             }
             args = Object.assign({}, args);
             args.cmd = cmd;
-            args.correlation_id = correlationId || pip_services3_commons_node_1.IdGenerator.nextShort();
+            args.trace_id = context || pip_services3_commons_node_1.IdGenerator.nextShort();
             let params = {
                 FunctionName: this._connection.getArn(),
                 InvocationType: invocationType,
@@ -216,13 +216,13 @@ class LambdaClient {
                         result = JSON.parse(result);
                     }
                     catch (err) {
-                        throw new pip_services3_commons_node_3.InvocationException(correlationId, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
+                        throw new pip_services3_commons_node_3.InvocationException(context, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
                     }
                 }
                 return result;
             }
             catch (err) {
-                throw new pip_services3_commons_node_3.InvocationException(correlationId, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
+                throw new pip_services3_commons_node_3.InvocationException(context, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
             }
         });
     }
@@ -230,25 +230,25 @@ class LambdaClient {
      * Calls a AWS Lambda Function action.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    call(cmd, correlationId, params = {}) {
+    call(cmd, context, params = {}) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.invoke('RequestResponse', cmd, correlationId, params);
+            return this.invoke('RequestResponse', cmd, context, params);
         });
     }
     /**
      * Calls a AWS Lambda Function action asynchronously without waiting for response.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    callOneWay(cmd, correlationId, params = {}) {
-        return this.invoke('Event', cmd, correlationId, params);
+    callOneWay(cmd, context, params = {}) {
+        return this.invoke('Event', cmd, context, params);
     }
 }
 exports.LambdaClient = LambdaClient;

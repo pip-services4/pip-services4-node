@@ -34,18 +34,18 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
         super.setReferences(refs);
         this._credentialResolver.setReferences(refs);
     }
-    open(correlationId) {
+    open(context) {
         const _super = Object.create(null, {
             open: { get: () => super.open }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            let credential = yield this._credentialResolver.lookup(correlationId);
+            let credential = yield this._credentialResolver.lookup(context);
             if (credential == null || credential.getAccessKey() == null) {
-                throw new pip_services3_commons_node_2.ConfigException(correlationId, "NO_ACCESS_KEY", "Missing access key in credentials");
+                throw new pip_services3_commons_node_2.ConfigException(context, "NO_ACCESS_KEY", "Missing access key in credentials");
             }
             this._headers = this._headers || {};
             this._headers['DD-API-KEY'] = credential.getAccessKey();
-            yield _super.open.call(this, correlationId);
+            yield _super.open.call(this, context);
         });
     }
     convertTags(tags) {
@@ -94,11 +94,11 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
             series: series
         };
     }
-    sendMetrics(correlationId, metrics) {
+    sendMetrics(context, metrics) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = this.convertMetrics(metrics);
             // Commented instrumentation because otherwise it will never stop sending logs...
-            //let timing = this.instrument(correlationId, "datadog.send_metrics");
+            //let timing = this.instrument(context, "datadog.send_metrics");
             try {
                 yield this.call("post", "series", null, null, data);
             }

@@ -63,14 +63,14 @@ export class SqlServerConnectionResolver implements IReferenceable, IConfigurabl
         this._credentialResolver.setReferences(references);
     }
     
-    private validateConnection(correlationId: string, connection: ConnectionParams): void {
+    private validateConnection(context: IContext, connection: ConnectionParams): void {
         let uri = connection.getUri();
         if (uri != null) return;
 
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -79,7 +79,7 @@ export class SqlServerConnectionResolver implements IReferenceable, IConfigurabl
         let port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -88,24 +88,24 @@ export class SqlServerConnectionResolver implements IReferenceable, IConfigurabl
         let database = connection.getAsNullableString("database");
         if (database == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_DATABASE",
                 "Connection database is not set"
             );
         }
     }
 
-    private validateConnections(correlationId: string, connections: ConnectionParams[]): void {
+    private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION",
                 "Database connection is not set"
             );
         }
 
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
     }
 
@@ -186,15 +186,15 @@ export class SqlServerConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * Resolves SQLServer config from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a resolved connection uri.
      */
-    public async resolve(correlationId: string): Promise<string> {
-        let connections = await this._connectionResolver.resolveAll(correlationId);
+    public async resolve(context: IContext): Promise<string> {
+        let connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
-        this.validateConnections(correlationId, connections);
+        this.validateConnections(context, connections);
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
         let uri = this.composeUri(connections, credential);

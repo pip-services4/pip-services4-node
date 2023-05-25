@@ -44,8 +44,8 @@ const LambdaClient_1 = require("./LambdaClient");
  *     class MyLambdaClient extends CommandableLambdaClient implements IMyClient {
  *         ...
  *
- *         public async getData(correlationId: string, id: string): Promise<any> {
- *             return this.callCommand("get_data", correlationId, { id: id });
+ *         public async getData(context: IContext, id: string): Promise<any> {
+ *             return this.callCommand("get_data", context, { id: id });
  *         }
  *         ...
  *     }
@@ -77,16 +77,16 @@ class CommandableLambdaClient extends LambdaClient_1.LambdaClient {
      * to the action parameters.
      *
      * @param cmd               an action name
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @return {any}            action result.
      */
-    callCommand(cmd, correlationId, params) {
+    callCommand(cmd, context, params) {
         return __awaiter(this, void 0, void 0, function* () {
             let command = this._name + '.' + cmd;
-            const timing = this.instrument(correlationId, command);
+            const timing = this.instrument(context, command);
             try {
-                const result = yield this.call(command, correlationId, params);
+                const result = yield this.call(command, context, params);
                 timing.endTiming();
                 return result;
             }

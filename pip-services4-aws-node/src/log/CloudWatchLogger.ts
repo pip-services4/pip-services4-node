@@ -126,16 +126,16 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
      * Writes a log message to the logger destination.
      * 
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-    protected write(level: LogLevel, correlationId: string, ex: Error, message: string): void {
+    protected write(level: LogLevel, context: IContext, ex: Error, message: string): void {
         if (this._level < level) {
             return;
         }
 
-        super.write(level, correlationId, ex, message);
+        super.write(level, context, ex, message);
     }
 
 	/**
@@ -150,14 +150,14 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
 	/**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        this._connection = await this._connectionResolver.resolve(correlationId);
+        this._connection = await this._connectionResolver.resolve(context);
 
         config.update({
             accessKeyId: this._connection.getAccessId(),
@@ -208,9 +208,9 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
 	/**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         await this.save(this._cache);
         
         if (this._timer) {
@@ -225,7 +225,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
     private formatMessageText(message: LogMessage): string {
         let result: string = "";
         result += "[" + (message.source ? message.source : "---") + ":" +
-            (message.correlation_id ? message.correlation_id : "---") + ":" + message.level + "] " +
+            (message.trace_id ? message.trace_id : "---") + ":" + message.level + "] " +
             message.message;
         if (message.error != null) {
             if (!message.message) {

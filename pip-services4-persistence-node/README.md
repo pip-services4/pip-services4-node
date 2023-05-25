@@ -40,17 +40,17 @@ Our persistence component shall implement the following interface with a basic s
 
 ```typescript
 export interface IMyPersistence {
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>>;
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>>;
     
-    getOneById(correlationId: string, id: string): Promise<MyObject>;
+    getOneById(context: IContext, id: string): Promise<MyObject>;
     
-    getOneByKey(correlationId: string, key: string): Promise<MyObject>
+    getOneByKey(context: IContext, key: string): Promise<MyObject>
     
-    create(correlationId: string, item: MyObject): Promise<MyObject>;
+    create(context: IContext, item: MyObject): Promise<MyObject>;
     
-    update(correlationId: string, item: MyObject): Promise<MyObject>;
+    update(context: IContext, item: MyObject): Promise<MyObject>;
     
-    deleteById(correlationId: string, id: string): Promise<MyObject>;
+    deleteById(context: IContext, id: string): Promise<MyObject>;
 }
 ```
 
@@ -85,17 +85,17 @@ export class MyMemoryPersistence extends IdentifableMemoryPersistence {
     };
   }
   
-  public async getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>> {
-      return await super.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+  public async getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>> {
+      return await super.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
   }  
   
-  public async getOneByKey(correlationId: string, key: string): Promise<MyObject> {
+  public async getOneByKey(context: IContext, key: string): Promise<MyObject> {
     let item = this._items.find(item => item.key == key);
     
     if (item != null) {
-      this._logger.trace(correlationId, "Found object by key=%s", key);
+      this._logger.trace(context, "Found object by key=%s", key);
     } else {
-      this._logger.trace(correlationId, "Cannot find by key=%s", key);
+      this._logger.trace(context, "Cannot find by key=%s", key);
     }
     
     return item;

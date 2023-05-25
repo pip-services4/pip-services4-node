@@ -54,7 +54,7 @@ import { IRegisterable } from './IRegisterable';
  *             endpoint.setReferences(this._references);
  *         ...
  * 
- *         await this._endpoint.open(correlationId);
+ *         await this._endpoint.open(context);
  *     }
  */
 export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
@@ -144,14 +144,14 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a GRPC server (service) using the set options and parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-	public async open(correlationId: string): Promise<void> {
+	public async open(context: IContext): Promise<void> {
     	if (this.isOpen()) {
             return;
         }
     	
-		let connection = await this._connectionResolver.resolve(correlationId);
+		let connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
 
@@ -208,9 +208,9 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             });
 
             // Register the service URI
-            await this._connectionResolver.register(correlationId);
+            await this._connectionResolver.register(context);
 
-            this._logger.debug(correlationId, "Opened GRPC service at %s", this._uri);
+            this._logger.debug(context, "Opened GRPC service at %s", this._uri);
             
             // Start operations
             this.performRegistrations();
@@ -219,7 +219,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             this._server = null;
 
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CANNOT_CONNECT",
                 "Opening GRPC service failed"
             ).wrap(ex).withDetails("url", this._uri);
@@ -229,9 +229,9 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     /**
      * Closes this endpoint and the GRPC server (service) that was opened earlier.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._server != null) {
             this._uri = null;
             this._commandableMethods = null;
@@ -250,11 +250,11 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
                     });
                 });
 
-                this._logger.debug(correlationId, "Closed GRPC service at %s", this._uri);
+                this._logger.debug(context, "Closed GRPC service at %s", this._uri);
 
                 this._server = null;
             } catch (ex) {
-                this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
+                this._logger.warn(context, "Failed while closing GRPC service: %s", ex);
                 throw ex;
             }
         }
@@ -328,12 +328,12 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private async invokeCommandableMethod(call: any): Promise<any> {
         let method = call.request.method;
         let action = this._commandableMethods ? this._commandableMethods[method] : null;
-        let correlationId = call.request.correlation_id;
+        let context = call.request.trace_id;
 
         // Handle method not found
         if (action == null) {
             let err = new InvocationException(
-                correlationId,
+                context,
                 "METHOD_NOT_FOUND",
                 "Method " + method + " was not found"
             ).withDetails("method", method);

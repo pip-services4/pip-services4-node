@@ -110,13 +110,13 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
      * Reads container configuration from JSON or YAML file
      * and parameterizes it with given values.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param path              a path to configuration file
      * @param parameters        values to parameters the configuration or null to skip parameterization.
      */
-    public readConfigFromFile(correlationId: string, path: string, parameters: ConfigParams): void {
-        this._config = ContainerConfigReader.readFromFile(correlationId, path, parameters);
-        this._logger.trace(correlationId, this._config.toString());
+    public readConfigFromFile(context: IContext, path: string, parameters: ConfigParams): void {
+        this._config = ContainerConfigReader.readFromFile(context, path, parameters);
+        this._logger.trace(context, this._config.toString());
     }
 
     /**
@@ -168,19 +168,19 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._references != null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 "ALREADY_OPENED",
                 "Container was already opened"
             );
         }
 
         try {
-            this._logger.trace(correlationId, "Starting container.");
+            this._logger.trace(context, "Starting container.");
 
             // Create references with configured components
             this._references = new ContainerReferences();
@@ -192,15 +192,15 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
             let infoDescriptor = new Descriptor("*", "context-info", "*", "*", "*");
             this._info = this._references.getOneOptional<ContextInfo>(infoDescriptor);
 
-            await this._references.open(correlationId);
+            await this._references.open(context);
 
             // Get reference to logger
             this._logger = new CompositeLogger(this._references);
-            this._logger.info(correlationId, "Container %s started.", this._info.name);
+            this._logger.info(context, "Container %s started.", this._info.name);
         } catch (ex) {
-            this._logger.fatal(correlationId, ex, "Failed to start container");
+            this._logger.fatal(context, ex, "Failed to start container");
 
-            await this.close(correlationId);
+            await this.close(context);
 
             throw ex;
         }
@@ -209,27 +209,27 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         // Skip if container wasn't opened
         if (this._references == null) {
             return null;
         }
 
         try {
-            this._logger.trace(correlationId, "Stopping %s container", this._info.name);
+            this._logger.trace(context, "Stopping %s container", this._info.name);
 
             // Unset references for child container
             this.unsetReferences();
 
             // Close and dereference components
-            await this._references.close(correlationId);
+            await this._references.close(context);
 
             this._references = null;
-            this._logger.info(correlationId, "Container %s stopped", this._info.name);
+            this._logger.info(context, "Container %s stopped", this._info.name);
         } catch (ex) {
-            this._logger.error(correlationId, ex, "Failed to stop container");
+            this._logger.error(context, ex, "Failed to stop container");
             throw ex;
         }
     }

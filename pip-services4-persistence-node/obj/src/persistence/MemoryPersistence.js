@@ -38,7 +38,7 @@ const pip_services3_components_node_1 = require("pip-services4-components-node")
  *
  *     class MyMemoryPersistence extends MemoryPersistence<MyData> {
  *
- *         public async getByName(correlationId: string, name: string): Promise<MyData> {
+ *         public async getByName(context: IContext, name: string): Promise<MyData> {
  *             let item = this._items.find((d) => d.name == name);
  *             return item;
  *         });
@@ -46,7 +46,7 @@ const pip_services3_components_node_1 = require("pip-services4-components-node")
  *         public set(correlatonId: string, item: MyData): Promise<MyData> {
  *             this._items = this._items.find((d) => d.name != name);
  *             this._items.push(item);
- *             await this.save(correlationId);
+ *             await this.save(context);
  *             return item;
  *         }
  *
@@ -100,58 +100,58 @@ class MemoryPersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.load(correlationId);
+            yield this.load(context);
             this._opened = true;
         });
     }
-    load(correlationId) {
+    load(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._loader == null) {
                 return null;
             }
-            this._items = yield this._loader.load(correlationId);
-            this._logger.trace(correlationId, "Loaded %d items", this._items.length);
+            this._items = yield this._loader.load(context);
+            this._logger.trace(context, "Loaded %d items", this._items.length);
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.save(correlationId);
+            yield this.save(context);
             this._opened = false;
         });
     }
     /**
      * Saves items to external data source using configured saver component.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    save(correlationId) {
+    save(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._saver == null) {
                 return;
             }
-            yield this._saver.save(correlationId, this._items);
-            this._logger.trace(correlationId, "Saved %d items", this._items.length);
+            yield this._saver.save(context, this._items);
+            this._logger.trace(context, "Saved %d items", this._items.length);
         });
     }
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._items = [];
-            this._logger.trace(correlationId, "Cleared items");
-            yield this.save(correlationId);
+            this._logger.trace(context, "Cleared items");
+            yield this.save(context);
         });
     }
     /**
@@ -160,14 +160,14 @@ class MemoryPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting parameters
      * @param select            (optional) projection parameters (not used yet)
      * @returns                 a requested page with data items.
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             let items = this._items;
             // Filter and sort
@@ -197,7 +197,7 @@ class MemoryPersistence {
                 items = items.slice(skip);
             }
             items = items.slice(0, take);
-            this._logger.trace(correlationId, "Retrieved %d items", items.length);
+            this._logger.trace(context, "Retrieved %d items", items.length);
             return new pip_services3_commons_node_2.DataPage(items, total);
         });
     }
@@ -207,18 +207,18 @@ class MemoryPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @returns                 a number of data items that satisfy the filter.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let items = this._items;
             // Filter and sort
             if (typeof filter === "function") {
                 items = items.filter(filter);
             }
-            this._logger.trace(correlationId, "Counted %d items", items.length);
+            this._logger.trace(context, "Counted %d items", items.length);
             return items.length;
         });
     }
@@ -228,14 +228,14 @@ class MemoryPersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter function to filter items
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting parameters
      * @param select           (optional) projection parameters (not used yet)
      * @returns                a list with found data items.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             let items = this._items;
             // Apply filter
@@ -254,7 +254,7 @@ class MemoryPersistence {
                     return 0;
                 });
             }
-            this._logger.trace(correlationId, "Retrieved %d items", items.length);
+            this._logger.trace(context, "Retrieved %d items", items.length);
             return items;
         });
     }
@@ -264,11 +264,11 @@ class MemoryPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      * @returns                 a random data item.
      */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let items = this._items;
             // Apply filter
@@ -278,10 +278,10 @@ class MemoryPersistence {
             let index = Math.trunc(items.length * Math.random());
             let item = items.length > 0 ? items[index] : null;
             if (item != null) {
-                this._logger.trace(correlationId, "Retrieved a random item");
+                this._logger.trace(context, "Retrieved a random item");
             }
             else {
-                this._logger.trace(correlationId, "Nothing to return as random item");
+                this._logger.trace(context, "Nothing to return as random item");
             }
             return item;
         });
@@ -289,17 +289,17 @@ class MemoryPersistence {
     /**
      * Creates a data item.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 a created data item
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             // Clone the object
             item = Object.assign({}, item);
             this._items.push(item);
-            this._logger.trace(correlationId, "Created item %s", item['id']);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Created item %s", item['id']);
+            yield this.save(context);
             return item;
         });
     }
@@ -309,10 +309,10 @@ class MemoryPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let deleted = 0;
             for (let index = this._items.length - 1; index >= 0; index--) {
@@ -325,8 +325,8 @@ class MemoryPersistence {
             if (deleted == 0) {
                 return;
             }
-            this._logger.trace(correlationId, "Deleted %s items", deleted);
-            yield this.save(correlationId);
+            this._logger.trace(context, "Deleted %s items", deleted);
+            yield this.save(context);
         });
     }
 }

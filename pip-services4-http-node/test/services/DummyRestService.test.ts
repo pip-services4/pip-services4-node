@@ -138,26 +138,26 @@ suite('DummyRestService', ()=> {
         });
     });
 
-    test('Check correlationId', async () => {
+    test('Check context', async () => {
         // check transmit correllationId over params
         let result = await new Promise<any>((resolve, reject) => {
-            rest.get("/dummies/check/correlation_id?correlation_id=test_cor_id", (err, req, res, result) => {
+            rest.get("/dummies/check/trace_id?trace_id=test_cor_id", (err, req, res, result) => {
                 if (err == null) resolve(result);
                 else reject(err);
             });
         });
-        assert.equal("test_cor_id", result.correlation_id);
+        assert.equal("test_cor_id", result.trace_id);
 
         // check transmit correllationId over header
         result = await new Promise<any>((resolve, reject) => {
-            headers["correlation_id"] = "test_cor_id_header";
-            rest.get("/dummies/check/correlation_id", (err, req, res, result) => {
+            headers["trace_id"] = "test_cor_id_header";
+            rest.get("/dummies/check/trace_id", (err, req, res, result) => {
                 if (err == null) resolve(result);
                 else reject(err);
             });
         });
         assert.equal(service.getNumberOfCalls(), 5); // Check interceptor
-        assert.equal("test_cor_id_header", result.correlation_id);
+        assert.equal("test_cor_id_header", result.trace_id);
     });
 
     test('Get OpenApi Spec From String', async () => {

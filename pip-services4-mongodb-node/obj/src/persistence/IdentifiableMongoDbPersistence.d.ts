@@ -67,9 +67,9 @@ import { MongoDbPersistence } from './MongoDbPersistence';
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams,
  *         callback: (err: any, page: DataPage<MyData>) => void): void {
- *         base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null, callback);
+ *         base.getPageByFilter(context, this.composeFilter(filter), paging, null, null, callback);
  *     }
  *
  *     }
@@ -120,66 +120,66 @@ export declare class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, 
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a data list.
      */
-    getListByIds(correlationId: string, ids: K[]): Promise<T[]>;
+    getListByIds(context: IContext, ids: K[]): Promise<T[]>;
     /**
      * Gets a data item by its unique id.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 the found data item.
      */
-    getOneById(correlationId: string, id: K): Promise<T>;
+    getOneById(context: IContext, id: K): Promise<T>;
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 theß created item.
      */
-    create(correlationId: string, item: T): Promise<T>;
+    create(context: IContext, item: T): Promise<T>;
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 the updated item.
      */
-    set(correlationId: string, item: T): Promise<T>;
+    set(context: IContext, item: T): Promise<T>;
     /**
      * Updates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated item.
      */
-    update(correlationId: string, item: T): Promise<T>;
+    update(context: IContext, item: T): Promise<T>;
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId: string, id: K, data: AnyValueMap): Promise<T>;
+    updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T>;
     /**
      * Deleted a data item by it's unique id.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted item.
      */
-    deleteById(correlationId: string, id: K): Promise<T>;
+    deleteById(context: IContext, id: K): Promise<T>;
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    deleteByIds(correlationId: string, ids: K[]): Promise<void>;
+    deleteByIds(context: IContext, ids: K[]): Promise<void>;
 }

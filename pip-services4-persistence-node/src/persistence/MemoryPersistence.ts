@@ -37,7 +37,7 @@ import { ISaver } from '../ISaver';
  * 
  *     class MyMemoryPersistence extends MemoryPersistence<MyData> {
  *          
- *         public async getByName(correlationId: string, name: string): Promise<MyData> {
+ *         public async getByName(context: IContext, name: string): Promise<MyData> {
  *             let item = this._items.find((d) => d.name == name);
  *             return item;
  *         }); 
@@ -45,7 +45,7 @@ import { ISaver } from '../ISaver';
  *         public set(correlatonId: string, item: MyData): Promise<MyData> {
  *             this._items = this._items.find((d) => d.name != name);
  *             this._items.push(item);
- *             await this.save(correlationId);
+ *             await this.save(context);
  *             return item;
  *         }
  *       
@@ -106,30 +106,30 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        await this.load(correlationId);
+    public async open(context: IContext): Promise<void> {
+        await this.load(context);
         this._opened = true;
     }
 
-    protected async load(correlationId: string): Promise<void> {
+    protected async load(context: IContext): Promise<void> {
         if (this._loader == null) {
             return null;
         }
             
-        this._items = await this._loader.load(correlationId);
+        this._items = await this._loader.load(context);
 
-        this._logger.trace(correlationId, "Loaded %d items", this._items.length);
+        this._logger.trace(context, "Loaded %d items", this._items.length);
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
-        await this.save(correlationId);
+    public async close(context: IContext): Promise<void> {
+        await this.save(context);
 
         this._opened = false;
     }
@@ -137,29 +137,29 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     /**
      * Saves items to external data source using configured saver component.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async save(correlationId: string): Promise<void> {
+    public async save(context: IContext): Promise<void> {
         if (this._saver == null) {
             return;
         }
 
-        await this._saver.save(correlationId, this._items);
+        await this._saver.save(context, this._items);
 
-        this._logger.trace(correlationId, "Saved %d items", this._items.length);
+        this._logger.trace(context, "Saved %d items", this._items.length);
     }
 
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         this._items = [];
 
-        this._logger.trace(correlationId, "Cleared items");
+        this._logger.trace(context, "Cleared items");
 
-        await this.save(correlationId);
+        await this.save(context);
     }
 
     /**
@@ -168,14 +168,14 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting parameters
      * @param select            (optional) projection parameters (not used yet)
      * @returns                 a requested page with data items.
      */
-    protected async getPageByFilter(correlationId: string, filter: any, 
+    protected async getPageByFilter(context: IContext, filter: any, 
         paging: PagingParams, sort: any, select: any): Promise<DataPage<T>> {
         
         let items = this._items;
@@ -209,7 +209,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
         }
         items = items.slice(0, take);
         
-        this._logger.trace(correlationId, "Retrieved %d items", items.length);
+        this._logger.trace(context, "Retrieved %d items", items.length);
         
         return new DataPage<T>(items, total);
     }
@@ -220,11 +220,11 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @returns                 a number of data items that satisfy the filter.
      */
-    protected async getCountByFilter(correlationId: string, filter: any): Promise<number> {
+    protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
         let items = this._items;
 
         // Filter and sort
@@ -232,7 +232,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
             items = items.filter(filter);
         }
 
-        this._logger.trace(correlationId, "Counted %d items", items.length);
+        this._logger.trace(context, "Counted %d items", items.length);
         
         return items.length;
     }
@@ -243,14 +243,14 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter function to filter items
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting parameters
      * @param select           (optional) projection parameters (not used yet)
      * @returns                a list with found data items.
      */
-    protected async getListByFilter(correlationId: string, filter: any, sort: any, select: any): Promise<T[]> {
+    protected async getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]> {
         let items = this._items;
 
         // Apply filter
@@ -269,7 +269,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
             });
         }
         
-        this._logger.trace(correlationId, "Retrieved %d items", items.length);
+        this._logger.trace(context, "Retrieved %d items", items.length);
         
         return items;
     }
@@ -280,11 +280,11 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      * @returns                 a random data item.
      */
-    protected async getOneRandom(correlationId: string, filter: any): Promise<T> {
+    protected async getOneRandom(context: IContext, filter: any): Promise<T> {
         let items = this._items;
 
         // Apply filter
@@ -296,9 +296,9 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
         let item: T = items.length > 0 ? items[index] : null;
         
         if (item != null) {
-            this._logger.trace(correlationId, "Retrieved a random item");
+            this._logger.trace(context, "Retrieved a random item");
         } else {
-            this._logger.trace(correlationId, "Nothing to return as random item");
+            this._logger.trace(context, "Nothing to return as random item");
         }
                         
         return item;
@@ -307,18 +307,18 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     /**
      * Creates a data item.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 a created data item
      */
-    public async create(correlationId: string, item: T): Promise<T> {
+    public async create(context: IContext, item: T): Promise<T> {
         // Clone the object
         item = Object.assign({}, item);
 
         this._items.push(item);
-        this._logger.trace(correlationId, "Created item %s", item['id']);
+        this._logger.trace(context, "Created item %s", item['id']);
 
-        await this.save(correlationId);
+        await this.save(context);
 
         return item;
     }
@@ -329,10 +329,10 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      */
-    protected async deleteByFilter(correlationId: string, filter: any): Promise<void> {
+    protected async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let deleted = 0;
         for (let index = this._items.length - 1; index>= 0; index--) {
             let item = this._items[index];
@@ -346,9 +346,9 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
             return;
         }
 
-        this._logger.trace(correlationId, "Deleted %s items", deleted);
+        this._logger.trace(context, "Deleted %s items", deleted);
 
-        await this.save(correlationId);
+        await this.save(context);
     }
 
 }

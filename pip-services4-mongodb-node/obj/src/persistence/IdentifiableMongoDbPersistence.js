@@ -74,9 +74,9 @@ const MongoDbPersistence_1 = require("./MongoDbPersistence");
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams,
  *         callback: (err: any, page: DataPage<MyData>) => void): void {
- *         base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null, callback);
+ *         base.getPageByFilter(context, this.composeFilter(filter), paging, null, null, callback);
  *     }
  *
  *     }
@@ -131,34 +131,34 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a data list.
      */
-    getListByIds(correlationId, ids) {
+    getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = {
                 _id: { $in: ids }
             };
-            return yield this.getListByFilter(correlationId, filter, null, null);
+            return yield this.getListByFilter(context, filter, null, null);
         });
     }
     /**
      * Gets a data item by its unique id.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 the found data item.
      */
-    getOneById(correlationId, id) {
+    getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = { _id: id };
             let item = yield this._collection.findOne(filter);
             if (item == null) {
-                this._logger.trace(correlationId, "Nothing found from %s with id = %s", this._collectionName, id);
+                this._logger.trace(context, "Nothing found from %s with id = %s", this._collectionName, id);
             }
             else {
-                this._logger.trace(correlationId, "Retrieved from %s with id = %s", this._collectionName, id);
+                this._logger.trace(context, "Retrieved from %s with id = %s", this._collectionName, id);
             }
             item = this.convertToPublic(item);
             return item;
@@ -167,11 +167,11 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 theß created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         const _super = Object.create(null, {
             create: { get: () => super.create }
         });
@@ -187,18 +187,18 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             if (newItem._id == null && this._autoGenerateId) {
                 newItem._id = pip_services3_commons_node_1.IdGenerator.nextLong();
             }
-            return yield _super.create.call(this, correlationId, newItem);
+            return yield _super.create.call(this, context, newItem);
         });
     }
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 the updated item.
      */
-    set(correlationId, item) {
+    set(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return null;
@@ -221,7 +221,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             };
             let result = yield this._collection.findOneAndReplace(filter, newItem, options);
             if (item != null) {
-                this._logger.trace(correlationId, "Set in %s with id = %s", this._collectionName, item.id);
+                this._logger.trace(context, "Set in %s with id = %s", this._collectionName, item.id);
             }
             newItem = result ? this.convertToPublic(result.value) : null;
             return newItem;
@@ -230,11 +230,11 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Updates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated item.
      */
-    update(correlationId, item) {
+    update(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null || item.id == null) {
                 return null;
@@ -248,7 +248,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
                 returnDocument: 'after'
             };
             let result = yield this._collection.findOneAndUpdate(filter, update, options);
-            this._logger.trace(correlationId, "Updated in %s with id = %s", this._collectionName, item.id);
+            this._logger.trace(context, "Updated in %s with id = %s", this._collectionName, item.id);
             newItem = result ? this.convertToPublic(result.value) : null;
             return newItem;
         });
@@ -256,12 +256,12 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (data == null || id == null) {
                 return null;
@@ -274,7 +274,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
                 returnDocument: 'after'
             };
             let result = yield this._collection.findOneAndUpdate(filter, update, options);
-            this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._collectionName, id);
+            this._logger.trace(context, "Updated partially in %s with id = %s", this._collectionName, id);
             newItem = result ? this.convertToPublic(result.value) : null;
             return newItem;
         });
@@ -282,15 +282,15 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Deleted a data item by it's unique id.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted item.
      */
-    deleteById(correlationId, id) {
+    deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = { _id: id };
             let result = yield this._collection.findOneAndDelete(filter);
-            this._logger.trace(correlationId, "Deleted from %s with id = %s", this._collectionName, id);
+            this._logger.trace(context, "Deleted from %s with id = %s", this._collectionName, id);
             let oldItem = result ? this.convertToPublic(result.value) : null;
             return oldItem;
         });
@@ -298,13 +298,13 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    deleteByIds(correlationId, ids) {
+    deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let filter = { _id: { $in: ids } };
-            return yield this.deleteByFilter(correlationId, filter);
+            return yield this.deleteByFilter(context, filter);
         });
     }
 }

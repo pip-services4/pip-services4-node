@@ -56,9 +56,9 @@ import { CloudFunctionRequestHelper } from '../containers/CloudFunctionRequestHe
  *        public register(): void {
  *            registerAction("get_mydata", null, async (req, res) => {
  *                let params = req.body;
- *                let correlationId = params.correlation_id;
+ *                let context = params.trace_id;
  *                let id = params.id;
- *                const result = await this._controller.getMyData(correlationId, id);
+ *                const result = await this._controller.getMyData(context, id);
  *                
  *                res.send(result);
  *            });
@@ -144,17 +144,17 @@ export abstract class CloudFunctionService implements ICloudFunctionService, IOp
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
@@ -170,9 +170,9 @@ export abstract class CloudFunctionService implements ICloudFunctionService, IOp
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
@@ -185,9 +185,9 @@ export abstract class CloudFunctionService implements ICloudFunctionService, IOp
     /**
      * Closes component and frees used resources.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (!this._opened) {
             return;
         }
@@ -204,8 +204,8 @@ export abstract class CloudFunctionService implements ICloudFunctionService, IOp
             if (schema && req) {
                 // Perform validation
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let correlationId = this.getCorrelationId(req);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(req);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     HttpResponseSender.sendError(req, res, err);
                 }
@@ -315,13 +315,13 @@ export abstract class CloudFunctionService implements ICloudFunctionService, IOp
     protected abstract register(): void;
 
     /**
-     * Returns correlationId from Google Function request.
+     * Returns context from Google Function request.
      * This method can be overloaded in child classes
      * @param req - the function request
-     * @return returns correlationId from request
+     * @return returns context from request
      */
-    protected getCorrelationId(req: any): string {
-        return CloudFunctionRequestHelper.getCorrelationId(req);
+    protected getTraceId(req: any): string {
+        return CloudFunctionRequestHelper.getTraceId(req);
     }
 
     /**

@@ -33,7 +33,7 @@ suite('ApplicationExceptionFactory', ()=> {
 
     setup(() => {
         _descr = new ErrorDescription();
-        _descr.correlation_id = "correlationId";
+        _descr.trace_id = "trace_id";
         _descr.code = "code";
         _descr.message = "message";
         _descr.status = 777;

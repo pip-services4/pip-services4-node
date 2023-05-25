@@ -23,7 +23,7 @@ export class ErrorDescription {
     /** A map with additional details that can be used to restore error description in other languages */
 	public details: any;
     /** A unique transaction id to trace execution throug call chain */   
-	public correlation_id: string;
+	public trace_id: string;
     /** Original error wrapped by this exception */ 
 	public cause: string;
     /** Stack trace of the exception */ 

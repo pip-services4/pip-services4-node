@@ -71,45 +71,45 @@ export declare class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    peek(correlationId: string): Promise<MessageEnvelope>;
+    peek(context: IContext): Promise<MessageEnvelope>;
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
      * Important: This method is not supported by NATS.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>;
+    peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>;
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message or <code>null</code> if no message was received.
      */
-    receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
     private receiveMessage;
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    listen(correlationId: string, receiver: IMessageReceiver): void;
+    listen(context: IContext, receiver: IMessageReceiver): void;
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId: string): void;
+    endListen(context: IContext): void;
 }

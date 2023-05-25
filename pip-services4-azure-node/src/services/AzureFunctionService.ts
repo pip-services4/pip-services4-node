@@ -54,9 +54,9 @@ import { AzureFunctionContextHelper } from '../containers/AzureFunctionContextHe
  * 
  *        public register(): void {
  *            registerAction("get_mydata", null, async (context) => {
- *                let correlationId = context.correlation_id;
+ *                let context = context.trace_id;
  *                let id = context.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -140,17 +140,17 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
@@ -166,9 +166,9 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
@@ -181,9 +181,9 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
     /**
      * Closes component and frees used resources.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (!this._opened) {
             return;
         }
@@ -200,8 +200,8 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
             if (schema && context) {
                 // Perform validation
                 let params = Object.assign({}, context.params, context.query, { body: context.body });
-                let correlationId = this.getCorrelationId(context);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(context);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     return err;
                 }
@@ -313,13 +313,13 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
     protected abstract register(): void;
 
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * This method can be overloaded in child classes
      * @param context - the context context
-     * @return returns correlationId from context
+     * @return returns context from context
      */
-    protected getCorrelationId(context: any): string {
-        return AzureFunctionContextHelper.getCorrelationId(context);
+    protected getTraceId(context: any): string {
+        return AzureFunctionContextHelper.getTraceId(context);
     }
 
     /**
@@ -343,11 +343,11 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
      */
      public async act(context: any): Promise<any> {
         let cmd: string = this.getCommand(context);
-        let correlationId = this.getCorrelationId(context);
+        let context = this.getTraceId(context);
         
         if (cmd == null) {
             throw new BadRequestException(
-                correlationId, 
+                context, 
                 'NO_COMMAND', 
                 'Cmd parameter is missing'
             );
@@ -356,7 +356,7 @@ export abstract class AzureFunctionService implements IAzureFunctionService, IOp
         const action: AzureFunctionAction = this._actions.find(a => a.cmd == cmd);
         if (action == null) {
             throw new BadRequestException(
-                correlationId, 
+                context, 
                 'NO_ACTION', 
                 'Action ' + cmd + ' was not found'
             )

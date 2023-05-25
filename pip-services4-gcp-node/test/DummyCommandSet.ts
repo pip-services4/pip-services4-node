@@ -35,10 +35,10 @@ export class DummyCommandSet extends CommandSet {
 			new ObjectSchema(true)
                 .withOptionalProperty("filter", new FilterParamsSchema())
                 .withOptionalProperty("paging", new PagingParamsSchema()),
-			(correlationId: string, args: Parameters): Promise<DataPage<Dummy>> => {
+			(context: IContext, args: Parameters): Promise<DataPage<Dummy>> => {
 				let filter = FilterParams.fromValue(args.get("filter"));
 				let paging = PagingParams.fromValue(args.get("paging"));
-				return this._controller.getPageByFilter(correlationId, filter, paging);
+				return this._controller.getPageByFilter(context, filter, paging);
 			}
 		);
 	}
@@ -48,9 +48,9 @@ export class DummyCommandSet extends CommandSet {
 			"get_dummy_by_id",
             new ObjectSchema(true)
                 .withRequiredProperty("dummy_id", TypeCode.String),
-			(correlationId: string, args: Parameters): Promise<Dummy> => {
+			(context: IContext, args: Parameters): Promise<Dummy> => {
 				let id = args.getAsString("dummy_id");
-				return this._controller.getOneById(correlationId, id);
+				return this._controller.getOneById(context, id);
 			}
 		);
 	}
@@ -60,9 +60,9 @@ export class DummyCommandSet extends CommandSet {
 			"create_dummy",
             new ObjectSchema(true)
                 .withRequiredProperty("dummy", new DummySchema()),
-			(correlationId: string, args: Parameters): Promise<Dummy> => {
+			(context: IContext, args: Parameters): Promise<Dummy> => {
 				let entity: Dummy = args.get("dummy");
-				return this._controller.create(correlationId, entity);
+				return this._controller.create(context, entity);
 			}
 		);
 	}
@@ -72,9 +72,9 @@ export class DummyCommandSet extends CommandSet {
 			"update_dummy",
             new ObjectSchema(true)
                 .withRequiredProperty("dummy", new DummySchema()),
-			(correlationId: string, args: Parameters): Promise<Dummy> => {
+			(context: IContext, args: Parameters): Promise<Dummy> => {
 				let entity: Dummy = args.get("dummy");
-				return this._controller.update(correlationId, entity);
+				return this._controller.update(context, entity);
 			}
 		);
 	}
@@ -84,9 +84,9 @@ export class DummyCommandSet extends CommandSet {
 			"delete_dummy",
             new ObjectSchema(true)
                 .withRequiredProperty("dummy_id", TypeCode.String),
-			(correlationId: string, args: Parameters): Promise<Dummy> => {
+			(context: IContext, args: Parameters): Promise<Dummy> => {
 				let id = args.getAsString("dummy_id");
-				return this._controller.deleteById(correlationId, id);
+				return this._controller.deleteById(context, id);
 			}
 		);
 	}

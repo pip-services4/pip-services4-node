@@ -1,5 +1,6 @@
 /** @module run */
 
+import { IContext } from "./IContext";
 import { Parameters } from './Parameters';
 
 /**
@@ -14,15 +15,15 @@ export class Notifier {
 	 * To be notiied components must implement [[INotifiable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param component 		the component that is to be notified.
      * @param args              notifiation arguments.
 	 * 
 	 * @see [[INotifiable]]
 	 */
-	public static notifyOne(correlationId: string, component: any, args: Parameters): void {
+	public static notifyOne(context: IContext, component: any, args: Parameters): void {
         if (typeof component.notify === "function") {
-			component.notify(correlationId, args);
+			component.notify(context, args);
 		}
 	}
 
@@ -32,18 +33,18 @@ export class Notifier {
 	 * To be notified components must implement [[INotifiable]] interface.
 	 * If they don't the call to this method has no effect.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param components 		a list of components that are to be notified.
      * @param args              notification arguments.
 	 * 
 	 * @see [[notifyOne]]
 	 * @see [[INotifiable]]
 	 */
-    public static notify(correlationId: string, components: any[], args: Parameters): void {
+    public static notify(context: IContext, components: any[], args: Parameters): void {
 		if (components == null) return;
 		
 		for (let component of components) {
-            Notifier.notifyOne(correlationId, component, args);
+            Notifier.notifyOne(context, component, args);
 		}
 	}
 }

@@ -28,7 +28,7 @@ import { TraceTiming } from './TraceTiming';
  *         }
  *         
  *         public myMethod(correlatonId: string): void {
- *             var timing = this._tracer.beginTrace(correlationId, "mycomponent", "mymethod");
+ *             var timing = this._tracer.beginTrace(context, "mycomponent", "mymethod");
  *             try {
  *                 ...
  *                 timing.endTrace();
@@ -70,41 +70,41 @@ export class CompositeTracer implements ITracer, IReferenceable {
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
      */
-    public trace(correlationId: string, component: string, operation: string, duration: number) : void {
+    public trace(context: IContext, component: string, operation: string, duration: number) : void {
         for (let tracer of this._tracers) {
-            tracer.trace(correlationId, component, operation, duration);
+            tracer.trace(context, component, operation, duration);
         }
     }
 
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
       * @param duration          execution duration in milliseconds. 
       */
-    public failure(correlationId: string, component: string, operation: string, error: Error, duration: number) : void {
+    public failure(context: IContext, component: string, operation: string, error: Error, duration: number) : void {
         for (let tracer of this._tracers) {
-            tracer.failure(correlationId, component, operation, error, duration);
+            tracer.failure(context, component, operation, error, duration);
         }
     }
  
      /**
       * Begings recording an operation trace
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.
       */
-    public beginTrace(correlationId: string, component: string, operation: string) : TraceTiming {
-        return new TraceTiming(correlationId, component, operation, this);
+    public beginTrace(context: IContext, component: string, operation: string) : TraceTiming {
+        return new TraceTiming(context, component, operation, this);
     }     
 }

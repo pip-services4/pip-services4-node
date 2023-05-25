@@ -102,23 +102,23 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            yield this._client.open(correlationId);
+            yield this._client.open(context);
             this._timer = setInterval(() => { this.dump(); }, this._interval);
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
             if (this._timer) {
@@ -126,7 +126,7 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
             }
             this._cache = [];
             this._timer = null;
-            yield this._client.close(correlationId);
+            yield this._client.close(context);
         });
     }
     // private convertStatus(level: number): string {
@@ -151,7 +151,7 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
         let result = {
             time: message.time || new Date(),
             tags: {
-                correlation_id: message.correlation_id
+                trace_id: message.trace_id
             },
             host: this._instance,
             service: message.source || this._source,

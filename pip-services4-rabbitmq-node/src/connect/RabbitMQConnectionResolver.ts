@@ -60,10 +60,10 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         this._credentialResolver.setReferences(references);
     }
 
-    private validateConnection(correlationId: string, connection: ConnectionParams): void {
+    private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION",
                 "RabbitMQ connection is not set"
             );
@@ -77,7 +77,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let protocol = connection.getAsStringWithDefault("protocol", "amqp");
         if (protocol == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -86,7 +86,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -95,7 +95,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let port = connection.getAsInteger("port");
         if (port == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -137,15 +137,15 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
     /**
      * Resolves RabbitMQ connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved RabbitMQ connection options.
      */
-    public async resolve(correlationId: string): Promise<any> {
-        let connection = await this._connectionResolver.resolve(correlationId);
+    public async resolve(context: IContext): Promise<any> {
+        let connection = await this._connectionResolver.resolve(context);
         // Validate connections
-        this.validateConnection(correlationId, connection);
+        this.validateConnection(context, connection);
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
         let options = this.composeOptions(connection, credential);
@@ -155,14 +155,14 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
     /**
      * Composes RabbitMQ connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved RabbitMQ connection options.
      */
-    public compose(correlationId: string, connection: ConnectionParams, credential: CredentialParams): ConfigParams {
+    public compose(context: IContext, connection: ConnectionParams, credential: CredentialParams): ConfigParams {
         // Validate connections
-        this.validateConnection(correlationId, connection);
+        this.validateConnection(context, connection);
 
         let options = this.composeOptions(connection, credential);
         return options;

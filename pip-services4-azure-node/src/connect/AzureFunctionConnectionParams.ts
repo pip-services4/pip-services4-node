@@ -156,9 +156,9 @@ export class AzureFunctionConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters 
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public validate(correlationId: string) {
+    public validate(context: IContext) {
         const uri = this.getFunctionUri();
         const protocol = this.getProtocol();
         const appName = this.getAppName();
@@ -166,7 +166,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (uri === null && (appName === null || functionName === null || protocol === null)) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION_URI",
                 "No uri, app_name and function_name is configured in Auzre function uri"
             );
@@ -174,7 +174,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                correlationId, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+                context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }

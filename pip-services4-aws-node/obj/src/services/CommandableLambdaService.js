@@ -69,12 +69,12 @@ class CommandableLambdaService extends LambdaService_1.LambdaService {
             let command = commands[index];
             let name = command.getName();
             this.registerAction(name, null, (params) => {
-                let correlationId = params != null ? params.correlation_id : null;
+                let context = params != null ? params.trace_id : null;
                 let args = pip_services3_commons_node_1.Parameters.fromValue(params);
-                args.remove("correlation_id");
-                let timing = this.instrument(correlationId, name);
+                args.remove("trace_id");
+                let timing = this.instrument(context, name);
                 try {
-                    let res = command.execute(correlationId, args);
+                    let res = command.execute(context, args);
                     timing.endTiming();
                     return res;
                 }

@@ -55,9 +55,9 @@ const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
  *
  *        public register(): void {
  *            registerAction("get_mydata", null, async (params) => {
- *                let correlationId = params.correlation_id;
+ *                let context = params.trace_id;
  *                let id = params.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -132,16 +132,16 @@ class LambdaService {
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -154,9 +154,9 @@ class LambdaService {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -168,9 +168,9 @@ class LambdaService {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
@@ -186,8 +186,8 @@ class LambdaService {
             // Validate object
             if (schema && params) {
                 // Perform validation                    
-                let correlationId = params.correlation_id;
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = params.trace_id;
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     throw err;
                 }
@@ -277,13 +277,13 @@ class LambdaService {
     act(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let cmd = params.cmd;
-            let correlationId = params.correlation_id;
+            let context = params.trace_id;
             if (cmd == null) {
-                throw new pip_services3_commons_node_2.BadRequestException(correlationId, 'NO_COMMAND', 'Cmd parameter is missing');
+                throw new pip_services3_commons_node_2.BadRequestException(context, 'NO_COMMAND', 'Cmd parameter is missing');
             }
             const action = this._actions.find(a => a.cmd == cmd);
             if (action == null) {
-                throw new pip_services3_commons_node_2.BadRequestException(correlationId, 'NO_ACTION', 'Action ' + cmd + ' was not found')
+                throw new pip_services3_commons_node_2.BadRequestException(context, 'NO_ACTION', 'Action ' + cmd + ' was not found')
                     .withDetails('command', cmd);
             }
             return action.action(params);

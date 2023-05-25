@@ -72,11 +72,11 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      */
-    openWithParams(correlationId, connections, credential) {
+    openWithParams(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = true;
         });
@@ -84,21 +84,21 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = false;
             this._cancel = true;
-            this._logger.trace(correlationId, "Closed queue %s", this);
+            this._logger.trace(context, "Closed queue %s", this);
         });
     }
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
             this._lockedMessages = {};
@@ -128,33 +128,33 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
-    send(correlationId, envelope) {
+    send(context, envelope) {
         return __awaiter(this, void 0, void 0, function* () {
             envelope.sent_time = new Date();
             // Add message to the queue
             this._messages.push(envelope);
             this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-            this._logger.debug(envelope.correlation_id, "Sent message %s via %s", envelope.toString(), this.getName());
+            this._logger.debug(envelope.trace_id, "Sent message %s via %s", envelope.toString(), this.getName());
         });
     }
     /**
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    peek(correlationId) {
+    peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let message = null;
             // Pick a message
             if (this._messages.length > 0)
                 message = this._messages[0];
             if (message != null)
-                this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
             return message;
         });
     }
@@ -162,25 +162,25 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
-    peekBatch(correlationId, messageCount) {
+    peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
             let messages = this._messages.slice(0, messageCount);
-            this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+            this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
     }
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    receive(correlationId, waitTimeout) {
+    receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             let checkIntervalMs = 100;
             let elapsedTime = 0;
@@ -209,7 +209,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             this._lockedMessages[lockedToken] = lockedMessage;
             // Instrument the process
             this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-            this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+            this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
             return message;
         });
     }
@@ -237,7 +237,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
                     lockedMessage.expirationTime = now;
                 }
             }
-            this._logger.trace(message.correlation_id, "Renewed lock for message %s at %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Renewed lock for message %s at %s", message, this.getName());
         });
     }
     /**
@@ -254,7 +254,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             let lockKey = message.getReference();
             delete this._lockedMessages[lockKey];
             message.setReference(null);
-            this._logger.trace(message.correlation_id, "Completed message %s at %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Completed message %s at %s", message, this.getName());
         });
     }
     /**
@@ -286,8 +286,8 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             else {
                 return;
             }
-            this._logger.trace(message.correlation_id, "Abandoned message %s at %s", message, this.getName());
-            yield this.send(message.correlation_id, message);
+            this._logger.trace(message.trace_id, "Abandoned message %s at %s", message, this.getName());
+            yield this.send(message.trace_id, message);
         });
     }
     /**
@@ -304,32 +304,32 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             delete this._lockedMessages[lockedToken];
             message.setReference(null);
             this._counters.incrementOne("queue." + this.getName() + ".dead_messages");
-            this._logger.trace(message.correlation_id, "Moved to dead message %s at %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Moved to dead message %s at %s", message, this.getName());
         });
     }
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    listen(correlationId, receiver) {
+    listen(context, receiver) {
         let listenFunc = () => __awaiter(this, void 0, void 0, function* () {
             let timeoutInterval = this._listenInterval;
             this._logger.trace(null, "Started listening messages at %s", this.toString());
             this._cancel = false;
             while (!this._cancel) {
                 try {
-                    let message = yield this.receive(correlationId, timeoutInterval);
+                    let message = yield this.receive(context, timeoutInterval);
                     if (message != null && !this._cancel) {
                         yield receiver.receiveMessage(message, this);
                     }
                 }
                 catch (ex) {
-                    this._logger.error(correlationId, ex, "Failed to process the message");
+                    this._logger.error(context, ex, "Failed to process the message");
                 }
             }
         });
@@ -339,9 +339,9 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId) {
+    endListen(context) {
         this._cancel = true;
     }
 }

@@ -72,7 +72,7 @@ export declare abstract class CommandableGrpcService extends GrpcService {
      * @param schema        the schema to use for parameter validation.
      * @param action        the action to perform at the given route.
      */
-    protected registerCommadableMethod(method: string, schema: Schema, action: (correlationId: string, data: any) => Promise<any>): void;
+    protected registerCommadableMethod(method: string, schema: Schema, action: (context: IContext, data: any) => Promise<any>): void;
     /**
      * Registers all service routes in HTTP endpoint.
      */

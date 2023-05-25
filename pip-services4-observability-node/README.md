@@ -50,8 +50,8 @@ export class MyComponent implements IConfigurable, IReferenceable {
     this._counters.setReferences(refs);
   }
   
-  public async myMethod(correlationId: string, param1: any): Promise<void> {
-    this._logger.trace(correlationId, "Executed method mycomponent.mymethod");
+  public async myMethod(context: IContext, param1: any): Promise<void> {
+    this._logger.trace(context, "Executed method mycomponent.mymethod");
     this._counters.increment("mycomponent.mymethod.exec_count", 1);
     let timing = this._counters.beginTiming("mycomponent.mymethod.exec_time");
     try {
@@ -60,7 +60,7 @@ export class MyComponent implements IConfigurable, IReferenceable {
       timing.endTiming();
     } catch (err) {
       if (err) {
-        this._logger.error(correlationId, err, "Failed to execute mycomponent.mymethod");
+        this._logger.error(context, err, "Failed to execute mycomponent.mymethod");
         this._counters.increment("mycomponent.mymethod.error_count", 1);
       }
     }

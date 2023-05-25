@@ -87,12 +87,12 @@ class CommandableCloudFunctionService extends CloudFunctionService_1.CloudFuncti
             let command = commands[index];
             let name = command.getName();
             this.registerAction(name, null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-                let correlationId = this.getCorrelationId(req);
+                let context = this.getTraceId(req);
                 let args = this.getParameters(req);
-                args.remove("correlation_id");
-                let timing = this.instrument(correlationId, name);
+                args.remove("trace_id");
+                let timing = this.instrument(context, name);
                 try {
-                    const result = yield command.execute(correlationId, args);
+                    const result = yield command.execute(context, args);
                     pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, result);
                     timing.endTiming();
                 }

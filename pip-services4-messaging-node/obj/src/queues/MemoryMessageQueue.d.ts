@@ -59,23 +59,23 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      */
-    protected openWithParams(correlationId: string, connections: ConnectionParams[], credential: CredentialParams): Promise<void>;
+    protected openWithParams(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId: string): Promise<void>;
+    clear(context: IContext): Promise<void>;
     /**
      * Configures component by passing configuration parameters.
      *
@@ -91,35 +91,35 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
-    send(correlationId: string, envelope: MessageEnvelope): Promise<void>;
+    send(context: IContext, envelope: MessageEnvelope): Promise<void>;
     /**
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    peek(correlationId: string): Promise<MessageEnvelope>;
+    peek(context: IContext): Promise<MessageEnvelope>;
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
-    peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>;
+    peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>;
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
      * This method is usually used to extend the message processing time.
@@ -153,18 +153,18 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    listen(correlationId: string, receiver: IMessageReceiver): void;
+    listen(context: IContext, receiver: IMessageReceiver): void;
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId: string): void;
+    endListen(context: IContext): void;
 }

@@ -8,24 +8,24 @@ const pip_services3_commons_node_1 = require("pip-services4-commons-node");
  */
 class CloudFunctionRequestHelper {
     /**
-     * Returns correlationId from Google Function request.
+     * Returns context from Google Function request.
      * @param req the Google Function request
-     * @return returns correlationId from request
+     * @return returns context from request
      */
-    static getCorrelationId(req) {
-        let correlationId = req.correlation_id || "";
+    static getTraceId(req) {
+        let context = req.trace_id || "";
         try {
-            if ((correlationId == null || correlationId == "") && req.hasOwnProperty('body')) {
-                correlationId = req.body.correlation_id;
-                if (correlationId == null || correlationId == "") {
-                    correlationId = req.query.correlation_id;
+            if ((context == null || context == "") && req.hasOwnProperty('body')) {
+                context = req.body.trace_id;
+                if (context == null || context == "") {
+                    context = req.query.trace_id;
                 }
             }
         }
         catch (e) {
             // Ignore the error
         }
-        return correlationId;
+        return context;
     }
     /**
      * Returns command from Google Function request.

@@ -42,37 +42,37 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this.isOpen()) {
             return;
         }
 
         try {
             if (this._autoSubscribe) {
-                await this.subscribe(correlationId);
+                await this.subscribe(context);
             }
 
-            this._logger.debug(correlationId, "Opened queue " + this.getName());
+            this._logger.debug(context, "Opened queue " + this.getName());
         } catch (ex) {
-            await this.close(correlationId);
+            await this.close(context);
         }
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this.isOpen()) {
             return;
         }
 
         try {
             // Unsubscribe from the broker
-            await this.unsubscribe(correlationId);
+            await this.unsubscribe(context);
         } finally {
             this._messages = [];
             this._receiver = null;
@@ -82,23 +82,23 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     /**
      * Subscribes to the message broker.
      * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    protected abstract subscribe(correlationId: string): Promise<void>;
+    protected abstract subscribe(context: IContext): Promise<void>;
 
     /**
      * Unsubscribes from the message broker.
      * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    protected abstract unsubscribe(correlationId: string): Promise<void>;
+    protected abstract unsubscribe(context: IContext): Promise<void>;
 
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
 
@@ -115,14 +115,14 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-     public async peek(correlationId: string): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+     public async peek(context: IContext): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a message from the top
         let message: MessageEnvelope = null;
@@ -131,7 +131,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
         }
 
         if (message != null) {
-            this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
         }
     
         return message;
@@ -143,20 +143,20 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
      * 
      * Important: This method is not supported by MQTT.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
-    public async peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]> {
-        this.checkOpen(correlationId);
+    public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a batch of messages
         let messages = this._messages.slice(0, messageCount);
 
-        this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+        this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
 
         return messages;
     }
@@ -164,15 +164,15 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    public async receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
+        this.checkOpen(context);
         
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         let checkIntervalMs = 100;
         let elapsedTime = 0;
@@ -193,36 +193,36 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     }
 
     protected async sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): Promise<void> {
-        let correlationId = message != null ? message.correlation_id : null;
+        let context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(correlationId, "Message was skipped.");
+            this._logger.warn(context, "Message was skipped.");
             return;
         }
 
         try {
             await this._receiver.receiveMessage(message, this);
         } catch (ex) {
-            this._logger.error(correlationId, ex, "Failed to process the message");
+            this._logger.error(context, ex, "Failed to process the message");
         }
     }
 
      /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    public listen(correlationId: string, receiver: IMessageReceiver): void {
+    public listen(context: IContext, receiver: IMessageReceiver): void {
         if (!this.isOpen()) {
             return;
         }
 
         let listenFunc = async () => {
             // Subscribe to topic if needed
-            await this.subscribe(correlationId);
+            await this.subscribe(context);
 
             this._logger.trace(null, "Started listening messages at %s", this.getName());
 
@@ -246,9 +246,9 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public endListen(correlationId: string): void {
+    public endListen(context: IContext): void {
         this._receiver = null;
     }   
 }

@@ -5,11 +5,11 @@ import { Parameters } from 'pip-services4-commons-node';
  */
 export declare class CloudFunctionRequestHelper {
     /**
-     * Returns correlationId from Google Function request.
+     * Returns context from Google Function request.
      * @param req the Google Function request
-     * @return returns correlationId from request
+     * @return returns context from request
      */
-    static getCorrelationId(req: any): string;
+    static getTraceId(req: any): string;
     /**
      * Returns command from Google Function request.
      * @param req the Google Function request

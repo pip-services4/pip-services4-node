@@ -7,8 +7,8 @@ import { IDummyPersistence } from './IDummyPersistence';
 export declare class DummyMemoryPersistence extends IdentifiableMemoryPersistence<Dummy, string> implements IDummyPersistence {
     constructor();
     private composeFilter;
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
-    getCountByFilter(correlationId: string, filter: FilterParams): Promise<number>;
-    getSortedPage(correlationId: string, sort: any): Promise<DataPage<Dummy>>;
-    getSortedList(correlationId: string, sort: any): Promise<Dummy[]>;
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
+    getCountByFilter(context: IContext, filter: FilterParams): Promise<number>;
+    getSortedPage(context: IContext, sort: any): Promise<DataPage<Dummy>>;
+    getSortedList(context: IContext, sort: any): Promise<Dummy[]>;
 }

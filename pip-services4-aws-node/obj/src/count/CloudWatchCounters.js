@@ -119,15 +119,15 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
             }
             this._opened = true;
-            this._connection = yield this._connectionResolver.resolve(correlationId);
+            this._connection = yield this._connectionResolver.resolve(context);
             aws_sdk_2.config.update({
                 accessKeyId: this._connection.getAccessId(),
                 secretAccessKey: this._connection.getAccessKey(),
@@ -142,9 +142,9 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = false;
             this._client = null;

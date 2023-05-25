@@ -59,7 +59,7 @@ const CassandraConnection_1 = require("../connect/CassandraConnection");
  *           base("mydata");
  *       }
  *
- *       public getByName(correlationId: string, name: string): Promise<MyData> {
+ *       public getByName(context: IContext, name: string): Promise<MyData> {
  *         let criteria = { name: name };
  *         return new Promise((resolve, reject) => {
  *           this._model.findOne(criteria, (err, item) => {
@@ -280,9 +280,9 @@ class CassandraPersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -292,13 +292,13 @@ class CassandraPersistence {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "Cassandra connection is not opened");
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Cassandra connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -306,26 +306,26 @@ class CassandraPersistence {
             // Define database schema
             this.defineSchema();
             // Recreate objects
-            yield this.createSchema(correlationId);
+            yield this.createSchema(context);
             this._opened = true;
-            this._logger.debug(correlationId, "Connected to Cassandra cluster %s, table %s", this._datacenter, this.quotedTableName());
+            this._logger.debug(context, "Connected to Cassandra cluster %s, table %s", this._datacenter, this.quotedTableName());
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._client = null;
@@ -334,9 +334,9 @@ class CassandraPersistence {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._tableName == null) {
@@ -346,7 +346,7 @@ class CassandraPersistence {
             yield this._client.execute(query);
         });
     }
-    createSchema(correlationId) {
+    createSchema(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._schemaStatements == null || this._schemaStatements.length == 0) {
                 return null;
@@ -382,7 +382,7 @@ class CassandraPersistence {
                 query = "CREATE KEYSPACE IF NOT EXISTS " + this._keyspaceName + " WITH replication={'class': 'SimpleStrategy', 'replication_factor': 3}";
                 yield this._client.execute(query);
             }
-            this._logger.debug(correlationId, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
+            this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             try {
                 // Run all DML commands
                 for (let dml of this._schemaStatements) {
@@ -390,7 +390,7 @@ class CassandraPersistence {
                 }
             }
             catch (ex) {
-                this._logger.error(correlationId, ex, 'Failed to autocreate database object');
+                this._logger.error(context, ex, 'Failed to autocreate database object');
                 throw ex;
             }
         });
@@ -455,14 +455,14 @@ class CassandraPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns                 the requested data page
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -498,7 +498,7 @@ class CassandraPersistence {
                         resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
             if (pagingEnabled) {
                 let query = 'SELECT COUNT(*) FROM ' + this.quotedTableName();
@@ -521,11 +521,11 @@ class CassandraPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of items that satisfy the filter.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) FROM ' + this.quotedTableName();
             if (filter != null) {
@@ -534,7 +534,7 @@ class CassandraPersistence {
             let result = yield this._client.execute(query);
             let count = result.rows && result.rows.length == 1
                 ? pip_services3_commons_node_7.LongConverter.toLong(result.rows[0].count) : 0;
-            this._logger.trace(correlationId, "Counted %d items in %s", count, this._tableName);
+            this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             return count;
         });
     }
@@ -544,14 +544,14 @@ class CassandraPersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns                a list with requested data items.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -563,7 +563,7 @@ class CassandraPersistence {
             }
             let result = yield this._client.execute(query);
             let items = result.rows;
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
             return items;
         });
@@ -574,11 +574,11 @@ class CassandraPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) FROM ' + this.quotedTableName();
             if (filter != null) {
@@ -606,10 +606,10 @@ class CassandraPersistence {
                 });
             });
             if (item == null) {
-                this._logger.trace(correlationId, "Random item wasn't found from %s", this._tableName);
+                this._logger.trace(context, "Random item wasn't found from %s", this._tableName);
             }
             else {
-                this._logger.trace(correlationId, "Retrieved random item from %s", this._tableName);
+                this._logger.trace(context, "Retrieved random item from %s", this._tableName);
             }
             item = this.convertToPublic(item);
             return item;
@@ -618,11 +618,11 @@ class CassandraPersistence {
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return;
@@ -634,7 +634,7 @@ class CassandraPersistence {
             let query = "INSERT INTO " + this.quotedTableName()
                 + " (" + columns + ") VALUES (" + params + ")";
             yield this._client.execute(query, values);
-            this._logger.trace(correlationId, "Created in %s with id = %s", this._tableName, row.id);
+            this._logger.trace(context, "Created in %s with id = %s", this._tableName, row.id);
             return item;
         });
     }
@@ -644,10 +644,10 @@ class CassandraPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = "DELETE FROM " + this.quotedTableName();
             if (filter != null) {
@@ -655,7 +655,7 @@ class CassandraPersistence {
             }
             yield this._client.execute(query);
             // We can't optimally determine how many records were deleted.
-            this._logger.trace(correlationId, "Deleted a few items from %s", this._tableName);
+            this._logger.trace(context, "Deleted a few items from %s", this._tableName);
         });
     }
 }

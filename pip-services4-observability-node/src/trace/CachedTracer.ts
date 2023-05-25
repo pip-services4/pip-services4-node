@@ -71,13 +71,13 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
     /**
      * Writes a log message to the logger destination.
      * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
       * @param duration          execution duration in milliseconds. 
      */
-	protected write(correlationId: string, component: string, operation: string, error: Error, duration: number): void {
+	protected write(context: IContext, component: string, operation: string, error: Error, duration: number): void {
 		let errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
 
         // Account for cases when component and operation are combined in component.
@@ -96,7 +96,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
             source: this._source,
             component: component, 
             operation: operation,
-            correlation_id: correlationId,
+            trace_id: context,
             duration: duration,
             error: errorDesc
         };
@@ -109,38 +109,38 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
      */
-     public trace(correlationId: string, component: string, operation: string, duration: number) : void {
-        this.write(correlationId, component, operation, null, duration);
+     public trace(context: IContext, component: string, operation: string, duration: number) : void {
+        this.write(context, component, operation, null, duration);
     }
 
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
       * @param duration          execution duration in milliseconds. 
       */
-    public failure(correlationId: string, component: string, operation: string, error: Error, duration: number) : void {
-        this.write(correlationId, component, operation, error, duration);
+    public failure(context: IContext, component: string, operation: string, error: Error, duration: number) : void {
+        this.write(context, component, operation, error, duration);
     }
  
      /**
       * Begings recording an operation trace
       * 
-      * @param correlationId     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) transaction id to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.
       */
-    public beginTrace(correlationId: string, component: string, operation: string) : TraceTiming {
-        return new TraceTiming(correlationId, component, operation, this);
+    public beginTrace(context: IContext, component: string, operation: string) : TraceTiming {
+        return new TraceTiming(context, component, operation, this);
     }
 
     /**

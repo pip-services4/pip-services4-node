@@ -137,14 +137,14 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._connection != null) {
             return;
         }
 
-        let options = await this._connectionResolver.resolve(correlationId);
+        let options = await this._connectionResolver.resolve(context);
 
         options.clientId = this._clientId;
         options.keepalive = this._keepAliveTimeout / 1000;
@@ -168,14 +168,14 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     
             client.on('connect', () => {
                 this._connection = client;
-                this._logger.debug(correlationId, "Connected to MQTT broker at "+options.uri);
+                this._logger.debug(context, "Connected to MQTT broker at "+options.uri);
 
                 resolve();
             });
             
             client.on('error', (err) => {
-                this._logger.error(correlationId, err, "Failed to connect to MQTT broker at "+options.uri);
-                err = new ConnectionException(correlationId, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
+                this._logger.error(context, err, "Failed to connect to MQTT broker at "+options.uri);
+                err = new ConnectionException(context, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
                 reject(err);
             });
         });
@@ -184,9 +184,9 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
             return;
         }
@@ -194,7 +194,7 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
         this._connection.end();
         this._connection = null;
         this._subscriptions = [];
-        this._logger.debug(correlationId, "Disconnected from MQTT broker");
+        this._logger.debug(context, "Disconnected from MQTT broker");
     }
 
     public getConnection(): any {

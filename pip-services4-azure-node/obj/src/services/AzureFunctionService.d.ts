@@ -49,9 +49,9 @@ import { IAzureFunctionService } from './IAzureFunctionService';
  *
  *        public register(): void {
  *            registerAction("get_mydata", null, async (context) => {
- *                let correlationId = context.correlation_id;
+ *                let context = context.trace_id;
  *                let id = context.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -116,11 +116,11 @@ export declare abstract class AzureFunctionService implements IAzureFunctionServ
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -130,15 +130,15 @@ export declare abstract class AzureFunctionService implements IAzureFunctionServ
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     protected applyValidation(schema: Schema, action: (context: any) => Promise<any>): (context: any) => Promise<any>;
     protected applyInterceptors(action: (context: any) => Promise<any>): (context: any) => Promise<any>;
     protected generateActionCmd(name: string): string;
@@ -173,12 +173,12 @@ export declare abstract class AzureFunctionService implements IAzureFunctionServ
      */
     protected abstract register(): void;
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * This method can be overloaded in child classes
      * @param context - the context context
-     * @return returns correlationId from context
+     * @return returns context from context
      */
-    protected getCorrelationId(context: any): string;
+    protected getTraceId(context: any): string;
     /**
      * Returns command from Azure Function context.
      * This method can be overloaded in child classes

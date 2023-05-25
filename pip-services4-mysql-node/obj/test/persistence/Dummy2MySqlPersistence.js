@@ -22,7 +22,7 @@ class Dummy2MySqlPersistence extends IdentifiableMySqlPersistence_1.Identifiable
         this.ensureSchema('CREATE TABLE `' + this._tableName + '` (id INTEGER PRIMARY KEY, `key` VARCHAR(50), `content` TEXT)');
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         const _super = Object.create(null, {
             getPageByFilter: { get: () => super.getPageByFilter }
         });
@@ -33,10 +33,10 @@ class Dummy2MySqlPersistence extends IdentifiableMySqlPersistence_1.Identifiable
             if (key != null) {
                 filterCondition += "`key`='" + key + "'";
             }
-            return _super.getPageByFilter.call(this, correlationId, filterCondition, paging, null, null);
+            return _super.getPageByFilter.call(this, context, filterCondition, paging, null, null);
         });
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         const _super = Object.create(null, {
             getCountByFilter: { get: () => super.getCountByFilter }
         });
@@ -47,7 +47,7 @@ class Dummy2MySqlPersistence extends IdentifiableMySqlPersistence_1.Identifiable
             if (key != null) {
                 filterCondition += "`key`='" + key + "'";
             }
-            return yield _super.getCountByFilter.call(this, correlationId, filterCondition);
+            return yield _super.getCountByFilter.call(this, context, filterCondition);
         });
     }
 }

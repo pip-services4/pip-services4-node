@@ -42,7 +42,7 @@ import { IRegisterable } from './IRegisterable';
  *             endpoint.setReferences(this._references);
  *         ...
  *
- *         await this._endpoint.open(correlationId);
+ *         await this._endpoint.open(context);
  *     }
  */
 export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
@@ -99,15 +99,15 @@ export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenc
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a GRPC server (service) using the set options and parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes this endpoint and the GRPC server (service) that was opened earlier.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Registers a registerable object for dynamic endpoint discovery.
      *

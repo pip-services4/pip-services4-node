@@ -6,7 +6,7 @@ import { CounterTiming } from "pip-services4-components-node";
 import { TraceTiming } from "pip-services4-components-node";
 
 export class InstrumentTiming {
-    private _correlationId: string;
+    private _context: IContext;
     private _name: string;
     private _verb: string;
     private _logger: ILogger;
@@ -14,10 +14,10 @@ export class InstrumentTiming {
     private _counterTiming: CounterTiming;
     private _traceTiming: TraceTiming;
 
-    public constructor(correlationId: string, name: string,
+    public constructor(context: IContext, name: string,
         verb: string, logger: ILogger, counters: ICounters,
         counterTiming: CounterTiming, traceTiming: TraceTiming) {
-        this._correlationId = correlationId;
+        this._context = context;
         this._name = name;
         this._verb = verb || "call";
         this._logger = logger;
@@ -60,7 +60,7 @@ export class InstrumentTiming {
 
         if (err != null) {
             if (this._logger != null) {
-                this._logger.error(this._correlationId, err, "Failed to call %s method", this._name);
+                this._logger.error(this._context, err, "Failed to call %s method", this._name);
             }
             if (this._counters != null) {
                 this._counters.incrementOne(this._name + "." + this._verb + "_errors");    

@@ -28,7 +28,7 @@ export class DummyLambdaService extends LambdaService {
 
     private async getPageByFilter(params: any): Promise<DataPage<Dummy>> {
         return this._controller.getPageByFilter(
-            params.correlation_id,
+            params.trace_id,
             new FilterParams(params.filter),
             new PagingParams(params.paging)
         );
@@ -36,28 +36,28 @@ export class DummyLambdaService extends LambdaService {
 
     private async getOneById(params: any): Promise<Dummy> {
         return this._controller.getOneById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id
         );
     }
 
     private async create(params: any): Promise<Dummy> {
         return this._controller.create(
-            params.correlation_id,
+            params.trace_id,
             params.dummy
         );
     }
 
     private async update(params: any): Promise<Dummy> {
         return this._controller.update(
-            params.correlation_id,
+            params.trace_id,
             params.dummy,
         );
     }
 
     private async deleteById(params: any): Promise<Dummy> {
         return this._controller.deleteById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id,
         );
     }

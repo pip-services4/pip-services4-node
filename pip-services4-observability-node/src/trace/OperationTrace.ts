@@ -15,7 +15,7 @@ export class OperationTrace {
 	/** The name of the executed operation */
 	public operation: string;
 	/** The transaction id to trace execution through call chain. */
-	public correlation_id: string;
+	public trace_id: string;
 	/** The duration of the operation in milliseconds */
 	public duration: number;
 	/** 

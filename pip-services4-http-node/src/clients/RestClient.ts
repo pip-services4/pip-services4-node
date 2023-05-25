@@ -31,7 +31,7 @@ import { InstrumentTiming } from '../services';
  *   - retries:               number of retries (default: 3)
  *   - connect_timeout:       connection timeout in milliseconds (default: 10 sec)
  *   - timeout:               invocation timeout in milliseconds (default: 10 sec)
- *   - correlation_id         place for adding correalationId, query - in query string, headers - in headers, both - in query and headers (default: query)
+ *   - trace_id         place for adding correalationId, query - in query string, headers - in headers, both - in query and headers (default: query)
  * 
  * ### References ###
  * 
@@ -48,10 +48,10 @@ import { InstrumentTiming } from '../services';
  *     class MyRestClient extends RestClient implements IMyClient {
  *        ...
  * 
- *        public async getData(correlationId: string, id: string): Promise<MyData> {
- *            let timing = this.instrument(correlationId, 'myclient.get_data');
+ *        public async getData(context: IContext, id: string): Promise<MyData> {
+ *            let timing = this.instrument(context, 'myclient.get_data');
  *            try {
- *                return await this.call("get", "/get_data" correlationId, { id: id }, null);
+ *                return await this.call("get", "/get_data" context, { id: id }, null);
  *            } catch (ex) {
  *                timing.endFailure(ex);
  *            } finally {
@@ -132,7 +132,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      */
     protected _uri: string;
 
-    protected _correlationIdLocation: string = "query"
+    protected _contextLocation: string = "query"
 
     /**
      * Configures component by passing configuration parameters.
@@ -149,8 +149,8 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         this._timeout = config.getAsIntegerWithDefault("options.timeout", this._timeout);
 
         this._baseRoute = config.getAsStringWithDefault("base_route", this._baseRoute);
-        this._correlationIdLocation = config.getAsStringWithDefault("options.correlation_id_place", this._correlationIdLocation);
-        this._correlationIdLocation = config.getAsStringWithDefault("options.correlation_id", this._correlationIdLocation);
+        this._contextLocation = config.getAsStringWithDefault("options.trace_id_place", this._contextLocation);
+        this._contextLocation = config.getAsStringWithDefault("options.trace_id", this._contextLocation);
     }
 
     /**
@@ -169,34 +169,34 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns InstrumentTiming object to end the time measurement.
      */
-     protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Calling %s method", name);
+     protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Calling %s method", name);
         this._counters.incrementOne(name + ".call_count");
 
 		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "call",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "call",
             this._logger, this._counters, counterTiming, traceTiming);
 	}
 
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
     //         const typeName = this.constructor.name || "unknown-target";
-    //         this._logger.error(correlationId, err, "Failed to call %s method of %s", name, typeName);
+    //         this._logger.error(context, err, "Failed to call %s method of %s", name, typeName);
     //         this._counters.incrementOne(typeName + "." + name + '.call_errors');
     //     }
 
@@ -215,14 +215,14 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(correlationId);
+        let connection = await this._connectionResolver.resolve(context);
 
         try {
             this._uri = connection.getAsString("uri");
@@ -240,12 +240,12 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
                 version: '*'
             });
 
-            this._logger.debug(correlationId, "Connected via REST to %s", this._uri);
+            this._logger.debug(context, "Connected via REST to %s", this._uri);
         } catch (err) {
             this._client = null;
 
             throw new ConnectionException(
-                correlationId, "CANNOT_CONNECT", "Connection to REST service failed"
+                context, "CANNOT_CONNECT", "Connection to REST service failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }
@@ -253,15 +253,15 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     /**
      * Closes component and frees used resources.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(correlationId, "Closed REST service at %s", this._uri);
+                this._logger.debug(context, "Closed REST service at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(correlationId, "Failed while closing REST service: %s", ex);
+                this._logger.warn(context, "Failed while closing REST service: %s", ex);
             }
 
             this._client = null;
@@ -270,20 +270,20 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     }
 
     /**
-     * Adds a correlation id (correlation_id) to invocation parameter map.
+     * Adds a correlation id (trace_id) to invocation parameter map.
      * 
      * @param params            invocation parameters.
-     * @param correlationId     (optional) a correlation id to be added.
+     * @param context     (optional) a correlation id to be added.
      * @returns invocation parameters with added correlation id.
      */
-    protected addCorrelationId(params: any, correlationId: string): any {
+    protected addTraceId(params: any, context: IContext): any {
         // Automatically generate short ids for now
-        if (correlationId == null)
-            //correlationId = IdGenerator.nextShort();
+        if (context == null)
+            //context = IdGenerator.nextShort();
             return params;
 
         params = params || {};
-        params.correlation_id = correlationId;
+        params.trace_id = context;
         return params;
     }
 
@@ -351,21 +351,21 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      * 
      * @param method            HTTP method: "get", "head", "post", "put", "delete"
      * @param route             a command route. Base route will be added to this route
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) query parameters.
      * @param data              (optional) body object.
      * @returns                 a result object.
      */
-    protected async call<T>(method: string, route: string, correlationId?: string, params: any = {}, data?: any): Promise<T> {
+    protected async call<T>(method: string, route: string, context?: string, params: any = {}, data?: any): Promise<T> {
         method = method.toLowerCase();
 
         route = this.createRequestRoute(route);
 
-        if (this._correlationIdLocation == "query" || this._correlationIdLocation == "both") {
-            params = this.addCorrelationId(params, correlationId)
+        if (this._contextLocation == "query" || this._contextLocation == "both") {
+            params = this.addTraceId(params, context)
         }
-        if (this._correlationIdLocation == "headers" || this._correlationIdLocation == "both") {
-            this._headers['correlation_id'] = correlationId;
+        if (this._contextLocation == "headers" || this._contextLocation == "both") {
+            this._headers['trace_id'] = context;
         }
 
         if (params != null && Object.keys(params).length > 0) {
@@ -395,7 +395,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             else if (method == 'delete') this._client.del(route, action);
             else {
                 let err = new UnknownException(
-                    correlationId, 'UNSUPPORTED_METHOD', 'Method is not supported by REST client'
+                    context, 'UNSUPPORTED_METHOD', 'Method is not supported by REST client'
                 ).withDetails('verb', method);
                 reject(err);
             }

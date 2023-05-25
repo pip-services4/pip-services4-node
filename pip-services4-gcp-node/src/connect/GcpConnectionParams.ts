@@ -218,9 +218,9 @@ export class GcpConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters 
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public validate(correlationId: string) {
+    public validate(context: IContext) {
         const uri = this.getUri();
         const protocol = this.getProtocol();
         const functionName = this.getFunction();
@@ -229,7 +229,7 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (uri == null && (projectId == null ||  region == null || functionName == null || protocol == null)) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION_URI",
                 "No uri, project_id, region and function is configured in Google function uri"
             );
@@ -237,7 +237,7 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                correlationId, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+                context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }

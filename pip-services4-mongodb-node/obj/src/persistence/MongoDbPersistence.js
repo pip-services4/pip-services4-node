@@ -65,7 +65,7 @@ const MongoDbConnection_1 = require("../connect/MongoDbConnection");
  *           base("mydata");
  *       }
  *
- *       public async getByName(correlationId: string, name: string) {
+ *       public async getByName(context: IContext, name: string) {
  *         let criteria = { name: name };
  *         return await new Promise((resolve, reject) => {
  *            this._model.findOne(criteria, (err, item) => {
@@ -231,9 +231,9 @@ class MongoDbPersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -243,13 +243,13 @@ class MongoDbPersistence {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'MongoDB connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'MongoDB connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "MongoDB connection is not opened");
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "MongoDB connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -264,34 +264,34 @@ class MongoDbPersistence {
                     yield collection.createIndex(index.keys, index.options);
                     let options = index.options || {};
                     let indexName = options.name || Object.keys(index.keys).join(',');
-                    this._logger.debug(correlationId, "Created index %s for collection %s", indexName, this._collectionName);
+                    this._logger.debug(context, "Created index %s for collection %s", indexName, this._collectionName);
                 }
                 this._opened = true;
                 this._collection = collection;
-                this._logger.debug(correlationId, "Connected to mongodb database %s, collection %s", this._databaseName, this._collectionName);
+                this._logger.debug(context, "Connected to mongodb database %s, collection %s", this._databaseName, this._collectionName);
             }
             catch (ex) {
                 this._db = null;
                 this._client == null;
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'MongoDb connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'MongoDb connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._client = null;
@@ -302,9 +302,9 @@ class MongoDbPersistence {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._collectionName == null) {
@@ -319,14 +319,14 @@ class MongoDbPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns                 a data page.
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             // Adjust max item count based on configuration
             paging = paging || new pip_services3_commons_node_2.PagingParams();
@@ -342,7 +342,7 @@ class MongoDbPersistence {
                 options.sort = sort;
             let items = yield this._collection.find(filter, options).project(select).toArray();
             if (items != null) {
-                this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._collectionName);
+                this._logger.trace(context, "Retrieved %d from %s", items.length, this._collectionName);
             }
             items = items || [];
             items = items.map(this.convertToPublic);
@@ -359,15 +359,15 @@ class MongoDbPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of filtered items.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let count = yield this._collection.countDocuments(filter);
             if (count != null) {
-                this._logger.trace(correlationId, "Counted %d items in %s", count, this._collectionName);
+                this._logger.trace(context, "Counted %d items in %s", count, this._collectionName);
             }
             return count;
         });
@@ -378,14 +378,14 @@ class MongoDbPersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns                a filtered data list.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             // Configure options
             let options = {};
@@ -393,7 +393,7 @@ class MongoDbPersistence {
                 options.sort = sort;
             let items = yield this._collection.find(filter, options).project(select).toArray();
             if (items != null) {
-                this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._collectionName);
+                this._logger.trace(context, "Retrieved %d from %s", items.length, this._collectionName);
             }
             items = items || [];
             items = items.map(this.convertToPublic);
@@ -406,11 +406,11 @@ class MongoDbPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item.
      */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let count = yield this._collection.countDocuments(filter);
             let pos = Math.trunc(Math.random() * count);
@@ -421,10 +421,10 @@ class MongoDbPersistence {
             let items = yield this._collection.find(filter, options).toArray();
             let item = (items != null && items.length > 0) ? items[0] : null;
             if (item == null) {
-                this._logger.trace(correlationId, "Random item wasn't found from %s", this._collectionName);
+                this._logger.trace(context, "Random item wasn't found from %s", this._collectionName);
             }
             else {
-                this._logger.trace(correlationId, "Retrieved random item from %s", this._collectionName);
+                this._logger.trace(context, "Retrieved random item from %s", this._collectionName);
             }
             item = this.convertToPublic(item);
             return item;
@@ -433,18 +433,18 @@ class MongoDbPersistence {
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return null;
             }
             let newItem = this.convertFromPublic(item);
             let result = yield this._collection.insertOne(newItem);
-            this._logger.trace(correlationId, "Created in %s with id = %s", this._collectionName, newItem._id);
+            this._logger.trace(context, "Created in %s with id = %s", this._collectionName, newItem._id);
             if (result.acknowledged) {
                 newItem = Object.assign({}, item);
                 newItem.id = result.insertedId.toString();
@@ -461,14 +461,14 @@ class MongoDbPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let result = yield this._collection.deleteMany(filter);
             let count = result != null ? result.deletedCount : 0;
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._collectionName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._collectionName);
         });
     }
 }

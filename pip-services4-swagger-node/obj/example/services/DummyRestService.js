@@ -32,7 +32,7 @@ class DummyRestService extends pip_services3_rpc_node_1.RestService {
     getPageByFilter(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield this._controller.getPageByFilter(req.params.correlation_id, new pip_services3_commons_node_2.FilterParams(req.params), new pip_services3_commons_node_3.PagingParams(req.params));
+                let result = yield this._controller.getPageByFilter(req.params.trace_id, new pip_services3_commons_node_2.FilterParams(req.params), new pip_services3_commons_node_3.PagingParams(req.params));
                 this.sendResult(req, res, result);
             }
             catch (ex) {
@@ -43,7 +43,7 @@ class DummyRestService extends pip_services3_rpc_node_1.RestService {
     getOneById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield this._controller.getOneById(req.params.correlation_id, req.params.dummy_id);
+                let result = yield this._controller.getOneById(req.params.trace_id, req.params.dummy_id);
                 this.sendResult(req, res, result);
             }
             catch (ex) {
@@ -54,7 +54,7 @@ class DummyRestService extends pip_services3_rpc_node_1.RestService {
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield this._controller.create(req.params.correlation_id, req.body);
+                let result = yield this._controller.create(req.params.trace_id, req.body);
                 this.sendCreatedResult(req, res, result);
             }
             catch (ex) {
@@ -65,7 +65,7 @@ class DummyRestService extends pip_services3_rpc_node_1.RestService {
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield this._controller.update(req.params.correlation_id, req.body);
+                let result = yield this._controller.update(req.params.trace_id, req.body);
                 this.sendResult(req, res, result);
             }
             catch (ex) {
@@ -76,7 +76,7 @@ class DummyRestService extends pip_services3_rpc_node_1.RestService {
     deleteById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield this._controller.deleteById(req.params.correlation_id, req.params.dummy_id);
+                let result = yield this._controller.deleteById(req.params.trace_id, req.params.dummy_id);
                 this.sendDeletedResult(req, res, result);
             }
             catch (ex) {

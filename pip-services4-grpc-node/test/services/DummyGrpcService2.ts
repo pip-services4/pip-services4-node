@@ -64,7 +64,7 @@ export class DummyGrpcService2 extends GrpcService {
         let paging = PagingParams.fromValue(call.request.paging);
 
         let page = await this._controller.getPageByFilter(
-            call.request.correlation_id,
+            call.request.trace_id,
             filter,
             paging
         );
@@ -76,7 +76,7 @@ export class DummyGrpcService2 extends GrpcService {
         let request = call.request.toObject();
 
         let result = await this._controller.getOneById(
-            request.correlation_id,
+            request.trace_id,
             request.dummy_id
         );
 
@@ -87,7 +87,7 @@ export class DummyGrpcService2 extends GrpcService {
         let request = call.request.toObject();
 
         let result = await this._controller.create(
-            request.correlation_id,
+            request.trace_id,
             request.dummy
         );
 
@@ -98,7 +98,7 @@ export class DummyGrpcService2 extends GrpcService {
         let request = call.request.toObject();
 
         let result = await this._controller.update(
-            request.correlation_id,
+            request.trace_id,
             request.dummy
         );
 
@@ -109,7 +109,7 @@ export class DummyGrpcService2 extends GrpcService {
         let request = call.request.toObject();
 
         let result = await this._controller.deleteById(
-            request.correlation_id,
+            request.trace_id,
             request.dummy_id
         );
 

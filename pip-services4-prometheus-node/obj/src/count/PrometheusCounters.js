@@ -116,9 +116,9 @@ class PrometheusCounters extends pip_services3_components_node_1.CachedCounters 
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -128,7 +128,7 @@ class PrometheusCounters extends pip_services3_components_node_1.CachedCounters 
             }
             this._opened = true;
             try {
-                let connection = yield this._connectionResolver.resolve(correlationId);
+                let connection = yield this._connectionResolver.resolve(context);
                 let job = this._source || "unknown";
                 let instance = this._instance || os.hostname();
                 this._requestRoute = "/metrics/job/" + job + "/instance/" + instance;
@@ -137,16 +137,16 @@ class PrometheusCounters extends pip_services3_components_node_1.CachedCounters 
             }
             catch (ex) {
                 this._client = null;
-                this._logger.warn(correlationId, "Connection to Prometheus server is not configured: " + ex);
+                this._logger.warn(context, "Connection to Prometheus server is not configured: " + ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = false;
             this._client = null;

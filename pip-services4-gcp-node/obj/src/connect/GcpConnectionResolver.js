@@ -89,21 +89,21 @@ class GcpConnectionResolver {
      * Resolves connection and credential parameters and generates a single
      * GcpConnectionParams value.
      *
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {GcpConnectionParams} 	GcpConnectionParams value or error.
      *
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    resolve(correlationId) {
+    resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let connection = new GcpConnectionParams_1.GcpConnectionParams();
-            const connectionParams = yield this._connectionResolver.resolve(correlationId);
+            const connectionParams = yield this._connectionResolver.resolve(context);
             connection.append(connectionParams);
-            const credentialParams = yield this._credentialResolver.lookup(correlationId);
+            const credentialParams = yield this._credentialResolver.lookup(context);
             connection.append(credentialParams);
             // Perform validation
-            connection.validate(correlationId);
+            connection.validate(context);
             connection = this.composeConnection(connection);
             return connection;
         });

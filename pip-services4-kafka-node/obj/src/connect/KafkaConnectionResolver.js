@@ -65,27 +65,27 @@ class KafkaConnectionResolver {
         this._connectionResolver.setReferences(references);
         this._credentialResolver.setReferences(references);
     }
-    validateConnection(correlationId, connection) {
+    validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services3_commons_node_2.ConfigException(correlationId, "NO_CONNECTION", "Kafka connection is not set");
+            throw new pip_services3_commons_node_2.ConfigException(context, "NO_CONNECTION", "Kafka connection is not set");
         }
         let uri = connection.getUri();
         if (uri != null)
             return;
         let protocol = connection.getAsStringWithDefault("protocol", "tcp");
         if (protocol == null) {
-            throw new pip_services3_commons_node_2.ConfigException(correlationId, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
         }
         if (protocol != "tcp") {
-            throw new pip_services3_commons_node_2.ConfigException(correlationId, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
+            throw new pip_services3_commons_node_2.ConfigException(context, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
         }
         let host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_2.ConfigException(correlationId, "NO_HOST", "Connection host is not set");
+            throw new pip_services3_commons_node_2.ConfigException(context, "NO_HOST", "Connection host is not set");
         }
         let port = connection.getAsIntegerWithDefault("port", 9092);
         if (port == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(correlationId, "NO_PORT", "Connection port is not set");
+            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PORT", "Connection port is not set");
         }
     }
     parseUri(value, options) {
@@ -156,17 +156,17 @@ class KafkaConnectionResolver {
     /**
      * Resolves Kafka connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved Kafka connection options.
      */
-    resolve(correlationId) {
+    resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(correlationId);
+            let connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
             for (let connection of connections) {
-                this.validateConnection(correlationId, connection);
+                this.validateConnection(context, connection);
             }
-            let credential = yield this._credentialResolver.lookup(correlationId);
+            let credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
             let options = this.composeOptions(connections, credential);
             return options;
@@ -175,16 +175,16 @@ class KafkaConnectionResolver {
     /**
      * Composes Kafka connection options from connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved Kafka connection options.
      */
-    compose(correlationId, connections, credential) {
+    compose(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             // Validate connections
             for (let connection of connections) {
-                this.validateConnection(correlationId, connection);
+                this.validateConnection(context, connection);
             }
             let options = this.composeOptions(connections, credential);
             return options;

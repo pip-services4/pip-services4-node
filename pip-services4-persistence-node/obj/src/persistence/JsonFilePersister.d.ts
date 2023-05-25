@@ -49,15 +49,15 @@ export declare class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, ICon
     /**
      * Loads data items from external JSON file.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @returns                a list with loaded data items.
      */
-    load(correlationId: string): Promise<T[]>;
+    load(context: IContext): Promise<T[]>;
     /**
      * Saves given data items to external JSON file.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param items             list if data items to save
      */
-    save(correlationId: string, items: T[]): Promise<void>;
+    save(context: IContext, items: T[]): Promise<void>;
 }

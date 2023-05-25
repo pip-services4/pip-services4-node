@@ -44,11 +44,11 @@ import { HttpConnectionResolver } from 'pip-services4-rpc-node';
  *     class MyGrpcClient extends GrpcClient implements IMyClient {
  *        ...
  * 
- *        public getData(correlationId: string, id: string, 
+ *        public getData(context: IContext, id: string, 
  *            callback: (err: any, result: MyData) => void): void {
  *        
- *            let timing = this.instrument(correlationId, 'myclient.get_data');
- *            this.call("get_data", correlationId, { id: id }, (err, result) => {
+ *            let timing = this.instrument(context, 'myclient.get_data');
+ *            this.call("get_data", context, { id: id }, (err, result) => {
  *                timing.endTiming();
  *                callback(err, result);
  *            });        
@@ -160,33 +160,33 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns CounterTiming object to end the time measurement.
      */
-	protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Executing %s method", name);
+	protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".call_time");
 
 		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "exec",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
 
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
-    //         this._logger.error(correlationId, err, "Failed to call %s method", name);
+    //         this._logger.error(context, err, "Failed to call %s method", name);
     //         this._counters.incrementOne(name + '.call_errors');    
     //     }
 
@@ -205,14 +205,14 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-	public async open(correlationId: string): Promise<void> {
+	public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
     	
-		let connection = await this._connectionResolver.resolve(correlationId);
+		let connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
 
@@ -282,7 +282,7 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         } catch (ex) {
             this._client = null;
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CANNOT_CONNECT",
                 "Opening GRPC client failed"
             ).wrap(ex).withDetails("url", this._uri);
@@ -292,15 +292,15 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(correlationId, "Closed GRPC service at %s", this._uri);
+                this._logger.debug(context, "Closed GRPC service at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
+                this._logger.warn(context, "Failed while closing GRPC service: %s", ex);
             }
 
             this._client = null;
@@ -326,11 +326,11 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
      * Calls a remote method via GRPC protocol.
      * 
      * @param method            a method name to called
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */
-    protected call<T>(method: string, correlationId?: string, request: any = {}): Promise<T> {
+    protected call<T>(method: string, context?: string, request: any = {}): Promise<T> {
         method = method.toLowerCase();
 
         return new Promise<any>((resolve, reject) => {

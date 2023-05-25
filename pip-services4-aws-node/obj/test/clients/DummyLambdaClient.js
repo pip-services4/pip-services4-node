@@ -15,38 +15,38 @@ class DummyLambdaClient extends LambdaClient_1.LambdaClient {
     constructor() {
         super();
     }
-    getDummies(correlationId, filter, paging) {
+    getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.call('get_dummies', correlationId, {
+            return this.call('get_dummies', context, {
                 filter: filter,
                 paging: paging
             });
         });
     }
-    getDummyById(correlationId, dummyId) {
+    getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.call('get_dummy_by_id', correlationId, {
+            return this.call('get_dummy_by_id', context, {
                 dummy_id: dummyId
             });
         });
     }
-    createDummy(correlationId, dummy) {
+    createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.call('create_dummy', correlationId, {
+            return this.call('create_dummy', context, {
                 dummy: dummy
             });
         });
     }
-    updateDummy(correlationId, dummy) {
+    updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.call('update_dummy', correlationId, {
+            return this.call('update_dummy', context, {
                 dummy: dummy
             });
         });
     }
-    deleteDummy(correlationId, dummyId) {
+    deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.call('delete_dummy', correlationId, {
+            return this.call('delete_dummy', context, {
                 dummy_id: dummyId
             });
         });

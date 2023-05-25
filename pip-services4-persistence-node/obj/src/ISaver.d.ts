@@ -6,8 +6,8 @@ export interface ISaver<T> {
     /**
      * Saves given data items.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              a list of items to save.
      */
-    save(correlationId: string, items: T[]): Promise<void>;
+    save(context: IContext, items: T[]): Promise<void>;
 }

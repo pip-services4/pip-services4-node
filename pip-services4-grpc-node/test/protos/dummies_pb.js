@@ -209,7 +209,7 @@ proto.dummies.ErrorDescription.toObject = function(includeInstance, msg) {
   var f, obj = {
     category: jspb.Message.getFieldWithDefault(msg, 1, ""),
     code: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    correlationId: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 3, ""),
     status: jspb.Message.getFieldWithDefault(msg, 4, ""),
     message: jspb.Message.getFieldWithDefault(msg, 5, ""),
     cause: jspb.Message.getFieldWithDefault(msg, 6, ""),
@@ -261,7 +261,7 @@ proto.dummies.ErrorDescription.deserializeBinaryFromReader = function(msg, reade
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 4:
       var value = /** @type {string} */ (reader.readString());
@@ -328,7 +328,7 @@ proto.dummies.ErrorDescription.serializeBinaryToWriter = function(message, write
       f
     );
   }
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       3,
@@ -407,10 +407,10 @@ proto.dummies.ErrorDescription.prototype.setCode = function(value) {
 
 
 /**
- * optional string correlation_id = 3;
+ * optional string trace_id = 3;
  * @return {string}
  */
-proto.dummies.ErrorDescription.prototype.getCorrelationId = function() {
+proto.dummies.ErrorDescription.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -419,7 +419,7 @@ proto.dummies.ErrorDescription.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.dummies.ErrorDescription} returns this
  */
-proto.dummies.ErrorDescription.prototype.setCorrelationId = function(value) {
+proto.dummies.ErrorDescription.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -1120,7 +1120,7 @@ proto.dummies.DummiesPageRequest.prototype.toObject = function(opt_includeInstan
  */
 proto.dummies.DummiesPageRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 1, ""),
     filterMap: (f = msg.getFilterMap()) ? f.toObject(includeInstance, undefined) : [],
     paging: (f = msg.getPaging()) && proto.dummies.PagingParams.toObject(includeInstance, f)
   };
@@ -1161,7 +1161,7 @@ proto.dummies.DummiesPageRequest.deserializeBinaryFromReader = function(msg, rea
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 2:
       var value = msg.getFilterMap();
@@ -1203,7 +1203,7 @@ proto.dummies.DummiesPageRequest.prototype.serializeBinary = function() {
  */
 proto.dummies.DummiesPageRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -1226,10 +1226,10 @@ proto.dummies.DummiesPageRequest.serializeBinaryToWriter = function(message, wri
 
 
 /**
- * optional string correlation_id = 1;
+ * optional string trace_id = 1;
  * @return {string}
  */
-proto.dummies.DummiesPageRequest.prototype.getCorrelationId = function() {
+proto.dummies.DummiesPageRequest.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1238,7 +1238,7 @@ proto.dummies.DummiesPageRequest.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.dummies.DummiesPageRequest} returns this
  */
-proto.dummies.DummiesPageRequest.prototype.setCorrelationId = function(value) {
+proto.dummies.DummiesPageRequest.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1334,7 +1334,7 @@ proto.dummies.DummyIdRequest.prototype.toObject = function(opt_includeInstance) 
  */
 proto.dummies.DummyIdRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 1, ""),
     dummyId: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -1374,7 +1374,7 @@ proto.dummies.DummyIdRequest.deserializeBinaryFromReader = function(msg, reader)
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -1409,7 +1409,7 @@ proto.dummies.DummyIdRequest.prototype.serializeBinary = function() {
  */
 proto.dummies.DummyIdRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -1427,10 +1427,10 @@ proto.dummies.DummyIdRequest.serializeBinaryToWriter = function(message, writer)
 
 
 /**
- * optional string correlation_id = 1;
+ * optional string trace_id = 1;
  * @return {string}
  */
-proto.dummies.DummyIdRequest.prototype.getCorrelationId = function() {
+proto.dummies.DummyIdRequest.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1439,7 +1439,7 @@ proto.dummies.DummyIdRequest.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.dummies.DummyIdRequest} returns this
  */
-proto.dummies.DummyIdRequest.prototype.setCorrelationId = function(value) {
+proto.dummies.DummyIdRequest.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1494,7 +1494,7 @@ proto.dummies.DummyObjectRequest.prototype.toObject = function(opt_includeInstan
  */
 proto.dummies.DummyObjectRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    context: jspb.Message.getFieldWithDefault(msg, 1, ""),
     dummy: (f = msg.getDummy()) && proto.dummies.Dummy.toObject(includeInstance, f)
   };
 
@@ -1534,7 +1534,7 @@ proto.dummies.DummyObjectRequest.deserializeBinaryFromReader = function(msg, rea
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCorrelationId(value);
+      msg.setTraceId(value);
       break;
     case 2:
       var value = new proto.dummies.Dummy;
@@ -1570,7 +1570,7 @@ proto.dummies.DummyObjectRequest.prototype.serializeBinary = function() {
  */
 proto.dummies.DummyObjectRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getCorrelationId();
+  f = message.getTraceId();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -1589,10 +1589,10 @@ proto.dummies.DummyObjectRequest.serializeBinaryToWriter = function(message, wri
 
 
 /**
- * optional string correlation_id = 1;
+ * optional string trace_id = 1;
  * @return {string}
  */
-proto.dummies.DummyObjectRequest.prototype.getCorrelationId = function() {
+proto.dummies.DummyObjectRequest.prototype.getTraceId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1601,7 +1601,7 @@ proto.dummies.DummyObjectRequest.prototype.getCorrelationId = function() {
  * @param {string} value
  * @return {!proto.dummies.DummyObjectRequest} returns this
  */
-proto.dummies.DummyObjectRequest.prototype.setCorrelationId = function(value) {
+proto.dummies.DummyObjectRequest.prototype.setTraceId = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 

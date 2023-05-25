@@ -122,27 +122,27 @@ export class DataDogCounters extends CachedCounters implements IReferenceable, I
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
 
         this._opened = true;
 
-        await this._client.open(correlationId);
+        await this._client.open(context);
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public close(correlationId: string): Promise<void> {
+    public close(context: IContext): Promise<void> {
         this._opened = false;
 
-        return this._client.close(correlationId);
+        return this._client.close(context);
     }
 
     private convertCounter(counter: Counter): DataDogMetric[] {

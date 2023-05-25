@@ -5,24 +5,24 @@ exports.AzureFunctionContextHelper = void 0;
 const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 class AzureFunctionContextHelper {
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * @param context the Azure Function context
-     * @return returns correlationId from context
+     * @return returns context from context
      */
-    static getCorrelationId(context) {
-        let correlationId = context.correlation_id || "";
+    static getTraceId(context) {
+        let context = context.trace_id || "";
         try {
-            if ((correlationId == null || correlationId == "") && context.hasOwnProperty('body')) {
-                correlationId = context.body.correlation_id;
-                if (correlationId == null || correlationId == "") {
-                    correlationId = context.query.correlation_id;
+            if ((context == null || context == "") && context.hasOwnProperty('body')) {
+                context = context.body.trace_id;
+                if (context == null || context == "") {
+                    context = context.query.trace_id;
                 }
             }
         }
         catch (e) {
             // Ignore the error
         }
-        return correlationId;
+        return context;
     }
     /**
      * Returns command from Azure Function context.

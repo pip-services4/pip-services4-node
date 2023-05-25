@@ -57,9 +57,9 @@ const IdentifiableSqlitePersistence_1 = require("./IdentifiableSqlitePersistence
  *         return criteria.length > 0 ? criteria.join(" AND ") : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams,
  *         paging: PagingParams): Promise<DataPage<MyData>> {
- *         return base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         return base.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *     }
  *
  *     }
@@ -130,12 +130,12 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (data == null || id == null) {
                 return null;
@@ -151,7 +151,7 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
                             reject(err);
                             return;
                         }
-                        this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._tableName, id);
+                        this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
                         let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                         this._client.get(query, [id], (err, result) => {
                             if (err != null) {

@@ -8,10 +8,10 @@ export interface IFilteredReader<T> {
     /**
      * Gets a list of data items using filter parameters.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter             (optional) filter parameters
      * @param sort              (optional) sort parameters
      * @returns                a list with found data items.
      */
-    getListByFilter(correlationId: string, filter: FilterParams, sort: SortParams): Promise<T[]>;
+    getListByFilter(context: IContext, filter: FilterParams, sort: SortParams): Promise<T[]>;
 }

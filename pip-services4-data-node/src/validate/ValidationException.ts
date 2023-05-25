@@ -17,14 +17,14 @@ export class ValidationException extends BadRequestException {
      * Creates a new instance of validation exception and assigns its values.
      * 
      * @param category          (optional) a standard error category. Default: Unknown
-     * @param correlation_id    (optional) a unique transaction id to trace execution through call chain.
+     * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
      * @param results           (optional) a list of validation results
      * @param message           (optional) a human-readable description of the error.
      * 
      * @see [[ValidationResult]]
      */
-    public constructor(correlationId: string, message?: string, results?: ValidationResult[]) {
-        super(correlationId, "INVALID_DATA", message || ValidationException.composeMessage(results));
+    public constructor(context: IContext, message?: string, results?: ValidationResult[]) {
+        super(context, "INVALID_DATA", message || ValidationException.composeMessage(results));
 
         if (results) {
             this.withDetails("results", results);
@@ -64,14 +64,14 @@ export class ValidationException extends BadRequestException {
      * Creates a new ValidationException based on errors in validation results.
      * If validation results have no errors, than null is returned.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param results           list of validation results that may contain errors
      * @param strict            true to treat warnings as errors.
      * @returns a newly created ValidationException or null if no errors in found.
      * 
      * @see [[ValidationResult]]
      */
-    public static fromResults(correlationId: string, results: ValidationResult[], strict: boolean): ValidationException {
+    public static fromResults(context: IContext, results: ValidationResult[], strict: boolean): ValidationException {
         let hasErrors = false;
 
         for (let i = 0; i < results.length; i++) {
@@ -86,22 +86,22 @@ export class ValidationException extends BadRequestException {
             }
         }
 
-        return hasErrors ? new ValidationException(correlationId, null, results) : null;
+        return hasErrors ? new ValidationException(context, null, results) : null;
     }
 
     /**
      * Throws ValidationException based on errors in validation results.
      * If validation results have no errors, than no exception is thrown.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param results           list of validation results that may contain errors
      * @param strict            true to treat warnings as errors.
      * 
      * @see [[ValidationResult]]
      * @see [[ValidationException]]
      */
-    public static throwExceptionIfNeeded(correlationId: string, results: ValidationResult[], strict: boolean): void {
-        let ex = ValidationException.fromResults(correlationId, results, strict);
+    public static throwExceptionIfNeeded(context: IContext, results: ValidationResult[], strict: boolean): void {
+        let ex = ValidationException.fromResults(context, results, strict);
         if (ex) throw ex;
     }
 

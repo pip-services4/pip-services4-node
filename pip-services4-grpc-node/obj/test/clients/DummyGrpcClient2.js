@@ -20,7 +20,7 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
     constructor() {
         super(services.DummiesClient);
     }
-    getDummies(correlationId, filter, paging) {
+    getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
             paging = paging || new pip_services3_commons_node_2.PagingParams();
             let pagingParams = new messages.PagingParams();
@@ -36,8 +36,8 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
                     filterParams[propName] = filter[propName];
                 }
             }
-            this.instrument(correlationId, 'dummy.get_page_by_filter');
-            let result = yield this.call('get_dummies', correlationId, request);
+            this.instrument(context, 'dummy.get_page_by_filter');
+            let result = yield this.call('get_dummies', context, request);
             result = result != null ? result.toObject() : null;
             if (result) {
                 result.data = result.dataList;
@@ -46,12 +46,12 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    getDummyById(correlationId, dummyId) {
+    getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = new messages.DummyIdRequest();
             request.setDummyId(dummyId);
-            this.instrument(correlationId, 'dummy.get_one_by_id');
-            let result = yield this.call('get_dummy_by_id', correlationId, request);
+            this.instrument(context, 'dummy.get_one_by_id');
+            let result = yield this.call('get_dummy_by_id', context, request);
             result = result != null ? result.toObject() : null;
             if (result && result.id == "" && result.key == "") {
                 result = null;
@@ -59,7 +59,7 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    createDummy(correlationId, dummy) {
+    createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
             let dummyObj = new messages.Dummy();
             dummyObj.setId(dummy.id);
@@ -67,8 +67,8 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             dummyObj.setContent(dummy.content);
             let request = new messages.DummyObjectRequest();
             request.setDummy(dummyObj);
-            this.instrument(correlationId, 'dummy.create');
-            let result = yield this.call('create_dummy', correlationId, request);
+            this.instrument(context, 'dummy.create');
+            let result = yield this.call('create_dummy', context, request);
             result = result != null ? result.toObject() : null;
             if (result && result.id == "" && result.key == "") {
                 result = null;
@@ -76,7 +76,7 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    updateDummy(correlationId, dummy) {
+    updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
             let dummyObj = new messages.Dummy();
             dummyObj.setId(dummy.id);
@@ -84,8 +84,8 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             dummyObj.setContent(dummy.content);
             let request = new messages.DummyObjectRequest();
             request.setDummy(dummyObj);
-            this.instrument(correlationId, 'dummy.update');
-            let result = yield this.call('update_dummy', correlationId, request);
+            this.instrument(context, 'dummy.update');
+            let result = yield this.call('update_dummy', context, request);
             result = result != null ? result.toObject() : null;
             if (result && result.id == "" && result.key == "") {
                 result = null;
@@ -93,12 +93,12 @@ class DummyGrpcClient2 extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    deleteDummy(correlationId, dummyId) {
+    deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
             let request = new messages.DummyIdRequest();
             request.setDummyId(dummyId);
-            this.instrument(correlationId, 'dummy.delete_by_id');
-            let result = yield this.call('delete_dummy_by_id', correlationId, request);
+            this.instrument(context, 'dummy.delete_by_id');
+            let result = yield this.call('delete_dummy_by_id', context, request);
             result = result != null ? result.toObject() : null;
             if (result && result.id == "" && result.key == "") {
                 result = null;

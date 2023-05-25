@@ -89,12 +89,12 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
     /**
      * Registers connection parameters into the discovery service.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection parameters.
      * @param credential        a connection to be registered.
      * @returns 			    the registered connection parameters.
      */
-    public async register(correlationId: string, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
+    public async register(context: IContext, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
         let connectionsList = this._items.get(key) ?? [];
         connectionsList.push(new ConnectionParams(connection));
         this._items.set(key, connectionsList);
@@ -105,11 +105,11 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
     /**
      * Resolves a single connection parameters by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      */
-    public async resolveOne(correlationId: string, key: string): Promise<ConnectionParams> {
+    public async resolveOne(context: IContext, key: string): Promise<ConnectionParams> {
         let connection: ConnectionParams = null;
         let connections = this._items.get(key) ?? [];
         
@@ -122,11 +122,11 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
     /**
      * Resolves all connection parameters by their key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connections.
      * @returns                 all found connection parameters
      */
-    public async resolveAll(correlationId: string, key: string): Promise<ConnectionParams[]> {
+    public async resolveAll(context: IContext, key: string): Promise<ConnectionParams[]> {
         let connections: ConnectionParams[] = this._items.get(key) ?? [];
         
         return connections.filter(c => c != null);

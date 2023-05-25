@@ -7,13 +7,13 @@ suite('ApplicationException', ()=> {
     let _ex: Error;
 
     const Category: string = "category";
-    const CorrelationId: string = "correlationId";
+    const TraceId: string = "trace_id";
     const Code: string = "code";
     const Message: string = "message";
 
     setup(function() {
         _ex = new Error("Cause exception");
-        _appEx = new ApplicationException(Category, CorrelationId, Code, Message);
+        _appEx = new ApplicationException(Category, TraceId, Code, Message);
     });
 
     test('With Cause', () => {
@@ -24,7 +24,7 @@ suite('ApplicationException', ()=> {
 
     test('Check Parameters', () => {
         assert.equal(Category, _appEx.category);
-        assert.equal(CorrelationId, _appEx.correlation_id);
+        assert.equal(TraceId, _appEx.trace_id);
         assert.equal(Code, _appEx.code);
         assert.equal(Message, _appEx.message);
     });
@@ -37,12 +37,12 @@ suite('ApplicationException', ()=> {
         assert.equal(newCode, appEx.code);
     });
 
-    test('With CorrelationId', () => {
-        let newCorrelationId = "newCorrelationId";
-        let appEx = _appEx.withCorrelationId(newCorrelationId);
+    test('With TraceId', () => {
+        let newTraceId = "newTraceId";
+        let appEx = _appEx.withTraceId(newTraceId);
 
         assert.equal(_appEx, appEx);
-        assert.equal(newCorrelationId, appEx.correlation_id);
+        assert.equal(newTraceId, appEx.trace_id);
     });
 
     test('With Status', () => {

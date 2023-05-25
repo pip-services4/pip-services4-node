@@ -42,7 +42,7 @@ export class DummyAzureFunctionService extends AzureFunctionService {
 
     private async getPageByFilter(req: any): Promise<any> {
         const page = await this._controller.getPageByFilter(
-            req.body.correlation_id,
+            req.body.trace_id,
             new FilterParams(req.body.filter),
             new PagingParams(req.body.paging)
         );
@@ -52,7 +52,7 @@ export class DummyAzureFunctionService extends AzureFunctionService {
     private async getOneById(req: any): Promise<any> {
         let params = this.getBodyData(req);
         const dummy = await this._controller.getOneById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id
         );
         return { body: dummy, headers: this._headers };
@@ -61,7 +61,7 @@ export class DummyAzureFunctionService extends AzureFunctionService {
     private async create(req: any): Promise<any> {
         let params = this.getBodyData(req);
         const dummy = await this._controller.create(
-            params.correlation_id,
+            params.trace_id,
             params.dummy
         );
         return { body: dummy, headers: this._headers };
@@ -70,7 +70,7 @@ export class DummyAzureFunctionService extends AzureFunctionService {
     private async update(req: any): Promise<any> {
         let params = this.getBodyData(req);
         const dummy = await this._controller.update(
-            params.correlation_id,
+            params.trace_id,
             params.dummy,
         );
         return { body: dummy, headers: this._headers };
@@ -79,7 +79,7 @@ export class DummyAzureFunctionService extends AzureFunctionService {
     private async deleteById(req: any): Promise<any> {
         let params = this.getBodyData(req);
         const dummy = await this._controller.deleteById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id,
         );
         return { body: dummy, headers: this._headers };

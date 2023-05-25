@@ -22,7 +22,7 @@ class DummyJsonMySqlPersistence extends IdentifiableJsonMySqlPersistence_1.Ident
         this.ensureSchema('ALTER TABLE `' + this._tableName + '` ADD `data_key` VARCHAR(50) AS (JSON_UNQUOTE(`data`->"$.key"))');
         this.ensureIndex(this._tableName + '_json_key', { "data_key": 1 }, { unique: true });
     }
-    getPageByFilter(correlationId, filter, paging) {
+    getPageByFilter(context, filter, paging) {
         const _super = Object.create(null, {
             getPageByFilter: { get: () => super.getPageByFilter }
         });
@@ -33,10 +33,10 @@ class DummyJsonMySqlPersistence extends IdentifiableJsonMySqlPersistence_1.Ident
             if (key != null) {
                 filterCondition += "data->key='" + key + "'";
             }
-            return yield _super.getPageByFilter.call(this, correlationId, filterCondition, paging, null, null);
+            return yield _super.getPageByFilter.call(this, context, filterCondition, paging, null, null);
         });
     }
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         const _super = Object.create(null, {
             getCountByFilter: { get: () => super.getCountByFilter }
         });
@@ -47,7 +47,7 @@ class DummyJsonMySqlPersistence extends IdentifiableJsonMySqlPersistence_1.Ident
             if (key != null) {
                 filterCondition += "data->key='" + key + "'";
             }
-            return yield _super.getCountByFilter.call(this, correlationId, filterCondition);
+            return yield _super.getCountByFilter.call(this, context, filterCondition);
         });
     }
 }

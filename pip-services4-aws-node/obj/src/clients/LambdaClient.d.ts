@@ -44,10 +44,10 @@ import { AwsConnectionResolver } from '../connect/AwsConnectionResolver';
  *     class MyLambdaClient extends LambdaClient implements IMyClient {
  *         ...
  *
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *
- *             let timing = this.instrument(correlationId, 'myclient.get_data');
- *             const result = await this.call("get_data" correlationId, { id: id });
+ *             let timing = this.instrument(context, 'myclient.get_data');
+ *             const result = await this.call("get_data" context, { id: id });
  *             timing.endTiming();
  *             return result;
  *         }
@@ -114,11 +114,11 @@ export declare abstract class LambdaClient implements IOpenable, IConfigurable, 
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param correlationId         (optional) transaction id to trace execution through call chain.
+     * @param context         (optional) transaction id to trace execution through call chain.
      * @param name                  a method name.
      * @returns {InstrumentTiming}  object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -128,42 +128,42 @@ export declare abstract class LambdaClient implements IOpenable, IConfigurable, 
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      *
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Performs AWS Lambda Function invocation.
      *
      * @param invocationType    an invocation type: "RequestResponse" or "Event"
      * @param cmd               an action name to be called.
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      * @param args              action arguments
      * @return {any}            action result.
      */
-    protected invoke(invocationType: string, cmd: string, correlationId: string, args: any): Promise<any>;
+    protected invoke(invocationType: string, cmd: string, context: IContext, args: any): Promise<any>;
     /**
      * Calls a AWS Lambda Function action.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    protected call(cmd: string, correlationId: string, params?: any): Promise<any>;
+    protected call(cmd: string, context: IContext, params?: any): Promise<any>;
     /**
      * Calls a AWS Lambda Function action asynchronously without waiting for response.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    protected callOneWay(cmd: string, correlationId: string, params?: any): Promise<any>;
+    protected callOneWay(cmd: string, context: IContext, params?: any): Promise<any>;
 }

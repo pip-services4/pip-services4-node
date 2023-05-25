@@ -86,41 +86,41 @@ export declare class MemcachedCache implements ICache, IConfigurable, IReference
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     private checkOpened;
     /**
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns a cached value or <code>null</code> if nothing was found.
      */
-    retrieve(correlationId: string, key: string): Promise<any>;
+    retrieve(context: IContext, key: string): Promise<any>;
     /**
      * Stores value in the cache with expiration time.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
      * @returns the stored value
      */
-    store(correlationId: string, key: string, value: any, timeout: number): Promise<any>;
+    store(context: IContext, key: string, value: any, timeout: number): Promise<any>;
     /**
      * Removes a value from the cache by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique value key.
      * @returns the deleted value.
      */
-    remove(correlationId: string, key: string): Promise<any>;
+    remove(context: IContext, key: string): Promise<any>;
 }

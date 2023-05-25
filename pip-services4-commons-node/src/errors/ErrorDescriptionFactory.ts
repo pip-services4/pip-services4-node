@@ -32,7 +32,7 @@ export class ErrorDescriptionFactory {
             description.code  = ex.code;
             description.message = ex.message;
             description.details = ex.details;
-            description.correlation_id = ex.correlation_id;
+            description.trace_id = ex.trace_id;
             description.cause = ex.getCauseString();
             description.stack_trace = ex.getStackTraceString();
         } else {

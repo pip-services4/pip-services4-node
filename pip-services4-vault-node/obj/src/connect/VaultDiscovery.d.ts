@@ -95,38 +95,38 @@ export declare class VaultDiscovery implements IDiscovery, IReconfigurable, IRef
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
     * Closes component and frees used resources.
     *
-    * @param correlationId 	(optional) transaction id to trace execution through call chain.
+    * @param context 	(optional) execution context to trace execution through call chain.
     */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Registers connection parameters into the discovery service.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection parameters.
      * @param credential        a connection to be registered.
      * @returns 			    the registered connection parameters.
      */
-    register(correlationId: string, key: string, connection: ConnectionParams): Promise<ConnectionParams>;
+    register(context: IContext, key: string, connection: ConnectionParams): Promise<ConnectionParams>;
     /**
      * Resolves a single connection parameters by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      */
-    resolveOne(correlationId: string, key: string): Promise<ConnectionParams>;
+    resolveOne(context: IContext, key: string): Promise<ConnectionParams>;
     /**
      * Resolves all connection parameters by their key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connections.
      * @returns                 all found connection parameters
      */
-    resolveAll(correlationId: string, key: string): Promise<ConnectionParams[]>;
+    resolveAll(context: IContext, key: string): Promise<ConnectionParams[]>;
 }

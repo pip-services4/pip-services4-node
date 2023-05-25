@@ -87,31 +87,31 @@ export declare class MemcachedLock extends Lock implements IConfigurable, IRefer
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     private checkOpened;
     /**
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfull and <code>false</code> otherwise.
      */
-    tryAcquireLock(correlationId: string, key: string, ttl: number): Promise<boolean>;
+    tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean>;
     /**
      * Releases prevously acquired lock by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    releaseLock(correlationId: string, key: string): Promise<void>;
+    releaseLock(context: IContext, key: string): Promise<void>;
 }

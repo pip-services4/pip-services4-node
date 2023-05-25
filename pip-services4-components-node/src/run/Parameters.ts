@@ -1,9 +1,9 @@
 /** @module run */
-import { AnyValueMap } from '../data/AnyValueMap';
-import { JsonConverter } from '../convert/JsonConverter';
-import { RecursiveObjectReader } from '../reflect/RecursiveObjectReader';
-import { RecursiveObjectWriter } from '../reflect/RecursiveObjectWriter';
-import { ObjectWriter } from '../reflect/ObjectWriter';
+import { AnyValueMap } from 'pip-services4-commons-node';
+import { JsonConverter } from 'pip-services4-commons-node';
+import { RecursiveObjectReader } from 'pip-services4-commons-node';
+import { RecursiveObjectWriter } from 'pip-services4-commons-node';
+import { ObjectWriter } from 'pip-services4-commons-node';
 import { ConfigParams } from '../config/ConfigParams';
 
 /**

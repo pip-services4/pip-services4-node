@@ -20,9 +20,9 @@ import { ValidationResult } from '../../../pip-services4-commons-node/src/valida
  *             return command.getName();
  *         }
  *               
- *         public async execute(correlationId: string, command: ICommand, args: Parameters): Promise<any> {
+ *         public async execute(context: IContext, command: ICommand, args: Parameters): Promise<any> {
  *             console.log("Executed command " + command.getName());
- *             await command.execute(correlationId, args);
+ *             await command.execute(context, args);
  *         }
  *               
  *         private validate(command: ICommand, args: Parameters): ValidationResult[] {
@@ -63,14 +63,14 @@ export class InterceptedCommand implements ICommand {
     /**
      * Executes the next command in the execution chain using the given [[Parameters parameters]] (arguments).
      * 
-     * @param correlationId unique transaction id to trace calls across components.
+     * @param context unique transaction id to trace calls across components.
      * @param args          the parameters (arguments) to pass to the command for execution.
      * @returns             the execution result
      * 
      * @see [[Parameters]]
      */
-    public async execute(correlationId: string, args: Parameters): Promise<any> {
-        return await this._interceptor.execute(correlationId, this._next, args);
+    public async execute(context: IContext, args: Parameters): Promise<any> {
+        return await this._interceptor.execute(context, this._next, args);
     }
 
     /**

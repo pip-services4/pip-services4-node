@@ -49,8 +49,8 @@ const CloudFunctionClient_1 = require("./CloudFunctionClient");
  *     class MyCommandableGoogleClient extends CommandableCloudFunctionClient implements IMyClient {
  *         ...
  *
- *         public async getData(correlationId: string, id: string): Promise<any> {
- *             return this.callCommand("get_data", correlationId, { id: id });
+ *         public async getData(context: IContext, id: string): Promise<any> {
+ *             return this.callCommand("get_data", context, { id: id });
  *         }
  *         ...
  *     }
@@ -84,15 +84,15 @@ class CommandableCloudFunctionClient extends CloudFunctionClient_1.CloudFunction
      * to the action parameters.
      *
      * @param cmd               an action name
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @return {any}            action result.
      */
-    callCommand(cmd, correlationId, params) {
+    callCommand(cmd, context, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const timing = this.instrument(correlationId, this._name + '.' + cmd);
+            const timing = this.instrument(context, this._name + '.' + cmd);
             try {
-                const result = yield this.call(cmd, correlationId, params);
+                const result = yield this.call(cmd, context, params);
                 timing.endTiming();
                 return result;
             }

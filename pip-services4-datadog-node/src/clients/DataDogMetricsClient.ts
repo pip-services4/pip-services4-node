@@ -36,12 +36,12 @@ export class DataDogMetricsClient extends RestClient {
         this._credentialResolver.setReferences(refs);
     }
 
-    public async open(correlationId): Promise<void> {
-        let credential = await this._credentialResolver.lookup(correlationId);
+    public async open(context): Promise<void> {
+        let credential = await this._credentialResolver.lookup(context);
 
         if (credential == null || credential.getAccessKey() == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_ACCESS_KEY",
                 "Missing access key in credentials"
             );
@@ -50,7 +50,7 @@ export class DataDogMetricsClient extends RestClient {
         this._headers = this._headers || {};
         this._headers['DD-API-KEY'] = credential.getAccessKey();
 
-        await super.open(correlationId);
+        await super.open(context);
     }
 
     private convertTags(tags: any[]): string {
@@ -110,11 +110,11 @@ export class DataDogMetricsClient extends RestClient {
         };
     }
 
-    public async sendMetrics(correlationId: string, metrics: DataDogMetric[]): Promise<void> {
+    public async sendMetrics(context: IContext, metrics: DataDogMetric[]): Promise<void> {
         let data = this.convertMetrics(metrics);
 
         // Commented instrumentation because otherwise it will never stop sending logs...
-        //let timing = this.instrument(correlationId, "datadog.send_metrics");
+        //let timing = this.instrument(context, "datadog.send_metrics");
         try {
             await this.call("post", "series", null, null, data);
         } finally {

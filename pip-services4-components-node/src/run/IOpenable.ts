@@ -1,4 +1,6 @@
 /** @module run */
+
+import { IContext } from "./IContext";
 import { IClosable } from './IClosable'
 
 /**
@@ -19,14 +21,14 @@ import { IClosable } from './IClosable'
  *             return this._client != null;
  *         } 
  *         
- *         public async open(correlationId: string): Promise<void> {
+ *         public async open(context: IContext): Promise<void> {
  *             if (this.isOpen()) {
  *                 return;
  *             }
  *             ...
  *         }
  *         
- *         public async close(correlationId: string): Promise<void> {
+ *         public async close(context: IContext): Promise<void> {
  *             if (this._client != null) {
  *                 this._client.close();
  *                 this._client = null;
@@ -47,7 +49,7 @@ export interface IOpenable extends IClosable {
 	/**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 */
-	open(correlationId: string): Promise<void>;
+	open(context: IContext): Promise<void>;
 }

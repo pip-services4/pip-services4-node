@@ -60,10 +60,10 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
         this._credentialResolver.setReferences(references);
     }
 
-    private validateConnection(correlationId: string, connection: ConnectionParams): void {
+    private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION",
                 "NATS connection is not set"
             );
@@ -75,14 +75,14 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
         let protocol = connection.getAsStringWithDefault("protocol", "nats");
         if (protocol == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
         }
         if (protocol != "nats") {
             throw new ConfigException(
-                correlationId,
+                context,
                 "UNSUPPORTED_PROTOCOL",
                 "The protocol "+protocol+" is not supported"
             );
@@ -91,7 +91,7 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -100,7 +100,7 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
         let port = connection.getAsIntegerWithDefault("protocol", 4222);
         if (port == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -191,17 +191,17 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves NATS connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns resolved NATS connection options.
      */
-    public async resolve(correlationId: string): Promise<any> {
-        let connections = await this._connectionResolver.resolveAll(correlationId);
+    public async resolve(context: IContext): Promise<any> {
+        let connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
 
-        let credential = await this._credentialResolver.lookup(correlationId);
+        let credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
         let options = this.composeOptions(connections, credential);
@@ -211,15 +211,15 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Composes NATS connection options from connection and credential parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved NATS connection options.
      */
-    public async compose(correlationId: string, connections: ConnectionParams[], credential: CredentialParams): Promise<any> {
+    public async compose(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<any> {
         // Validate connections
         for (let connection of connections) {
-            this.validateConnection(correlationId, connection);
+            this.validateConnection(context, connection);
         }
 
         let options = this.composeOptions(connections, credential);

@@ -117,13 +117,13 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(correlationId);
+            let connections = yield this._connectionResolver.resolveAll(context);
             if (connections.length == 0) {
-                throw new pip_services3_commons_node_2.ConfigException(correlationId, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
             }
             let servers = [];
             for (let connection of connections) {
@@ -151,29 +151,29 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._client = null;
         });
     }
-    checkOpened(correlationId) {
+    checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(correlationId, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     /**
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfull and <code>false</code> otherwise.
      */
-    tryAcquireLock(correlationId, key, ttl) {
-        this.checkOpened(correlationId);
+    tryAcquireLock(context, key, ttl) {
+        this.checkOpened(context);
         let lifetimeInSec = ttl / 1000;
         return new Promise((resolve, reject) => {
             this._client.add(key, 'lock', lifetimeInSec, (err) => {
@@ -192,11 +192,11 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
     /**
      * Releases prevously acquired lock by its key.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    releaseLock(correlationId, key) {
-        this.checkOpened(correlationId);
+    releaseLock(context, key) {
+        this.checkOpened(context);
         return new Promise((resolve, reject) => {
             this._client.del(key, (err) => {
                 if (err != null) {

@@ -62,7 +62,7 @@ const CouchbaseConnection_1 = require("../connect/CouchbaseConnection");
  *           base("mydata", "mycollection", new MyDataCouchbaseSchema());
  *     }
  *
- *     public getByName(correlationId: string, name: string): Promise<MyData> {
+ *     public getByName(context: IContext, name: string): Promise<MyData> {
  *         let criteria = { name: name };
  *         return new Promise((resolve, reject) => {
  *            this._model.findOne(criteria, (err, value) => {
@@ -224,9 +224,9 @@ class CouchbasePersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -236,13 +236,13 @@ class CouchbasePersistence {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(correlationId, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_3.ConnectionException(correlationId, "CONNECT_FAILED", "Couchbase connection is not opened");
+                throw new pip_services3_commons_node_3.ConnectionException(context, "CONNECT_FAILED", "Couchbase connection is not opened");
             }
             this._cluster = this._connection.getConnection();
             this._bucket = this._connection.getBucket();
@@ -255,18 +255,18 @@ class CouchbasePersistence {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(correlationId, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._cluster = null;
@@ -277,9 +277,9 @@ class CouchbasePersistence {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._bucketName == null) {
@@ -288,7 +288,7 @@ class CouchbasePersistence {
             yield new Promise((resolve, reject) => {
                 this._bucket.manager().flush((err) => {
                     if (err != null) {
-                        err = new pip_services3_commons_node_3.ConnectionException(correlationId, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
+                        err = new pip_services3_commons_node_3.ConnectionException(context, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
                         reject(err);
                         return;
                     }
@@ -315,14 +315,14 @@ class CouchbasePersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting string after ORDER BY clause
      * @param select            (optional) projection string after SELECT clause
      * @returns                 the requested data page.
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let statement = "SELECT " + select + " FROM " + this.quoteIdentifier(this._bucketName);
@@ -352,7 +352,7 @@ class CouchbasePersistence {
                     resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._bucketName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._bucketName);
             items = items.map(item => select == "*" ? item[this._bucketName] : item);
             items = items.map(this.convertToPublic);
             items = items.filter(item => item != null);
@@ -383,11 +383,11 @@ class CouchbasePersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @returns                  a number of data items that satisfy the filter.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             filter = this.createBucketFilter(filter);
             let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
@@ -403,7 +403,7 @@ class CouchbasePersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Counted %d items in %s", count, this._bucketName);
+            this._logger.trace(context, "Counted %d items in %s", count, this._bucketName);
             return count;
         });
     }
@@ -413,14 +413,14 @@ class CouchbasePersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @param callback         callback function that receives a data list or error.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let statement = "SELECT " + select + " FROM " + this.quoteIdentifier(this._bucketName);
@@ -442,7 +442,7 @@ class CouchbasePersistence {
                     resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._bucketName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._bucketName);
             items = items.map(item => select == "*" ? item[this._bucketName] : item);
             items = items.map(this.convertToPublic);
             items = items.filter(item => item != null);
@@ -455,11 +455,11 @@ class CouchbasePersistence {
     * This method shall be called by a public getOneRandom method from child class that
     * receives FilterParams and converts them into a filter function.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param filter            (optional) a filter JSON object
     * @returns                 a random item that satisfies the filter.
     */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName);
             // Adjust max item count based on configuration
@@ -493,7 +493,7 @@ class CouchbasePersistence {
                 });
             });
             if (items != null && items.length > 0)
-                this._logger.trace(correlationId, "Retrieved random item from %s", this._bucketName);
+                this._logger.trace(context, "Retrieved random item from %s", this._bucketName);
             items = items.map(this.convertToPublic);
             return items[0];
         });
@@ -511,11 +511,11 @@ class CouchbasePersistence {
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return null;
@@ -534,7 +534,7 @@ class CouchbasePersistence {
                     resolve(result);
                 });
             });
-            this._logger.trace(correlationId, "Created in %s with id = %s", this._bucketName, id);
+            this._logger.trace(context, "Created in %s with id = %s", this._bucketName, id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -545,10 +545,10 @@ class CouchbasePersistence {
     * This method shall be called by a public deleteByFilter method from child class that
     * receives FilterParams and converts them into a filter function.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param filter            (optional) a filter JSON object.
     */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let statement = "DELETE FROM " + this.quoteIdentifier(this._bucketName);
             // Adjust max item count based on configuration
@@ -564,7 +564,7 @@ class CouchbasePersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._bucketName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._bucketName);
         });
     }
 }

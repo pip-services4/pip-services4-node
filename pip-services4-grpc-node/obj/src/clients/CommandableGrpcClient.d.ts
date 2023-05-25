@@ -30,11 +30,11 @@ import { GrpcClient } from './GrpcClient';
  *     class MyCommandableGrpcClient extends CommandableGrpcClient implements IMyClient {
  *        ...
  *
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *
  *            return await this.callCommand(
  *                "get_data",
- *                correlationId,
+ *                context,
  *                { id: id }
  *            );
  *         }
@@ -67,9 +67,9 @@ export declare class CommandableGrpcClient extends GrpcClient {
      * The complete route to remote method is defined as serviceName + "." + name.
      *
      * @param name              a name of the command to call.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            command parameters.
      * @returns the received result.
      */
-    protected callCommand<T>(name: string, correlationId: string, params: any): Promise<T>;
+    protected callCommand<T>(name: string, context: IContext, params: any): Promise<T>;
 }

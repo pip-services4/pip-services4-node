@@ -15,19 +15,19 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     constructor() {
         super(__dirname + "../../../../test/protos/dummies.proto", "dummies.Dummies");
     }
-    getDummies(correlationId, filter, paging) {
+    getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.instrument(correlationId, 'dummy.get_page_by_filter');
-            return yield this.call('get_dummies', correlationId, {
+            this.instrument(context, 'dummy.get_page_by_filter');
+            return yield this.call('get_dummies', context, {
                 filter: filter,
                 paging: paging
             });
         });
     }
-    getDummyById(correlationId, dummyId) {
+    getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.instrument(correlationId, 'dummy.get_one_by_id');
-            let result = yield this.call('get_dummy_by_id', correlationId, {
+            this.instrument(context, 'dummy.get_one_by_id');
+            let result = yield this.call('get_dummy_by_id', context, {
                 dummy_id: dummyId
             });
             if (result && result.id == "" && result.key == "") {
@@ -36,10 +36,10 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    createDummy(correlationId, dummy) {
+    createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.instrument(correlationId, 'dummy.create');
-            let result = yield this.call('create_dummy', correlationId, {
+            this.instrument(context, 'dummy.create');
+            let result = yield this.call('create_dummy', context, {
                 dummy: dummy
             });
             if (result && result.id == "" && result.key == "") {
@@ -48,10 +48,10 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    updateDummy(correlationId, dummy) {
+    updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.instrument(correlationId, 'dummy.update');
-            let result = yield this.call('update_dummy', correlationId, {
+            this.instrument(context, 'dummy.update');
+            let result = yield this.call('update_dummy', context, {
                 dummy: dummy
             });
             if (result && result.id == "" && result.key == "") {
@@ -60,10 +60,10 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
             return result;
         });
     }
-    deleteDummy(correlationId, dummyId) {
+    deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.instrument(correlationId, 'dummy.delete_by_id');
-            let result = yield this.call('delete_dummy_by_id', correlationId, {
+            this.instrument(context, 'dummy.delete_by_id');
+            let result = yield this.call('delete_dummy_by_id', context, {
                 dummy_id: dummyId
             });
             if (result && result.id == "" && result.key == "") {

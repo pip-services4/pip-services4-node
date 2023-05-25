@@ -35,7 +35,7 @@ class DummyCloudFunctionService extends CloudFunctionService_1.CloudFunctionServ
     getPageByFilter(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            const page = yield this._controller.getPageByFilter(params.correlation_id, new pip_services3_commons_node_2.FilterParams(params.filter), new pip_services3_commons_node_3.PagingParams(params.paging));
+            const page = yield this._controller.getPageByFilter(params.trace_id, new pip_services3_commons_node_2.FilterParams(params.filter), new pip_services3_commons_node_3.PagingParams(params.paging));
             res.set(this._headers);
             pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, page);
         });
@@ -43,7 +43,7 @@ class DummyCloudFunctionService extends CloudFunctionService_1.CloudFunctionServ
     getOneById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            const dummy = yield this._controller.getOneById(params.correlation_id, params.dummy_id);
+            const dummy = yield this._controller.getOneById(params.trace_id, params.dummy_id);
             res.set(this._headers);
             if (dummy != null) {
                 pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, dummy);
@@ -56,7 +56,7 @@ class DummyCloudFunctionService extends CloudFunctionService_1.CloudFunctionServ
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            const dummy = yield this._controller.create(params.correlation_id, params.dummy);
+            const dummy = yield this._controller.create(params.trace_id, params.dummy);
             res.set(this._headers);
             pip_services3_rpc_node_1.HttpResponseSender.sendCreatedResult(req, res, dummy);
         });
@@ -64,7 +64,7 @@ class DummyCloudFunctionService extends CloudFunctionService_1.CloudFunctionServ
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            const dummy = yield this._controller.update(params.correlation_id, params.dummy);
+            const dummy = yield this._controller.update(params.trace_id, params.dummy);
             res.set(this._headers);
             pip_services3_rpc_node_1.HttpResponseSender.sendResult(req, res, dummy);
         });
@@ -72,7 +72,7 @@ class DummyCloudFunctionService extends CloudFunctionService_1.CloudFunctionServ
     deleteById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = req.body;
-            const dummy = yield this._controller.deleteById(params.correlation_id, params.dummy_id);
+            const dummy = yield this._controller.deleteById(params.trace_id, params.dummy_id);
             res.set(this._headers);
             pip_services3_rpc_node_1.HttpResponseSender.sendDeletedResult(req, res, dummy);
         });

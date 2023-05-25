@@ -40,18 +40,18 @@ The persistence component shall implement the following interface with a basic s
 
 ```typescript
 export interface IMyPersistence {
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams,
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams,
       callback: (err: any, page: DataPage<MyObject>) => void): void;
     
-    getOneById(correlationId: string, id: string, callback: (err: any, item: MyObject) => void): void;
+    getOneById(context: IContext, id: string, callback: (err: any, item: MyObject) => void): void;
     
-    getOneByKey(correlationId: string, key: string, callback: (err: any, item: MyObject) => void): void;
+    getOneByKey(context: IContext, key: string, callback: (err: any, item: MyObject) => void): void;
     
-    create(correlationId: string, item: MyObject, callback?: (err: any, item: MyObject) => void): void;
+    create(context: IContext, item: MyObject, callback?: (err: any, item: MyObject) => void): void;
     
-    update(correlationId: string, item: MyObject, callback?: (err: any, item: MyObject) => void): void;
+    update(context: IContext, item: MyObject, callback?: (err: any, item: MyObject) => void): void;
     
-    deleteById(correlationId: string, id: string, callback?: (err: any, item: MyObject) => void): void;
+    deleteById(context: IContext, id: string, callback?: (err: any, item: MyObject) => void): void;
 }
 ```
 
@@ -90,21 +90,21 @@ export class MyMongoDbPersistence extends IdentifableMongoDbPersistence {
     return criteria.length > 0 ? { $and: criteria } : null;
   }
   
-  public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams,
+  public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams,
     callback: (err: any, page: DataPage<MyObject>) => void): void {
-    super.getPageByFilter(correlationId, this.composeFilter(filter), paging, "_id", null, callback);
+    super.getPageByFilter(context, this.composeFilter(filter), paging, "_id", null, callback);
   }  
   
-  public getOneByKey(correlationId: string, key: string,
+  public getOneByKey(context: IContext, key: string,
     callback: (err: any, item: MyObject) => void): void {
     
     let filter = { key: key };
 
     this._collection.findOne(filter, (err, item) => {
       if (item == null)
-        this._logger.trace(correlationId, "Nothing found from %s with key = %s", this._collectionName, key);
+        this._logger.trace(context, "Nothing found from %s with key = %s", this._collectionName, key);
       else
-        this._logger.trace(correlationId, "Retrieved from %s with key = %s", this._collectionName, key);
+        this._logger.trace(context, "Retrieved from %s with key = %s", this._collectionName, key);
 
       item = this.convertToPublic(item);
       callback(err, item);

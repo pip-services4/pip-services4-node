@@ -35,12 +35,12 @@ export class MemoryLock extends Lock {
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns                 <code>true</code> if the lock was acquired and <code>false</code> otherwise.
      */
-    public async tryAcquireLock(correlationId: string, key: string, ttl: number): Promise<boolean> {
+    public async tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean> {
         let expireTime = this._locks[key];
         let now = new Date().getTime();
 
@@ -55,10 +55,10 @@ export class MemoryLock extends Lock {
     /**
      * Releases the lock with the given key.
      * 
-     * @param correlationId     not used.
+     * @param context     not used.
      * @param key               the key of the lock that is to be released.
      */
-    public async releaseLock(correlationId: string, key: string): Promise<void> {
+    public async releaseLock(context: IContext, key: string): Promise<void> {
         delete this._locks[key];
     }
 }

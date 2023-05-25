@@ -10,8 +10,8 @@ export class ErrorDescription extends jspb.Message {
   getCode(): string;
   setCode(value: string): void;
 
-  getCorrelationId(): string;
-  setCorrelationId(value: string): void;
+  getTraceId(): string;
+  setTraceId(value: string): void;
 
   getStatus(): string;
   setStatus(value: string): void;
@@ -41,7 +41,7 @@ export namespace ErrorDescription {
   export type AsObject = {
     category: string,
     code: string,
-    correlationId: string,
+    context: IContext,
     status: string,
     message: string,
     cause: string,
@@ -133,8 +133,8 @@ export namespace DummiesPage {
 }
 
 export class DummiesPageRequest extends jspb.Message {
-  getCorrelationId(): string;
-  setCorrelationId(value: string): void;
+  getTraceId(): string;
+  setTraceId(value: string): void;
 
   getFilterMap(): jspb.Map<string, string>;
   clearFilterMap(): void;
@@ -155,15 +155,15 @@ export class DummiesPageRequest extends jspb.Message {
 
 export namespace DummiesPageRequest {
   export type AsObject = {
-    correlationId: string,
+    context: IContext,
     filterMap: Array<[string, string]>,
     paging?: PagingParams.AsObject,
   }
 }
 
 export class DummyIdRequest extends jspb.Message {
-  getCorrelationId(): string;
-  setCorrelationId(value: string): void;
+  getTraceId(): string;
+  setTraceId(value: string): void;
 
   getDummyId(): string;
   setDummyId(value: string): void;
@@ -180,14 +180,14 @@ export class DummyIdRequest extends jspb.Message {
 
 export namespace DummyIdRequest {
   export type AsObject = {
-    correlationId: string,
+    context: IContext,
     dummyId: string,
   }
 }
 
 export class DummyObjectRequest extends jspb.Message {
-  getCorrelationId(): string;
-  setCorrelationId(value: string): void;
+  getTraceId(): string;
+  setTraceId(value: string): void;
 
   hasDummy(): boolean;
   clearDummy(): void;
@@ -206,7 +206,7 @@ export class DummyObjectRequest extends jspb.Message {
 
 export namespace DummyObjectRequest {
   export type AsObject = {
-    correlationId: string,
+    context: IContext,
     dummy?: Dummy.AsObject,
   }
 }

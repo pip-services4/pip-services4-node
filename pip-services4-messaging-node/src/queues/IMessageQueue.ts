@@ -41,50 +41,50 @@ export interface IMessageQueue extends IOpenable, IClosable {
     /**
      * Sends a message into the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
-    send(correlationId: string, envelope: MessageEnvelope): Promise<void>;
+    send(context: IContext, envelope: MessageEnvelope): Promise<void>;
 
     /**
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      * 
      * @see [[send]]
      */
-    sendAsObject(correlationId: string, messageType: string, value: any): Promise<void>;
+    sendAsObject(context: IContext, messageType: string, value: any): Promise<void>;
 
     /**
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    peek(correlationId: string): Promise<MessageEnvelope>;
+    peek(context: IContext): Promise<MessageEnvelope>;
 
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a peeked list with messages.
      */
-    peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>
+    peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>
 
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
 
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
@@ -123,30 +123,30 @@ export interface IMessageQueue extends IOpenable, IClosable {
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    listen(correlationId: string, receiver: IMessageReceiver): void;
+    listen(context: IContext, receiver: IMessageReceiver): void;
 
     /**
      * Listens for incoming messages without blocking the current thread.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[listen]]
      * @see [[IMessageReceiver]]
      */
-    beginListen(correlationId: string, receiver: IMessageReceiver): void;
+    beginListen(context: IContext, receiver: IMessageReceiver): void;
 
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId: string): void;
+    endListen(context: IContext): void;
 }

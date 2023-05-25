@@ -46,10 +46,10 @@ import { AzureFunctionConnectionResolver } from '../connect/AzureFunctionConnect
  *     class MyAzureFunctionClient extends AzureFunctionClient implements IMyClient {
  *         ...
  *
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
  *
- *             let timing = this.instrument(correlationId, 'myclient.get_data');
- *             const result = await this.call("get_data" correlationId, { id: id });
+ *             let timing = this.instrument(context, 'myclient.get_data');
+ *             const result = await this.call("get_data" context, { id: id });
  *             timing.endTiming();
  *             return result;
  *         }
@@ -129,11 +129,11 @@ export declare abstract class AzureFunctionClient implements IOpenable, IConfigu
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param correlationId         (optional) transaction id to trace execution through call chain.
+     * @param context         (optional) transaction id to trace execution through call chain.
      * @param name                  a method name.
      * @returns {InstrumentTiming}  object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): InstrumentTiming;
+    protected instrument(context: IContext, name: string): InstrumentTiming;
     /**
      * Checks if the component is opened.
      *
@@ -143,32 +143,32 @@ export declare abstract class AzureFunctionClient implements IOpenable, IConfigu
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      *
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Performs Azure Function invocation.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      * @param args              action arguments
      * @return {any}            action result.
      */
-    protected invoke<T>(cmd: string, correlationId: string, args: any): Promise<T>;
+    protected invoke<T>(cmd: string, context: IContext, args: any): Promise<T>;
     /**
      * Calls a Azure Function action.
      *
      * @param cmd               an action name to be called.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    protected call<T>(cmd: string, correlationId: string, params?: any): Promise<T>;
+    protected call<T>(cmd: string, context: IContext, params?: any): Promise<T>;
 }

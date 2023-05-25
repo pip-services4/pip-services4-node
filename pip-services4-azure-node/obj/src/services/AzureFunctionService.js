@@ -55,9 +55,9 @@ const AzureFunctionContextHelper_1 = require("../containers/AzureFunctionContext
  *
  *        public register(): void {
  *            registerAction("get_mydata", null, async (context) => {
- *                let correlationId = context.correlation_id;
+ *                let context = context.trace_id;
  *                let id = context.id;
- *                return await this._controller.getMyData(correlationId, id);
+ *                return await this._controller.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -131,16 +131,16 @@ class AzureFunctionService {
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
         let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -153,9 +153,9 @@ class AzureFunctionService {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -167,9 +167,9 @@ class AzureFunctionService {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
@@ -186,8 +186,8 @@ class AzureFunctionService {
             if (schema && context) {
                 // Perform validation
                 let params = Object.assign({}, context.params, context.query, { body: context.body });
-                let correlationId = this.getCorrelationId(context);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(context);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     return err;
                 }
@@ -275,13 +275,13 @@ class AzureFunctionService {
         this._interceptors.push(interceptorWrapper);
     }
     /**
-     * Returns correlationId from Azure Function context.
+     * Returns context from Azure Function context.
      * This method can be overloaded in child classes
      * @param context - the context context
-     * @return returns correlationId from context
+     * @return returns context from context
      */
-    getCorrelationId(context) {
-        return AzureFunctionContextHelper_1.AzureFunctionContextHelper.getCorrelationId(context);
+    getTraceId(context) {
+        return AzureFunctionContextHelper_1.AzureFunctionContextHelper.getTraceId(context);
     }
     /**
      * Returns command from Azure Function context.
@@ -304,13 +304,13 @@ class AzureFunctionService {
     act(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let cmd = this.getCommand(context);
-            let correlationId = this.getCorrelationId(context);
+            let context = this.getTraceId(context);
             if (cmd == null) {
-                throw new pip_services3_commons_node_2.BadRequestException(correlationId, 'NO_COMMAND', 'Cmd parameter is missing');
+                throw new pip_services3_commons_node_2.BadRequestException(context, 'NO_COMMAND', 'Cmd parameter is missing');
             }
             const action = this._actions.find(a => a.cmd == cmd);
             if (action == null) {
-                throw new pip_services3_commons_node_2.BadRequestException(correlationId, 'NO_ACTION', 'Action ' + cmd + ' was not found')
+                throw new pip_services3_commons_node_2.BadRequestException(context, 'NO_ACTION', 'Action ' + cmd + ' was not found')
                     .withDetails('command', cmd);
             }
             return action.action(context);

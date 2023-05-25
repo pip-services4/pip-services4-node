@@ -57,9 +57,9 @@ import { IdentifiablePostgresPersistence } from './IdentifiablePostgresPersisten
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams,
  *         paging: PagingParams): Promise<DataPage<MyData>> {
- *         return base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         return base.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *     }
  *
  *     }
@@ -115,10 +115,10 @@ export declare class IdentifiableJsonPostgresPersistence<T extends IIdentifiable
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId: string, id: K, data: AnyValueMap): Promise<T>;
+    updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T>;
 }

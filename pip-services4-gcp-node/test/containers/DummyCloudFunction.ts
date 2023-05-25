@@ -31,7 +31,7 @@ export class DummyCloudFunction extends CloudFunction {
     private async getPageByFilter(req: any, res: any): Promise<void> {
         let params = req.body;
         let page = this._controller.getPageByFilter(
-            params.correlation_id,
+            params.trace_id,
             new FilterParams(params.filter),
             new PagingParams(params.paging)
         );
@@ -43,7 +43,7 @@ export class DummyCloudFunction extends CloudFunction {
         let params = req.body;
 
         let dummy = await this._controller.getOneById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id
         );
 
@@ -57,7 +57,7 @@ export class DummyCloudFunction extends CloudFunction {
     private async create(req: any, res: any): Promise<void> {
         let params = req.body;
         let dummy = await this._controller.create(
-            params.correlation_id,
+            params.trace_id,
             params.dummy
         );
 
@@ -67,7 +67,7 @@ export class DummyCloudFunction extends CloudFunction {
     private async update(req: any, res: any): Promise<void> {
         let params = req.body;
         let dummy = await this._controller.update(
-            params.correlation_id,
+            params.trace_id,
             params.dummy,
         );
 
@@ -77,7 +77,7 @@ export class DummyCloudFunction extends CloudFunction {
     private async deleteById(req: any, res: any): Promise<void> {
         let params = req.body;
         let dummy = await this._controller.deleteById(
-            params.correlation_id,
+            params.trace_id,
             params.dummy_id,
         );
 

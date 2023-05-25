@@ -125,17 +125,17 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(correlationId);
+        let connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -153,7 +153,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
         let elasticsearch = require('elasticsearch');
         this._client = new elasticsearch.Client(options);
 
-        await this.createIndexIfNeeded(correlationId, true);
+        await this.createIndexIfNeeded(context, true);
 
         this._timer = setInterval(() => { this.dump() }, this._interval);
     }
@@ -161,9 +161,9 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
     /**
      * Closes component and frees used resources.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         await this.save(this._cache);
 
         if (this._timer) {
@@ -184,7 +184,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
         return this._index + "-" + datePattern;
     }
 
-    private async createIndexIfNeeded(correlationId: string, force: boolean): Promise<void> {
+    private async createIndexIfNeeded(context: IContext, force: boolean): Promise<void> {
         let newIndex = this.getCurrentIndex();
         if (!force && this._currentIndex == newIndex) {
             return;
@@ -249,7 +249,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
                 time: { type: "date", index: true },
                 source: { type: "keyword", index: true },
                 level: { type: "keyword", index: true },
-                correlation_id: { type: "text", index: true },
+                trace_id: { type: "text", index: true },
                 error: {
                     type: "object",
                     properties: {
@@ -259,7 +259,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
                         code: { type: "keyword", index: true },
                         message: { type: "text", index: false },
                         details: { type: "object" },
-                        correlation_id: { type: "text", index: false },
+                        trace_id: { type: "text", index: false },
                         cause: { type: "text", index: false },
                         stack_trace: { type: "text", index: false }
                     }

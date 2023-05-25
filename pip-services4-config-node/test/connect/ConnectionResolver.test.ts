@@ -25,18 +25,18 @@ suite('ConnectionResolver', ()=> {
 		let connectionParams = new ConnectionParams();
 		let connectionResolver = new ConnectionResolver(RestConfig);
 
-        await connectionResolver.register("correlationId", connectionParams);
+        await connectionResolver.register("context", connectionParams);
         let configList = connectionResolver.getAll();
         assert.equal(configList.length, 1);
 
-        await connectionResolver.register("correlationId", connectionParams);
+        await connectionResolver.register("context", connectionParams);
         configList = connectionResolver.getAll();
         assert.equal(configList.length, 1);
 
         connectionParams.setDiscoveryKey("Discovery key value");
         let references = new References();
         connectionResolver.setReferences(references);
-        await connectionResolver.register("correlationId", connectionParams);
+        await connectionResolver.register("context", connectionParams);
         configList = connectionResolver.getAll();
         assert.equal(configList.length, 2);
         assert.equal(configList[0].get("protocol"), "http");
@@ -47,7 +47,7 @@ suite('ConnectionResolver', ()=> {
 	
     test('Resolve', async () => {
         let connectionResolver = new ConnectionResolver(RestConfig);
-        let connectionParams = await connectionResolver.resolve("correlationId");
+        let connectionParams = await connectionResolver.resolve("context");
         assert.equal(connectionParams.get("protocol"), "http");
         assert.equal(connectionParams.get("host"), "localhost");
         assert.equal(connectionParams.get("port"), "3000");
@@ -61,7 +61,7 @@ suite('ConnectionResolver', ()=> {
         let references = new References();
         connectionResolver = new ConnectionResolver(RestConfigDiscovery , references);		
         try {
-            let connectionParams = await connectionResolver.resolve("correlationId");
+            let connectionParams = await connectionResolver.resolve("context");
         } catch {
             // Expected exception
         }

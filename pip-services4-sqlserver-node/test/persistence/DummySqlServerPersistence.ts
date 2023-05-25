@@ -20,7 +20,7 @@ export class DummySqlServerPersistence
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
 
-    public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+    public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
 
@@ -29,10 +29,10 @@ export class DummySqlServerPersistence
             filterCondition += "[key]='" + key + "'";
         }
 
-        return super.getPageByFilter(correlationId, filterCondition, paging, null, null);
+        return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
 
-    public getCountByFilter(correlationId: string, filter: FilterParams): Promise<number> {
+    public getCountByFilter(context: IContext, filter: FilterParams): Promise<number> {
         filter = filter || new FilterParams();
         let key = filter.getAsNullableString('key');
 
@@ -41,6 +41,6 @@ export class DummySqlServerPersistence
             filterCondition += "[key]='" + key + "'";
         }
 
-        return super.getCountByFilter(correlationId, filterCondition);
+        return super.getCountByFilter(context, filterCondition);
     }
 }

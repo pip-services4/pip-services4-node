@@ -108,9 +108,9 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         this._autoDelete = config.getAsBooleanWithDefault("options.auto_delete", this._autoDelete);
         this._noQueue = config.getAsBooleanWithDefault("options.no_queue", this._noQueue);
     }
-    checkOpened(correlationId) {
+    checkOpened(context) {
         if (this._mqChanel == null)
-            throw new pip_services3_commons_node_2.InvalidStateException(correlationId, "NOT_OPENED", "The queue is not opened");
+            throw new pip_services3_commons_node_2.InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
     }
     /**
      * Checks if the component is opened.
@@ -123,15 +123,15 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(correlationId);
-            let credential = yield this._credentialResolver.lookup(correlationId);
-            let options = yield this._optionsResolver.compose(correlationId, connection, credential);
+            let connection = yield this._connectionResolver.resolve(context);
+            let credential = yield this._credentialResolver.lookup(context);
+            let options = yield this._optionsResolver.compose(context, connection, credential);
             if (this._queue == "" && this._exchange == "") {
-                throw new pip_services3_commons_node_1.ConfigException(correlationId, "NO_QUEUE", "Queue or exchange are not defined in connection parameters");
+                throw new pip_services3_commons_node_1.ConfigException(context, "NO_QUEUE", "Queue or exchange are not defined in connection parameters");
             }
             this._connection = yield amqplib.connect(options.getAsString("uri"));
             this._mqChanel = yield this._connection.createChannel();
@@ -170,9 +170,9 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._mqChanel != null) {
                 yield this._mqChanel.close();
@@ -182,7 +182,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             }
             this._mqChanel = null;
             this._connection = null;
-            this._logger.trace(correlationId, "Closed queue %s", this._queue);
+            this._logger.trace(context, "Closed queue %s", this._queue);
         });
     }
     /**
@@ -203,7 +203,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     toMessage(msg) {
         if (msg == null)
             return null;
-        let message = new pip_services3_messaging_node_3.MessageEnvelope(msg.properties.correlationId, msg.properties.type, msg.content.toString());
+        let message = new pip_services3_messaging_node_3.MessageEnvelope(msg.properties.context, msg.properties.type, msg.content.toString());
         message.message_type = msg.properties.type;
         message.sent_time = new Date();
         message.setReference(msg);
@@ -212,18 +212,18 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    send(correlationId, message) {
+    send(context, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let options = {
                 contentType: "text/plain"
             };
             this._mqChanel.publish;
-            if (message.correlation_id)
-                options.correlationId = message.correlation_id;
+            if (message.trace_id)
+                options.context = message.trace_id;
             if (message.message_id)
                 options.messageId = message.message_id;
             if (message.message_type)
@@ -232,10 +232,10 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             let ok = this._mqChanel.publish(this._exchange, this._routingKey, buf, options);
             if (ok) {
                 this._counters.incrementOne("queue." + this._name + ".sent_messages");
-                this._logger.debug(message.correlation_id, "Sent message %s via %s", message, this._name);
+                this._logger.debug(message.trace_id, "Sent message %s via %s", message, this._name);
             }
             else {
-                this._logger.debug(message.correlation_id, "Message %s was not sent to %s", message, this._name);
+                this._logger.debug(message.trace_id, "Message %s was not sent to %s", message, this._name);
             }
         });
     }
@@ -243,18 +243,18 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-    peek(correlationId) {
+    peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let envelope = yield this._mqChanel.get(this._queue, { noAck: false });
             if (!envelope)
                 return null;
             let message = this.toMessage(envelope);
             if (message != null) {
-                this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this._name);
+                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this._name);
             }
             return message;
         });
@@ -265,13 +265,13 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * Important: This method is not supported by RabbitMQ.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    peekBatch(correlationId, messageCount) {
+    peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let messages = [];
             for (; messageCount > 0;) {
                 let envelope = yield this._mqChanel.get(this._queue, { noAck: false });
@@ -281,20 +281,20 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 messages.push(message);
                 messageCount--;
             }
-            this._logger.trace(correlationId, "Peeked %s messages on %s", messages.length, this._name);
+            this._logger.trace(context, "Peeked %s messages on %s", messages.length, this._name);
             return messages;
         });
     }
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
-    receive(correlationId, waitTimeout) {
+    receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpen(correlationId);
+            this.checkOpen(context);
             let message;
             let timeout = waitTimeout;
             while (true) {
@@ -310,7 +310,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             }
             if (message != null) {
                 this._counters.incrementOne("queue." + this._name + ".received_messages");
-                this._logger.debug(message.correlation_id, "Received message %s via %s", message, this._name);
+                this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
             }
             return message;
         });
@@ -347,7 +347,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             if (envelope != null) {
                 this._mqChanel.nack(envelope, false, true);
                 message.setReference(null);
-                this._logger.trace(message.correlation_id, "Abandoned message %s at %c", message, this._name);
+                this._logger.trace(message.trace_id, "Abandoned message %s at %c", message, this._name);
             }
         });
     }
@@ -367,7 +367,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             if (envelope != null) {
                 this._mqChanel.ack(envelope, false);
                 message.setReference(null);
-                this._logger.trace(message.correlation_id, "Completed message %s at %s", message, this._name);
+                this._logger.trace(message.trace_id, "Completed message %s at %s", message, this._name);
             }
         });
     }
@@ -386,15 +386,15 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
     * Listens for incoming messages and blocks the current thread until queue is closed.
     *
-    * @param correlationId     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) transaction id to trace execution through call chain.
     * @param receiver          a receiver to receive incoming messages.
     *
     * @see [[IMessageReceiver]]
     * @see [[receive]]
     */
-    listen(correlationId, receiver) {
-        this.checkOpen(correlationId);
-        this._logger.debug(correlationId, "Started listening messages at %s", this._name);
+    listen(context, receiver) {
+        this.checkOpen(context);
+        this._logger.debug(context, "Started listening messages at %s", this._name);
         let options = {
             noLocal: false,
             noAck: false,
@@ -409,7 +409,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 if (msg != null) {
                     let message = this.toMessage(msg);
                     this._counters.incrementOne("queue." + this._name + ".received_messages");
-                    this._logger.debug(message.correlation_id, "Received message %s via %s", message, this._name);
+                    this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
                     yield receiver.receiveMessage(message, this);
                     this._mqChanel.ack(msg, false);
                 }
@@ -420,24 +420,24 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    endListen(correlationId) {
+    endListen(context) {
         this._listen = false;
     }
     /**
      * Clear method are clears component state.
-     * @param correlationId (optional) transaction id to trace execution through call chain.
+     * @param context (optional) transaction id to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpened(correlationId);
+            this.checkOpened(context);
             let count = 0;
             if (this._queue != "") {
                 let res = yield this._mqChanel.purgeQueue(this._queue);
                 count = res.messageCount;
             }
-            this._logger.trace(correlationId, "Cleared  %s messages in queue %s", count, this._name);
+            this._logger.trace(context, "Cleared  %s messages in queue %s", count, this._name);
         });
     }
 }

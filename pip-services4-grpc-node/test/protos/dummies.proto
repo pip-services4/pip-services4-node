@@ -24,7 +24,7 @@ package dummies;
 message ErrorDescription {
   string category = 1;
   string code = 2;
-  string correlation_id = 3;
+  string trace_id = 3;
   string status = 4;
   string message = 5;
   string cause = 6;
@@ -66,7 +66,7 @@ service Dummies {
 
 // The request message containing the page request.
 message DummiesPageRequest {
-  string correlation_id = 1;
+  string trace_id = 1;
   map<string, string> filter = 2;
   PagingParams paging = 3;
 }
@@ -79,13 +79,13 @@ message DummiesPageRequest {
 
 // The request message containing the object id request.
 message DummyIdRequest {
-  string correlation_id = 1;
+  string trace_id = 1;
   string dummy_id = 2;
 }
 
 // The request message containing the object value request.
 message DummyObjectRequest {
-  string correlation_id = 1;
+  string trace_id = 1;
   Dummy dummy = 2;
 }
 

@@ -57,7 +57,7 @@ import { IRegisterable } from './IRegisterable';
  *             endpoint.setReferences(this._references);
  *         ...
  * 
- *         await this._endpoint.open(correlationId);
+ *         await this._endpoint.open(context);
  *         this._opened = true;
  *         ...
  *     }
@@ -89,7 +89,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private _protocolUpgradeEnabled: boolean = false;
     private _uri: string;
     private _registrations: IRegisterable[] = [];
-    private _allowedHeaders: string[] = ["correlation_id"];
+    private _allowedHeaders: string[] = ["trace_id"];
     private _allowedOrigins: string[] = [];
     
     /**
@@ -175,14 +175,14 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a REST server (service) using the set options and parameters.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(correlationId);
+        let connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
         let port = connection.getAsInteger("port");
@@ -274,14 +274,14 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             });
 
             // Register the service URI
-            await this._connectionResolver.register(correlationId);
+            await this._connectionResolver.register(context);
 
-            this._logger.debug(correlationId, "Opened REST service at %s", this._uri);
+            this._logger.debug(context, "Opened REST service at %s", this._uri);
         } catch (ex) {
             this._server = null;
 
             throw new ConnectionException(
-                correlationId, "CANNOT_CONNECT", "Opening REST service failed"
+                context, "CANNOT_CONNECT", "Opening REST service failed"
             ).wrap(ex).withDetails("url", this._uri);
         }
     }
@@ -332,16 +332,16 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     /**
      * Closes this endpoint and the REST server (service) that was opened earlier.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._server != null) {
             try {
                 this._server.close();
-                this._logger.debug(correlationId, "Closed REST service at %s", this._uri);
+                this._logger.debug(context, "Closed REST service at %s", this._uri);
             } catch (ex) {
                 // Eat exceptions
-                this._logger.warn(correlationId, "Failed while closing REST service: %s", ex);
+                this._logger.warn(context, "Failed while closing REST service: %s", ex);
             }
 
             this._server = null;
@@ -386,16 +386,16 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     /**
-     * Returns correlationId from request
+     * Returns context from request
      * @param req -  http request
-     * @return Returns correlationId from request
+     * @return Returns context from request
      */
-    public getCorrelationId(req: any): string {
-        let correlationId = req.query.correlation_id;
-        if (correlationId == null || correlationId == "") {
-            correlationId = req.headers['correlation_id']
+    public getTraceId(req: any): string {
+        let context = req.query.trace_id;
+        if (context == null || context == "") {
+            context = req.headers['trace_id']
         }
-        return correlationId
+        return context
     }
 
     /**
@@ -424,8 +424,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             // Perform validation
             if (schema != null) {
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let correlationId = this.getCorrelationId(req);
-                let err = schema.validateAndReturnException(correlationId, params, false);
+                let context = this.getTraceId(req);
+                let err = schema.validateAndReturnException(context, params, false);
                 if (err != null) {
                     new Promise((resolve) => {
                         resolve(HttpResponseSender.sendError(req, res, err));

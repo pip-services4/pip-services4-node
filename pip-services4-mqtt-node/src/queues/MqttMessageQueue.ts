@@ -202,9 +202,9 @@ export class MqttMessageQueue extends MessageQueue
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -215,12 +215,12 @@ export class MqttMessageQueue extends MessageQueue
         }
 
         if (this._localConnection != null) {
-            await this._connection.open(correlationId);
+            await this._connection.open(context);
         }
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "MQTT connection is not opened"
             );
@@ -228,7 +228,7 @@ export class MqttMessageQueue extends MessageQueue
 
         // Subscribe right away
         if (this._autoSubscribe) {
-            await this.subscribe(correlationId);
+            await this.subscribe(context);
         }
 
         this._opened = true;
@@ -237,23 +237,23 @@ export class MqttMessageQueue extends MessageQueue
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'MQTT connection is missing'
             );
         }
         
         if (this._localConnection) {
-            await this._connection.close(correlationId);
+            await this._connection.close(context);
         }
 
         if (this._subscribed) {
@@ -271,7 +271,7 @@ export class MqttMessageQueue extends MessageQueue
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
 
-    protected async subscribe(correlationId: string): Promise<void> {
+    protected async subscribe(context: IContext): Promise<void> {
         if (this._subscribed) {
             return;
         }
@@ -330,7 +330,7 @@ export class MqttMessageQueue extends MessageQueue
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.correlation_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
 
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
@@ -343,9 +343,9 @@ export class MqttMessageQueue extends MessageQueue
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-     public async clear(correlationId: string): Promise<void> {
+     public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
 
@@ -362,14 +362,14 @@ export class MqttMessageQueue extends MessageQueue
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns a peeked message.
      */
-     public async peek(correlationId: string): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+     public async peek(context: IContext): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a message from the top
         let message: MessageEnvelope = null;
@@ -378,7 +378,7 @@ export class MqttMessageQueue extends MessageQueue
         }
         
         if (message != null) {
-            this._logger.trace(message.correlation_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
         }
 
         return message;
@@ -390,20 +390,20 @@ export class MqttMessageQueue extends MessageQueue
      * 
      * Important: This method is not supported by MQTT.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
-    public async peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]> {
-        this.checkOpen(correlationId);
+    public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         // Peek a batch of messages
         let messages = this._messages.slice(0, messageCount);
 
-        this._logger.trace(correlationId, "Peeked %d messages on %s", messages.length, this.getName());
+        this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
     
         return messages;
     }
@@ -411,15 +411,15 @@ export class MqttMessageQueue extends MessageQueue
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
-    public async receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope> {
-        this.checkOpen(correlationId);
+    public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        await this.subscribe(correlationId);
+        await this.subscribe(context);
 
         let message: MessageEnvelope = null;
 
@@ -452,14 +452,14 @@ export class MqttMessageQueue extends MessageQueue
     /**
      * Sends a message into the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    public async send(correlationId: string, message: MessageEnvelope): Promise<void> {
-        this.checkOpen(correlationId);
+    public async send(context: IContext, message: MessageEnvelope): Promise<void> {
+        this.checkOpen(context);
 
         this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-        this._logger.debug(message.correlation_id, "Sent message %s via %s", message.toString(), this.toString());
+        this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
 
         let msg = this.fromMessage(message);
         let options = { qos: this._qos, retain: this._retain };
@@ -517,32 +517,32 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     private sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): void {
-        let correlationId = message != null ? message.correlation_id : null;
+        let context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(correlationId, "MQTT message was skipped.");
+            this._logger.warn(context, "MQTT message was skipped.");
             return;
         }
 
         this._receiver.receiveMessage(message, this)
         .catch((err) => {
-            this._logger.error(correlationId, err, "Failed to process the message");
+            this._logger.error(context, err, "Failed to process the message");
         });
     }
 
      /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-      public listen(correlationId: string, receiver: IMessageReceiver): void {
-        this.checkOpen(correlationId);
+      public listen(context: IContext, receiver: IMessageReceiver): void {
+        this.checkOpen(context);
 
         // Subscribe to topic if needed
-        this.subscribe(correlationId)
+        this.subscribe(context)
         .then(() => {
             this._logger.trace(null, "Started listening messages at %s", this.getName());
 
@@ -565,9 +565,9 @@ export class MqttMessageQueue extends MessageQueue
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    public endListen(correlationId: string): void {
+    public endListen(context: IContext): void {
         this._receiver = null;
     }   
 }

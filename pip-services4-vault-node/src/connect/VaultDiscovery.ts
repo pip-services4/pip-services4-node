@@ -148,12 +148,12 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     /**
      *  Helper method for resolve all additonal parameters
      */
-    private resolveConfig(correlationId: string, connection: ConnectionParams, credential: CredentialParams) {
+    private resolveConfig(context: IContext, connection: ConnectionParams, credential: CredentialParams) {
 
         // check configuration
         if (connection == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CONNECTION",
                 "Connection is not configured"
             );
@@ -161,7 +161,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
 
         if (credential == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_CREDENTIAL",
                 "Credentials is not configured"
             );
@@ -182,7 +182,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     /**
      *  Helper method for compose uri
      */
-    private composeUri(correlationId: string, connection: ConnectionParams): string {
+    private composeUri(context: IContext, connection: ConnectionParams): string {
 
         if (connection.getUri() != null) {
             let uri = connection.getUri();
@@ -192,7 +192,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -201,7 +201,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         let port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -210,7 +210,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         let protocol = connection.getProtocol();
         if (protocol == null) {
             throw new ConfigException(
-                correlationId,
+                context,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -222,18 +222,18 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     /**
      * Opens the component.
      * 
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
 
-        let connection = await this._connectionResolver.resolve(correlationId);
-        let credential = await this._credentialResolver.lookup(correlationId);
-        this.resolveConfig(correlationId, connection, credential);
+        let connection = await this._connectionResolver.resolve(context);
+        let credential = await this._credentialResolver.lookup(context);
+        this.resolveConfig(context, connection, credential);
 
         let options: any =
         {
             https: connection.getProtocol() === "https",
-            baseUrl: this.composeUri(correlationId, connection),
+            baseUrl: this.composeUri(context, connection),
             timeout: this._timeout,
             proxy: false,
         };
@@ -277,18 +277,18 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
 
         // resolve status
         if (status.isVaultError || status.response) {
-            let err = new ApplicationException("ERROR", correlationId, "OPEN_ERROR", status.vaultHelpMessage);
-            this._logger.error(correlationId, err, status.vaultHelpMessage, status.response)
+            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+            this._logger.error(context, err, status.vaultHelpMessage, status.response)
             this._client = null;
             throw err;
         } else if (status.sealed) {
-            let err = new ApplicationException("ERROR", correlationId, "OPEN_ERROR", "Vault server is sealed!")
-            this._logger.error(correlationId, err, "Vault server is sealed!")
+            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!")
+            this._logger.error(context, err, "Vault server is sealed!")
             this._client = null;
             throw err // TODO: Decide, does need to throw error?
         }
 
-        this._logger.debug(correlationId, "Vault status:", status)
+        this._logger.debug(context, "Vault status:", status)
 
         // open connection and get API token
         try {
@@ -319,36 +319,36 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                 }
             }
         } catch (ex) {
-            let err = new ConnectionException(correlationId, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
-            this._logger.error(correlationId, ex, "Can't login to Vault server")
+            let err = new ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+            this._logger.error(context, ex, "Can't login to Vault server")
             this._client = null;
             throw err
         }
-        this._logger.info(correlationId, "Vault Discovery Service opened with %s auth mode", this._auth_type);
+        this._logger.info(context, "Vault Discovery Service opened with %s auth mode", this._auth_type);
         return
     }
 
     /**
     * Closes component and frees used resources.
     * 
-    * @param correlationId 	(optional) transaction id to trace execution through call chain.
+    * @param context 	(optional) execution context to trace execution through call chain.
     */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this.isOpen()) {
             this._client = null;
         }
-        this._logger.info(correlationId, "Vault Discovery Service closed");
+        this._logger.info(context, "Vault Discovery Service closed");
     }
 
     /**
      * Registers connection parameters into the discovery service.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection parameters.
      * @param credential        a connection to be registered.
      * @returns 			    the registered connection parameters.
      */
-    public async register(correlationId: string, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
+    public async register(context: IContext, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
         if (this.isOpen()) {
             try {
                 let connections = [];
@@ -360,7 +360,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                     if (res.data && res.data.connections) {
                         for (let conn of res.data.connections) {
                             if (connection.getHost() == conn.host && connection.getPort() == (conn.port ?? 0)) {
-                                this._logger.info(correlationId, 'Connection already exists via key ' + key + ': ' + connection);
+                                this._logger.info(context, 'Connection already exists via key ' + key + ': ' + connection);
                                 return connection;
                             }
                         }
@@ -384,10 +384,10 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                     await this._client.createKVSecret(this._token, key, { connections: connections });
                 }
                 
-                this._logger.debug(correlationId, 'Register via key ' + key + ': ' + connection);
+                this._logger.debug(context, 'Register via key ' + key + ': ' + connection);
                 return connection;
             } catch (ex) {
-                this._logger.error(correlationId, ex, "Can't store KV to Vault with key: " + key);
+                this._logger.error(context, ex, "Can't store KV to Vault with key: " + key);
             }
 
         }
@@ -396,21 +396,21 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     /**
      * Resolves a single connection parameters by its key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connection.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      */
-    public async resolveOne(correlationId: string, key: string): Promise<ConnectionParams> {
+    public async resolveOne(context: IContext, key: string): Promise<ConnectionParams> {
         if (this.isOpen()) {
             try {
                 let res = await this._client.readKVSecret(this._token, key);
-                this._logger.debug(correlationId, 'Resolved connection for ' + key + ': ', res);
+                this._logger.debug(context, 'Resolved connection for ' + key + ': ', res);
                 let connection: ConnectionParams;
                 if (res.data && res.data.connections && res.data.connections.length > 0)
                     connection = new ConnectionParams(res.data.connections[0]);
                 return connection;
             } catch (ex) {
-                this._logger.error(correlationId, ex, "Can't resolve KV from Vault with key: " + key);
+                this._logger.error(context, ex, "Can't resolve KV from Vault with key: " + key);
             }
 
         }
@@ -419,15 +419,15 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     /**
      * Resolves all connection parameters by their key.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param key               a key to uniquely identify the connections.
      * @returns                 all found connection parameters
      */
-    public async resolveAll(correlationId: string, key: string): Promise<ConnectionParams[]> {
+    public async resolveAll(context: IContext, key: string): Promise<ConnectionParams[]> {
         if (this.isOpen()) {
             try {
                 let res = await this._client.readKVSecret(this._token, key)
-                this._logger.debug(correlationId, 'Resolved connections for ' + key + ': ', res);
+                this._logger.debug(context, 'Resolved connections for ' + key + ': ', res);
 
                 let connections: ConnectionParams[] = [];
 
@@ -436,7 +436,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                 
                 return connections;
             } catch (ex) {
-                this._logger.error(correlationId, ex, "Can't resolve KV from Vault with key: " + key);
+                this._logger.error(context, ex, "Can't resolve KV from Vault with key: " + key);
             }
         }
 

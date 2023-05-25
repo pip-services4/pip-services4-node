@@ -68,9 +68,9 @@ const CouchbasePersistence_1 = require("./CouchbasePersistence");
  *         return criteria.length > 0 ? { $and: criteria } : null;
  *     }
  *
- *     public getPageByFilter(correlationId: string, filter: FilterParams,
+ *     public getPageByFilter(context: IContext, filter: FilterParams,
  *         paging: PagingParams): Promise<DataPage<MyData>> {
- *         return base.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         return base.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *     }
  *
  *     }
@@ -130,11 +130,11 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with requested data items.
      */
-    getListByIds(correlationId, ids) {
+    getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let objectIds = this.generateBucketIds(ids);
             let items = yield new Promise((resolve, reject) => {
@@ -156,7 +156,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._bucketName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._bucketName);
             items = items.map(item => item.value);
             items = items.filter((item) => item != null);
             items = items.map(this.convertToPublic);
@@ -166,11 +166,11 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Gets a data item by its unique id.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item.
      */
-    getOneById(correlationId, id) {
+    getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let objectId = this.generateBucketId(id);
             let item = yield new Promise((resolve, reject) => {
@@ -186,7 +186,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved from %s by id = %s", this._bucketName, objectId);
+            this._logger.trace(context, "Retrieved from %s by id = %s", this._bucketName, objectId);
             item = this.convertToPublic(item);
             return item;
         });
@@ -194,11 +194,11 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         const _super = Object.create(null, {
             create: { get: () => super.create }
         });
@@ -213,18 +213,18 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                 _item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
                 newItem = _item;
             }
-            return yield _super.create.call(this, correlationId, newItem);
+            return yield _super.create.call(this, context, newItem);
         });
     }
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 the updated item.
      */
-    set(correlationId, item) {
+    set(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return null;
@@ -248,7 +248,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve();
                 });
             });
-            this._logger.trace(correlationId, "Set in %s with id = %s", this._bucketName, id);
+            this._logger.trace(context, "Set in %s with id = %s", this._bucketName, id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -256,11 +256,11 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Updates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated item.
      */
-    update(correlationId, item) {
+    update(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null || item.id == null) {
                 return null;
@@ -278,7 +278,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve();
                 });
             });
-            this._logger.trace(correlationId, "Updated in %s with id = %s", this._bucketName, id);
+            this._logger.trace(context, "Updated in %s with id = %s", this._bucketName, id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -286,12 +286,12 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Updates only few selected fields in a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated item.
      */
-    updatePartially(correlationId, id, data) {
+    updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (data == null || id == null) {
                 return null;
@@ -322,7 +322,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve();
                 });
             });
-            this._logger.trace(correlationId, "Updated partially in %s with id = %s", this._bucketName, id);
+            this._logger.trace(context, "Updated partially in %s with id = %s", this._bucketName, id);
             newItem = this.convertToPublic(objectValue);
             return newItem;
         });
@@ -330,11 +330,11 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Deleted a data item by it's unique id.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted item.
      */
-    deleteById(correlationId, id) {
+    deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let objectId = this.generateBucketId(id);
             let oldItem = yield new Promise((resolve, reject) => {
@@ -359,7 +359,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     resolve();
                 });
             });
-            this._logger.trace(correlationId, "Deleted from %s with id = %s", this._bucketName, id);
+            this._logger.trace(context, "Deleted from %s with id = %s", this._bucketName, id);
             oldItem = this.convertToPublic(oldItem);
             return oldItem;
         });
@@ -367,10 +367,10 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    deleteByIds(correlationId, ids) {
+    deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let count = 0;
             for (let id of ids) {
@@ -393,7 +393,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                     count++;
                 }
             }
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._bucketName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._bucketName);
         });
     }
 }

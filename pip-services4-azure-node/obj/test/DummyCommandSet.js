@@ -23,38 +23,38 @@ class DummyCommandSet extends pip_services3_commons_node_1.CommandSet {
     makeGetPageByFilterCommand() {
         return new pip_services3_commons_node_2.Command("get_dummies", new pip_services3_commons_node_5.ObjectSchema(true)
             .withOptionalProperty("filter", new pip_services3_commons_node_7.FilterParamsSchema())
-            .withOptionalProperty("paging", new pip_services3_commons_node_8.PagingParamsSchema()), (correlationId, args) => {
+            .withOptionalProperty("paging", new pip_services3_commons_node_8.PagingParamsSchema()), (context, args) => {
             let filter = pip_services3_commons_node_3.FilterParams.fromValue(args.get("filter"));
             let paging = pip_services3_commons_node_4.PagingParams.fromValue(args.get("paging"));
-            return this._controller.getPageByFilter(correlationId, filter, paging);
+            return this._controller.getPageByFilter(context, filter, paging);
         });
     }
     makeGetOneByIdCommand() {
         return new pip_services3_commons_node_2.Command("get_dummy_by_id", new pip_services3_commons_node_5.ObjectSchema(true)
-            .withRequiredProperty("dummy_id", pip_services3_commons_node_6.TypeCode.String), (correlationId, args) => {
+            .withRequiredProperty("dummy_id", pip_services3_commons_node_6.TypeCode.String), (context, args) => {
             let id = args.getAsString("dummy_id");
-            return this._controller.getOneById(correlationId, id);
+            return this._controller.getOneById(context, id);
         });
     }
     makeCreateCommand() {
         return new pip_services3_commons_node_2.Command("create_dummy", new pip_services3_commons_node_5.ObjectSchema(true)
-            .withRequiredProperty("dummy", new DummySchema_1.DummySchema()), (correlationId, args) => {
+            .withRequiredProperty("dummy", new DummySchema_1.DummySchema()), (context, args) => {
             let entity = args.get("dummy");
-            return this._controller.create(correlationId, entity);
+            return this._controller.create(context, entity);
         });
     }
     makeUpdateCommand() {
         return new pip_services3_commons_node_2.Command("update_dummy", new pip_services3_commons_node_5.ObjectSchema(true)
-            .withRequiredProperty("dummy", new DummySchema_1.DummySchema()), (correlationId, args) => {
+            .withRequiredProperty("dummy", new DummySchema_1.DummySchema()), (context, args) => {
             let entity = args.get("dummy");
-            return this._controller.update(correlationId, entity);
+            return this._controller.update(context, entity);
         });
     }
     makeDeleteByIdCommand() {
         return new pip_services3_commons_node_2.Command("delete_dummy", new pip_services3_commons_node_5.ObjectSchema(true)
-            .withRequiredProperty("dummy_id", pip_services3_commons_node_6.TypeCode.String), (correlationId, args) => {
+            .withRequiredProperty("dummy_id", pip_services3_commons_node_6.TypeCode.String), (context, args) => {
             let id = args.getAsString("dummy_id");
-            return this._controller.deleteById(correlationId, id);
+            return this._controller.deleteById(context, id);
         });
     }
 }

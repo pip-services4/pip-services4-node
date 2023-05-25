@@ -9,9 +9,9 @@ export declare class TestGrpcClient extends GrpcClient {
      * Calls a remote method via GRPC protocol.
      *
      * @param method            a method name to called
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */
-    call<T>(method: string, correlationId?: string, request?: any): Promise<any>;
+    call<T>(method: string, context?: string, request?: any): Promise<any>;
 }

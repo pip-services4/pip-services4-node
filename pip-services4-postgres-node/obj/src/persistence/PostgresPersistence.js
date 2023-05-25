@@ -59,7 +59,7 @@ const PostgresConnection_1 = require("../connect/PostgresConnection");
  *           base("mydata");
  *       }
  *
- *       public getByName(correlationId: string, name: string): Promise<MyData> {
+ *       public getByName(context: IContext, name: string): Promise<MyData> {
  *         let criteria = { name: name };
  *         return new Promise((resolve, reject) => {
  *           this._model.findOne(criteria, (err, item) => {
@@ -272,9 +272,9 @@ class PostgresPersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -284,13 +284,13 @@ class PostgresPersistence {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'PostgreSQL connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'PostgreSQL connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "PostgreSQL connection is not opened");
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "PostgreSQL connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -298,26 +298,26 @@ class PostgresPersistence {
             // Define database schema
             this.defineSchema();
             // Recreate objects
-            yield this.createSchema(correlationId);
+            yield this.createSchema(context);
             this._opened = true;
-            this._logger.debug(correlationId, "Connected to postgres database %s, collection %s", this._databaseName, this._tableName);
+            this._logger.debug(context, "Connected to postgres database %s, collection %s", this._databaseName, this._tableName);
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'Postgres connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Postgres connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._client = null;
@@ -326,9 +326,9 @@ class PostgresPersistence {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._tableName == null) {
@@ -338,7 +338,7 @@ class PostgresPersistence {
             return new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err) {
-                        err = new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                        err = new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                         reject(err);
                         return;
                     }
@@ -347,7 +347,7 @@ class PostgresPersistence {
             });
         });
     }
-    createSchema(correlationId) {
+    createSchema(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._schemaStatements == null || this._schemaStatements.length == 0) {
                 return null;
@@ -369,7 +369,7 @@ class PostgresPersistence {
             if (exist) {
                 return;
             }
-            this._logger.debug(correlationId, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
+            this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             try {
                 // Run all DML commands
                 for (let dml of this._schemaStatements) {
@@ -385,7 +385,7 @@ class PostgresPersistence {
                 }
             }
             catch (ex) {
-                this._logger.error(correlationId, ex, 'Failed to autocreate database object');
+                this._logger.error(context, ex, 'Failed to autocreate database object');
                 throw ex;
             }
         });
@@ -452,14 +452,14 @@ class PostgresPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns                 the requested data page
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -488,7 +488,7 @@ class PostgresPersistence {
                 });
             });
             if (items != null) {
-                this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+                this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             }
             items = items.map(this.convertToPublic);
             if (pagingEnabled) {
@@ -520,11 +520,11 @@ class PostgresPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of items that satisfy the filter.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
             if (filter && filter != "") {
@@ -541,7 +541,7 @@ class PostgresPersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Counted %d items in %s", count, this._tableName);
+            this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             return count;
         });
     }
@@ -551,14 +551,14 @@ class PostgresPersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns                a list with requested data items.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -578,7 +578,7 @@ class PostgresPersistence {
                     resolve(items);
                 });
             });
-            this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+            this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
             return items;
         });
@@ -589,11 +589,11 @@ class PostgresPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
             if (filter != null) {
@@ -627,10 +627,10 @@ class PostgresPersistence {
                 });
             });
             if (item == null) {
-                this._logger.trace(correlationId, "Random item wasn't found from %s", this._tableName);
+                this._logger.trace(context, "Random item wasn't found from %s", this._tableName);
             }
             else {
-                this._logger.trace(correlationId, "Retrieved random item from %s", this._tableName);
+                this._logger.trace(context, "Retrieved random item from %s", this._tableName);
             }
             item = this.convertToPublic(item);
             return item;
@@ -639,11 +639,11 @@ class PostgresPersistence {
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return;
@@ -665,7 +665,7 @@ class PostgresPersistence {
                     resolve(item);
                 });
             });
-            this._logger.trace(correlationId, "Created in %s with id = %s", this._tableName, row.id);
+            this._logger.trace(context, "Created in %s with id = %s", this._tableName, row.id);
             newItem = this.convertToPublic(newItem);
             return newItem;
         });
@@ -676,10 +676,10 @@ class PostgresPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = "DELETE FROM " + this.quotedTableName();
             if (filter != null && filter != "") {
@@ -695,7 +695,7 @@ class PostgresPersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._tableName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._tableName);
         });
     }
 }

@@ -44,8 +44,8 @@ import { ISaver } from '../ISaver';
  *             };
  *         }
  *       
- *         public async getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): DataPage<MyData> {
- *             return await super.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *         public async getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): DataPage<MyData> {
+ *             return await super.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *         }
  *       
  *     }
@@ -79,32 +79,32 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Gets a list of data items retrieved by given unique ids.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with found data items.
      */
-    public async getListByIds(correlationId: string, ids: K[]): Promise<T[]> {
+    public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
         let filter = (item: T) => {
             return ids.some(id => id == item.id);
         }
-        return await this.getListByFilter(correlationId, filter, null, null);
+        return await this.getListByFilter(context, filter, null, null);
     }
 
     /**
      * Gets a data item by its unique id.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item or <code>null</code> if nothing was found.
      */
-    public async getOneById(correlationId: string, id: K): Promise<T> {
+    public async getOneById(context: IContext, id: K): Promise<T> {
         let items = this._items.filter(item => item.id == id);
         let item = items.length > 0 ? items[0] : null;
 
         if (item != null) {
-            this._logger.trace(correlationId, "Retrieved item %s", id);
+            this._logger.trace(context, "Retrieved item %s", id);
         } else {
-            this._logger.trace(correlationId, "Cannot find item by %s", id);
+            this._logger.trace(context, "Cannot find item by %s", id);
         }
 
         return item;
@@ -113,29 +113,29 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Creates a data item.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                a created data item.
      */
-    public async create(correlationId: string, item: T): Promise<T> {
+    public async create(context: IContext, item: T): Promise<T> {
         if (item.id == null) {
             // Clone the object
             item = Object.assign({}, item);
             ObjectWriter.setProperty(item, "id", IdGenerator.nextLong());
         }
 
-        return await super.create(correlationId, item);
+        return await super.create(context, item);
     }
 
     /**
      * Sets a data item. If the data item exists it updates it,
      * otherwise it create a new data item.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              a item to be set.
      * @returns                 a set data item.
      */
-    public async set(correlationId: string, item: T): Promise<T> {
+    public async set(context: IContext, item: T): Promise<T> {
         // Clone the object
         item = Object.assign({}, item);
 
@@ -151,9 +151,9 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
             this._items[index] = item;
         }
 
-        this._logger.trace(correlationId, "Set item %s", item.id);
+        this._logger.trace(context, "Set item %s", item.id);
 
-        await this.save(correlationId);
+        await this.save(context);
 
         return item;
     }
@@ -161,15 +161,15 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Updates a data item.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be updated.
      * @returns                 the updated data item.
      */
-    public async update(correlationId: string, item: T): Promise<T> {
+    public async update(context: IContext, item: T): Promise<T> {
         let index = this._items.map(item => item.id).indexOf(item.id);
 
         if (index < 0) {
-            this._logger.trace(correlationId, "Item %s was not found", item.id);
+            this._logger.trace(context, "Item %s was not found", item.id);
             return null;
         }
 
@@ -177,9 +177,9 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
         item = Object.assign({}, item);
 
         this._items[index] = item;
-        this._logger.trace(correlationId, "Updated item %s", item.id);
+        this._logger.trace(context, "Updated item %s", item.id);
 
-        await this.save(correlationId);
+        await this.save(context);
 
         return item;
     }
@@ -187,25 +187,25 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Updates only few selected fields in a data item.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param id                an id of data item to be updated.
      * @param data              a map with fields to be updated.
      * @returns                 the updated data item.
      */
-    public async updatePartially(correlationId: string, id: K, data: AnyValueMap): Promise<T> {
+    public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {
         let index = this._items.map(item => item.id).indexOf(id);
 
         if (index < 0) {
-            this._logger.trace(correlationId, "Item %s was not found", id);
+            this._logger.trace(context, "Item %s was not found", id);
             return null;
         }
 
         let item: any = this._items[index];
         item = Object.assign(item, data.getAsObject())
         this._items[index] = item;
-        this._logger.trace(correlationId, "Partially updated item %s", id);
+        this._logger.trace(context, "Partially updated item %s", id);
 
-        await this.save(correlationId);
+        await this.save(context);
 
         return item;
     }
@@ -213,23 +213,23 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Deleted a data item by it's unique id.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param id                an id of the item to be deleted
      * @returns                 the deleted data item.
      */
-    public async deleteById(correlationId: string, id: K): Promise<T> {
+    public async deleteById(context: IContext, id: K): Promise<T> {
         let index = this._items.map(item => item.id).indexOf(id);
         let item = this._items[index];
 
         if (index < 0) {
-            this._logger.trace(correlationId, "Item %s was not found", id);
+            this._logger.trace(context, "Item %s was not found", id);
             return null;
         }
 
         this._items.splice(index, 1);
-        this._logger.trace(correlationId, "Deleted item by %s", id);
+        this._logger.trace(context, "Deleted item by %s", id);
 
-        await this.save(correlationId);
+        await this.save(context);
 
         return item;
     }
@@ -237,14 +237,14 @@ export class IdentifiableMemoryPersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Deletes multiple data items by their unique ids.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
-    public async deleteByIds(correlationId: string, ids: K[]): Promise<void> {
+    public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
         let filter = (item: T) => {
             return ids.some(id => id == item.id);
         }
-        await this.deleteByFilter(correlationId, filter);
+        await this.deleteByFilter(context, filter);
     }
 
 }

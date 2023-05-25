@@ -114,15 +114,15 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
      * Writes a log message to the logger destination.
      *
      * @param level             a log level.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-    write(level, correlationId, ex, message) {
+    write(level, context, ex, message) {
         if (this._level < level) {
             return;
         }
-        super.write(level, correlationId, ex, message);
+        super.write(level, context, ex, message);
     }
     /**
      * Checks if the component is opened.
@@ -135,14 +135,14 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            this._connection = yield this._connectionResolver.resolve(correlationId);
+            this._connection = yield this._connectionResolver.resolve(context);
             aws_sdk_2.config.update({
                 accessKeyId: this._connection.getAccessId(),
                 secretAccessKey: this._connection.getAccessKey(),
@@ -190,9 +190,9 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
             if (this._timer) {
@@ -206,7 +206,7 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
     formatMessageText(message) {
         let result = "";
         result += "[" + (message.source ? message.source : "---") + ":" +
-            (message.correlation_id ? message.correlation_id : "---") + ":" + message.level + "] " +
+            (message.trace_id ? message.trace_id : "---") + ":" + message.level + "] " +
             message.message;
         if (message.error != null) {
             if (!message.message) {

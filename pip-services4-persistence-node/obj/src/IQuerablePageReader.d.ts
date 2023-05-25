@@ -9,11 +9,11 @@ export interface IQuerablePageReader<T> {
     /**
      * Gets a page of data items using a query string.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param query             (optional) a query string
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sort parameters
      * @returns                 a requested page with data items.
      */
-    getPageByQuery(correlationId: string, query: string, paging: PagingParams, sort: SortParams): Promise<DataPage<T>>;
+    getPageByQuery(context: IContext, query: string, paging: PagingParams, sort: SortParams): Promise<DataPage<T>>;
 }

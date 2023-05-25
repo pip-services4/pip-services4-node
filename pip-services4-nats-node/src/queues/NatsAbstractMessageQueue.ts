@@ -145,9 +145,9 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -158,12 +158,12 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
         }
 
         if (this._localConnection) {
-            await this._connection.open(correlationId);
+            await this._connection.open(context);
         }
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "NATS connection is not opened"
             );
@@ -176,23 +176,23 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'NATS connection is missing'
             );
         }
 
         if (this._localConnection) {
-            await this._connection.close(correlationId);
+            await this._connection.close(context);
         }
         
         this._opened = false;
@@ -209,7 +209,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
         let data = message.message || nats.Empty;
         let headers = nats.headers();
         headers.append("message_id", message.message_id);
-        headers.append("correlation_id", message.correlation_id);
+        headers.append("trace_id", message.trace_id);
         headers.append("message_type", message.message_type);
         headers.append("sent_time", StringConverter.toNullableString(message.sent_time || new Date()));
 
@@ -222,9 +222,9 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     protected toMessage(msg: any): MessageEnvelope {
         if (msg == null) return null;
 
-        let correlationId = msg.headers.get("correlation_id");
+        let context = msg.headers.get("trace_id");
         let messageType = msg.headers.get("message_type");
-        let message = new MessageEnvelope(correlationId, messageType, Buffer.from(msg.data));
+        let message = new MessageEnvelope(context, messageType, Buffer.from(msg.data));
         message.message_id = msg.headers.get("message_id");
         message.sent_time = DateTimeConverter.toNullableDateTime(msg.headers.get("sent_time"));
         message.message = msg.data;
@@ -234,9 +234,9 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         // Not supported
     }
 
@@ -253,11 +253,11 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     /**
      * Sends a message into the queue.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
-    public async send(correlationId: string, message: MessageEnvelope): Promise<void> {
-        this.checkOpen(correlationId);
+    public async send(context: IContext, message: MessageEnvelope): Promise<void> {
+        this.checkOpen(context);
 
         let subject = this.getName() || this._subject;
         let msg = this.fromMessage(message);

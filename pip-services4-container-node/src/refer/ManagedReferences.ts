@@ -54,22 +54,22 @@ export class ManagedReferences extends ReferencesDecorator implements IOpenable 
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        await this._linker.open(correlationId);
-        await this._runner.open(correlationId);
+    public async open(context: IContext): Promise<void> {
+        await this._linker.open(context);
+        await this._runner.open(context);
     }
 
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
-        await this._runner.close(correlationId);
-        await this._linker.close(correlationId);
+    public async close(context: IContext): Promise<void> {
+        await this._runner.close(context);
+        await this._linker.close(context);
     }
 
     /**

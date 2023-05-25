@@ -86,34 +86,34 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
-    protected openWithParams(correlationId: string, connections: ConnectionParams[], credential: CredentialParams): Promise<void>;
+    protected openWithParams(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<void>;
     /**
      * Checks if the queue has been opened and throws an exception is it's not.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    protected checkOpen(correlationId: string): void;
+    protected checkOpen(context: IContext): void;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    abstract close(correlationId: string): Promise<void>;
+    abstract close(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    abstract clear(correlationId: string): Promise<void>;
+    abstract clear(context: IContext): Promise<void>;
     /**
      * Reads the current number of messages in the queue to be delivered.
      *
@@ -123,46 +123,46 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Sends a message into the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
-    abstract send(correlationId: string, envelope: MessageEnvelope): Promise<void>;
+    abstract send(context: IContext, envelope: MessageEnvelope): Promise<void>;
     /**
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      *
      * @see [[send]]
      */
-    sendAsObject(correlationId: string, messageType: string, message: any): Promise<void>;
+    sendAsObject(context: IContext, messageType: string, message: any): Promise<void>;
     /**
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
-    abstract peek(correlationId: string): Promise<MessageEnvelope>;
+    abstract peek(context: IContext): Promise<MessageEnvelope>;
     /**
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list of peeked messages
      */
-    abstract peekBatch(correlationId: string, messageCount: number): Promise<MessageEnvelope[]>;
+    abstract peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>;
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
-    abstract receive(correlationId: string, waitTimeout: number): Promise<MessageEnvelope>;
+    abstract receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope>;
     /**
      * Renews a lock on a message that makes it invisible from other receivers in the queue.
      * This method is usually used to extend the message processing time.
@@ -196,30 +196,30 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
      * @see [[receive]]
      */
-    abstract listen(correlationId: string, receiver: IMessageReceiver): void;
+    abstract listen(context: IContext, receiver: IMessageReceiver): void;
     /**
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    abstract endListen(correlationId: string): void;
+    abstract endListen(context: IContext): void;
     /**
      * Listens for incoming messages without blocking the current thread.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[listen]]
      * @see [[IMessageReceiver]]
      */
-    beginListen(correlationId: string, receiver: IMessageReceiver): void;
+    beginListen(context: IContext, receiver: IMessageReceiver): void;
     /**
      * Gets a string representation of the object.
      *

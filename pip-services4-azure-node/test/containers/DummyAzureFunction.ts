@@ -30,7 +30,7 @@ export class DummyAzureFunction extends AzureFunction {
 
     private async getPageByFilter(req: any): Promise<DataPage<Dummy>> {
         return this._controller.getPageByFilter(
-            req.body.correlation_id,
+            req.body.trace_id,
             new FilterParams(req.body.filter),
             new PagingParams(req.body.paging)
         );
@@ -38,28 +38,28 @@ export class DummyAzureFunction extends AzureFunction {
 
     private async getOneById(req: any): Promise<Dummy> {
         return this._controller.getOneById(
-            req.body.correlation_id,
+            req.body.trace_id,
             req.body.dummy_id
         );
     }
 
     private async create(req: any): Promise<Dummy> {
         return this._controller.create(
-            req.body.correlation_id,
+            req.body.trace_id,
             req.body.dummy
         );
     }
 
     private async update(req: any): Promise<Dummy> {
         return this._controller.update(
-            req.body.correlation_id,
+            req.body.trace_id,
             req.body.dummy,
         );
     }
 
     private async deleteById(req: any): Promise<Dummy> {
         return this._controller.deleteById(
-            req.body.correlation_id,
+            req.body.trace_id,
             req.body.dummy_id,
         );
     }

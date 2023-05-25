@@ -98,62 +98,62 @@ class MessageQueue {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(correlationId);
-            let credential = yield this._credentialResolver.lookup(correlationId);
-            yield this.openWithParams(correlationId, connections, credential);
+            let connections = yield this._connectionResolver.resolveAll(context);
+            let credential = yield this._credentialResolver.lookup(context);
+            yield this.openWithParams(context, connections, credential);
         });
     }
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
-    openWithParams(correlationId, connections, credential) {
+    openWithParams(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             throw new Error("Not supported");
         });
     }
     /**
      * Checks if the queue has been opened and throws an exception is it's not.
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      */
-    checkOpen(correlationId) {
+    checkOpen(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(correlationId, "NOT_OPENED", "The queue is not opened");
+            throw new pip_services3_commons_node_1.InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
         }
     }
     /**
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      *
      * @see [[send]]
      */
-    sendAsObject(correlationId, messageType, message) {
-        let envelope = new MessageEnvelope_1.MessageEnvelope(correlationId, messageType, message);
-        return this.send(correlationId, envelope);
+    sendAsObject(context, messageType, message) {
+        let envelope = new MessageEnvelope_1.MessageEnvelope(context, messageType, message);
+        return this.send(context, envelope);
     }
     /**
      * Listens for incoming messages without blocking the current thread.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[listen]]
      * @see [[IMessageReceiver]]
      */
-    beginListen(correlationId, receiver) {
+    beginListen(context, receiver) {
         setImmediate(() => {
-            this.listen(correlationId, receiver);
+            this.listen(context, receiver);
         });
     }
     /**

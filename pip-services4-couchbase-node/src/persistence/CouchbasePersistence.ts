@@ -57,7 +57,7 @@ import { CouchbaseConnection } from '../connect/CouchbaseConnection';
  *           base("mydata", "mycollection", new MyDataCouchbaseSchema());
  *     }
  * 
- *     public getByName(correlationId: string, name: string): Promise<MyData> {
+ *     public getByName(context: IContext, name: string): Promise<MyData> {
  *         let criteria = { name: name };
  *         return new Promise((resolve, reject) => {
  *            this._model.findOne(criteria, (err, value) => {
@@ -279,9 +279,9 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
+    public async open(context: IContext): Promise<void> {
     	if (this._opened) {
             return;
         }
@@ -292,12 +292,12 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         }
 
         if (this._localConnection) {
-            await this._connection.open(correlationId);
+            await this._connection.open(context);
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
@@ -305,7 +305,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Couchbase connection is not opened"
             );
@@ -324,23 +324,23 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
     	if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                correlationId,
+                context,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
         }
 
         if (this._localConnection) {
-            await this._connection.close(correlationId);
+            await this._connection.close(context);
         }
         
         this._opened = false;
@@ -352,9 +352,9 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
     /**
 	 * Clears component state.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async clear(correlationId: string): Promise<void> {
+    public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._bucketName == null) {
             throw new Error('Bucket name is not defined');
@@ -364,7 +364,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             this._bucket.manager().flush((err) => {
                 if (err != null) {
                     err = new ConnectionException(
-                        correlationId,
+                        context,
                         "FLUSH_FAILED",
                         "Couchbase bucket flush failed"
                     ).withCause(err);
@@ -396,14 +396,14 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting string after ORDER BY clause
      * @param select            (optional) projection string after SELECT clause
      * @returns                 the requested data page.
      */
-    protected async getPageByFilter(correlationId: string, filter: any, paging: PagingParams, 
+    protected async getPageByFilter(context: IContext, filter: any, paging: PagingParams, 
         sort: any, select: any): Promise<DataPage<T>> {
 
         select = select != null ? select : "*"
@@ -440,7 +440,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             });
         });
 
-        this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._bucketName);
+        this._logger.trace(context, "Retrieved %d from %s", items.length, this._bucketName);
 
         items = items.map(item => select == "*" ? item[this._bucketName] : item);
         items = items.map(this.convertToPublic);
@@ -474,11 +474,11 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @returns                  a number of data items that satisfy the filter.
      */
-    protected async getCountByFilter(correlationId: string, filter: any): Promise<number> {
+    protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
         filter = this.createBucketFilter(filter);
         let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
             + " WHERE " + filter;
@@ -496,7 +496,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             });
         });
 
-        this._logger.trace(correlationId, "Counted %d items in %s", count, this._bucketName);
+        this._logger.trace(context, "Counted %d items in %s", count, this._bucketName);
 
         return count;
     }
@@ -507,14 +507,14 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @param callback         callback function that receives a data list or error.
      */
-    protected async getListByFilter(correlationId: string, filter: any, sort: any, select: any): Promise<T[]> {
+    protected async getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]> {
         select = select != null ? select : "*"
         let statement = "SELECT " + select + " FROM " + this.quoteIdentifier(this._bucketName);
 
@@ -540,7 +540,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             });
         });
 
-        this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._bucketName);
+        this._logger.trace(context, "Retrieved %d from %s", items.length, this._bucketName);
 
         items = items.map(item => select == "*" ? item[this._bucketName] : item);
         items = items.map(this.convertToPublic);
@@ -555,11 +555,11 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
-    protected async getOneRandom(correlationId: string, filter: any): Promise<T> {
+    protected async getOneRandom(context: IContext, filter: any): Promise<T> {
         let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName);
 
         // Adjust max item count based on configuration
@@ -598,7 +598,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         });
 
         if (items != null && items.length > 0)
-            this._logger.trace(correlationId, "Retrieved random item from %s", this._bucketName);
+            this._logger.trace(context, "Retrieved random item from %s", this._bucketName);
 
         items = items.map(this.convertToPublic);
         return items[0];
@@ -617,11 +617,11 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
     /**
      * Creates a data item.
      * 
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns                 the created item.
      */
-    public async create(correlationId: string, item: T): Promise<T> {
+    public async create(context: IContext, item: T): Promise<T> {
         if (item == null) {
             return null;
         }
@@ -642,7 +642,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             });
         });
 
-        this._logger.trace(correlationId, "Created in %s with id = %s", this._bucketName, id);
+        this._logger.trace(context, "Created in %s with id = %s", this._bucketName, id);
         
         newItem = this.convertToPublic(newItem);
         return newItem;
@@ -654,10 +654,10 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    public async deleteByFilter(correlationId: string, filter: any): Promise<void> {
+    public async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let statement = "DELETE FROM " + this.quoteIdentifier(this._bucketName);
 
         // Adjust max item count based on configuration
@@ -676,6 +676,6 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             });    
         });
 
-        this._logger.trace(correlationId, "Deleted %d items from %s", count, this._bucketName);
+        this._logger.trace(context, "Deleted %d items from %s", count, this._bucketName);
     }
 }

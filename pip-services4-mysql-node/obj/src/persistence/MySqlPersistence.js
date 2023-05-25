@@ -59,7 +59,7 @@ const MySqlConnection_1 = require("../connect/MySqlConnection");
  *           base("mydata");
  *       }
  *
- *       public getByName(correlationId: string, name: string, callback: (err, item) => void): void {
+ *       public getByName(context: IContext, name: string, callback: (err, item) => void): void {
  *         let criteria = { name: name };
  *         this._model.findOne(criteria, callback);
  *       });
@@ -259,9 +259,9 @@ class MySqlPersistence {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._opened) {
                 return;
@@ -271,10 +271,10 @@ class MySqlPersistence {
                 this._localConnection = true;
             }
             if (this._localConnection) {
-                yield this._connection.open(correlationId);
+                yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "MySQL connection is not opened");
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "MySQL connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -283,31 +283,31 @@ class MySqlPersistence {
             this.defineSchema();
             try {
                 // Recreate objects
-                yield this.createSchema(correlationId);
+                yield this.createSchema(context);
                 this._opened = true;
-                this._logger.debug(correlationId, "Connected to MySQL database %s, collection %s", this._databaseName, this._tableName);
+                this._logger.debug(context, "Connected to MySQL database %s, collection %s", this._databaseName, this._tableName);
             }
             catch (ex) {
                 this._client == null;
-                throw new pip_services3_commons_node_4.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
+                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._opened) {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(correlationId, 'NO_CONNECTION', 'MySql connection is missing');
+                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'MySql connection is missing');
             }
             if (this._localConnection) {
-                yield this._connection.close(correlationId);
+                yield this._connection.close(context);
             }
             this._opened = false;
             this._client = null;
@@ -316,9 +316,9 @@ class MySqlPersistence {
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId) {
+    clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._tableName == null) {
@@ -336,7 +336,7 @@ class MySqlPersistence {
             });
         });
     }
-    createSchema(correlationId) {
+    createSchema(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._schemaStatements == null || this._schemaStatements.length == 0) {
                 return;
@@ -357,13 +357,13 @@ class MySqlPersistence {
             if (exist) {
                 return;
             }
-            this._logger.debug(correlationId, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
+            this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             // Run all DML commands
             for (let dml of this._schemaStatements) {
                 yield new Promise((resolve, reject) => {
                     this._client.query(dml, (err, result) => {
                         if (err != null) {
-                            this._logger.error(correlationId, err, 'Failed to autocreate database object');
+                            this._logger.error(context, err, 'Failed to autocreate database object');
                             reject(err);
                             return;
                         }
@@ -436,14 +436,14 @@ class MySqlPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns a requested data page.
      */
-    getPageByFilter(correlationId, filter, paging, sort, select) {
+    getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -472,7 +472,7 @@ class MySqlPersistence {
                 });
             });
             if (items != null) {
-                this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+                this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             }
             items = items.map(this.convertToPublic);
             if (pagingEnabled) {
@@ -506,11 +506,11 @@ class MySqlPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns a number of objects that satifsy the filter.
      */
-    getCountByFilter(correlationId, filter) {
+    getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
             if (filter && filter != "") {
@@ -527,7 +527,7 @@ class MySqlPersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Counted %d items in %s", count, this._tableName);
+            this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             return count;
         });
     }
@@ -537,14 +537,14 @@ class MySqlPersistence {
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns a list with requested objects.
      */
-    getListByFilter(correlationId, filter, sort, select) {
+    getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
@@ -564,7 +564,7 @@ class MySqlPersistence {
                 });
             });
             if (items != null)
-                this._logger.trace(correlationId, "Retrieved %d from %s", items.length, this._tableName);
+                this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
             return items;
         });
@@ -575,11 +575,11 @@ class MySqlPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns a random item that satisfies the filter.
      */
-    getOneRandom(correlationId, filter) {
+    getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = 'SELECT COUNT(*) AS count FROM ' + this.quotedTableName();
             if (filter != null) {
@@ -612,9 +612,9 @@ class MySqlPersistence {
                 });
             });
             if (item == null)
-                this._logger.trace(correlationId, "Random item wasn't found from %s", this._tableName);
+                this._logger.trace(context, "Random item wasn't found from %s", this._tableName);
             else
-                this._logger.trace(correlationId, "Retrieved random item from %s", this._tableName);
+                this._logger.trace(context, "Retrieved random item from %s", this._tableName);
             item = this.convertToPublic(item);
             return item;
         });
@@ -622,11 +622,11 @@ class MySqlPersistence {
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns a created item.
      */
-    create(correlationId, item) {
+    create(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
             if (item == null) {
                 return;
@@ -646,7 +646,7 @@ class MySqlPersistence {
                     resolve();
                 });
             });
-            this._logger.trace(correlationId, "Created in %s with id = %s", this.quotedTableName(), row.id);
+            this._logger.trace(context, "Created in %s with id = %s", this.quotedTableName(), row.id);
             let newItem = item;
             return newItem;
         });
@@ -657,10 +657,10 @@ class MySqlPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(correlationId, filter) {
+    deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = "DELETE FROM " + this.quotedTableName();
             if (filter != null) {
@@ -676,7 +676,7 @@ class MySqlPersistence {
                     resolve(count);
                 });
             });
-            this._logger.trace(correlationId, "Deleted %d items from %s", count, this._tableName);
+            this._logger.trace(context, "Deleted %d items from %s", count, this._tableName);
         });
     }
 }

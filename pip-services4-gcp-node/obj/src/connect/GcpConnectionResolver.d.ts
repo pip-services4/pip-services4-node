@@ -71,12 +71,12 @@ export declare class GcpConnectionResolver implements IConfigurable, IReferencea
      * Resolves connection and credential parameters and generates a single
      * GcpConnectionParams value.
      *
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {GcpConnectionParams} 	GcpConnectionParams value or error.
      *
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    resolve(correlationId: string): Promise<GcpConnectionParams>;
+    resolve(context: IContext): Promise<GcpConnectionParams>;
     private composeConnection;
 }

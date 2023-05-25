@@ -46,9 +46,9 @@ import { JsonFilePersister } from './JsonFilePersister';
  *             };
  *         }
  *
- *         public async getPageByFilter(correlationId: string, filter: FilterParams,
+ *         public async getPageByFilter(context: IContext, filter: FilterParams,
  *             paging: PagingParams): Promise<DataPage<MyData>> {
- *             return await super.getPageByFilter(correlationId, this.composeFilter(filter), paging, null, null);
+ *             return await super.getPageByFilter(context, this.composeFilter(filter), paging, null, null);
  *         }
  *
  *     }

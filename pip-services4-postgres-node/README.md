@@ -58,17 +58,17 @@ The persistence component shall implement the following interface with a basic s
 
 ```typescript
 export interface IMyPersistence {
-  getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams):  Promise<DataPage<MyObject>>;
+  getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams):  Promise<DataPage<MyObject>>;
     
-  getOneById(correlationId: string, id: string,): Promise<MyObject>;
+  getOneById(context: IContext, id: string,): Promise<MyObject>;
     
-  getOneByKey(correlationId: string, key: string): Promise<MyObject>;
+  getOneByKey(context: IContext, key: string): Promise<MyObject>;
     
-  create(correlationId: string, item: MyObject): Promise<MyObject>;
+  create(context: IContext, item: MyObject): Promise<MyObject>;
     
-  update(correlationId: string, item: MyObject): Promise<MyObject>;
+  update(context: IContext, item: MyObject): Promise<MyObject>;
     
-  deleteById(correlationId: string, id: string): Promise<MyObject>;
+  deleteById(context: IContext, id: string): Promise<MyObject>;
 }
 ```
 
@@ -108,11 +108,11 @@ export class MyPostgresPersistence extends IdentifiablePostgresPersistence {
     return criteria.length > 0 ? criteria.join(" AND ") : null;
   }
   
-  public getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>> {
-    return super.getPageByFilter(correlationId, this.composeFilter(filter), paging, "id", null);
+  public getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<MyObject>> {
+    return super.getPageByFilter(context, this.composeFilter(filter), paging, "id", null);
   }  
   
-  public getOneByKey(correlationId: string, key: string): Promise<MyObject> {
+  public getOneByKey(context: IContext, key: string): Promise<MyObject> {
     let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"key\"=$1";
     let params = [ key ];
 
@@ -126,9 +126,9 @@ export class MyPostgresPersistence extends IdentifiablePostgresPersistence {
         let item = result && result.rows ? result.rows[0] || null : null; 
 
         if (item == null)
-          this._logger.trace(correlationId, "Nothing found from %s with key = %s", this._tableName, key);
+          this._logger.trace(context, "Nothing found from %s with key = %s", this._tableName, key);
         else
-          this._logger.trace(correlationId, "Retrieved from %s with key = %s", this._tableName, key);
+          this._logger.trace(context, "Retrieved from %s with key = %s", this._tableName, key);
 
         item = this.convertToPublic(item);
         resolve(item);
@@ -174,12 +174,12 @@ class MyPostgresJsonPersistence
   }
 
   Future<DataPage<MyObject>> getPageByFilter(
-      String? correlationId, FilterParams? filter, PagingParams? paging) {
+      String? context, FilterParams? filter, PagingParams? paging) {
     return super.getPageByFilter_(
-        correlationId, _composeFilter(filter), paging, 'id', null);
+        context, _composeFilter(filter), paging, 'id', null);
   }
 
-  Future<MyObject?> getOneByKey(String? correlationId, String key) async {
+  Future<MyObject?> getOneByKey(String? context, String key) async {
     var query =
         "SELECT * FROM " + this.quotedTableName_() + " WHERE data->>'key'=@1";
     var params = {'1': key};
@@ -191,10 +191,10 @@ class MyPostgresJsonPersistence
     var item = this.convertToPublic_(resValues);
 
     if (item == null)
-      this.logger_.trace(correlationId, "Nothing found from %s with key = %s",
+      this.logger_.trace(context, "Nothing found from %s with key = %s",
           [this.tableName_, key]);
     else
-      this.logger_.trace(correlationId, "Retrieved from %s with key = %s",
+      this.logger_.trace(context, "Retrieved from %s with key = %s",
           [this.tableName_, key]);
 
     item = this.convertToPublic_(item);

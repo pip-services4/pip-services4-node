@@ -42,10 +42,10 @@ import { InstrumentTiming } from '../trace/InstrumentTiming';
  *         }
  *         ...
  * 
- *         public async getData(correlationId: string, id: string): Promise<MyData> {
- *           let timing = this.instrument(correlationId, 'myclient.get_data');
+ *         public async getData(context: IContext, id: string): Promise<MyData> {
+ *           let timing = this.instrument(context, 'myclient.get_data');
  *           try {
- *             return await this._controller.getData(correlationId, id);
+ *             return await this._controller.getData(context, id);
  *           } catch (ex) {
  *             timing.endFailure(ex);
  *           } finally {
@@ -121,33 +121,33 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns InstrumentTiming object to end the time measurement.
      */
-	protected instrument(correlationId: string, name: string): InstrumentTiming {
-        this._logger.trace(correlationId, "Calling %s method", name);
+	protected instrument(context: IContext, name: string): InstrumentTiming {
+        this._logger.trace(context, "Calling %s method", name);
         this._counters.incrementOne(name + ".call_count");
 
 		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new InstrumentTiming(correlationId, name, "call",
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new InstrumentTiming(context, name, "call",
             this._logger, this._counters, counterTiming, traceTiming);
 	}
 
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
-    //         this._logger.error(correlationId, err, "Failed to call %s method", name);
+    //         this._logger.error(context, err, "Failed to call %s method", name);
     //         this._counters.incrementOne(name + '.call_errors');    
     //     }
 
@@ -166,30 +166,30 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-	public async open(correlationId: string): Promise<void> {
+	public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
     	
         if (this._controller == null) {
-            throw new ConnectionException(correlationId, 'NO_CONTROLLER', 'Controller reference is missing');
+            throw new ConnectionException(context, 'NO_CONTROLLER', 'Controller reference is missing');
         } 
 
         this._opened = true;
 
-        this._logger.info(correlationId, "Opened direct client");
+        this._logger.info(context, "Opened direct client");
     }
 
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._opened) {
-            this._logger.info(correlationId, "Closed direct client");
+            this._logger.info(context, "Closed direct client");
         }
 
         this._opened = false;

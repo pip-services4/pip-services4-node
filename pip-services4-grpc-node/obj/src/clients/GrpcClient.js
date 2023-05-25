@@ -50,11 +50,11 @@ const pip_services3_rpc_node_2 = require("pip-services4-rpc-node");
  *     class MyGrpcClient extends GrpcClient implements IMyClient {
  *        ...
  *
- *        public getData(correlationId: string, id: string,
+ *        public getData(context: IContext, id: string,
  *            callback: (err: any, result: MyData) => void): void {
  *
- *            let timing = this.instrument(correlationId, 'myclient.get_data');
- *            this.call("get_data", correlationId, { id: id }, (err, result) => {
+ *            let timing = this.instrument(context, 'myclient.get_data');
+ *            this.call("get_data", context, { id: id }, (err, result) => {
  *                timing.endTiming();
  *                callback(err, result);
  *            });
@@ -135,30 +135,30 @@ class GrpcClient {
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
      * @returns CounterTiming object to end the time measurement.
      */
-    instrument(correlationId, name) {
-        this._logger.trace(correlationId, "Executing %s method", name);
+    instrument(context, name) {
+        this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".call_time");
         let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(correlationId, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(correlationId, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        let traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param correlationId     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) transaction id to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
     //  * @param callback          (optional) an execution callback
     //  */
-    // protected instrumentError(correlationId: string, name: string, err: any,
+    // protected instrumentError(context: IContext, name: string, err: any,
     //     result: any = null, callback: (err: any, result: any) => void = null): void {
     //     if (err != null) {
-    //         this._logger.error(correlationId, err, "Failed to call %s method", name);
+    //         this._logger.error(context, err, "Failed to call %s method", name);
     //         this._counters.incrementOne(name + '.call_errors');    
     //     }
     //     if (callback) callback(err, result);
@@ -174,14 +174,14 @@ class GrpcClient {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(correlationId);
+            let connection = yield this._connectionResolver.resolve(context);
             this._uri = connection.getAsString("uri");
             try {
                 let options = {};
@@ -238,24 +238,24 @@ class GrpcClient {
             }
             catch (ex) {
                 this._client = null;
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC client failed").wrap(ex).withDetails("url", this._uri);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CANNOT_CONNECT", "Opening GRPC client failed").wrap(ex).withDetails("url", this._uri);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._client != null) {
                 // Eat exceptions
                 try {
-                    this._logger.debug(correlationId, "Closed GRPC service at %s", this._uri);
+                    this._logger.debug(context, "Closed GRPC service at %s", this._uri);
                 }
                 catch (ex) {
-                    this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
+                    this._logger.warn(context, "Failed while closing GRPC service: %s", ex);
                 }
                 this._client = null;
                 this._uri = null;
@@ -278,11 +278,11 @@ class GrpcClient {
      * Calls a remote method via GRPC protocol.
      *
      * @param method            a method name to called
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */
-    call(method, correlationId, request = {}) {
+    call(method, context, request = {}) {
         method = method.toLowerCase();
         return new Promise((resolve, reject) => {
             this._client[method](request, (err, response) => {

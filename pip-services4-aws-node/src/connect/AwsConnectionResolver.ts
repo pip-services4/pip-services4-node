@@ -86,26 +86,26 @@ export class AwsConnectionResolver implements IConfigurable, IReferenceable {
      * Resolves connection and credential parameters and generates a single
      * AWSConnectionParams value.
      * 
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {AwsConnectionParams} 	callback function that receives AWSConnectionParams value or error.
      * 
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    public async resolve(correlationId: string): Promise<AwsConnectionParams> {
+    public async resolve(context: IContext): Promise<AwsConnectionParams> {
         let connection = new AwsConnectionParams();
 
-        const connectionParams = await this._connectionResolver.resolve(correlationId);
+        const connectionParams = await this._connectionResolver.resolve(context);
         connection.append(connectionParams);
 
-        const credentialParams = await this._credentialResolver.lookup(correlationId);
+        const credentialParams = await this._credentialResolver.lookup(context);
         connection.append(credentialParams);
 
         // Force ARN parsing
         connection.setArn(connection.getArn());
 
         // Perform validation
-        connection.validate(correlationId);
+        connection.validate(context);
 
         return connection;
     }

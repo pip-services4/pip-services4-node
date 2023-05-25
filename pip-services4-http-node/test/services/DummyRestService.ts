@@ -45,7 +45,7 @@ export class DummyRestService extends RestService {
 
     private getPageByFilter(req: any, res: any) {
         let promise = this._controller.getPageByFilter(
-            this.getCorrelationId(req),
+            this.getTraceId(req),
             new FilterParams(req.params),
             new PagingParams(req.params)
         );
@@ -54,7 +54,7 @@ export class DummyRestService extends RestService {
 
     private getOneById(req, res) {
         let promise = this._controller.getOneById(
-            this.getCorrelationId(req),
+            this.getTraceId(req),
             req.params.dummy_id
         );
         this.sendResult(req, res, promise);
@@ -62,7 +62,7 @@ export class DummyRestService extends RestService {
 
     private create(req, res) {
         let promise = this._controller.create(
-            this.getCorrelationId(req),
+            this.getTraceId(req),
             req.body
         );
         this.sendCreatedResult(req, res, promise);
@@ -70,7 +70,7 @@ export class DummyRestService extends RestService {
 
     private update(req, res) {
         let promise = this._controller.update(
-            this.getCorrelationId(req),
+            this.getTraceId(req),
             req.body
         );
         this.sendResult(req, res, promise)
@@ -78,16 +78,16 @@ export class DummyRestService extends RestService {
 
     private deleteById(req, res) {
         let promise = this._controller.deleteById(
-            this.getCorrelationId(req),
+            this.getTraceId(req),
             req.params.dummy_id,
         );
         this.sendDeletedResult(req, res, promise);
     }    
 
-    private async checkCorrelationId(req, res) {
+    private async checkTraceId(req, res) {
         try {
-            let result = await this._controller.checkCorrelationId(this.getCorrelationId(req));
-            this.sendResult(req, res, { correlation_id: result });
+            let result = await this._controller.checkTraceId(this.getTraceId(req));
+            this.sendResult(req, res, { trace_id: result });
         } catch (ex) {
             this.sendError(req, res, ex);
         }
@@ -107,9 +107,9 @@ export class DummyRestService extends RestService {
         );
 
         this.registerRoute(
-            "get", "/dummies/check/correlation_id",
+            "get", "/dummies/check/trace_id",
             new ObjectSchema(true),
-            this.checkCorrelationId,
+            this.checkTraceId,
         )
 
         this.registerRoute(

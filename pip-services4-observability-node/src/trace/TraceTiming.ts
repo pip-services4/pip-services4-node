@@ -19,20 +19,20 @@ import { ITracer } from './ITracer';
 export class TraceTiming {
 	private _start: number;
 	private _tracer: ITracer;
-    private _correlationId: string;
+    private _context: IContext;
 	private _component: string;
     private _operation: string;
 
 	/**
 	 * Creates a new instance of the timing callback object.
 	 * 
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
 	 * @param component 	an associated component name
 	 * @param operation 	an associated operation name
 	 * @param callback 		a callback that shall be called when endTiming is called.
 	 */
-	public constructor(correlationId: string, component: string, operation: string, tracer: ITracer = null) {
-        this._correlationId = correlationId;
+	public constructor(context: IContext, component: string, operation: string, tracer: ITracer = null) {
+        this._context = context;
 		this._component = component;
         this._operation = operation;
 		this._tracer = tracer;
@@ -46,7 +46,7 @@ export class TraceTiming {
 	public endTrace(): void {
 		if (this._tracer != null) {
 			let elapsed: number = new Date().getTime() - this._start;
-			this._tracer.trace(this._correlationId, this._component, this._operation, elapsed);
+			this._tracer.trace(this._context, this._component, this._operation, elapsed);
 		}
 	}
 
@@ -58,7 +58,7 @@ export class TraceTiming {
      public endFailure(error: Error): void {
 		if (this._tracer != null) {
 			let elapsed: number = new Date().getTime() - this._start;
-			this._tracer.failure(this._correlationId, this._component, this._operation, error, elapsed);
+			this._tracer.failure(this._context, this._component, this._operation, error, elapsed);
 		}
 	}
 }

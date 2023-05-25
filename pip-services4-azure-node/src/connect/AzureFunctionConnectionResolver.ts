@@ -80,23 +80,23 @@ export class AzureFunctionConnectionResolver implements IConfigurable, IReferenc
      * Resolves connection and credential parameters and generates a single
      * AzureConnectionParams value.
      * 
-     * @param correlationId             (optional) transaction id to trace execution through call chain.
+     * @param context             (optional) transaction id to trace execution through call chain.
      *
      * @return {AzureFunctionConnectionParams} 	AzureConnectionParams value or error.
      * 
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
-    public async resolve(correlationId: string): Promise<AzureFunctionConnectionParams> {
+    public async resolve(context: IContext): Promise<AzureFunctionConnectionParams> {
         let connection = new AzureFunctionConnectionParams();
 
-        const connectionParams = await this._connectionResolver.resolve(correlationId);
+        const connectionParams = await this._connectionResolver.resolve(context);
         connection.append(connectionParams);
 
-        const credentialParams = await this._credentialResolver.lookup(correlationId);
+        const credentialParams = await this._credentialResolver.lookup(context);
         connection.append(credentialParams);
 
         // Perform validation
-        connection.validate(correlationId);
+        connection.validate(context);
 
         connection = this.composeConnection(connection);
 

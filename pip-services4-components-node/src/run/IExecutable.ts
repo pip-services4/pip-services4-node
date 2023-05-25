@@ -1,4 +1,6 @@
 /** @module run */
+
+import { IContext } from "./IContext";
 import { Parameters } from './Parameters';
 
 /**
@@ -12,7 +14,7 @@ import { Parameters } from './Parameters';
  * 
  *     class EchoComponent implements IExecutable {
  *         ...
- *         public async execute(correlationId: string, args: Parameters): Promise<any> {
+ *         public async execute(context: IContext, args: Parameters): Promise<any> {
  *             let result = args.getAsObject("message");
  *             return result;
  *         }
@@ -27,9 +29,9 @@ export interface IExecutable {
 	/**
 	 * Executes component with arguments and receives execution result.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
 	 * @param args 				execution arguments.
      * @result 					the execution result. 
 	 */
-	execute(correlationId: string, args: Parameters): Promise<any>;
+	execute(context: IContext, args: Parameters): Promise<any>;
 }

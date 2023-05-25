@@ -51,7 +51,7 @@ import { SqlServerConnection } from '../connect/SqlServerConnection';
  *           base("mydata");
  *       }
  *
- *       public getByName(correlationId: string, name: string, callback: (err, item) => void): void {
+ *       public getByName(context: IContext, name: string, callback: (err, item) => void): void {
  *         let criteria = { name: name };
  *         this._model.findOne(criteria, callback);
  *       });
@@ -191,22 +191,22 @@ export declare class SqlServerPersistence<T> implements IReferenceable, IUnrefer
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId: string): Promise<void>;
+    open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId: string): Promise<void>;
+    close(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    clear(correlationId: string): Promise<void>;
-    protected createSchema(correlationId: string): Promise<void>;
+    clear(context: IContext): Promise<void>;
+    protected createSchema(context: IContext): Promise<void>;
     /**
      * Generates a list of column names to use in SQL statements like: "column1,column2,column3"
      * @param values an array with column values or a key-value map
@@ -243,66 +243,66 @@ export declare class SqlServerPersistence<T> implements IReferenceable, IUnrefer
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
      * @param select            (optional) projection JSON object
      * @returns a requested data page.
      */
-    protected getPageByFilter(correlationId: string, filter: any, paging: PagingParams, sort: any, select: any): Promise<DataPage<T>>;
+    protected getPageByFilter(context: IContext, filter: any, paging: PagingParams, sort: any, select: any): Promise<DataPage<T>>;
     /**
      * Gets a number of data items retrieved by a given filter.
      *
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns a number of items that satisfy the filter.
      */
-    protected getCountByFilter(correlationId: string, filter: any): Promise<number>;
+    protected getCountByFilter(context: IContext, filter: any): Promise<number>;
     /**
      * Gets a list of data items retrieved by a given filter and sorted according to sort parameters.
      *
      * This method shall be called by a public getListByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId    (optional) transaction id to trace execution through call chain.
+     * @param context    (optional) transaction id to trace execution through call chain.
      * @param filter           (optional) a filter JSON object
      * @param paging           (optional) paging parameters
      * @param sort             (optional) sorting JSON object
      * @param select           (optional) projection JSON object
      * @returns a list with requested data items.
      */
-    protected getListByFilter(correlationId: string, filter: any, sort: any, select: any): Promise<T[]>;
+    protected getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]>;
     /**
      * Gets a random item from items that match to a given filter.
      *
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns a random item that satisfies the filter.
      */
-    protected getOneRandom(correlationId: string, filter: any): Promise<T>;
+    protected getOneRandom(context: IContext, filter: any): Promise<T>;
     /**
      * Creates a data item.
      *
-     * @param correlation_id    (optional) transaction id to trace execution through call chain.
+     * @param trace_id    (optional) transaction id to trace execution through call chain.
      * @param item              an item to be created.
      * @returns a created item.
      */
-    create(correlationId: string, item: T): Promise<T>;
+    create(context: IContext, item: T): Promise<T>;
     /**
      * Deletes data items that match to a given filter.
      *
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) transaction id to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(correlationId: string, filter: string): Promise<void>;
+    deleteByFilter(context: IContext, filter: string): Promise<void>;
 }

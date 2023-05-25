@@ -1,5 +1,5 @@
 /** @module build */
-import { InternalException } from 'pip-services4-components-node';
+import { InternalException } from 'pip-services4-commons-node';
 
 /**
  * Error raised when factory is not able to create requested component.
@@ -12,12 +12,12 @@ export class CreateException extends InternalException {
     /**
 	 * Creates an error instance and assigns its values.
 	 * 
-     * @param correlation_id    (optional) a unique transaction id to trace execution through call chain.
+     * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
      * @param messageOrLocator  human-readable error or locator of the component that cannot be created.
      */
-	public constructor(correlationId: string = null, messageOrLocator: any) {
+	public constructor(traceId: string = null, messageOrLocator: any) {
 		super(
-            correlationId, 
+            traceId, 
             "CANNOT_CREATE", 
             typeof(messageOrLocator) == 'string' ? messageOrLocator
                 : "Requested component " + messageOrLocator + " cannot be created"

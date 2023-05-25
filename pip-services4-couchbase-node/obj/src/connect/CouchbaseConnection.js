@@ -104,12 +104,12 @@ class CouchbaseConnection {
     /**
      * Opens the component.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    open(correlationId) {
+    open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(correlationId);
-            this._logger.debug(correlationId, "Connecting to couchbase");
+            let connection = yield this._connectionResolver.resolve(context);
+            this._logger.debug(context, "Connecting to couchbase");
             try {
                 let couchbase = require('couchbase');
                 this._connection = new couchbase.Cluster(connection.uri);
@@ -150,7 +150,7 @@ class CouchbaseConnection {
                         resolve(bucket);
                     });
                 });
-                this._logger.debug(correlationId, "Connected to couchbase bucket %s", this._bucketName);
+                this._logger.debug(context, "Connected to couchbase bucket %s", this._bucketName);
                 let autoIndex = this._options.getAsBoolean('auto_index');
                 if (newBucket || autoIndex) {
                     yield new Promise((resolve, reject) => {
@@ -167,23 +167,23 @@ class CouchbaseConnection {
             catch (ex) {
                 this._connection = null;
                 this._bucket = null;
-                throw new pip_services3_commons_node_2.ConnectionException(correlationId, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
+                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param correlationId 	(optional) transaction id to trace execution through call chain.
+     * @param context 	(optional) execution context to trace execution through call chain.
      */
-    close(correlationId) {
+    close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._bucket) {
                 this._bucket.disconnect();
             }
             this._connection = null;
             this._bucket = null;
-            this._logger.debug(correlationId, "Disconnected from couchbase bucket %s", this._bucketName);
+            this._logger.debug(context, "Disconnected from couchbase bucket %s", this._bucketName);
         });
     }
     getConnection() {

@@ -3,9 +3,9 @@ import { FilterParams } from 'pip-services4-commons-node';
 import { PagingParams } from 'pip-services4-commons-node';
 import { Dummy } from '../data/Dummy';
 export interface IDummyController {
-    getPageByFilter(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
-    getOneById(correlationId: string, id: string): Promise<Dummy>;
-    create(correlationId: string, entity: Dummy): Promise<Dummy>;
-    update(correlationId: string, entity: Dummy): Promise<Dummy>;
-    deleteById(correlationId: string, id: string): Promise<Dummy>;
+    getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
+    getOneById(context: IContext, id: string): Promise<Dummy>;
+    create(context: IContext, entity: Dummy): Promise<Dummy>;
+    update(context: IContext, entity: Dummy): Promise<Dummy>;
+    deleteById(context: IContext, id: string): Promise<Dummy>;
 }

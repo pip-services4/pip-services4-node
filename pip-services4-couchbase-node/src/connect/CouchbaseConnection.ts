@@ -129,12 +129,12 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
     /**
 	 * Opens the component.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async open(correlationId: string): Promise<void> {
-        let connection = await this._connectionResolver.resolve(correlationId);
+    public async open(context: IContext): Promise<void> {
+        let connection = await this._connectionResolver.resolve(context);
 
-        this._logger.debug(correlationId, "Connecting to couchbase");
+        this._logger.debug(context, "Connecting to couchbase");
 
         try {
             let couchbase = require('couchbase');
@@ -183,7 +183,7 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
                 });
             });
 
-            this._logger.debug(correlationId, "Connected to couchbase bucket %s", this._bucketName);
+            this._logger.debug(context, "Connected to couchbase bucket %s", this._bucketName);
 
             let autoIndex = this._options.getAsBoolean('auto_index');
             if (newBucket || autoIndex) {
@@ -202,7 +202,7 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
             this._bucket = null;
 
             throw new ConnectionException(
-                correlationId,
+                context,
                 "CONNECT_FAILED",
                 "Connection to couchbase failed"
             ).withCause(ex);
@@ -212,9 +212,9 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
     /**
 	 * Closes component and frees used resources.
 	 * 
-	 * @param correlationId 	(optional) transaction id to trace execution through call chain.
+	 * @param context 	(optional) execution context to trace execution through call chain.
      */
-    public async close(correlationId: string): Promise<void> {
+    public async close(context: IContext): Promise<void> {
         if (this._bucket) {
             this._bucket.disconnect();
         }
@@ -222,7 +222,7 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
         this._connection = null;
         this._bucket = null;
 
-        this._logger.debug(correlationId, "Disconnected from couchbase bucket %s", this._bucketName);
+        this._logger.debug(context, "Disconnected from couchbase bucket %s", this._bucketName);
     }
 
     public getConnection(): any {

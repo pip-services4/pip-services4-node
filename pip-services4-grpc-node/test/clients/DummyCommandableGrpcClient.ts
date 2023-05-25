@@ -12,10 +12,10 @@ export class DummyCommandableGrpcClient extends CommandableGrpcClient implements
         super('dummy');
     }
 
-    public getDummies(correlationId: string, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
+    public getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>> {
         return this.callCommand(
             'get_dummies', 
-            correlationId, 
+            context, 
             {
                 filter: filter,
                 paging: paging
@@ -23,40 +23,40 @@ export class DummyCommandableGrpcClient extends CommandableGrpcClient implements
         );
     }
 
-    public getDummyById(correlationId: string, dummyId: string): Promise<Dummy> {
+    public getDummyById(context: IContext, dummyId: string): Promise<Dummy> {
         return this.callCommand(
             'get_dummy_by_id', 
-            correlationId,
+            context,
             {
                 dummy_id: dummyId
             }
         );        
     }
 
-    public createDummy(correlationId: string, dummy: any): Promise<Dummy> {
+    public createDummy(context: IContext, dummy: any): Promise<Dummy> {
         return this.callCommand(
             'create_dummy',
-            correlationId,
+            context,
             {
                 dummy: dummy
             }
         );
     }
 
-    public updateDummy(correlationId: string, dummy: any): Promise<Dummy> {
+    public updateDummy(context: IContext, dummy: any): Promise<Dummy> {
         return this.callCommand(
             'update_dummy',
-            correlationId,
+            context,
             {
                 dummy: dummy
             }
         );
     }
 
-    public deleteDummy(correlationId: string, dummyId: string): Promise<Dummy> {
+    public deleteDummy(context: IContext, dummyId: string): Promise<Dummy> {
         return this.callCommand(
             'delete_dummy',
-            correlationId, 
+            context, 
             {
                 dummy_id: dummyId
             }
