@@ -1,6 +1,7 @@
+import { ProjectionParams } from "../../src/query/ProjectionParams";
+
 const assert = require('chai').assert;
 
-import { ProjectionParams } from '../../src/data/ProjectionParams';
 
 suite('ProjectionParams', ()=> {
 

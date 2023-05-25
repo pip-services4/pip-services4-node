@@ -1,5 +1,6 @@
 /** @module data */
-import { StringValueMap } from './StringValueMap';
+
+import { StringValueMap } from "pip-services4-commons-node";
 
 /**
  * Data transfer object used to pass filter parameters as simple key-value pairs.

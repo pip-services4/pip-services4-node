@@ -1,7 +1,9 @@
+import { SortField } from "../../src/query/SortField";
+import { SortParams } from "../../src/query/SortParams";
+
 const assert = require('chai').assert;
 
-import { SortField } from '../../src/data/SortField';
-import { SortParams } from '../../src/data/SortParams';
+
 
 suite('SortParams', ()=> {
     

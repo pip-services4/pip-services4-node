@@ -1,6 +1,7 @@
+import { IdGenerator } from "../../src/keys/IdGenerator";
+
 const assert = require('chai').assert;
 
-import { IdGenerator } from '../../src/data/IdGenerator';
 
 suite('IdGenerator', ()=> {
     

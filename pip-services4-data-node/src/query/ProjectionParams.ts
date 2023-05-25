@@ -1,5 +1,6 @@
 /** @module data */
-import { AnyValueArray } from "./AnyValueArray";
+
+import { AnyValueArray } from "pip-services4-commons-node";
 
 /**
  * Defines projection parameters with list if fields to include into query results.

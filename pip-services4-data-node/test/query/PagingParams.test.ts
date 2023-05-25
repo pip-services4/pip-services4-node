@@ -1,6 +1,7 @@
+import { PagingParams } from "../../src/query/PagingParams";
+
 const assert = require('chai').assert;
 
-import { PagingParams } from '../../src/data/PagingParams';
 
 suite('PagingParams', ()=> {
     

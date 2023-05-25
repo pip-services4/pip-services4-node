@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
+import { TypeCode } from 'pip-services4-commons-node';
 import { ObjectSchema } from '../../src/validate/ObjectSchema';
-import { TypeCode } from '../../src/convert/TypeCode';
 
 suite('DynamicData', ()=> {
 

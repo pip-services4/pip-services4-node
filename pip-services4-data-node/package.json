@@ -34,7 +34,7 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^0.0.1",
+        "pip-services4-commons-node": "../pip-services4-commons-node",
         "uuid": "^9.0.0"
     },
     "devDependencies": {

@@ -1,6 +1,7 @@
+import { TagsProcessor } from "../../src/process/TagsProcessor";
+
 const assert = require('chai').assert;
 
-import { TagsProcessor } from '../../src/data/TagsProcessor';
 
 suite('TagsProcessor', ()=> {
 

@@ -1,5 +1,6 @@
 /** @module data */
-import { AnyValueMap } from './AnyValueMap';
+
+import { AnyValueMap } from "pip-services4-commons-node";
 
 /**
  * Data transfer object to pass tokenized paging parameters for queries.

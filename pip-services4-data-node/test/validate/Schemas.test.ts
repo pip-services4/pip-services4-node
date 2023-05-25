@@ -7,7 +7,7 @@ import { Schema } from '../../src/validate/Schema';
 import { ObjectSchema } from '../../src/validate/ObjectSchema';
 import { ArraySchema } from '../../src/validate/ArraySchema';
 import { MapSchema } from '../../src/validate/MapSchema';
-import { TypeCode } from '../../src/convert/TypeCode';
+import { TypeCode } from 'pip-services4-commons-node';
 
 suite('SchemasTest', ()=> {
 
