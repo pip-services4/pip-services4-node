@@ -4,8 +4,6 @@ export * from './config';
 export * from './convert';
 export * from './errors';
 export * from './data';
-export * from './random';
 export * from './refer';
 export * from './reflect';
-export * from './validate';
 export * from './run';

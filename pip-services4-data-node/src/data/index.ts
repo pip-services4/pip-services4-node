@@ -9,8 +9,10 @@
  * extend stringvaluemap). Includes standard design patterns for working with data (data paging, 
  * filtering, GUIDs). 
  */
-export { AnyValue } from './AnyValue';
-export { AnyValueArray } from './AnyValueArray';
-export { AnyValueMap } from './AnyValueMap';
-export { StringValueMap } from './StringValueMap';
-export { ICloneable } from './ICloneable';
+export { IIdentifiable } from './IIdentifiable';
+export { IStringIdentifiable } from './IStringIdentifiable';
+export { INamed } from './INamed';
+export { IChangeable } from './IChangeable';
+export { ITrackable } from './ITrackable';
+export { IVersioned } from './IVersioned';
+export { MultiString } from './MultiString';

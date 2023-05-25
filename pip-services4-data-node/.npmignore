@@ -1,0 +1,11 @@
+/.vscode
+/test
+/obj/test
+/docker
+/docs
+/node_modules
+/data
+/.dockerignore
+/*.sh
+/*.ps1
+/.github

@@ -11,18 +11,15 @@ The module contains the following packages:
 - **Convert** - portable value converters
 - **Data** - data patterns
 - **Errors**- application errors
-- **Random** - random data generators
 - **Refer** - locator inversion of control (IoC) pattern
 - **Reflect** - portable reflection utilities
 - **Run** - component life-cycle management patterns
-- **Validate** - validation patterns
 
 <a name="links"></a> Quick links:
 
 * [Configuration Pattern](http://docs.pipservices.org/toolkit/getting_started/configurations/) 
 * [Locator Pattern](http://docs.pipservices.org/toolkit/recipes/component_references/)
 * [Component Lifecycle](http://docs.pipservices.org/toolkit/recipes/component_lifecycle/)
-* [Data Patterns](http://docs.pipservices.org/toolkit/recipes/memory_persistence/)
 * [API Reference](https://pip-services4-node.github.io/pip-services4-commons-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](http://docs.pipservices.org/get_help/)
@@ -177,4 +174,8 @@ Before committing changes run dockerized build and test as:
 
 The module is created and maintained by **Sergey Seroukhov** and **Danil Prisyazhniy**.
 
-The documentation is written by **Egor Nuzhnykh**, **Alexey Dvoykin**, **Mark Makarychev**.
+The documentation is written by:
+- **Egor Nuzhnykh**
+- **Alexey Dvoykin**
+- **Mark Makarychev**
+- **Eugenio Andrieu**
