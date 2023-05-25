@@ -174,6 +174,6 @@ Before committing changes run dockerized build and test as:
 
 ## Contacts
 
-The library is created and maintained by **Sergey Seroukhov**.
+The library is created and maintained by **Sergey Seroukhov** and **Danil Prisyazhniy**.
 
-The documentation is written by **Mark Makarychev**.
+The documentation is written by **Mark Makarychev** and **Eugenio Andrieu**.

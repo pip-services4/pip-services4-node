@@ -148,6 +148,6 @@ Before committing changes run dockerized build and test as:
 
 ## Contacts
 
-The module is created and maintained by **Sergey Seroukhov**.
+The module is created and maintained by **Sergey Seroukhov** and **Danil Prisyazhniy**.
 
 The documentation is written by **Egor Nuzhnykh**, **Alexey Dvoykin**, **Mark Makarychev**.

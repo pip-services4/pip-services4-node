@@ -116,7 +116,7 @@ You can read more about how this is accomplished  [here](https://www.elastic.co/
 
 ## Contacts
 
-The library is created and maintained by **Sergey Seroukhov**.
+The library is created and maintained by **Sergey Seroukhov** and **Danil Prisyazhniy**.
 
 The documentation is written by:
 - **Mark Makarychev**
