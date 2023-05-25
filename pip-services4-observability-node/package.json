@@ -20,7 +20,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-observability-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-observability-node"
     },
     "license": "MIT",
     "engines": {
@@ -35,7 +36,7 @@
     },
     "dependencies": {
         "pip-services4-commons-node": "^0.0.1",
-        "pip-services4-components-node": "^0.0.1"
+        "pip-services4-components-node": "^0.0.3"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
