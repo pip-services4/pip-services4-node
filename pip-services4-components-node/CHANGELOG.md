@@ -8,3 +8,4 @@ Moved code from commons module in PipService 3
 
 ### Breaking Changes:
 * **correlationId** was replaced by **context**
+* Moved **ContextInfo** and **DefaultContextFactory** under **context** package

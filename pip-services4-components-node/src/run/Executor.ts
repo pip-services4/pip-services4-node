@@ -1,6 +1,6 @@
 /** @module run */
 
-import { IContext } from './IContext';
+import { IContext } from '../context/IContext';
 import { Parameters } from './Parameters';
 
 /**

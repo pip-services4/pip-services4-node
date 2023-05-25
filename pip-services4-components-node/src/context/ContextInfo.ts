@@ -3,8 +3,8 @@
 const os = require('os');
 
 import { StringValueMap } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
+import { ConfigParams } from '../config/ConfigParams';
+import { IReconfigurable } from '../config/IReconfigurable';
 
 /**
  * Context information component that provides detail information

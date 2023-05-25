@@ -42,5 +42,4 @@ export * from './build';
 export * from './config';
 export * from './refer';
 export * from './containers';
-export * from './info';
 export * from './test';

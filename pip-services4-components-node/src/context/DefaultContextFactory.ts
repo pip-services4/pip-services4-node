@@ -1,7 +1,6 @@
 /** @module info */
-import { Descriptor } from 'pip-services4-commons-node';
-
-import { Factory } from '../../../pip-services4-commons-node/src/build/Factory';
+import { Descriptor } from '../refer/Descriptor';
+import { Factory } from '../build/Factory';
 import { ContextInfo } from './ContextInfo';
 
 /**
@@ -10,7 +9,7 @@ import { ContextInfo } from './ContextInfo';
  * @see [[IFactory]]
  * @see [[ContextInfo]]
  */
-export class DefaultInfoFactory extends Factory {
+export class DefaultContextFactory extends Factory {
 	private static readonly ContextInfoDescriptor: Descriptor = new Descriptor("pip-services", "context-info", "default", "*", "1.0");
 	private static readonly ContainerInfoDescriptor: Descriptor = new Descriptor("pip-services", "container-info", "default", "*", "1.0");
 	
@@ -19,7 +18,7 @@ export class DefaultInfoFactory extends Factory {
 	 */
 	public constructor() {
 		super();
-		this.registerAsType(DefaultInfoFactory.ContextInfoDescriptor, ContextInfo);
-		this.registerAsType(DefaultInfoFactory.ContainerInfoDescriptor, ContextInfo);
+		this.registerAsType(DefaultContextFactory.ContextInfoDescriptor, ContextInfo);
+		this.registerAsType(DefaultContextFactory.ContainerInfoDescriptor, ContextInfo);
 	}
 }

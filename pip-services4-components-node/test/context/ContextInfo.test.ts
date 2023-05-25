@@ -1,8 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
-import { ContextInfo } from '../../src/info/ContextInfo';
+import { ConfigParams } from '../../src/config/ConfigParams';
+import { ContextInfo } from '../../src/context/ContextInfo';
 
 suite('ContextInfo', ()=> {
     let contextInfo: ContextInfo;

@@ -1,6 +1,6 @@
 /** @module run */
 
-import { IContext } from "./IContext";
+import { IContext } from "../context/IContext";
 
 /**
  * Helper class that cleans stored object state.

@@ -1,5 +1,5 @@
 /** 
- * @module info 
+ * @module context 
  * 
  * Todo: Rewrite the description
  * 
@@ -8,5 +8,7 @@
  * logging functions we need to know what source we are logging from – what is 
  * the processes name, what the process is/does. 
  */
+export { IContext } from './IContext';
+export { Context } from './Context';
 export { ContextInfo } from './ContextInfo';
-export { DefaultInfoFactory } from './DefaultInfoFactory';
+export { DefaultContextFactory } from './DefaultContextFactory';

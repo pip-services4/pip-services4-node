@@ -1,6 +1,6 @@
 /** @module run */
 
-import { IContext } from "./IContext";
+import { IContext } from "../context/IContext";
 import { IClosable } from './IClosable';
 import { INotifiable } from './INotifiable';
 import { Parameters } from './Parameters';
