@@ -1,5 +1,5 @@
 /** @module connect */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { Factory } from '../build/Factory';
 import { MemoryDiscovery } from './MemoryDiscovery';

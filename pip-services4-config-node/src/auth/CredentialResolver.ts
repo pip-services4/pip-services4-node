@@ -1,8 +1,9 @@
 /** @module auth */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ReferenceException } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ReferenceException } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { IContext } from 'pip-services4-components-node';
 
 import { CredentialParams } from './CredentialParams';
 import { ICredentialStore } from './ICredentialStore';

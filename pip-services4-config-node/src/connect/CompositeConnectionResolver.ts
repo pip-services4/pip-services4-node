@@ -1,10 +1,11 @@
 /** @module connect */
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-components-node';
 
 import { CredentialParams } from '../auth/CredentialParams';
 import { CredentialResolver } from '../auth/CredentialResolver';
@@ -106,7 +107,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
                 // Validate if cluster (multiple connections) is supported
                 if (connections.length > 0 && !this._clusterSupported) {
                     throw new ConfigException(
-                        context, 
+                        context != null ? context.getTraceId() : null, 
                         "MULTIPLE_CONNECTIONS_NOT_SUPPORTED",
                         "Multiple (cluster) connections are not supported"
                     );
@@ -165,7 +166,11 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      */
     protected validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
-            throw new ConfigException(context, "NO_CONNECTION", "Connection parameters are not set is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_CONNECTION",
+                "Connection parameters are not set is not set"
+            );
         }
 
         // URI usually contains all information
@@ -176,20 +181,36 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
 
         let protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
-            throw new ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_PROTOCOL",
+                "Connection protocol is not set"
+            );
         }
         if (this._supportedProtocols != null && this._supportedProtocols.indexOf(protocol) < 0) {
-            throw new ConfigException(context, "UNSUPPORTED_PROTOCOL", "The protocol "+protocol+" is not supported");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "UNSUPPORTED_PROTOCOL",
+                "The protocol "+protocol+" is not supported"
+            );
         }
 
         let host = connection.getHost();
         if (host == null) {
-            throw new ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_HOST",
+                "Connection host is not set"
+            );
         }
 
         let port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
-            throw new ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_PORT",
+                "Connection port is not set"
+            );
         }
     }
 

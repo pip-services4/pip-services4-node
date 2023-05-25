@@ -1,7 +1,6 @@
 /** @module auth */
-import { Descriptor } from 'pip-services4-commons-node';
-
-import { Factory } from '../build/Factory';
+import { Descriptor } from 'pip-services4-components-node';
+import { Factory } from 'pip-services4-components-node';
 import { MemoryCredentialStore } from './MemoryCredentialStore';
 
 /**

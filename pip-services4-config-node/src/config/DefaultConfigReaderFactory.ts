@@ -1,7 +1,7 @@
 /** @module config */
 import { Descriptor } from 'pip-services4-commons-node';
+import { Factory } from 'pip-services4-components-node';
 
-import { Factory } from '../build/Factory';
 import { MemoryConfigReader } from './MemoryConfigReader';
 import { JsonConfigReader } from './JsonConfigReader';
 import { YamlConfigReader } from './YamlConfigReader';

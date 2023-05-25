@@ -1,8 +1,10 @@
 /** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ReferenceException } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ReferenceException } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { ConnectionParams } from './ConnectionParams';
 import { IDiscovery } from './IDiscovery';

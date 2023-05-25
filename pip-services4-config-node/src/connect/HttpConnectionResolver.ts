@@ -2,15 +2,17 @@
 /** @hidden */
 const url = require('url');
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-components-node';
+
+import { ConnectionResolver } from './ConnectionResolver';
+import { ConnectionParams } from './ConnectionParams';
+import { CredentialResolver } from '../auth/CredentialResolver';
+import { CredentialParams } from '../auth/CredentialParams';
 
 /**
  * Helper class to retrieve connections for HTTP-based services abd clients.
@@ -84,7 +86,11 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnection(context: IContext,
         connection: ConnectionParams, credential: CredentialParams): void {
         if (connection == null) {
-            throw new ConfigException(context, "NO_CONNECTION", "HTTP connection is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_CONNECTION",
+                "HTTP connection is not set"
+            );
         }
 
         let uri = connection.getUri();
@@ -93,18 +99,28 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         let protocol: string = connection.getProtocolWithDefault("http");
         if ("http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
-                .withDetails("protocol", protocol);
+                context != null ? context.getTraceId() : null,
+                "WRONG_PROTOCOL",
+                "Protocol is not supported by REST connection"
+            ).withDetails("protocol", protocol);
         }
 
         let host = connection.getHost();
         if (host == null) {
-            throw new ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_HOST",
+                "Connection host is not set"
+            );
         }
 
         let port = connection.getPort();
         if (port == 0) {
-            throw new ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_PORT",
+                "Connection port is not set"
+            );
         }
 
         // Check HTTPS credentials
@@ -112,7 +128,10 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             // Check for credential
             if (credential == null) {
                 throw new ConfigException(
-                    context, "NO_CREDENTIAL", "SSL certificates are not configured for HTTPS protocol");
+                    context != null ? context.getTraceId() : null,
+                    "NO_CREDENTIAL",
+                    "SSL certificates are not configured for HTTPS protocol
+                );
             } else {
                 // Sometimes when we use https we are on an internal network and do not want to have to deal with security.
                 // When we need a https connection and we don't want to pass credentials, flag is 'credential.internal_network',
@@ -120,10 +139,16 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
                 if (credential.getAsNullableString("internal_network") == null) {
                     if (credential.getAsNullableString('ssl_key_file') == null) {
                         throw new ConfigException(
-                            context, "NO_SSL_KEY_FILE", "SSL key file is not configured in credentials");
+                            context != null ? context.getTraceId() : null,
+                            "NO_SSL_KEY_FILE",
+                            "SSL key file is not configured in credentials"
+                        );
                     } else if (credential.getAsNullableString('ssl_crt_file') == null) {
                         throw new ConfigException(
-                            context, "NO_SSL_CRT_FILE", "SSL crt file is not configured in credentials");
+                            context,
+                            "NO_SSL_CRT_FILE",
+                            "SSL crt file is not configured in credentials"
+                        );
                     }
                 }
             }

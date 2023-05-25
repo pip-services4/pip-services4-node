@@ -4,8 +4,9 @@ const fs = require('fs');
 /** @hidden */ 
 const yaml = require('js-yaml');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-components-node';
 import { FileException } from 'pip-services4-commons-node';
 
 import { FileConfigReader } from './FileConfigReader';
@@ -58,7 +59,11 @@ export class YamlConfigReader extends FileConfigReader {
      */
     public readObject(context: IContext, parameters: ConfigParams): any {
         if (super.getPath() == null)
-            throw new ConfigException(context, "NO_PATH", "Missing config file path");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_PATH",
+                "Missing config file path"
+            );
 
         try {
             let content = fs.readFileSync(super.getPath(), 'utf8');
@@ -67,7 +72,7 @@ export class YamlConfigReader extends FileConfigReader {
             return data;
         } catch (e) {
             throw new FileException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "READ_FAILED",
                 "Failed reading configuration " + super.getPath() + ": " + e
             )

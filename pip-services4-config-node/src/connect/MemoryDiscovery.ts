@@ -1,6 +1,8 @@
 /** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReconfigurable } from 'pip-services4-components-node';
 
 import { ConnectionParams } from './ConnectionParams';
 import { IDiscovery } from './IDiscovery';

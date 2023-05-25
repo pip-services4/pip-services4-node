@@ -2,8 +2,9 @@
 /** @hidden */ 
 const fs = require('fs');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node'
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-components-node'
 import { FileException } from 'pip-services4-commons-node'
 import { JsonConverter } from 'pip-services4-commons-node'
 

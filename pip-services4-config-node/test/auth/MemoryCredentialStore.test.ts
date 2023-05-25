@@ -1,8 +1,9 @@
 const assert = require('chai').assert;
 
+import { ConfigParams } from 'pip-services4-components-node';
+
 import { CredentialParams } from '../../src/auth/CredentialParams';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { MemoryCredentialStore } from '../../src';
+import { MemoryCredentialStore } from '../../src/auth/MemoryCredentialStore';
 
 suite('MemoryCredentialStore', ()=> {
 

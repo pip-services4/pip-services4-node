@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
 import { ConnectionParams } from '../../src/connect/ConnectionParams';
 import { ConnectionResolver } from '../../src/connect/ConnectionResolver';

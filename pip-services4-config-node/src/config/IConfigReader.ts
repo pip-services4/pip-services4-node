@@ -1,6 +1,8 @@
 /** @module config */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { INotifiable } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { INotifiable } from 'pip-services4-components-node';
 
 /**
  * Interface for configuration readers that retrieve configuration from various sources

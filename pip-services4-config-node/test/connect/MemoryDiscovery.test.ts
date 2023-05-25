@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { ConnectionParams } from '../../src/connect/ConnectionParams';
 import { MemoryDiscovery } from '../../src/connect/MemoryDiscovery';

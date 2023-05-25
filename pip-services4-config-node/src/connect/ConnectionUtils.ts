@@ -2,7 +2,7 @@
 /** @hidden */
 const querystring = require('querystring');
 
-import { ConfigParams } from "pip-services4-commons-node";
+import { ConfigParams } from "pip-services4-components-node";
 
 /**
  * A set of utility functions to process connection parameters

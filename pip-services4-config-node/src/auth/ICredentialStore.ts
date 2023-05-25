@@ -1,4 +1,5 @@
 /** @module auth */
+import { IContext } from 'pip-services4-components-node';
 import { CredentialParams } from './CredentialParams';
 
 /**
