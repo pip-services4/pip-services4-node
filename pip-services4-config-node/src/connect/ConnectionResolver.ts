@@ -17,7 +17,7 @@ import { IDiscovery } from './IDiscovery';
  * ### Configuration parameters ###
  * 
  * - __connection:__  
- *     - discovery_key:               (optional) a key to retrieve the connection from [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]]
+ *     - discovery_key:               (optional) a key to retrieve the connection from [[https://pip-services4-node.github.io/pip-services4-config-node/interfaces/connect.idiscovery.html IDiscovery]]
  *     - ...                          other connection parameters
  * 
  * - __connections:__                  alternative to connection
@@ -28,7 +28,7 @@ import { IDiscovery } from './IDiscovery';
  * 
  * ### References ###
  * 
- * - <code>\*:discovery:\*:\*:1.0</code>    (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connections
+ * - <code>\*:discovery:\*:\*:1.0</code>    (optional) [[https://pip-services4-node.github.io/pip-services4-config-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connections
  * 
  * @see [[ConnectionParams]]
  * @see [[IDiscovery]]

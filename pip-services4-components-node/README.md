@@ -5,10 +5,7 @@ This module is a part of the [Pip.Services](http://pipservices.org) polyglot mic
 The Components module contains standard component definitions that can be used to build applications and services.
 
 The module contains the following packages:
-- **Auth** - authentication credential stores
 - **Build** - basic factories for constructing objects
-- **Config** - configuration readers and managers, whose main task is to deliver configuration parameters to the application from wherever they are being stored
-- **Connect** - connection discovery and configuration services
 - **Count** - performance counters
 - **Info** - context info implementations that manage the saving of process information and sending additional parameter sets
 - **Log** - basic logging components that provide console and composite logging, as well as an interface for developing custom loggers
@@ -73,61 +70,6 @@ export class MyComponent implements IConfigurable, IReferenceable {
     ...
   }
 }
-```
-
-Example how to get connection parameters and credentials using resolvers.
-The resolvers support "discovery_key" and "store_key" configuration parameters
-to retrieve configuration from discovery services and credential stores respectively.
-
-```typescript
-import { ConfigParams } from 'pip-services4-commons-node'; 
-import { IConfigurable } from 'pip-services4-commons-node'; 
-import { IReferences } from 'pip-services4-commons-node'; 
-import { IReferenceable } from 'pip-services4-commons-node'; 
-import { IOpenable } from 'pip-services4-commons-node'; 
-import { ConnectionParams } from 'pip-services4-components-node'; 
-import { ConnectionResolver } from 'pip-services4-components-node'; 
-import { CredentialParams } from 'pip-services4-components-node'; 
-import { CredentialResolver } from 'pip-services4-components-node'; 
-
-export class MyComponent implements IConfigurable, IReferenceable, IOpenable {
-  private _connectionResolver: ConnectionResolver = new ConnectionResolver();
-  private _credentialResolver: CredentialResolver = new CredentialResolver();
-  
-  public configure(config: ConfigParams): void {
-    this._connectionResolver.configure(config);
-    this._credentialResolver.configure(config);
-  }
-  
-  public setReferences(refs: IReferences): void {
-    this._connectionResolver.setReferences(refs);
-    this._credentialResolver.setReferences(refs);
-  }
-  
-  ...
-  
-  public async open(correlationId: string): Promise<void> {
-    let connection = await this._connectionResolver.resolve(correlationId);
-    let credential = await this._credentialResolver.lookup(correlationId);
-
-    let host = connection.getHost();
-    let port = connection.getPort();
-    let user = credential.getUsername();
-    let pass = credential.getPassword();
-  }
-}
-
-// Using the component
-let myComponent = new MyComponent();
-
-myComponent.configure(ConfigParams.fromTuples(
-  'connection.host', 'localhost',
-  'connection.port', 1234,
-  'credential.username', 'anonymous',
-  'credential.password', 'pass123'
-));
-
-await myComponent.open(null);
 ```
 
 If you need to create components using their locators (descriptors) implement 

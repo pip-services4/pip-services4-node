@@ -5,7 +5,7 @@ import { Factory } from '../build/Factory';
 import { MemoryDiscovery } from './MemoryDiscovery';
 
 /**
- * Creates [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] components by their descriptors.
+ * Creates [[https://pip-services4-node.github.io/pip-services4-config-node/interfaces/connect.idiscovery.html IDiscovery]] components by their descriptors.
  * 
  * @see [[Factory]]
  * @see [[IDiscovery]]
