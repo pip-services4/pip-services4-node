@@ -1,5 +1,6 @@
 /** @module mustache */
 import { BadRequestException } from "pip-services4-commons-node";
+import { IContext } from 'pip-services4-components-node';
 /**
  * Exception that can be thrown by Mustache Template.
  */

@@ -11,7 +11,7 @@ class MustacheException extends pip_services4_commons_node_1.BadRequestException
         if (line != 0 || column != 0) {
             message = message + " at line " + line + " and column " + column;
         }
-        super(context, code, message);
+        super(context.getTraceId(), code, message);
     }
 }
 exports.MustacheException = MustacheException;

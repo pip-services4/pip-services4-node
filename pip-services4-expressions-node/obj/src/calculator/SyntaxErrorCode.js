@@ -7,6 +7,7 @@ exports.SyntaxErrorCode = void 0;
  */
 class SyntaxErrorCode {
 }
+exports.SyntaxErrorCode = SyntaxErrorCode;
 /**
  * The unknown
  */
@@ -39,5 +40,4 @@ SyntaxErrorCode.MissedCloseParenthesis = "MISSED_CLOSE_PARENTHESIS";
  * The missed close square bracket
  */
 SyntaxErrorCode.MissedCloseSquareBracket = "MISSED_CLOSE_SQUARE_BRACKET";
-exports.SyntaxErrorCode = SyntaxErrorCode;
 //# sourceMappingURL=SyntaxErrorCode.js.map

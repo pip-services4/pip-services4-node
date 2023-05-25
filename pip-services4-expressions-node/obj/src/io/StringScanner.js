@@ -182,6 +182,6 @@ class StringScanner {
         this._column = 0;
     }
 }
-StringScanner.Eof = -1;
 exports.StringScanner = StringScanner;
+StringScanner.Eof = -1;
 //# sourceMappingURL=StringScanner.js.map

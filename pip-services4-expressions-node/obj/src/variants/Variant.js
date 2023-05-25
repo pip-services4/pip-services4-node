@@ -415,6 +415,6 @@ class Variant {
         return result;
     }
 }
-Variant.Empty = new Variant(null);
 exports.Variant = Variant;
+Variant.Empty = new Variant(null);
 //# sourceMappingURL=Variant.js.map
