@@ -28,7 +28,7 @@ class Registration {
  *     factory.create(new Descriptor("mygroup", "mycomponent1", "default", "name1", "1.0"))
  *     factory.create(new Descriptor("mygroup", "mycomponent2", "default", "name2", "1.0"))
  * 
- * @see [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/refer.descriptor.html Descriptor]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/refer.descriptor.html Descriptor]]
  * @see [[IFactory]]
  */
 export class Factory implements IFactory {	

@@ -1,8 +1,8 @@
 {
-    "name": "pip-services4-expressions-node",
+    "name": "pip-services4-components-node",
     "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Tokenizers, parsers and expression calculators in Node.js / ES2017",
+    "description": "Portable Component Model in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",
@@ -14,12 +14,13 @@
     "keywords": [
         "pip.services",
         "microservice",
-        "expressions"
+        "commons",
+        "library"
     ],
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-expressions-node.git"
+        "url": "ssh://git@github.com:pip-services4-node/pip-services4-components-node.git"
     },
     "license": "MIT",
     "engines": {
@@ -33,7 +34,7 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^1.0.0"
+        "pip-services4-commons-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

@@ -2,7 +2,7 @@
     "name": "pip-services4-commons-node",
     "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Portable Component Model in Node.js / ES2017",
+    "description": "Portable Core Abstractions in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",

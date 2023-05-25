@@ -1,11 +1,11 @@
 /** @module build */
-import { InternalException } from 'pip-services4-commons-node';
+import { InternalException } from 'pip-services4-components-node';
 
 /**
  * Error raised when factory is not able to create requested component.
  * 
- * @see [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/errors.internalexception.html InternalException]] (in the PipServices "Commons" package)
- * @see [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/errors.applicationexception.html ApplicationException]] (in the PipServices "Commons" package)
+ * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/errors.internalexception.html InternalException]] (in the PipServices "Commons" package)
+ * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/errors.applicationexception.html ApplicationException]] (in the PipServices "Commons" package)
  */
 export class CreateException extends InternalException {
 
