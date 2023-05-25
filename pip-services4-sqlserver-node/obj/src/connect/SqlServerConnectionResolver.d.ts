@@ -56,7 +56,7 @@ export declare class SqlServerConnectionResolver implements IReferenceable, ICon
     /**
      * Resolves SQLServer config from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns a resolved connection uri.
      */
     resolve(context: IContext): Promise<string>;

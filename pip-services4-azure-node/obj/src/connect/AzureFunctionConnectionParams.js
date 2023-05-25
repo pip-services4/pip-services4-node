@@ -146,7 +146,7 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
     /**
      * Validates this connection parameters
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     validate(context) {
         const uri = this.getFunctionUri();

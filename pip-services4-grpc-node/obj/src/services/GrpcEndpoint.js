@@ -122,7 +122,7 @@ class GrpcEndpoint {
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a GRPC server (service) using the set options and parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -187,7 +187,7 @@ class GrpcEndpoint {
     /**
      * Closes this endpoint and the GRPC server (service) that was opened earlier.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {

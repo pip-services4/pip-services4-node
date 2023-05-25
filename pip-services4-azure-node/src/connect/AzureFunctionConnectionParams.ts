@@ -156,7 +156,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters 
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public validate(context: IContext) {
         const uri = this.getFunctionUri();

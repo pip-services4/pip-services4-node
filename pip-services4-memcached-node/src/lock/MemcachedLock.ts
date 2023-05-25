@@ -177,7 +177,7 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfull and <code>false</code> otherwise.
@@ -202,7 +202,7 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
     /**
      * Releases prevously acquired lock by its key.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
     public releaseLock(context: IContext, key: string): Promise<void> {

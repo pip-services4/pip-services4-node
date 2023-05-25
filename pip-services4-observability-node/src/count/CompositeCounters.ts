@@ -1,7 +1,7 @@
 /** @module count */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { ICounters } from './ICounters';
 import { CounterTiming } from './CounterTiming';

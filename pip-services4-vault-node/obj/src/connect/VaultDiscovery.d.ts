@@ -107,7 +107,7 @@ export declare class VaultDiscovery implements IDiscovery, IReconfigurable, IRef
     /**
      * Registers connection parameters into the discovery service.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a key to uniquely identify the connection parameters.
      * @param credential        a connection to be registered.
      * @returns 			    the registered connection parameters.
@@ -116,7 +116,7 @@ export declare class VaultDiscovery implements IDiscovery, IReconfigurable, IRef
     /**
      * Resolves a single connection parameters by its key.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a key to uniquely identify the connection.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      */
@@ -124,7 +124,7 @@ export declare class VaultDiscovery implements IDiscovery, IReconfigurable, IRef
     /**
      * Resolves all connection parameters by their key.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a key to uniquely identify the connections.
      * @returns                 all found connection parameters
      */

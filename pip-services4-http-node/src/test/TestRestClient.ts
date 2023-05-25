@@ -15,7 +15,7 @@ export class TestRestClient extends RestClient {
      * 
      * @param method            HTTP method: "get", "head", "post", "put", "delete"
      * @param route             a command route. Base route will be added to this route
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            (optional) query parameters.
      * @param data              (optional) body object.
      * @returns                 a result object.

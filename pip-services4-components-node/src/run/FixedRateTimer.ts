@@ -208,7 +208,7 @@ export class FixedRateTimer implements IClosable {
      * This is required by [[ICloseable]] interface,
      * but besides that it is identical to stop().
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param callback 			callback function that receives error or null no errors occured.
      * 
      * @see [[stop]]

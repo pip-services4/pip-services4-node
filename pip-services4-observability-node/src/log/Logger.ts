@@ -2,16 +2,17 @@
 /** @hidden */ 
 let util = require('util');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { IReconfigurable } from 'pip-services4-components-node';
+import { ContextInfo } from 'pip-services4-components-node';
 
-import { IReconfigurable } from 'pip-services4-commons-node';
 import { ILogger } from './ILogger';
 import { LogLevel } from './LogLevel';
 import { LogLevelConverter } from './LogLevelConverter';
-import { ContextInfo } from '../info/ContextInfo';
 
 /**
  * Abstract logger that captures and formats log messages.
@@ -106,7 +107,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
      * Writes a log message to the logger destination.
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
@@ -116,7 +117,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
      * Formats the log message and writes it to the logger destination.
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -137,7 +138,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
      * Logs a message at specified log level.
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -149,7 +150,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs fatal (unrecoverable) message that caused the process to crash.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -161,7 +162,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs recoverable application error.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -173,7 +174,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs a warning that may or may not have a negative impact.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -184,7 +185,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs an important information message
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -195,7 +196,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs a high-level debug information for troubleshooting.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -206,7 +207,7 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Logs a low-level debug information for troubleshooting. 
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */

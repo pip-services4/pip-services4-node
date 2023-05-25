@@ -8,7 +8,6 @@ The module contains the following packages:
 - **Count** - performance counters
 - **Log** - basic logging components that provide console and composite logging, as well as an interface for developing custom loggers
 - **Trace** - tracing components
-- **Component** - the root package
 
 <a name="links"></a> Quick links:
 
@@ -30,10 +29,10 @@ Here we are going to use CompositeLogger and CompositeCounters components.
 They will pass through calls to loggers and counters that are set in references.
 
 ```typescript
-import { ConfigParams } from 'pip-services4-commons-node'; 
-import { IConfigurable } from 'pip-services4-commons-node'; 
-import { IReferences } from 'pip-services4-commons-node'; 
-import { IReferenceable } from 'pip-services4-commons-node'; 
+import { ConfigParams } from 'pip-services4-components-node'; 
+import { IConfigurable } from 'pip-services4-components-node'; 
+import { IReferences } from 'pip-services4-components-node'; 
+import { IReferenceable } from 'pip-services4-components-node'; 
 import { CompositeLogger } from 'pip-services4-observability-node'; 
 import { CompositeCounters } from 'pip-services4-observability-node'; 
 

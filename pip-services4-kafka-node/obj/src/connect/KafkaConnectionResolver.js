@@ -156,7 +156,7 @@ class KafkaConnectionResolver {
     /**
      * Resolves Kafka connection options from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved Kafka connection options.
      */
     resolve(context) {
@@ -175,7 +175,7 @@ class KafkaConnectionResolver {
     /**
      * Composes Kafka connection options from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved Kafka connection options.

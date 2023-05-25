@@ -292,7 +292,7 @@ export class CommandSet {
      * Fires event specified by its name and notifies all registered
      * [[IEventListener listeners]]
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param eventName         the name of the event that is to be fired.
      * @param args              the event arguments (parameters).
      */

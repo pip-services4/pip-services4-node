@@ -268,7 +268,7 @@ export class AwsConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters 
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public validate(context: IContext) {
         let arn = this.getArn();

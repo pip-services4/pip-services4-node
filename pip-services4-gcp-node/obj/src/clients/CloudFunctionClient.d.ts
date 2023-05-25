@@ -170,7 +170,7 @@ export declare abstract class CloudFunctionClient implements IOpenable, IConfigu
      * Calls a Google Function action.
      *
      * @param cmd               an action name to be called.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */

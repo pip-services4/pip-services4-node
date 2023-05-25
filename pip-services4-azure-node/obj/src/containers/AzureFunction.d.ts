@@ -94,7 +94,7 @@ export declare abstract class AzureFunction extends Container {
      *
      * Note: This method has been deprecated. Use AzureFunctionService instead.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
      * @returns {InstrumentTiming} object to end the time measurement.
      */

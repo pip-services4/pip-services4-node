@@ -54,14 +54,14 @@ export declare class MqttConnectionResolver implements IReferenceable, IConfigur
     /**
      * Resolves MQTT connection options from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved MQTT connection options.
      */
     resolve(context: IContext): Promise<any>;
     /**
      * Composes MQTT connection options from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved MQTT connection options.

@@ -188,7 +188,7 @@ export class MySqlConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves MongoDB connection URI from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns a resolved URI.
      */
     public async resolve(context: IContext): Promise<string> {

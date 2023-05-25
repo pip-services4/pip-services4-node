@@ -88,7 +88,7 @@ export declare class CloudWatchLogger extends CachedLogger implements IReference
      * Writes a log message to the logger destination.
      *
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */

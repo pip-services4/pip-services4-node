@@ -169,7 +169,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
      * @returns InstrumentTiming object to end the time measurement.
      */
@@ -186,7 +186,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param context     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) a context to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result
@@ -351,7 +351,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      * 
      * @param method            HTTP method: "get", "head", "post", "put", "delete"
      * @param route             a command route. Base route will be added to this route
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            (optional) query parameters.
      * @param data              (optional) body object.
      * @returns                 a result object.

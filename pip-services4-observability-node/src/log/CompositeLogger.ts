@@ -1,7 +1,9 @@
 /** @module log */
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { ILogger } from './ILogger';
 import { Logger } from './Logger';
@@ -76,7 +78,7 @@ export class CompositeLogger extends Logger implements IReferenceable {
      * Writes a log message to the logger destination(s).
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
 	 */

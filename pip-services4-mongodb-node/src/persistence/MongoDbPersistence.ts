@@ -396,7 +396,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
@@ -443,7 +443,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of filtered items.
      */
@@ -493,7 +493,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item.
      */
@@ -554,7 +554,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
     public async deleteByFilter(context: IContext, filter: any): Promise<void> {

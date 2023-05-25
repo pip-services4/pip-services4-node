@@ -139,7 +139,7 @@ export class CredentialResolver {
      * Looks up component credential parameters. If credentials are configured to be retrieved
      * from Credential store it finds a [[ICredentialStore]] and lookups credentials there.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns 			    a looked up credential.
      */
     public async lookup(context: IContext): Promise<CredentialParams> {

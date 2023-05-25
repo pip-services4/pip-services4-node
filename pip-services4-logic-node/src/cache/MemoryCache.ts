@@ -87,7 +87,7 @@ export class MemoryCache implements ICache, IReconfigurable {
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      * @returns                 the cached value or <code>null</code> if value wasn't found.
      */
@@ -117,7 +117,7 @@ export class MemoryCache implements ICache, IReconfigurable {
 	/**
      * Stores value in the cache with expiration time.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
@@ -164,7 +164,7 @@ export class MemoryCache implements ICache, IReconfigurable {
 	/**
      * Removes a value from the cache by its key.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
 	 */
     public async remove(context: IContext, key: string): Promise<void> {

@@ -12,7 +12,7 @@ export class TestCommandableLambdaClient extends CommandableLambdaClient {
      * to the action parameters. 
      * 
      * @param cmd               an action name
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            command parameters.
      * @return {any}            action result.
      */

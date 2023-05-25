@@ -1,4 +1,6 @@
 /** @module log */
+
+import { IContext } from 'pip-services4-components-node';
 import { StringConverter } from 'pip-services4-commons-node';
 
 import { LogLevel } from './LogLevel';
@@ -43,7 +45,7 @@ export class ConsoleLogger extends Logger {
      * Writes a log message to the logger destination.
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
@@ -51,7 +53,7 @@ export class ConsoleLogger extends Logger {
         if (this.getLevel() < level) return;
 
         let result: string = '[';
-        result += context != null ? context : "---";
+        result += context != null ? context.getTraceId() : "---";
         result += ':';
         result += LogLevelConverter.toString(level);
         result += ':';

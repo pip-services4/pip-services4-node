@@ -1,10 +1,10 @@
 /** @module count */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { Factory } from 'pip-services4-components-node';
 
 import { NullCounters } from './NullCounters';
 import { LogCounters } from './LogCounters';
 import { CompositeCounters } from './CompositeCounters';
-import { Factory } from '../build/Factory';
 
 /**
  * Creates [[ICounters]] components by their descriptors.

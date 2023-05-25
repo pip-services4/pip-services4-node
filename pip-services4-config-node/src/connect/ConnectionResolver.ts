@@ -140,7 +140,7 @@ export class ConnectionResolver {
      * Resolves a single component connection. If connections are configured to be retrieved
      * from Discovery service it finds a [[IDiscovery]] and resolves the connection there.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a found connection parameters or <code>null</code> otherwise
      * 
      * @see [[IDiscovery]]
@@ -207,7 +207,7 @@ export class ConnectionResolver {
      * Resolves all component connection. If connections are configured to be retrieved
      * from Discovery service it finds a [[IDiscovery]] and resolves the connection there.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns                 all found connection parameters
      * 
      * @see [[IDiscovery]]
@@ -266,7 +266,7 @@ export class ConnectionResolver {
      * Registers the given connection in all referenced discovery services.
      * This method can be used for dynamic service discovery.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        a connection to register.
      * @returns 			    the registered connection parameters.
      * 

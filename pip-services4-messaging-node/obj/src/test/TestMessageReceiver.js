@@ -43,7 +43,7 @@ class TestMessageReceiver {
     }
     /**
      * Clears all received messagers.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {

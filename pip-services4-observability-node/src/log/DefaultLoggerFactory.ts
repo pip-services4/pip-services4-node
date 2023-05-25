@@ -1,10 +1,10 @@
 /** @module log */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { Factory } from 'pip-services4-components-node';
 
 import { NullLogger } from './NullLogger';
 import { ConsoleLogger } from './ConsoleLogger';
 import { CompositeLogger } from './CompositeLogger';
-import { Factory } from '../build/Factory';
 
 /**
  * Creates [[ILogger]] components by their descriptors.

@@ -191,7 +191,7 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves NATS connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved NATS connection options.
      */
     public async resolve(context: IContext): Promise<any> {
@@ -211,7 +211,7 @@ export class NatsConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Composes NATS connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved NATS connection options.

@@ -191,7 +191,7 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves Kafka connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved Kafka connection options.
      */
     public async resolve(context: IContext): Promise<any> {
@@ -211,7 +211,7 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Composes Kafka connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @returns resolved Kafka connection options.

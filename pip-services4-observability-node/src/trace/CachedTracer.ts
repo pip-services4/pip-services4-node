@@ -1,17 +1,17 @@
 /** @module trace */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ContextInfo } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IReconfigurable } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 import { ErrorDescription } from 'pip-services4-commons-node';
 import { ErrorDescriptionFactory } from 'pip-services4-commons-node';
-
-import { IReconfigurable } from 'pip-services4-commons-node';
 
 import { ITracer } from './ITracer';
 import { TraceTiming } from './TraceTiming';
 import { OperationTrace } from './OperationTrace';
-import { ContextInfo } from '../info/ContextInfo';
 
 /**
  * Abstract tracer that caches recorded traces in memory and periodically dumps them.
@@ -71,7 +71,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
     /**
      * Writes a log message to the logger destination.
      * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
@@ -96,7 +96,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
             source: this._source,
             component: component, 
             operation: operation,
-            trace_id: context,
+            trace_id: context != null ? context.getTraceId() : null,
             duration: duration,
             error: errorDesc
         };
@@ -109,7 +109,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
@@ -121,7 +121,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
@@ -134,7 +134,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
      /**
       * Begings recording an operation trace
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.

@@ -17,7 +17,7 @@ export class MessageEnvelope {
      * Creates a new MessageEnvelope, which adds a correlation id, message id, and a type to the 
      * data being sent/received.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageType       a string value that defines the message's type.
      * @param message           the data being sent/received.
      */

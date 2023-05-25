@@ -192,7 +192,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      * Resolves a single component connection. If connections are configured to be retrieved
      * from Discovery service it finds a IDiscovery and resolves the connection there.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns 			    a resolved connection options
      */
     public async resolve(context: IContext): Promise<ConfigParams> {
@@ -206,7 +206,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      * Resolves all component connection. If connections are configured to be retrieved
      * from Discovery service it finds a IDiscovery and resolves the connection there.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns 			    a resolved connection options
      */
     public async resolveAll(context: IContext): Promise<ConfigParams> {
@@ -225,7 +225,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      * Registers the given connection in all referenced discovery services.
      * This method can be used for dynamic service discovery.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        a connection to register.
      */
     public async register(context: IContext): Promise<void> {

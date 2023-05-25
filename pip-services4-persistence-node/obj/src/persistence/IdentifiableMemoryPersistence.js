@@ -78,7 +78,7 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with found data items.
      */
@@ -93,7 +93,7 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
     /**
      * Gets a data item by its unique id.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item or <code>null</code> if nothing was found.
      */
@@ -226,7 +226,7 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
     deleteByIds(context, ids) {

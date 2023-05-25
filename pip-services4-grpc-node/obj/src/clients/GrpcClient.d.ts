@@ -120,7 +120,7 @@ export declare abstract class GrpcClient implements IOpenable, IConfigurable, IR
      * Adds instrumentation to log calls and measure call time.
      * It returns a CounterTiming object that is used to end the time measurement.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
      * @returns CounterTiming object to end the time measurement.
      */
@@ -148,7 +148,7 @@ export declare abstract class GrpcClient implements IOpenable, IConfigurable, IR
      * Calls a remote method via GRPC protocol.
      *
      * @param method            a method name to called
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */

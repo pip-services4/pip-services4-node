@@ -68,7 +68,7 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
     peek(context: IContext): Promise<MessageEnvelope>;
@@ -78,7 +78,7 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
      *
      * Important: This method is not supported by MQTT.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
@@ -86,7 +86,7 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
@@ -95,7 +95,7 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
     /**
     * Listens for incoming messages and blocks the current thread until queue is closed.
     *
-    * @param context     (optional) transaction id to trace execution through call chain.
+    * @param context     (optional) a context to trace execution through call chain.
     * @param receiver          a receiver to receive incoming messages.
     *
     * @see [[IMessageReceiver]]
@@ -106,7 +106,7 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     endListen(context: IContext): void;
 }

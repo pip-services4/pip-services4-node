@@ -396,7 +396,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting string after ORDER BY clause
@@ -474,7 +474,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter query string after WHERE clause
      * @returns                  a number of data items that satisfy the filter.
      */
@@ -555,7 +555,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
@@ -654,7 +654,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
     public async deleteByFilter(context: IContext, filter: any): Promise<void> {

@@ -1,6 +1,6 @@
 /** @module count */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
 import { StringConverter } from 'pip-services4-commons-node';
 
 import { Counter } from './Counter';

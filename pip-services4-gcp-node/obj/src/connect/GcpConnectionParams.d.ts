@@ -157,7 +157,7 @@ export declare class GcpConnectionParams extends ConfigParams {
     /**
      * Validates this connection parameters
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     validate(context: IContext): void;
     /**

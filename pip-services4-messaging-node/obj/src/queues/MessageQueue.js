@@ -110,7 +110,7 @@ class MessageQueue {
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
@@ -121,7 +121,7 @@ class MessageQueue {
     }
     /**
      * Checks if the queue has been opened and throws an exception is it's not.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     checkOpen(context) {
         if (!this.isOpen()) {
@@ -132,7 +132,7 @@ class MessageQueue {
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      *
@@ -145,7 +145,7 @@ class MessageQueue {
     /**
      * Listens for incoming messages without blocking the current thread.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[listen]]

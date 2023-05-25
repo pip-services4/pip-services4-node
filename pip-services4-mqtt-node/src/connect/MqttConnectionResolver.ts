@@ -123,7 +123,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Resolves MQTT connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved MQTT connection options.
      */
     public async resolve(context: IContext): Promise<any> {
@@ -141,7 +141,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     /**
      * Composes MQTT connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      * @returns resolved MQTT connection options.

@@ -1,11 +1,10 @@
 const assert = require('chai').assert;
 
-import { References } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { References } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { LogCounters } from '../../src/count/LogCounters';
 import { CounterType } from '../../src/count/CounterType';
-import { DefaultLoggerFactory } from '../../src/log/DefaultLoggerFactory';
 import { NullLogger } from '../../src/log/NullLogger';
 import { CounterTiming } from '../../src/count/CounterTiming';
 

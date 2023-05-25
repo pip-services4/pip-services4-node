@@ -122,7 +122,7 @@ class PostgresConnectionResolver {
     /**
      * Resolves PostgreSQL config from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved connection config.
      */
     resolve(context) {

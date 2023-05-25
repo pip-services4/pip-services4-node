@@ -1,7 +1,8 @@
 const assert = require('chai').assert;
 
-import { References } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Context } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { NullLogger } from '../../src/log/NullLogger';
 import { ConsoleLogger } from '../../src/log/ConsoleLogger';
@@ -42,8 +43,8 @@ suite('CompositeLogger', ()=> {
             // Raise an exception
             throw new Error();
         } catch (ex) {
-            _logger.fatal("123", ex, "Fatal error");
-            _logger.error("123", ex, "Recoverable error");
+            _logger.fatal(Context.fromTuples("trace_id", "123"), ex, "Fatal error");
+            _logger.error(Context.fromTuples("trace_id", "123"), ex, "Recoverable error");
 
             assert.isNotNull(ex);
         }

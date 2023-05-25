@@ -99,13 +99,13 @@ export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenc
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a GRPC server (service) using the set options and parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     open(context: IContext): Promise<void>;
     /**
      * Closes this endpoint and the GRPC server (service) that was opened earlier.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     close(context: IContext): Promise<void>;
     /**

@@ -196,7 +196,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     /**
      * Sends a message into the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
     send(context, message) {

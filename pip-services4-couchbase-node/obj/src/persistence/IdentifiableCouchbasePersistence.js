@@ -130,7 +130,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with requested data items.
      */
@@ -166,7 +166,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Gets a data item by its unique id.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 a found data item.
      */
@@ -367,7 +367,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
     deleteByIds(context, ids) {

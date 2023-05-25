@@ -14,7 +14,7 @@ class TestGrpcClient extends GrpcClient_1.GrpcClient {
      * Calls a remote method via GRPC protocol.
      *
      * @param method            a method name to called
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */

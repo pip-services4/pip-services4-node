@@ -75,7 +75,7 @@ export class CommandableGrpcClient extends GrpcClient {
      * The complete route to remote method is defined as serviceName + "." + name.
      * 
      * @param name              a name of the command to call. 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            command parameters.
      * @returns the received result.
      */

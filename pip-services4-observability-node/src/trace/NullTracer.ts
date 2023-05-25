@@ -1,4 +1,7 @@
 /** @module trace */
+
+import { IContext } from 'pip-services4-components-node';
+
 import { TraceTiming } from './TraceTiming';
 import { ITracer } from './ITracer';
 
@@ -19,7 +22,7 @@ export class NullTracer implements ITracer {
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
@@ -31,7 +34,7 @@ export class NullTracer implements ITracer {
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
@@ -44,7 +47,7 @@ export class NullTracer implements ITracer {
      /**
       * Begings recording an operation trace
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.

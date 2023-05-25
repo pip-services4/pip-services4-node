@@ -40,7 +40,7 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
     /**
      * Reads configuration and parameterize it with given values.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param parameters        values to parameters the configuration or null to skip parameterization.
      * @returns                 retrieved configuration parameters.
      */

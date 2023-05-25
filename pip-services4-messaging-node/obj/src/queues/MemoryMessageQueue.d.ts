@@ -59,7 +59,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      */
@@ -91,7 +91,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Sends a message into the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
     send(context: IContext, envelope: MessageEnvelope): Promise<void>;
@@ -99,7 +99,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
     peek(context: IContext): Promise<MessageEnvelope>;
@@ -107,7 +107,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list with peeked messages.
      */
@@ -115,7 +115,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
@@ -153,7 +153,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
@@ -164,7 +164,7 @@ export declare class MemoryMessageQueue extends MessageQueue {
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     endListen(context: IContext): void;
 }

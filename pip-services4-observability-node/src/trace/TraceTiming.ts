@@ -1,4 +1,7 @@
 /** @module trace */
+
+import { IContext } from 'pip-services4-components-node';
+
 import { ITracer } from './ITracer';
 
 /**
@@ -26,7 +29,7 @@ export class TraceTiming {
 	/**
 	 * Creates a new instance of the timing callback object.
 	 * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
 	 * @param component 	an associated component name
 	 * @param operation 	an associated operation name
 	 * @param callback 		a callback that shall be called when endTiming is called.

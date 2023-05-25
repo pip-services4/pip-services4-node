@@ -245,7 +245,7 @@ export declare class SqlitePersistence<T> implements IReferenceable, IUnreferenc
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting JSON object
@@ -259,7 +259,7 @@ export declare class SqlitePersistence<T> implements IReferenceable, IUnreferenc
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a number of dat items that satisfy the filter.
      */
@@ -284,7 +284,7 @@ export declare class SqlitePersistence<T> implements IReferenceable, IUnreferenc
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object
      * @returns                 a random item that satisfies the filter.
      */
@@ -303,7 +303,7 @@ export declare class SqlitePersistence<T> implements IReferenceable, IUnreferenc
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
     deleteByFilter(context: IContext, filter: string): Promise<void>;

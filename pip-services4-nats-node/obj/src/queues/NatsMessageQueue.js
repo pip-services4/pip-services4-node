@@ -92,7 +92,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
     /**
      * Opens the component.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     open(context) {
         const _super = Object.create(null, {
@@ -174,7 +174,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns a peeked message.
      */
     peek(context) {
@@ -199,7 +199,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      *
      * Important: This method is not supported by NATS.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
@@ -217,7 +217,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message or <code>null</code> if nothing was received.
      */
@@ -285,7 +285,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
@@ -314,7 +314,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     endListen(context) {
         this._receiver = null;

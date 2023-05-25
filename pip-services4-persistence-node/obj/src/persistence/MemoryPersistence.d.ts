@@ -103,7 +103,7 @@ export declare class MemoryPersistence<T> implements IConfigurable, IReferenceab
     /**
      * Saves items to external data source using configured saver component.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     save(context: IContext): Promise<void>;
     /**
@@ -118,7 +118,7 @@ export declare class MemoryPersistence<T> implements IConfigurable, IReferenceab
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting parameters
@@ -132,7 +132,7 @@ export declare class MemoryPersistence<T> implements IConfigurable, IReferenceab
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @returns                 a number of data items that satisfy the filter.
      */
@@ -157,7 +157,7 @@ export declare class MemoryPersistence<T> implements IConfigurable, IReferenceab
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      * @returns                 a random data item.
      */
@@ -176,7 +176,7 @@ export declare class MemoryPersistence<T> implements IConfigurable, IReferenceab
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      */
     protected deleteByFilter(context: IContext, filter: any): Promise<void>;

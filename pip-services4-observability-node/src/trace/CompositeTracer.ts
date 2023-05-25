@@ -1,7 +1,9 @@
 /** @module trace */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { ITracer } from './ITracer';
 import { TraceTiming } from './TraceTiming';
@@ -70,7 +72,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
     /**
      * Records an operation trace with its name and duration
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param component         a name of called component
      * @param operation         a name of the executed operation. 
      * @param duration          execution duration in milliseconds. 
@@ -84,7 +86,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
      /**
       * Records an operation failure with its name, duration and error
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @param error             an error object associated with this trace.
@@ -99,7 +101,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
      /**
       * Begings recording an operation trace
       * 
-      * @param context     (optional) transaction id to trace execution through call chain.
+      * @param context     (optional) a context to trace execution through call chain.
       * @param component         a name of called component
       * @param operation         a name of the executed operation. 
       * @returns                 a trace timing object.

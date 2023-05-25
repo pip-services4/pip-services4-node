@@ -98,7 +98,7 @@ export declare abstract class NatsAbstractMessageQueue extends MessageQueue impl
     /**
      * Sends a message into the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
     send(context: IContext, message: MessageEnvelope): Promise<void>;

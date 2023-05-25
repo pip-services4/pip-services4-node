@@ -131,7 +131,7 @@ class MemoryPersistence {
     /**
      * Saves items to external data source using configured saver component.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     save(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -160,7 +160,7 @@ class MemoryPersistence {
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting parameters
@@ -207,7 +207,7 @@ class MemoryPersistence {
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @returns                 a number of data items that satisfy the filter.
      */
@@ -264,7 +264,7 @@ class MemoryPersistence {
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      * @returns                 a random data item.
      */
@@ -309,7 +309,7 @@ class MemoryPersistence {
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      */
     deleteByFilter(context, filter) {

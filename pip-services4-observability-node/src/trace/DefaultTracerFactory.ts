@@ -1,10 +1,10 @@
 /** @module trace */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { Factory } from 'pip-services4-components-node';
 
 import { NullTracer } from './NullTracer';
 import { LogTracer } from './LogTracer';
 import { CompositeTracer } from './CompositeTracer';
-import { Factory } from '../build/Factory';
 
 /**
  * Creates [[ITracer]] components by their descriptors.

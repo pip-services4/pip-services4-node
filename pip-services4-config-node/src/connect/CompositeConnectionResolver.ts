@@ -94,7 +94,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * Resolves connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved options.
      */
      public async resolve(context: IContext): Promise<ConfigParams> {
@@ -136,7 +136,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * Composes Composite connection options from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connections        connection parameters
      * @param credential        credential parameters
      * @param parameters        optional parameters
@@ -161,7 +161,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * Validates connection parameters and throws an exception on error.
      * This method can be overriden in child classes.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection connection parameters to be validated
      */
     protected validateConnection(context: IContext, connection: ConnectionParams): void {
@@ -218,7 +218,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * Validates credential parameters and throws an exception on error.
      * This method can be overriden in child classes.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param credential  credential parameters to be validated
      */
     protected validateCredential(context: IContext, credential: CredentialParams): void {

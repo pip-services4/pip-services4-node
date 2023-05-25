@@ -162,7 +162,7 @@ class MemcachedCache {
      * Retrieves cached value from the cache using its key.
      * If value is missing in the cache or expired it returns null.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      * @returns a cached value or <code>null</code> if nothing was found.
      */
@@ -181,7 +181,7 @@ class MemcachedCache {
     /**
      * Stores value in the cache with expiration time.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      * @param value             a value to store.
      * @param timeout           expiration timeout in milliseconds.
@@ -203,7 +203,7 @@ class MemcachedCache {
     /**
      * Removes a value from the cache by its key.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      * @returns the deleted value.
      */

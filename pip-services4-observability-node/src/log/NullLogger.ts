@@ -1,4 +1,7 @@
 /** @module log */
+
+import { IContext } from 'pip-services4-components-node';
+
 import { ILogger } from './ILogger';
 import { LogLevel } from './LogLevel';
 
@@ -36,7 +39,7 @@ export class NullLogger implements ILogger {
      * Logs a message at specified log level.
      * 
      * @param level             a log level.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -46,7 +49,7 @@ export class NullLogger implements ILogger {
 	/**
      * Logs fatal (unrecoverable) message that caused the process to crash.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -56,7 +59,7 @@ export class NullLogger implements ILogger {
     /**
      * Logs recoverable application error.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
@@ -66,7 +69,7 @@ export class NullLogger implements ILogger {
     /**
      * Logs a warning that may or may not have a negative impact.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -75,7 +78,7 @@ export class NullLogger implements ILogger {
     /**
      * Logs an important information message
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -84,7 +87,7 @@ export class NullLogger implements ILogger {
     /**
      * Logs a high-level debug information for troubleshooting.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
@@ -93,7 +96,7 @@ export class NullLogger implements ILogger {
     /**
      * Logs a low-level debug information for troubleshooting. 
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */

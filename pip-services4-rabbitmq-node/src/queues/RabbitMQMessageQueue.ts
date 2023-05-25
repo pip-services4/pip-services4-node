@@ -248,7 +248,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     /**
      * Sends a message into the queue.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param message           a message envelop to be sent.
      */
     public async send(context: IContext, message: MessageEnvelope): Promise<void> {
@@ -285,7 +285,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns a peeked message.
      */
      public async peek(context: IContext): Promise<MessageEnvelope> {
@@ -310,7 +310,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * 
      * Important: This method is not supported by RabbitMQ.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
@@ -335,7 +335,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     /**
      * Receives an incoming message and removes it from the queue.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns a received message.
      */
@@ -436,7 +436,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      * 
      * @see [[IMessageReceiver]]
@@ -478,7 +478,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public endListen(context: IContext): void {
         this._listen = false;

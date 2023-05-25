@@ -17,8 +17,8 @@ export class LogMessage {
 	/** 
 	 * The description of the captured error
 	 * 
-	 * [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/errors.errordescription.html ErrorDescription]] 
-	 * [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/errors.applicationexception.html ApplicationException]] 
+	 * [[https://pip-services4-node.github.io/pip-services4-components-node/classes/errors.errordescription.html ErrorDescription]] 
+	 * [[https://pip-services4-node.github.io/pip-services4-components-node/classes/errors.applicationexception.html ApplicationException]] 
 	 */
 	public error: ErrorDescription;
 	/** The human-readable message */

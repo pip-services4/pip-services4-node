@@ -1,6 +1,6 @@
 /** @module count */
-import { IReconfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IReconfigurable } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { ICounters } from './ICounters';
 import { CounterTiming } from './CounterTiming';

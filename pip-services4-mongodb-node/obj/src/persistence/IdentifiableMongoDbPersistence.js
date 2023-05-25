@@ -131,7 +131,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a data list.
      */
@@ -146,7 +146,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Gets a data item by its unique id.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 the found data item.
      */
@@ -298,7 +298,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
     deleteByIds(context, ids) {

@@ -162,7 +162,7 @@ class MySqlConnectionResolver {
     /**
      * Resolves MongoDB connection URI from connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns a resolved URI.
      */
     resolve(context) {

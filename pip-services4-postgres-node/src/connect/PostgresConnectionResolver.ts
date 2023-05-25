@@ -126,7 +126,7 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
     /**
      * Resolves PostgreSQL config from connection and credential parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns resolved connection config.
      */
     public async resolve(context: IContext): Promise<any> {

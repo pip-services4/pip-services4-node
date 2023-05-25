@@ -110,7 +110,7 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
      * Reads container configuration from JSON or YAML file
      * and parameterizes it with given values.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param path              a path to configuration file
      * @param parameters        values to parameters the configuration or null to skip parameterization.
      */

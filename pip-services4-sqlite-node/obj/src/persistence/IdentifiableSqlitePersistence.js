@@ -108,7 +108,7 @@ class IdentifiableSqlitePersistence extends SqlitePersistence_1.SqlitePersistenc
     /**
      * Gets a list of data items retrieved by given unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be retrieved
      * @returns                 a list with requested data items.
      */
@@ -134,7 +134,7 @@ class IdentifiableSqlitePersistence extends SqlitePersistence_1.SqlitePersistenc
     /**
      * Gets a data item by its unique id.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param id                an id of data item to be retrieved.
      * @returns                 the requested data item or <code>null</code>.
      */
@@ -353,7 +353,7 @@ class IdentifiableSqlitePersistence extends SqlitePersistence_1.SqlitePersistenc
     /**
      * Deletes multiple data items by their unique ids.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param ids               ids of data items to be deleted.
      */
     deleteByIds(context, ids) {

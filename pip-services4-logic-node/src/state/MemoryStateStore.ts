@@ -70,7 +70,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
      * Loads stored value from the store using its key.
      * If value is missing in the store it returns null.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique state key.
      * @returns                 the state value or <code>null</code> if value wasn't found.
      */
@@ -96,7 +96,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
     /**
      * Loads an array of states from the store using their keys.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param keys              unique state keys.
      * @returns                 an array with state values.
      */
@@ -117,7 +117,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
 	/**
      * Saves state into the store
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique state key.
      * @param value             a state value to store.
      * @returns                 The value that was stored in the cache.
@@ -155,7 +155,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
 	/**
      * Deletes a state from the store by its key.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique state key.
 	 */
     public async delete<T>(context: IContext, key: string): Promise<T> {

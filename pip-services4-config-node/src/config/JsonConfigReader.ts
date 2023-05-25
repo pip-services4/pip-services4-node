@@ -51,7 +51,7 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration file, parameterizes its content and converts it into JSON object.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param parameters        values to parameters the configuration.
      * @returns                 a JSON object with configuration.
      */
@@ -83,7 +83,7 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration and parameterize it with given values.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param parameters        values to parameters the configuration
      * @param callback          callback function that receives configuration or error.
      */
@@ -96,7 +96,7 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration file, parameterizes its content and converts it into JSON object.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param file              a path to configuration file.
      * @param parameters        values to parameters the configuration.
      * @returns                 a JSON object with configuration.
@@ -108,7 +108,7 @@ export class JsonConfigReader extends FileConfigReader {
     /**
      * Reads configuration from a file, parameterize it with given values and returns a new ConfigParams object.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param file              a path to configuration file.
      * @param parameters        values to parameters the configuration.
      * @returns                 retrieved configuration parameters.

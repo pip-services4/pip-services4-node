@@ -137,7 +137,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     /**
      * Saves items to external data source using configured saver component.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public async save(context: IContext): Promise<void> {
         if (this._saver == null) {
@@ -168,7 +168,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getPageByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @param paging            (optional) paging parameters
      * @param sort              (optional) sorting parameters
@@ -220,7 +220,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getCountByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items
      * @returns                 a number of data items that satisfy the filter.
      */
@@ -280,7 +280,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public getOneRandom method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      * @returns                 a random data item.
      */
@@ -329,7 +329,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * This method shall be called by a public deleteByFilter method from child class that
      * receives FilterParams and converts them into a filter function.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter function to filter items.
      */
     protected async deleteByFilter(context: IContext, filter: any): Promise<void> {

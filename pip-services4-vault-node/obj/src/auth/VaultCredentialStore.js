@@ -296,7 +296,7 @@ class VaultCredentialStore {
     /**
      * Stores credential parameters into the store.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param credential        a credential parameters to be stored.
      */
@@ -346,7 +346,7 @@ class VaultCredentialStore {
     /**
      * Lookups credential parameters by its key.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a key to uniquely identify the credential parameters.
      * @param callback          callback function that receives found credential parameters or error.
      */

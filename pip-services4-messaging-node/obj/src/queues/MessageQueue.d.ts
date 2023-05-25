@@ -92,14 +92,14 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Opens the component with given connection and credential parameters.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
     protected openWithParams(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<void>;
     /**
      * Checks if the queue has been opened and throws an exception is it's not.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     protected checkOpen(context: IContext): void;
     /**
@@ -123,7 +123,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Sends a message into the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param envelope          a message envelop to be sent.
      */
     abstract send(context: IContext, envelope: MessageEnvelope): Promise<void>;
@@ -131,7 +131,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
      * Sends an object into the queue.
      * Before sending the object is converted into JSON string and wrapped in a [[MessageEnvelope]].
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageType       a message type
      * @param value             an object value to be sent
      *
@@ -142,7 +142,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
      * Peeks a single incoming message from the queue without removing it.
      * If there are no messages available in the queue it returns null.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
     abstract peek(context: IContext): Promise<MessageEnvelope>;
@@ -150,7 +150,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
      * Peeks multiple incoming messages from the queue without removing them.
      * If there are no messages available in the queue it returns an empty list.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param messageCount      a maximum number of messages to peek.
      * @returns                 a list of peeked messages
      */
@@ -158,7 +158,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Receives an incoming message and removes it from the queue.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param waitTimeout       a timeout in milliseconds to wait for a message to come.
      * @returns                 a received message or <code>null</code>.
      */
@@ -196,7 +196,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Listens for incoming messages and blocks the current thread until queue is closed.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[IMessageReceiver]]
@@ -207,13 +207,13 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
      * Ends listening for incoming messages.
      * When this method is call [[listen]] unblocks the thread and execution continues.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     abstract endListen(context: IContext): void;
     /**
      * Listens for incoming messages without blocking the current thread.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param receiver          a receiver to receive incoming messages.
      *
      * @see [[listen]]

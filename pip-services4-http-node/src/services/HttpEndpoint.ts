@@ -175,7 +175,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a REST server (service) using the set options and parameters.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
         if (this.isOpen()) {
@@ -332,7 +332,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     /**
      * Closes this endpoint and the REST server (service) that was opened earlier.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         if (this._server != null) {

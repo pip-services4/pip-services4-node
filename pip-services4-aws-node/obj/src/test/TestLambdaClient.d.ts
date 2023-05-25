@@ -9,7 +9,7 @@ export declare class TestLambdaClient extends LambdaClient {
      * Calls a AWS Lambda Function action.
      *
      * @param cmd               an action name to be called.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
@@ -18,7 +18,7 @@ export declare class TestLambdaClient extends LambdaClient {
      * Calls a AWS Lambda Function action asynchronously without waiting for response.
      *
      * @param cmd               an action name to be called.
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */

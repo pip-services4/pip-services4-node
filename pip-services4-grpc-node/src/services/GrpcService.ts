@@ -205,7 +205,7 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
      * Adds instrumentation to log calls and measure call time.
      * It returns a Timing object that is used to end the time measurement.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
      * @returns Timing object to end the time measurement.
      */
@@ -222,7 +222,7 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
     // /**
     //  * Adds instrumentation to error handling.
     //  * 
-    //  * @param context     (optional) transaction id to trace execution through call chain.
+    //  * @param context     (optional) a context to trace execution through call chain.
     //  * @param name              a method name.
     //  * @param err               an occured error
     //  * @param result            (optional) an execution result

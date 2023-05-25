@@ -10,7 +10,7 @@ import { StateValue } from "./StateValue";
      * Loads state from the store using its key.
      * If value is missing in the store it returns null.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique state key.
      * @returns                 the state value or <code>null</code> if value wasn't found.
      */
@@ -19,7 +19,7 @@ import { StateValue } from "./StateValue";
     /**
      * Loads an array of states from the store using their keys.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param keys              unique state keys.
      * @returns                 an array with state values and their corresponding keys.
      */
@@ -28,7 +28,7 @@ import { StateValue } from "./StateValue";
     /**
      * Saves state into the store.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique state key.
      * @param value             a state value.
      * @returns                 The state that was stored in the store.
@@ -38,7 +38,7 @@ import { StateValue } from "./StateValue";
     /**
      * Deletes a state from the store by its key.
      * 
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique value key.
      */
     delete<T>(context: IContext, key: string): Promise<T>;

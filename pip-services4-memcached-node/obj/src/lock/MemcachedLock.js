@@ -167,7 +167,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
      * Makes a single attempt to acquire a lock by its key.
      * It returns immediately a positive or negative result.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique lock key to acquire.
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfull and <code>false</code> otherwise.
@@ -192,7 +192,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
     /**
      * Releases prevously acquired lock by its key.
      *
-     * @param context     (optional) transaction id to trace execution through call chain.
+     * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
     releaseLock(context, key) {
