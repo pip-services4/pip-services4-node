@@ -1,5 +1,5 @@
 {
-    "name":  "pip-services4-observe-node",
+    "name":  "pip-services4-observability-node",
     "type": "module",
     "language": "node",
     "version": "1.0.0",

@@ -1,5 +1,5 @@
 {
-    "name": "pip-services4-observe-node",
+    "name": "pip-services4-observability-node",
     "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
     "description": "Component definitions for Pip.Services in Node.js / ES2017",
@@ -20,7 +20,7 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-observe-node.git"
+        "url": "ssh://git@github.com:pip-services4-node/pip-services4-observability-node.git"
     },
     "license": "MIT",
     "engines": {

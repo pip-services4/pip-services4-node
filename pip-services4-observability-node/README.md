@@ -2,7 +2,7 @@
 
 This module is a part of the [Pip.Services](http://pipservices.org) polyglot microservices toolkit.
 
-The Observe module contains observability component definitions that can be used to build applications and services.
+The Observability module contains observability component definitions that can be used to build applications and services.
 
 The module contains the following packages:
 - **Count** - performance counters
@@ -13,7 +13,7 @@ The module contains the following packages:
 <a name="links"></a> Quick links:
 
 * [Logging](http://docs.pipservices.org/getting_started/recipes/logging/)
-* [API Reference](https://pip-services4-node.github.io/pip-services4-observe-node/globals.html)
+* [API Reference](https://pip-services4-node.github.io/pip-services4-observability-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](http://docs.pipservices.org/get_help/)
 * [Contribute](http://docs.pipservices.org/contribute/)
@@ -22,7 +22,7 @@ The module contains the following packages:
 
 Install the NPM package as
 ```bash
-npm install pip-services4-observe-node --save
+npm install pip-services4-observability-node --save
 ```
 
 Example how to use Logging and Performance counters.
@@ -34,8 +34,8 @@ import { ConfigParams } from 'pip-services4-commons-node';
 import { IConfigurable } from 'pip-services4-commons-node'; 
 import { IReferences } from 'pip-services4-commons-node'; 
 import { IReferenceable } from 'pip-services4-commons-node'; 
-import { CompositeLogger } from 'pip-services4-observe-node'; 
-import { CompositeCounters } from 'pip-services4-observe-node'; 
+import { CompositeLogger } from 'pip-services4-observability-node'; 
+import { CompositeCounters } from 'pip-services4-observability-node'; 
 
 export class MyComponent implements IConfigurable, IReferenceable {
   private _logger: CompositeLogger = new CompositeLogger();
