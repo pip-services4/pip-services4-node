@@ -64,10 +64,10 @@ export declare class Context implements IContext {
      */
     static fromTuples(...tuples: any[]): Context;
     /**
-     * Creates new Parameters from JSON object.
+     * Creates new Context from JSON object.
      *
      * @param json 	a JSON string containing parameters.
-     * @returns a new Parameters object.
+     * @returns a new Context object.
      *
      * @see [[JsonConverter.toNullableMap]]
      */
@@ -81,4 +81,11 @@ export declare class Context implements IContext {
      * @see [[ConfigParams]]
      */
     static fromConfig(config: ConfigParams): Context;
+    /**
+     * Creates new Context from trace id.
+     *
+     * @param traceId 	a transaction id to trace execution through call chain.
+     * @returns a new Parameters object.
+     */
+    static fromTraceId(traceId: string): Context;
 }

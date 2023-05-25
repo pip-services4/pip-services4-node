@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const run_1 = require("../run");
 /**
  * Basic implementation of an execution context.
  *
@@ -85,10 +86,10 @@ class Context {
         return new Context(map);
     }
     /**
-     * Creates new Parameters from JSON object.
+     * Creates new Context from JSON object.
      *
      * @param json 	a JSON string containing parameters.
-     * @returns a new Parameters object.
+     * @returns a new Context object.
      *
      * @see [[JsonConverter.toNullableMap]]
      */
@@ -115,6 +116,16 @@ class Context {
             }
         }
         return new Context(values);
+    }
+    /**
+     * Creates new Context from trace id.
+     *
+     * @param traceId 	a transaction id to trace execution through call chain.
+     * @returns a new Parameters object.
+     */
+    static fromTraceId(traceId) {
+        let map = run_1.Parameters.fromTuples("trace_id", traceId);
+        return new Context(map);
     }
 }
 exports.Context = Context;
