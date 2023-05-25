@@ -44,4 +44,5 @@ export { ConnectionResolver } from './ConnectionResolver';
 export { MemoryDiscovery } from './MemoryDiscovery';
 export { DefaultDiscoveryFactory } from './DefaultDiscoveryFactory';
 export { CompositeConnectionResolver } from './CompositeConnectionResolver';
+export { HttpConnectionResolver } from './HttpConnectionResolver';
 export { ConnectionUtils } from './ConnectionUtils';
