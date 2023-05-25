@@ -6,16 +6,11 @@ The Components module contains standard component definitions that can be used t
 
 The module contains the following packages:
 - **Build** - basic factories for constructing objects
-- **Count** - performance counters
 - **Info** - context info implementations that manage the saving of process information and sending additional parameter sets
-- **Log** - basic logging components that provide console and composite logging, as well as an interface for developing custom loggers
 - **Test** - minimal set of test components to make testing easier
-- **Component** - the root package
 
 <a name="links"></a> Quick links:
 
-* [Logging](http://docs.pipservices.org/getting_started/recipes/logging/)
-* [Configuration](http://docs.pipservices.org/concepts/configuration/component_configuration/) 
 * [API Reference](https://pip-services4-node.github.io/pip-services4-components-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](http://docs.pipservices.org/get_help/)
@@ -26,50 +21,6 @@ The module contains the following packages:
 Install the NPM package as
 ```bash
 npm install pip-services4-components-node --save
-```
-
-Example how to use Logging and Performance counters.
-Here we are going to use CompositeLogger and CompositeCounters components.
-They will pass through calls to loggers and counters that are set in references.
-
-```typescript
-import { ConfigParams } from 'pip-services4-commons-node'; 
-import { IConfigurable } from 'pip-services4-commons-node'; 
-import { IReferences } from 'pip-services4-commons-node'; 
-import { IReferenceable } from 'pip-services4-commons-node'; 
-import { CompositeLogger } from 'pip-services4-components-node'; 
-import { CompositeCounters } from 'pip-services4-components-node'; 
-
-export class MyComponent implements IConfigurable, IReferenceable {
-  private _logger: CompositeLogger = new CompositeLogger();
-  private _counters: CompositeCounters = new CompositeCounters();
-  
-  public configure(config: ConfigParams): void {
-    this._logger.configure(config);
-  }
-  
-  public setReferences(refs: IReferences): void {
-    this._logger.setReferences(refs);
-    this._counters.setReferences(refs);
-  }
-  
-  public async myMethod(correlationId: string, param1: any): Promise<void> {
-    this._logger.trace(correlationId, "Executed method mycomponent.mymethod");
-    this._counters.increment("mycomponent.mymethod.exec_count", 1);
-    let timing = this._counters.beginTiming("mycomponent.mymethod.exec_time");
-    try {
-      ....
-    } finally {
-      timing.endTiming();
-    } catch (err) {
-      if (err) {
-        this._logger.error(correlationId, err, "Failed to execute mycomponent.mymethod");
-        this._counters.increment("mycomponent.mymethod.error_count", 1);
-      }
-    }
-    ...
-  }
-}
 ```
 
 If you need to create components using their locators (descriptors) implement 
@@ -102,7 +53,7 @@ let myComponent2 = myFactory.create(new Descriptor("myservice", "mycomponent", "
 ## Develop
 
 For development you shall install the following prerequisites:
-* Node.js 8+
+* Node.js 14+
 * Visual Studio Code or another IDE of your choice
 * Docker
 * Typescript
