@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-gcp-node",
     "version": "1.0.0",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "Google Cloud specific components for Node.js / ES2017",
     "contributors": [
         {

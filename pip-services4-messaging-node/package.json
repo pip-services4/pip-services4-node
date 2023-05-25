@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-messaging-node",
     "version": "1.0.0",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "Asychronuous messaging components for Pip.Services in Node.js / ES2017",
     "contributors": [
         {

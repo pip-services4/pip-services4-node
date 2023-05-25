@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-couchbase-node",
     "version": "1.0.0",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "Couchbase components for Pip.Services in Node.js",
     "contributors": [
         {

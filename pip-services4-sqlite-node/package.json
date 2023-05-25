@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-sqlite-node",
     "version": "1.0.0",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "SQLite components for Pip.Services in Node.js / ES2017",
     "contributors": [
         {

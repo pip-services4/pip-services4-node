@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-elasticsearch-node",
     "version": "1.0.0",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "ElasticSearch components for Pip.Services in Node.js / ES2017",
     "contributors": [
         {

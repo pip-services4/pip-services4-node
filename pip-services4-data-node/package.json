@@ -1,7 +1,7 @@
 {
     "name": "pip-services4-data-node",
     "version": "1.0.2",
-    "author": "Conceptual Vision Consulting LLC",
+    "author": "Enterprise Innovation Consulting",
     "description": "Data persistence for Pip.Services in Node.js / ES2017",
     "contributors": [
         {
