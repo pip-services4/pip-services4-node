@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /** @module index */
 __exportStar(require("./build"), exports);
 __exportStar(require("./config"), exports);
+__exportStar(require("./context"), exports);
 __exportStar(require("./refer"), exports);
 __exportStar(require("./run"), exports);
 //# sourceMappingURL=index.js.map
