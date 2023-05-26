@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
-const run_1 = require("../run");
+const Parameters_1 = require("../exec/Parameters");
 /**
  * Basic implementation of an execution context.
  *
@@ -124,7 +124,7 @@ class Context {
      * @returns a new Parameters object.
      */
     static fromTraceId(traceId) {
-        const map = run_1.Parameters.fromTuples("trace_id", traceId);
+        const map = Parameters_1.Parameters.fromTuples("trace_id", traceId);
         return new Context(map);
     }
 }

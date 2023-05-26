@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 
 import { TestClass } from './TestClass';
 import { ConfigParams } from '../../src/config/ConfigParams';
-import { Parameters } from '../../src/run/Parameters';
+import { Parameters } from '../../src/exec/Parameters';
 
 suite('Parameters', ()=> {
     

@@ -2,7 +2,7 @@
 
 import { Context } from "../context";
 import { IContext } from "../context/IContext";
-import { IClosable } from './IClosable';
+import { IClosable } from "../run/IClosable";
 import { INotifiable } from './INotifiable';
 import { Parameters } from './Parameters';
 

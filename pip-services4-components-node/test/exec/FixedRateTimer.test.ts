@@ -1,8 +1,7 @@
 const assert = require('chai').assert;
 
 import { IContext } from "../../src/context/IContext";
-import { INotifiable } from '../../src/exec/INotifiable';
-import { FixedRateTimer } from '../../src/run/FixedRateTimer';
+import { FixedRateTimer } from "../../src/exec/FixedRateTimer";
 
 suite('FixedRateTimer', ()=> {
     

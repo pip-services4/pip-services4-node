@@ -14,7 +14,7 @@ class ReferenceException extends pip_services4_commons_node_1.InternalException 
      * @param locator             the locator to find reference to dependent component.
      */
     constructor(context, locator) {
-        super(context.getTraceId(), "REF_ERROR", "Failed to obtain reference to " + locator);
+        super(context != null ? context.getTraceId() : null, "REF_ERROR", "Failed to obtain reference to " + locator);
         this.withDetails("locator", locator);
     }
 }

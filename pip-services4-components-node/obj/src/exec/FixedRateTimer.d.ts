@@ -1,6 +1,6 @@
 /** @module run */
 import { IContext } from "../context/IContext";
-import { IClosable } from './IClosable';
+import { IClosable } from "../run/IClosable";
 import { INotifiable } from './INotifiable';
 /**
  * Timer that is triggered in equal time intervals.

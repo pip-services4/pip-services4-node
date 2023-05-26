@@ -19,5 +19,6 @@ __exportStar(require("./build"), exports);
 __exportStar(require("./config"), exports);
 __exportStar(require("./context"), exports);
 __exportStar(require("./refer"), exports);
+__exportStar(require("./exec"), exports);
 __exportStar(require("./run"), exports);
 //# sourceMappingURL=index.js.map

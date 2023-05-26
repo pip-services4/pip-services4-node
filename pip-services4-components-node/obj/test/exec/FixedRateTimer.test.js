@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const FixedRateTimer_1 = require("../../src/run/FixedRateTimer");
+const FixedRateTimer_1 = require("../../src/exec/FixedRateTimer");
 suite('FixedRateTimer', () => {
     test('Run with task', (done) => {
         let counter = 0;

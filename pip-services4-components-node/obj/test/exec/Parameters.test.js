@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const TestClass_1 = require("./TestClass");
 const ConfigParams_1 = require("../../src/config/ConfigParams");
-const Parameters_1 = require("../../src/run/Parameters");
+const Parameters_1 = require("../../src/exec/Parameters");
 suite('Parameters', () => {
     test('Defaults', () => {
         let result = Parameters_1.Parameters.fromTuples("value1", 123, "value2", 234);
