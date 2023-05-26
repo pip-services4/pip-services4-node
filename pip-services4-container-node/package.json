@@ -39,7 +39,7 @@
         "pip-services4-commons-node": "^0.0.2",
         "pip-services4-components-node": "^0.0.4",
         "pip-services4-config-node": "^0.0.4",
-        "pip-services4-logic-node": "0.0.1",
+        "pip-services4-logic-node": "^0.0.1",
         "pip-services4-observability-node": "^0.0.2"
     },
     "devDependencies": {

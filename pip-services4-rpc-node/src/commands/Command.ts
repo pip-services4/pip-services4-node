@@ -3,9 +3,8 @@
 import { IContext } from 'pip-services4-components-node';
 import { Parameters } from 'pip-services4-components-node';
 import { InvocationException } from 'pip-services4-commons-node';
-import { ValidationResult } from 'pip-services4-components-node';
 import { IExecutable } from 'pip-services4-components-node';
-import { Schema } from 'pip-services4-data-node';
+import { Schema, ValidationResult } from 'pip-services4-data-node';
 
 import { ICommand } from './ICommand';
 
@@ -98,14 +97,14 @@ export class Command implements ICommand {
      */
     public async execute(context: IContext, args: Parameters): Promise<any> {
         if (this._schema) {
-            this._schema.validateAndThrowException(context, args);
+            this._schema.validateAndThrowException(context != null ? context.getTraceId() : null, args);
         }
 
         try {
             return await this._action(context, args);
         } catch (ex) {
             throw new InvocationException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "EXEC_FAILED",
                 "Execution " + this.getName() + " failed: " + ex
             ).withDetails("command", this.getName()).wrap(ex);

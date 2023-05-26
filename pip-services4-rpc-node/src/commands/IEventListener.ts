@@ -26,12 +26,12 @@ import { IEvent } from './IEvent';
  *     // Console output: Fired event myevent
  */
 export interface IEventListener {
-	/**
-	 * A method called when events this listener is subscrubed to are fired.
-	 * 
-	 * @param event 			a fired evemt
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 * @param args 			    event arguments.
-	 */
+    /**
+     * A method called when events this listener is subscrubed to are fired.
+     * 
+     * @param event             a fired evemt
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param args                 event arguments.
+     */
     onEvent(context: IContext, event: IEvent, args: Parameters): void;
 }

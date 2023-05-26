@@ -1,7 +1,7 @@
 /** @module commands */
 
+import { INotifiable } from 'pip-services4-components-node';
 import { IEventListener } from './IEventListener';
-import { INotifiable } from '../../../pip-services4-commons-node/src/run/INotifiable';
 
 /**
  * An interface for Events, which are part of the Command design pattern.
@@ -10,11 +10,11 @@ import { INotifiable } from '../../../pip-services4-commons-node/src/run/INotifi
  * @see [[IEventListener]]
  */
 export interface IEvent extends INotifiable {
-	/**
+    /**
      * Gets the event name.
      * 
-	 * @returns the name of the event.
-	 */
+     * @returns the name of the event.
+     */
     getName(): string;
 
     /**

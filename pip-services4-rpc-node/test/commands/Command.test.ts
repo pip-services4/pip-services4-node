@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { Parameters } from 'pip-services4-components-node';
+import { Context, Parameters } from 'pip-services4-components-node';
 
 import { CommandExec } from './CommandExec';
 import { Command } from '../../src/commands/Command';
@@ -10,7 +10,7 @@ suite('Command', ()=> {
     test('Get Name', () => {
         let command = new Command("name", null, new CommandExec());
 
-		// Check match by individual fields
+        // Check match by individual fields
         assert.isNotNull(command);
         assert.equal(command.getName(), 'name');
     });    
@@ -23,7 +23,7 @@ suite('Command', ()=> {
         map[11] = "title 11";
         let param = new Parameters(map);
 
-        let result = await command.execute("a", param)
+        let result = await command.execute(Context.fromTraceId("a"), param)
         assert.equal(result, 0);
     });    
 

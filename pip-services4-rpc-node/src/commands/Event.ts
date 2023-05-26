@@ -77,7 +77,7 @@ export class Event implements IEvent {
      * @param listener      the listener reference to remove.
      */
     public removeListener(listener: IEventListener): void {
-        let index = this._listeners.indexOf(listener);
+        const index = this._listeners.indexOf(listener);
 
         if (index > -1) {
             this._listeners.splice(index, 1);
@@ -94,11 +94,11 @@ export class Event implements IEvent {
     public notify(context: IContext, args: Parameters): void {
         for (let i = 0; i < this._listeners.length; i++) {
             try {
-                let listener: IEventListener = this._listeners[i];
+                const listener: IEventListener = this._listeners[i];
                 listener.onEvent(context, this, args);
             } catch (ex) {
                 throw new InvocationException(
-                    context,
+                    context != null ? context.getTraceId() : null,
                     "EXEC_FAILED",
                     "Raising event " + this.getName() + " failed: " + ex)
                     .withDetails("event", this.getName())

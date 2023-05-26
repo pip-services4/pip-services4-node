@@ -72,7 +72,7 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
     /** 
      * The open flag.
      */
-    protected _opened: boolean = true;
+    protected _opened = true;
     /** 
      * The logger.
      */
@@ -107,17 +107,17 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
-	public setReferences(references: IReferences): void {
-		this._logger.setReferences(references);
-		this._counters.setReferences(references);
+    public setReferences(references: IReferences): void {
+        this._logger.setReferences(references);
+        this._counters.setReferences(references);
         this._tracer.setReferences(references);
         this._dependencyResolver.setReferences(references);
         this._service = this._dependencyResolver.getOneRequired<T>('service');
-	}
+    }
         
     /**
      * Adds instrumentation to log calls and measure call time.
@@ -127,15 +127,15 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
      * @param name              a method name.
      * @returns InstrumentTiming object to end the time measurement.
      */
-	protected instrument(context: IContext, name: string): InstrumentTiming {
+    protected instrument(context: IContext, name: string): InstrumentTiming {
         this._logger.trace(context, "Calling %s method", name);
         this._counters.incrementOne(name + ".call_count");
 
-		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".call_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "call",
             this._logger, this._counters, counterTiming, traceTiming);
-	}
+    }
 
     // /**
     //  * Adds instrumentation to error handling.
@@ -157,26 +157,26 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
     // }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
-	public isOpen(): boolean {
+    public isOpen(): boolean {
         return this._opened;
     }
     
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
-	public async open(context: IContext): Promise<void> {
+    public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
         }
-    	
+        
         if (this._service == null) {
-            throw new ConnectionException(context, 'NO_CONTROLLER', 'Service reference is missing');
+            throw new ConnectionException(context != null ? context.getTraceId() : null, 'NO_CONTROLLER', 'Service reference is missing');
         } 
 
         this._opened = true;
@@ -185,9 +185,9 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         if (this._opened) {

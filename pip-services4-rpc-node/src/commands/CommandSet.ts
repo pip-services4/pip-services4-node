@@ -1,6 +1,6 @@
 /** @module commands */
 
-import { IContext } from 'pip-services4-components-node';
+import { Context, IContext } from 'pip-services4-components-node';
 import { Parameters } from 'pip-services4-components-node';
 import { BadRequestException } from 'pip-services4-commons-node';
 import { ValidationException } from 'pip-services4-data-node';
@@ -60,7 +60,9 @@ export class CommandSet {
     /**
      * Creates an empty CommandSet object.
      */
-    public constructor() { }
+    public constructor() {
+        //
+    }
 
     /**
      * Gets all commands registered in this command set.
@@ -120,7 +122,7 @@ export class CommandSet {
 
     private rebuildAllCommandChains(): void {
         this._commandsByName = {};
-        for (let command of this._commands) {
+        for (const command of this._commands) {
             this.buildCommandChain(command);
         }
     }
@@ -145,7 +147,7 @@ export class CommandSet {
      * @see [[ICommand]]
      */
     public addCommands(commands: ICommand[]): void {
-        for (let command of commands) {
+        for (const command of commands) {
             this.addCommand(command);
         }
     }
@@ -169,7 +171,7 @@ export class CommandSet {
      * @see [[IEvent]]
      */
     public addEvents(events: IEvent[]): void {
-        for (let event of events) {
+        for (const event of events) {
             this.addEvent(event);
         }
     }
@@ -193,7 +195,7 @@ export class CommandSet {
      * @see [[IEventListener]]
      */
     public addListener(listener: IEventListener): void {
-        for (let event of this._events) {
+        for (const event of this._events) {
             event.addListener(listener);
         }
     }
@@ -206,7 +208,7 @@ export class CommandSet {
      * @see [[IEventListener]]
      */
     public removeListener(listener: IEventListener): void {
-        for (let event of this._events) {
+        for (const event of this._events) {
             event.removeListener(listener);
         }
     }
@@ -235,25 +237,25 @@ export class CommandSet {
      * @see [[Parameters]]
      */
     public async execute(context: IContext, commandName: string, args: Parameters): Promise<any> {
-        let cref = this.findCommand(commandName);
-
+        const cref = this.findCommand(commandName);
+        let traceId = context != null ? context.getTraceId() : null;
         if (cref == null) {
             throw new BadRequestException(
-                context,
+                traceId,
                 "CMD_NOT_FOUND",
                 "Request command does not exist"
             )
             .withDetails("command", commandName);
         }
 
-        if (context != null && context != "") {
-            context = IdGenerator.nextShort();
+        if (traceId != null && traceId != "") {
+            traceId = IdGenerator.nextShort();
         }
 
-        let results = cref.validate(args);
-        ValidationException.throwExceptionIfNeeded(context, results, false);
+        const results = cref.validate(args);
+        ValidationException.throwExceptionIfNeeded(traceId, results, false);
 
-        return await cref.execute(context, args);
+        return await cref.execute(context != null ? context : Context.fromTraceId(traceId), args);
     }
 
     /**
@@ -272,10 +274,10 @@ export class CommandSet {
      * @see [[ValidationResult]]
      */
     public validate(commandName: string, args: Parameters): ValidationResult[] {
-        let cref = this.findCommand(commandName);
+        const cref = this.findCommand(commandName);
 
         if (cref == null) {
-            let result: ValidationResult[] = [];
+            const result: ValidationResult[] = [];
             result.push(new ValidationResult(
                 null, 
                 ValidationResultType.Error, 
@@ -300,7 +302,7 @@ export class CommandSet {
      * @param args              the event arguments (parameters).
      */
     public notify(context: IContext, eventName: string, args: Parameters): void {
-        let event = this.findEvent(eventName);
+        const event = this.findEvent(eventName);
         if (event != null) {
             event.notify(context, args);
         }
