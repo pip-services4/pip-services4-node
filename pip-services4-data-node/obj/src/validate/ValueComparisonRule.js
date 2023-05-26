@@ -37,7 +37,7 @@ class ValueComparisonRule {
      * @param results   a list with validation results to add new results.
      */
     validate(path, schema, value, results) {
-        let name = path || "value";
+        const name = path || "value";
         if (!ObjectComparator_1.ObjectComparator.compare(value, this._operation, this._value)) {
             results.push(new ValidationResult_1.ValidationResult(path, ValidationResultType_1.ValidationResultType.Error, "BAD_VALUE", name + " must " + this._operation + " " + this._value + " but found " + value, this._operation + " " + this._value, value));
         }

@@ -43,7 +43,7 @@ class ValidationException extends pip_services4_commons_node_1.BadRequestExcepti
         if (results && results.length > 0) {
             let first = true;
             for (let i = 0; i < results.length; i++) {
-                let result = results[i];
+                const result = results[i];
                 if (result.getType() == ValidationResultType_1.ValidationResultType.Information) {
                     continue;
                 }
@@ -68,7 +68,7 @@ class ValidationException extends pip_services4_commons_node_1.BadRequestExcepti
     static fromResults(traceId, results, strict) {
         let hasErrors = false;
         for (let i = 0; i < results.length; i++) {
-            let result = results[i];
+            const result = results[i];
             if (result.getType() == ValidationResultType_1.ValidationResultType.Error) {
                 hasErrors = true;
             }
@@ -90,7 +90,7 @@ class ValidationException extends pip_services4_commons_node_1.BadRequestExcepti
      * @see [[ValidationException]]
      */
     static throwExceptionIfNeeded(traceId, results, strict) {
-        let ex = ValidationException.fromResults(traceId, results, strict);
+        const ex = ValidationException.fromResults(traceId, results, strict);
         if (ex)
             throw ex;
     }

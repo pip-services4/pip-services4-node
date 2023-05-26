@@ -35,7 +35,7 @@ class ProjectionParams extends Array {
         // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
         this.__proto__ = ProjectionParams.prototype;
         if (values != null) {
-            for (let value of values) {
+            for (const value of values) {
                 this.push("" + value);
             }
         }
@@ -77,7 +77,7 @@ class ProjectionParams extends Array {
                     if (openBracket == 0) {
                         closeBracketIndex = index;
                         if (openBracketIndex >= 0 && closeBracketIndex > 0) {
-                            let previousPrefix = prefix;
+                            const previousPrefix = prefix;
                             if (prefix && prefix.length > 0) {
                                 prefix = prefix + "." + value.substring(0, openBracketIndex);
                             }
@@ -146,8 +146,8 @@ class ProjectionParams extends Array {
      * @returns         a newly created ProjectionParams.
      */
     static fromString(...values) {
-        let result = new ProjectionParams();
-        for (let value of values) {
+        const result = new ProjectionParams();
+        for (const value of values) {
             this.parseValue("", result, value);
         }
         return result;

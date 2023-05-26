@@ -40,8 +40,8 @@ class RandomInteger {
         if (range == null)
             range = 0;
         range = range == 0 ? Math.floor(0.1 * value) : range;
-        let minValue = value - range;
-        let maxValue = value + range;
+        const minValue = value - range;
+        const maxValue = value + range;
         return RandomInteger.nextInteger(minValue, maxValue);
     }
     /**
@@ -54,8 +54,8 @@ class RandomInteger {
      */
     static sequence(min, max = null) {
         max = max != null ? max : min;
-        let count = RandomInteger.nextInteger(min, max);
-        let result = [];
+        const count = RandomInteger.nextInteger(min, max);
+        const result = [];
         for (let i = 0; i < count; i++) {
             result.push(i);
         }

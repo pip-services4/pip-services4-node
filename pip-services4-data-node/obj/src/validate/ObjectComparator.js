@@ -58,13 +58,13 @@ class ObjectComparator {
         if (typeof value1.equals === "function") {
             return value1.equals(value2);
         }
-        let number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
-        let number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
+        const number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
+        const number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
         if (number1 != null && number2 != null) {
             return number1 == number2;
         }
-        let str1 = pip_services4_commons_node_2.StringConverter.toNullableString(value1);
-        let str2 = pip_services4_commons_node_2.StringConverter.toNullableString(value1);
+        const str1 = pip_services4_commons_node_2.StringConverter.toNullableString(value1);
+        const str2 = pip_services4_commons_node_2.StringConverter.toNullableString(value1);
         if (str1 == null && str2 == null) {
             return str1 == str2;
         }
@@ -90,8 +90,8 @@ class ObjectComparator {
      * @returns true if the first value is less than second and false otherwise.
      */
     static isLess(value1, value2) {
-        let number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
-        let number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
+        const number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
+        const number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
         if (number1 == null || number2 == null) {
             return false;
         }
@@ -106,8 +106,8 @@ class ObjectComparator {
      * @returns true if the first value is greater than second and false otherwise.
      */
     static isGreater(value1, value2) {
-        let number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
-        let number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
+        const number1 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value1);
+        const number2 = pip_services4_commons_node_1.DoubleConverter.toNullableDouble(value2);
         if (number1 == null || number2 == null) {
             return false;
         }
@@ -127,8 +127,8 @@ class ObjectComparator {
         if (value == null || regexp == null) {
             return false;
         }
-        let str1 = pip_services4_commons_node_2.StringConverter.toString(value);
-        let str2 = pip_services4_commons_node_2.StringConverter.toString(regexp);
+        const str1 = pip_services4_commons_node_2.StringConverter.toString(value);
+        const str2 = pip_services4_commons_node_2.StringConverter.toString(regexp);
         return !!str1.match(str2);
     }
 }

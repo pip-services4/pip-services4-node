@@ -54,8 +54,8 @@ class TagsProcessor {
      * @return      a list with normalized tags.
      */
     static normalizeTags(tags) {
-        let normalizedTags = [];
-        for (let tag of tags) {
+        const normalizedTags = [];
+        for (const tag of tags) {
             normalizedTags.push(TagsProcessor.normalizeTag(tag));
         }
         return normalizedTags;
@@ -67,7 +67,7 @@ class TagsProcessor {
      * @return      a list with normalized tags.
      */
     static normalizeTagList(tagList) {
-        let tags = tagList.split(this.SPLIT_REGEX);
+        const tags = tagList.split(this.SPLIT_REGEX);
         // Remove separators (JS only)
         for (let index = 0; index < tags.length - 1; index++) {
             tags.splice(index + 1, 1);
@@ -81,8 +81,8 @@ class TagsProcessor {
      * @return      a list with normalized tags.
      */
     static compressTags(tags) {
-        let compressedTags = [];
-        for (let tag of tags) {
+        const compressedTags = [];
+        for (const tag of tags) {
             compressedTags.push(TagsProcessor.compressTag(tag));
         }
         return compressedTags;
@@ -94,7 +94,7 @@ class TagsProcessor {
      * @return      a list with compressed tags.
      */
     static compressTagList(tagList) {
-        let tags = tagList.split(this.SPLIT_REGEX);
+        const tags = tagList.split(this.SPLIT_REGEX);
         // Remove separators (JS only)
         for (let index = 0; index < tags.length - 1; index++) {
             tags.splice(index + 1, 1);
@@ -110,7 +110,7 @@ class TagsProcessor {
     static extractHashTags(text) {
         let tags;
         if (text != '') {
-            let hashTags = text.match(TagsProcessor.HASHTAG_REGEX);
+            const hashTags = text.match(TagsProcessor.HASHTAG_REGEX);
             tags = TagsProcessor.compressTags(hashTags);
         }
         return [...new Set(tags)];
@@ -123,7 +123,7 @@ class TagsProcessor {
         if (typeof field !== "object")
             return '';
         let result = '';
-        for (let prop in field) {
+        for (const prop in field) {
             result += ' ' + TagsProcessor.extractString(field[prop]);
         }
         return result;
@@ -138,10 +138,10 @@ class TagsProcessor {
     static extractHashTagsFromValue(obj, ...searchFields) {
         // Todo: Use recursive
         let tags = TagsProcessor.compressTags(obj.tags);
-        for (let field of searchFields) {
-            let text = TagsProcessor.extractString(obj[field]);
+        for (const field of searchFields) {
+            const text = TagsProcessor.extractString(obj[field]);
             if (text != '') {
-                let hashTags = text.match(TagsProcessor.HASHTAG_REGEX);
+                const hashTags = text.match(TagsProcessor.HASHTAG_REGEX);
                 tags = tags.concat(TagsProcessor.compressTags(hashTags));
             }
         }

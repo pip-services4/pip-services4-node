@@ -37,10 +37,10 @@ class IncludedRule {
     validate(path, schema, value, results) {
         if (!this._values)
             return;
-        let name = path || "value";
+        const name = path || "value";
         let found = false;
-        for (var i = 0; i < this._values.length && !found; i++) {
-            let thisValue = this._values[i];
+        for (let i = 0; i < this._values.length && !found; i++) {
+            const thisValue = this._values[i];
             if (ObjectComparator_1.ObjectComparator.compare(value, 'EQ', thisValue)) {
                 found = true;
                 break;

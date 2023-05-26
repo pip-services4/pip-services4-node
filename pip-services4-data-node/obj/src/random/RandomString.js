@@ -23,7 +23,7 @@ class RandomString {
         if (values == null || values.length == 0) {
             return '';
         }
-        let index = RandomInteger_1.RandomInteger.nextInteger(values.length);
+        const index = RandomInteger_1.RandomInteger.nextInteger(values.length);
         return values.charAt(index);
     }
     /**
@@ -36,7 +36,7 @@ class RandomString {
         if (values == null || values.length == 0) {
             return '';
         }
-        let index = RandomInteger_1.RandomInteger.nextInteger(values.length);
+        const index = RandomInteger_1.RandomInteger.nextInteger(values.length);
         return values[index];
     }
     /**
@@ -63,7 +63,7 @@ class RandomString {
      * @returns a random characted.
      */
     static nextAlphaChar() {
-        let index = RandomInteger_1.RandomInteger.nextInteger(RandomString._alpha.length);
+        const index = RandomInteger_1.RandomInteger.nextInteger(RandomString._alpha.length);
         return RandomString._alpha.charAt(index);
     }
     /**
@@ -76,9 +76,9 @@ class RandomString {
      */
     static nextString(minLength, maxLength) {
         let result = '';
-        let length = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
+        const length = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
         for (let i = 0; i < length; i++) {
-            let index = RandomInteger_1.RandomInteger.nextInteger(RandomString._chars.length);
+            const index = RandomInteger_1.RandomInteger.nextInteger(RandomString._chars.length);
             result += RandomString._chars.charAt(index);
         }
         return result;

@@ -37,11 +37,11 @@ class OnlyOneExistsRule {
      * @param results   a list with validation results to add new results.
      */
     validate(path, schema, value, results) {
-        let name = path || "value";
-        let found = [];
+        const name = path || "value";
+        const found = [];
         for (let i = 0; i < this._properties.length; i++) {
-            let property = this._properties[i];
-            let propertyValue = pip_services4_commons_node_1.ObjectReader.getProperty(value, property);
+            const property = this._properties[i];
+            const propertyValue = pip_services4_commons_node_1.ObjectReader.getProperty(value, property);
             if (propertyValue) {
                 found.push(property);
             }

@@ -40,8 +40,8 @@ class NotRule {
     validate(path, schema, value, results) {
         if (!this._rule)
             return;
-        let name = path || "value";
-        let localResults = [];
+        const name = path || "value";
+        const localResults = [];
         this._rule.validate(path, schema, value, localResults);
         if (localResults.length > 0)
             return;

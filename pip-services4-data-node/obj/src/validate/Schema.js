@@ -117,7 +117,7 @@ class Schema {
      * @param results   a list with validation results to add new results.
      */
     performValidation(path, value, results) {
-        let name = path || "value";
+        const name = path || "value";
         if (value == null) {
             if (this.isRequired()) {
                 results.push(new ValidationResult_1.ValidationResult(path, ValidationResultType_1.ValidationResultType.Error, "VALUE_IS_NULL", name + " must not be null", "NOT NULL", null));
@@ -128,7 +128,7 @@ class Schema {
             // Check validation rules
             if (this._rules != null) {
                 for (let i = 0; i < this._rules.length; i++) {
-                    let rule = this._rules[i];
+                    const rule = this._rules[i];
                     rule.validate(path, this, value, results);
                 }
             }
@@ -161,7 +161,7 @@ class Schema {
             return;
         // Perform validation against the schema
         if (type instanceof Schema) {
-            let schema = type;
+            const schema = type;
             schema.performValidation(path, value, results);
             return;
         }
@@ -169,8 +169,8 @@ class Schema {
         value = pip_services4_commons_node_1.ObjectReader.getValue(value);
         if (value == null)
             return;
-        let name = path || "value";
-        let valueType = pip_services4_commons_node_3.TypeConverter.toTypeCode(value);
+        const name = path || "value";
+        const valueType = pip_services4_commons_node_3.TypeConverter.toTypeCode(value);
         // Match types
         if (pip_services4_commons_node_2.TypeMatcher.matchType(type, valueType, value)) {
             return;
@@ -186,7 +186,7 @@ class Schema {
      * @see [[ValidationResult]]
      */
     validate(value) {
-        let results = [];
+        const results = [];
         this.performValidation("", value, results);
         return results;
     }
@@ -198,7 +198,7 @@ class Schema {
      * @param strict            true to treat warnings as errors.
      */
     validateAndReturnException(traceId, value, strict = false) {
-        let results = this.validate(value);
+        const results = this.validate(value);
         return ValidationException_1.ValidationException.fromResults(traceId, results, strict);
     }
     /**
@@ -211,7 +211,7 @@ class Schema {
      * @see [[ValidationException.throwExceptionIfNeeded]]
      */
     validateAndThrowException(traceId, value, strict = false) {
-        let results = this.validate(value);
+        const results = this.validate(value);
         ValidationException_1.ValidationException.throwExceptionIfNeeded(traceId, results, strict);
     }
 }

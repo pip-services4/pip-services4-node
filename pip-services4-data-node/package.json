@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-data-node",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "Enterprise Innovation Consulting",
     "description": "Data Handling Components in Node.js / ES2017",
     "contributors": [
@@ -37,7 +37,7 @@
         "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^0.0.1",
+        "pip-services4-commons-node": "^0.0.2",
         "uuid": "^9.0.0"
     },
     "devDependencies": {

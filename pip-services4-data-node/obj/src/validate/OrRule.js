@@ -41,14 +41,14 @@ class OrRule {
     validate(path, schema, value, results) {
         if (!this._rules || this._rules.length == 0)
             return;
-        let localResults = [];
+        const localResults = [];
         for (let i = 0; i < this._rules.length; i++) {
-            let resultCount = localResults.length;
+            const resultCount = localResults.length;
             this._rules[i].validate(path, schema, value, localResults);
             if (resultCount == localResults.length)
                 return;
         }
-        results.push.apply(results, localResults);
+        results.push(...localResults);
     }
 }
 exports.OrRule = OrRule;

@@ -24,7 +24,7 @@ class FilterParams extends pip_services4_commons_node_1.StringValueMap {
     /**
      * Creates a new instance and initalizes it with elements from the specified map.
      *
-     * @param map 	a map to initialize this instance.
+     * @param map     a map to initialize this instance.
      */
     constructor(map = null) {
         super(map);
@@ -45,7 +45,7 @@ class FilterParams extends pip_services4_commons_node_1.StringValueMap {
      * @returns         a newly created FilterParams.
      */
     static fromTuples(...tuples) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
+        const map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
         return new FilterParams(map);
     }
     /**
@@ -57,7 +57,7 @@ class FilterParams extends pip_services4_commons_node_1.StringValueMap {
      * @see [[StringValueMap.fromString]]
      */
     static fromString(line) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromString(line);
+        const map = pip_services4_commons_node_1.StringValueMap.fromString(line);
         return new FilterParams(map);
     }
 }

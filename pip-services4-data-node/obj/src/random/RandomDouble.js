@@ -39,8 +39,8 @@ class RandomDouble {
         if (range == null)
             range = 0;
         range = range == 0 ? 0.1 * value : range;
-        let minValue = value - range;
-        let maxValue = value + range;
+        const minValue = value - range;
+        const maxValue = value + range;
         return RandomDouble.nextDouble(minValue, maxValue);
     }
 }

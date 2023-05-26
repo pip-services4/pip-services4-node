@@ -61,7 +61,7 @@ class RandomText {
      */
     static phrase(minLength, maxLength = null) {
         maxLength = Math.max(minLength, maxLength || minLength);
-        let size = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
+        const size = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
         if (size <= 0)
             return "";
         let result = '';
@@ -106,7 +106,7 @@ class RandomText {
      */
     static words(min, max = null) {
         let result = '';
-        let count = RandomInteger_1.RandomInteger.nextInteger(min, max || min);
+        const count = RandomInteger_1.RandomInteger.nextInteger(min, max || min);
         for (let i = 0; i < count; i++) {
             result += RandomString_1.RandomString.pick(RandomText._allWords);
         }
@@ -145,7 +145,7 @@ class RandomText {
      */
     static text(minLength, maxLength = null) {
         maxLength = Math.max(minLength, maxLength || minLength);
-        let size = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
+        const size = RandomInteger_1.RandomInteger.nextInteger(minLength, maxLength);
         let result = '';
         result += RandomString_1.RandomString.pick(RandomText._allWords);
         while (result.length < size) {

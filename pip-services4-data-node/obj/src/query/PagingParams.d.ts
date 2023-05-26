@@ -27,23 +27,23 @@ export declare class PagingParams {
     /**
      * Creates a new instance and sets its values.
      *
-     * @param skip 		the number of items to skip.
-     * @param take 		the number of items to return.
-     * @param total 	true to return the total number of items.
+     * @param skip         the number of items to skip.
+     * @param take         the number of items to return.
+     * @param total     true to return the total number of items.
      */
     constructor(skip?: number, take?: number, total?: boolean);
     /**
      * Gets the number of items to skip.
      *
-     * @param minSkip 	the minimum number of items to skip.
-     * @returns 		the number of items to skip.
+     * @param minSkip     the minimum number of items to skip.
+     * @returns         the number of items to skip.
      */
     getSkip(minSkip: number): number;
     /**
      * Gets the number of items to return in a page.
      *
-     * @param maxTake 	the maximum number of items to return.
-     * @returns 		the number of items to return.
+     * @param maxTake     the maximum number of items to return.
+     * @returns         the number of items to return.
      */
     getTake(maxTake: number): number;
     /**
@@ -63,7 +63,7 @@ export declare class PagingParams {
     /**
      * Creates a new PagingParams and sets it parameters from the specified map
      *
-     * @param map    	a AnyValueMap or StringValueMap to initialize this PagingParams
+     * @param map        a AnyValueMap or StringValueMap to initialize this PagingParams
      * @returns         a newly created PagingParams.
      */
     static fromMap(map: any): PagingParams;

@@ -37,10 +37,10 @@ class AtLeastOneExistsRule {
      * @param results   a list with validation results to add new results.
      */
     validate(path, schema, value, results) {
-        let name = path || "value";
-        let found = [];
-        for (var i = 0; i < this._properties.length; i++) {
-            let propertyValue = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._properties[i]);
+        const name = path || "value";
+        const found = [];
+        for (let i = 0; i < this._properties.length; i++) {
+            const propertyValue = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._properties[i]);
             if (propertyValue != null) {
                 found.push(this._properties[i]);
             }

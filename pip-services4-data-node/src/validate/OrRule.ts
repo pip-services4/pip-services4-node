@@ -56,7 +56,7 @@ export class OrRule implements IValidationRule {
             if (resultCount == localResults.length) return;
         }
 
-        results.push.apply(results, ...localResults);
+        results.push(...localResults);
     }
 
 }

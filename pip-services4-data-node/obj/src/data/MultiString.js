@@ -47,8 +47,8 @@ class MultiString {
         }
         // Default to the first property
         if (value == null) {
-            for (let language in this) {
-                if (this.hasOwnProperty(language))
+            for (const language in this) {
+                if (Object.prototype.hasOwnProperty.call(this, language))
                     value = this[language];
                 break;
             }
@@ -61,9 +61,9 @@ class MultiString {
      * @returns a list with language codes.
      */
     getLanguages() {
-        let languages = [];
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        const languages = [];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 languages.push(key);
             }
         }
@@ -94,9 +94,9 @@ class MultiString {
     append(map) {
         if (map == null)
             return;
-        for (let key in map) {
-            let value = map[key];
-            if (map.hasOwnProperty(key)) {
+        for (const key in map) {
+            const value = map[key];
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
                 this[key] = pip_services4_commons_node_1.StringConverter.toNullableString(value);
             }
         }
@@ -105,9 +105,8 @@ class MultiString {
      * Clears all translations from this MultiString object.
      */
     clear() {
-        for (let key in this) {
-            let value = this[key];
-            if (this.hasOwnProperty(key)) {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 delete this[key];
             }
         }
@@ -119,8 +118,8 @@ class MultiString {
      */
     length() {
         let count = 0;
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 count++;
             }
         }
@@ -155,15 +154,15 @@ class MultiString {
      * @returns         a MultiString Object.
      */
     static fromTuplesArray(tuples) {
-        let result = new MultiString();
+        const result = new MultiString();
         if (tuples == null || tuples.length == 0) {
             return result;
         }
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length)
                 break;
-            let name = pip_services4_commons_node_1.StringConverter.toString(tuples[index]);
-            let value = pip_services4_commons_node_1.StringConverter.toNullableString(tuples[index + 1]);
+            const name = pip_services4_commons_node_1.StringConverter.toString(tuples[index]);
+            const value = pip_services4_commons_node_1.StringConverter.toNullableString(tuples[index + 1]);
             result[name] = value;
         }
         return result;

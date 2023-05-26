@@ -85,12 +85,12 @@ class MapSchema extends Schema_1.Schema {
         super.performValidation(path, value, results);
         if (!value)
             return;
-        let name = path || "value";
-        let valueType = pip_services4_commons_node_3.TypeConverter.toTypeCode(value);
-        let map = valueType === pip_services4_commons_node_2.TypeCode.Map ? value : null;
+        const name = path || "value";
+        const valueType = pip_services4_commons_node_3.TypeConverter.toTypeCode(value);
+        const map = valueType === pip_services4_commons_node_2.TypeCode.Map ? value : null;
         if (map) {
-            for (var key in map) {
-                var elementPath = path != "" ? path + "." + key : pip_services4_commons_node_4.StringConverter.toString(key);
+            for (const key in map) {
+                const elementPath = path != "" ? path + "." + key : pip_services4_commons_node_4.StringConverter.toString(key);
                 this.performTypeValidation(elementPath, this.getKeyType(), key, results);
                 this.performTypeValidation(elementPath, this.getValueType(), map[key], results);
             }

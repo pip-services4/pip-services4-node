@@ -28,9 +28,9 @@ class TokenizedPagingParams {
     /**
      * Creates a new instance and sets its values.
      *
-     * @param token 	token that defines a starting point for the search.
-     * @param take 		the number of items to return.
-     * @param total 	true to return the total number of items.
+     * @param token     token that defines a starting point for the search.
+     * @param take         the number of items to return.
+     * @param total     true to return the total number of items.
      */
     constructor(token = null, take = null, total = null) {
         this.token = token;
@@ -45,8 +45,8 @@ class TokenizedPagingParams {
     /**
      * Gets the number of items to return in a page.
      *
-     * @param maxTake 	the maximum number of items to return.
-     * @returns 		the number of items to return.
+     * @param maxTake     the maximum number of items to return.
+     * @returns         the number of items to return.
      */
     getTake(maxTake) {
         if (this.take == null)
@@ -67,7 +67,7 @@ class TokenizedPagingParams {
         if (value instanceof TokenizedPagingParams) {
             return value;
         }
-        let map = pip_services4_commons_node_1.AnyValueMap.fromValue(value);
+        const map = pip_services4_commons_node_1.AnyValueMap.fromValue(value);
         return TokenizedPagingParams.fromMap(map);
     }
     /**
@@ -77,19 +77,19 @@ class TokenizedPagingParams {
      * @returns         a newly created TokenizedPagingParams.
      */
     static fromTuples(...tuples) {
-        let map = pip_services4_commons_node_1.AnyValueMap.fromTuplesArray(tuples);
+        const map = pip_services4_commons_node_1.AnyValueMap.fromTuplesArray(tuples);
         return TokenizedPagingParams.fromMap(map);
     }
     /**
      * Creates a new TokenizedPagingParams and sets it parameters from the specified map
      *
-     * @param map    	a AnyValueMap or StringValueMap to initialize this TokenizedPagingParams
+     * @param map        a AnyValueMap or StringValueMap to initialize this TokenizedPagingParams
      * @returns         a newly created PagingParams.
      */
     static fromMap(map) {
-        let token = map.getAsNullableString("token");
-        let take = map.getAsNullableInteger("take");
-        let total = map.getAsBooleanWithDefault("total", false);
+        const token = map.getAsNullableString("token");
+        const take = map.getAsNullableInteger("take");
+        const total = map.getAsBooleanWithDefault("total", false);
         return new TokenizedPagingParams(token, take, total);
     }
 }

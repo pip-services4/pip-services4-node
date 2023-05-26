@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdGenerator = void 0;
 /** @module data */
 /** @hidden */
-const uuid = require('uuid');
+const uuid = require("uuid");
 // Maps for number <-> hex string conversion
 /** @hidden */
-let byteToHex = [];
+const byteToHex = [];
 for (let i = 0; i < 256; i++) {
     byteToHex[i] = (i + 0x100).toString(16).substr(1);
 }
@@ -52,7 +52,7 @@ class IdGenerator {
      * @returns a generated 32-digit object ID
      */
     static nextLong() {
-        let buffer = new Array(16);
+        const buffer = new Array(16);
         return IdGenerator.uuidToHex(uuid.v4(null, buffer));
     }
 }

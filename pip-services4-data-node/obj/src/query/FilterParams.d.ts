@@ -21,7 +21,7 @@ export declare class FilterParams extends StringValueMap {
     /**
      * Creates a new instance and initalizes it with elements from the specified map.
      *
-     * @param map 	a map to initialize this instance.
+     * @param map     a map to initialize this instance.
      */
     constructor(map?: any);
     /**

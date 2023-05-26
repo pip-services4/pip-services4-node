@@ -44,9 +44,9 @@ class PropertiesComparisonRule {
      * @param results   a list with validation results to add new results.
      */
     validate(path, schema, value, results) {
-        let name = path || "value";
-        let value1 = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._property1);
-        let value2 = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._property2);
+        const name = path || "value";
+        const value1 = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._property1);
+        const value2 = pip_services4_commons_node_1.ObjectReader.getProperty(value, this._property2);
         if (!ObjectComparator_1.ObjectComparator.compare(value1, this._operation, value2)) {
             results.push(new ValidationResult_1.ValidationResult(path, ValidationResultType_1.ValidationResultType.Error, "PROPERTIES_NOT_MATCH", name + " must have " + this._property1 + " " + this._operation + " " + this._property2, value2, value1));
         }

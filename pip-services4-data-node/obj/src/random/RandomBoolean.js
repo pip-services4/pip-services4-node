@@ -25,9 +25,9 @@ class RandomBoolean {
             return false;
         }
         maxChances = Math.max(maxChances, chance);
-        let start = (maxChances - chance) / 2;
-        let end = start + chance;
-        let hit = Math.random() * maxChances;
+        const start = (maxChances - chance) / 2;
+        const end = start + chance;
+        const hit = Math.random() * maxChances;
         return hit >= start && hit <= end;
     }
     /**

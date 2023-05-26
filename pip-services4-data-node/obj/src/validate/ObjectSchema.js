@@ -110,7 +110,7 @@ class ObjectSchema extends Schema_1.Schema {
      * @param rules     (optional) a list of property validation rules.
      */
     withRequiredProperty(name, type, ...rules) {
-        let schema = new PropertySchema_1.PropertySchema(name, type);
+        const schema = new PropertySchema_1.PropertySchema(name, type);
         schema.setRules(rules.slice());
         schema.makeRequired();
         return this.withProperty(schema);
@@ -123,7 +123,7 @@ class ObjectSchema extends Schema_1.Schema {
      * @param rules     (optional) a list of property validation rules.
      */
     withOptionalProperty(name, type, ...rules) {
-        let schema = new PropertySchema_1.PropertySchema(name, type);
+        const schema = new PropertySchema_1.PropertySchema(name, type);
         schema.setRules(rules.slice());
         schema.makeOptional();
         return this.withProperty(schema);
@@ -139,15 +139,15 @@ class ObjectSchema extends Schema_1.Schema {
         super.performValidation(path, value, results);
         if (!value)
             return;
-        let name = path || "value";
-        let properties = pip_services4_commons_node_1.ObjectReader.getProperties(value);
+        const name = path || "value";
+        const properties = pip_services4_commons_node_1.ObjectReader.getProperties(value);
         if (this._properties) {
             for (let i = 0; i < this._properties.length; i++) {
-                let propertySchema = this._properties[i];
+                const propertySchema = this._properties[i];
                 let processedName = null;
-                for (let key in properties) {
-                    let propertyName = key;
-                    let propertyValue = properties[key];
+                for (const key in properties) {
+                    const propertyName = key;
+                    const propertyValue = properties[key];
                     if (ObjectComparator_1.ObjectComparator.areEqual(propertySchema.getName(), propertyName)) {
                         propertySchema.performValidation(path, propertyValue, results);
                         processedName = propertyName;
@@ -163,8 +163,8 @@ class ObjectSchema extends Schema_1.Schema {
             }
         }
         if (!this._allowUndefined)
-            for (let key in properties) {
-                let propertyPath = key && path != "" ? path + "." + key : key;
+            for (const key in properties) {
+                const propertyPath = key && path != "" ? path + "." + key : key;
                 results.push(new ValidationResult_1.ValidationResult(propertyPath, ValidationResultType_1.ValidationResultType.Warning, "UNEXPECTED_PROPERTY", name + " contains unexpected property " + key, null, key));
             }
     }

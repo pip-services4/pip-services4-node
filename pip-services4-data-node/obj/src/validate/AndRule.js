@@ -40,8 +40,8 @@ class AndRule {
     validate(path, schema, value, results) {
         if (!this._rules)
             return;
-        for (var i = 0; i < this._rules.length; i++) {
-            let rule = this._rules[i];
+        for (let i = 0; i < this._rules.length; i++) {
+            const rule = this._rules[i];
             rule.validate(path, schema, value, results);
         }
     }

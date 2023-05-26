@@ -30,16 +30,16 @@ export declare class TokenizedPagingParams {
     /**
      * Creates a new instance and sets its values.
      *
-     * @param token 	token that defines a starting point for the search.
-     * @param take 		the number of items to return.
-     * @param total 	true to return the total number of items.
+     * @param token     token that defines a starting point for the search.
+     * @param take         the number of items to return.
+     * @param total     true to return the total number of items.
      */
     constructor(token?: string, take?: number, total?: boolean);
     /**
      * Gets the number of items to return in a page.
      *
-     * @param maxTake 	the maximum number of items to return.
-     * @returns 		the number of items to return.
+     * @param maxTake     the maximum number of items to return.
+     * @returns         the number of items to return.
      */
     getTake(maxTake: number): number;
     /**
@@ -59,7 +59,7 @@ export declare class TokenizedPagingParams {
     /**
      * Creates a new TokenizedPagingParams and sets it parameters from the specified map
      *
-     * @param map    	a AnyValueMap or StringValueMap to initialize this TokenizedPagingParams
+     * @param map        a AnyValueMap or StringValueMap to initialize this TokenizedPagingParams
      * @returns         a newly created PagingParams.
      */
     static fromMap(map: any): TokenizedPagingParams;
