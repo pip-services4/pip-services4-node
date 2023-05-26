@@ -14,14 +14,14 @@ export class HttpRequestDetector {
      * be returned.
      */
     public static detectPlatform(req: any): string {
-        let ua = req.headers['user-agent'];
+        const ua = req.headers['user-agent'];
         let version;
 
         if (/mobile/i.test(ua)) {
             return 'mobile';
         }
         if (/like Mac OS X/.test(ua)) {
-            version = /CPU( iPhone)? OS ([0-9\._]+) like Mac OS X/.exec(ua)[2].replace(/_/g, '.');
+            version = /CPU( iPhone)? OS ([0-9._]+) like Mac OS X/.exec(ua)[2].replace(/_/g, '.');
             if (/iPhone/.test(ua)) {
                 return 'iphone ' + version;
             }
@@ -31,21 +31,21 @@ export class HttpRequestDetector {
             return 'macosx ' + version;
         }
         if (/Android/.test(ua)) {
-            version = /Android ([0-9\.]+)[\);]/.exec(ua)[1];
+            version = /Android ([0-9.]+)[);]/.exec(ua)[1];
             return 'android ' + version;
         }
         if (/webOS\//.test(ua)) {
-            version = /webOS\/([0-9\.]+)[\);]/.exec(ua)[1];
+            version = /webOS\/([0-9.]+)[);]/.exec(ua)[1];
             return 'webos ' + version;
         }
         if (/(Intel|PPC) Mac OS X/.test(ua)) {
-            version = /(Intel|PPC) Mac OS X ?([0-9\._]*)[\)\;]/.exec(ua)[2].replace(/_/g, '.');
+            version = /(Intel|PPC) Mac OS X ?([0-9._]*)[);]/.exec(ua)[2].replace(/_/g, '.');
             return 'mac ' + version;
         }
 
         if (/Windows NT/.test(ua)) {
             try {
-                version = /Windows NT ([0-9\._]+)[\);]/.exec(ua)[1];
+                version = /Windows NT ([0-9._]+)[);]/.exec(ua)[1];
                 return 'windows ' + version;
             }
             catch (ex) {
@@ -63,7 +63,7 @@ export class HttpRequestDetector {
      *          "safari". Otherwise - "unknown" will be returned.
      */
     public static detectBrowser(req: any): string {
-        let ua = req.headers['user-agent'];
+        const ua = req.headers['user-agent'];
 
         if (/chrome/i.test(ua))
             return 'chrome'
@@ -109,7 +109,7 @@ export class HttpRequestDetector {
         // Remove port
         if (ip != null) {
             ip = ip.toString();
-            var index = ip.indexOf(':');
+            const index = ip.indexOf(':');
             if (index > 0) {
                 ip = ip.substring(0, index);
             }

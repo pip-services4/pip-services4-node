@@ -1,5 +1,5 @@
 /** @module controllers */
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 import { ICommandable } from 'pip-services4-rpc-node';
 import { CommandSet } from 'pip-services4-rpc-node';
 import { Parameters } from 'pip-services4-components-node';
@@ -65,7 +65,7 @@ import { CommandableSwaggerDocument } from './CommandableSwaggerDocument';
  */
 export abstract class CommandableHttpController extends RestController {
     protected _commandSet: CommandSet;
-    protected _swaggerAuto: boolean = true;
+    protected _swaggerAuto = true;
 
     /**
      * Creates a new instance of the service.
@@ -93,22 +93,23 @@ export abstract class CommandableHttpController extends RestController {
      * Registers all service routes in HTTP endpoint.
      */
     public register(): void {
-        let service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
         this._commandSet = service.getCommandSet();
 
-        let commands = this._commandSet.getCommands();
-        for (let command of commands) {
+        const commands = this._commandSet.getCommands();
+        for (const command of commands) {
             let route = command.getName();
             route = route[0] != '/' ? '/' + route : route;
 
             this.registerRoute('post', route, null, async (req, res) => {
-                let params = req.body || {};
-                let context = this.getTraceId(req);
-                let args = Parameters.fromValue(params);
+                const params = req.body || {};
+                const traceId = this.getTraceId(req);
+                const args = Parameters.fromValue(params);
+                const context = Context.fromTraceId(traceId);
 
-                let timing = this.instrument(context, this._baseRoute + '.' + command.getName());
+                const timing = this.instrument(context, this._baseRoute + '.' + command.getName());
                 try {
-                    let result = await command.execute(context, args);
+                    const result = await command.execute(context, args);
                     this.sendResult(req, res, result);
                     timing.endTiming();
                 } catch (ex) {
@@ -119,8 +120,10 @@ export abstract class CommandableHttpController extends RestController {
         }
 
         if (this._swaggerAuto) {
-            let swaggerConfig = this._config.getSection("swagger");
-            let doc = new CommandableSwaggerDocument(this._baseRoute, swaggerConfig, commands);
+            const swaggerConfig = this._config.getSection("swagger");
+            const doc = new CommandableSwaggerDocument(this._baseRoute, swaggerConfig, commands);
+
+            // eslint-disable-next-line no-useless-catch
             try {
                this.registerOpenApiSpec(doc.toString());
             } catch (ex) {

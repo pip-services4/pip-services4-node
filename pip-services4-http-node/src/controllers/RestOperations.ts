@@ -20,7 +20,9 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
     protected _counters = new CompositeCounters();
     protected _dependencyResolver = new DependencyResolver();
 
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     public configure(config: ConfigParams): void {
         this._dependencyResolver.configure(config);
@@ -41,23 +43,23 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
     }
 
     protected getFilterParams(req: any): FilterParams {
-        let value = Object.assign({}, req.query);
+        const value = Object.assign({}, req.query);
         delete value.skip;
         delete value.take;
         delete value.total;
         delete value.trace_id;
 
-        let filter = FilterParams.fromValue(value);
+        const filter = FilterParams.fromValue(value);
         return filter;
     }
 
     protected getPagingParams(req: any): PagingParams {
-        let value = {
+        const value = {
             skip: req.query.skip,
             take: req.query.take,
             total: req.query.total            
         }        
-        let paging = PagingParams.fromValue(value);
+        const paging = PagingParams.fromValue(value);
         return paging;
     }
 
@@ -82,45 +84,45 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
     }
 
     protected sendBadRequest(req: any, res: any, message: string): void {
-        let traceId = this.getTraceId(req);
-        let error = new BadRequestException(traceId, 'BAD_REQUEST', message);
+        const traceId = this.getTraceId(req);
+        const error = new BadRequestException(traceId, 'BAD_REQUEST', message);
         this.sendError(req, res, error);
     }
 
     protected sendUnauthorized(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new UnauthorizedException(traceId, 'UNAUTHORIZED', message);
+        const traceId = this.getTraceId(req);
+        const error = new UnauthorizedException(traceId, 'UNAUTHORIZED', message);
         this.sendError(req, res, error);
     }
 
     protected sendNotFound(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new NotFoundException(traceId, 'NOT_FOUND', message);
+        const traceId = this.getTraceId(req);
+        const error = new NotFoundException(traceId, 'NOT_FOUND', message);
         this.sendError(req, res, error);
     }
 
     protected sendConflict(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new ConflictException(traceId, 'CONFLICT', message);
+        const traceId = this.getTraceId(req);
+        const error = new ConflictException(traceId, 'CONFLICT', message);
         this.sendError(req, res, error);
     }
 
     protected sendSessionExpired(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new UnknownException(traceId, 'SESSION_EXPIRED', message);
+        const traceId = this.getTraceId(req);
+        const error = new UnknownException(traceId, 'SESSION_EXPIRED', message);
         error.status = 440;
         this.sendError(req, res, error);
     }
 
     protected sendInternalError(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new UnknownException(traceId, 'INTERNAL', message);
+        const traceId = this.getTraceId(req);
+        const error = new UnknownException(traceId, 'INTERNAL', message);
         this.sendError(req, res, error);
     }
 
     protected sendServerUnavailable(req: any, res: any, message: string): void  {
-        let traceId = this.getTraceId(req);
-        let error = new ConflictException(traceId, 'SERVER_UNAVAILABLE', message);
+        const traceId = this.getTraceId(req);
+        const error = new ConflictException(traceId, 'SERVER_UNAVAILABLE', message);
         error.status = 503;
         this.sendError(req, res, error);
     }

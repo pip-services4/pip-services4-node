@@ -2,13 +2,12 @@ const assert = require('chai').assert;
 const restify = require('restify-clients');
 const fs = require('fs');
 
-import { Descriptor } from 'pip-services4-components-node';
+import { ConfigParams, Descriptor } from 'pip-services4-components-node';
 import { IdGenerator } from 'pip-services4-data-node';
-import { ConfigParams } from 'pip-services4-data-node';
 import { References } from 'pip-services4-components-node';
 
 import { Dummy } from '../sample/Dummy';
-import { DummyController } from '../sample/DummyService';
+import { DummyService } from '../sample/DummyService';
 import { DummyRestController } from './DummyRestController';
 
 let restConfig = ConfigParams.fromTuples(
@@ -29,7 +28,7 @@ suite('DummyRestController', ()=> {
     let rest: any;
 
     suiteSetup(async () => {
-        let service = new DummyController();
+        let service = new DummyService();
 
         controller = new DummyRestController();
         controller.configure(restConfig);
@@ -199,7 +198,7 @@ suite('DummyRestController', ()=> {
             "swagger.path", filename  // for test only
         );
 
-        let service = new DummyController();
+        let service = new DummyService();
         controller = new DummyRestController();
         controller.configure(serviceConfig);
 

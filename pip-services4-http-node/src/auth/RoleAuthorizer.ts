@@ -6,7 +6,7 @@ export class RoleAuthorizer {
 
     public userInRoles(roles: string[]): (req: any, res: any, next: () => void) => void {
         return (req, res, next) => {
-            let user = req.user;
+            const user = req.user;
             if (user == null) {
                 HttpResponseSender.sendError(
                     req, res,
@@ -20,7 +20,7 @@ export class RoleAuthorizer {
                 let authorized = false;
                 user.roles = user.roles || [];
                 
-                for (let role of roles)
+                for (const role of roles)
                     authorized = authorized || user.roles.includes(role);
 
                 if (!authorized) {

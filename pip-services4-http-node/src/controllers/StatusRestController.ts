@@ -62,7 +62,7 @@ export class StatusRestController extends RestController {
     private _startTime: Date = new Date();
     private _references2: IReferences;
     private _contextInfo: ContextInfo;
-    private _route: string = "status";
+    private _route = "status";
 
     /**
      * Creates a new instance of this service.
@@ -109,20 +109,20 @@ export class StatusRestController extends RestController {
      * @param res   an HTTP response
      */
     private status(req, res): void {
-        let id = this._contextInfo != null ? this._contextInfo.contextId : "";
-        let name = this._contextInfo != null ? this._contextInfo.name : "Unknown";
-        let description = this._contextInfo != null ? this._contextInfo.description : "";
-        let uptime = new Date().getTime() - this._startTime.getTime();
-        let properties = this._contextInfo != null ? this._contextInfo.properties : "";
+        const id = this._contextInfo != null ? this._contextInfo.contextId : "";
+        const name = this._contextInfo != null ? this._contextInfo.name : "Unknown";
+        const description = this._contextInfo != null ? this._contextInfo.description : "";
+        const uptime = new Date().getTime() - this._startTime.getTime();
+        const properties = this._contextInfo != null ? this._contextInfo.properties : "";
 
-        let components = [];
+        const components = [];
         if (this._references2 != null) {
-            for (let locator of this._references2.getAllLocators()) {
+            for (const locator of this._references2.getAllLocators()) {
                 components.push(locator.toString());
             }
         }
 
-        let status =  {
+        const status =  {
             id: id,
             name: name,
             description: description,

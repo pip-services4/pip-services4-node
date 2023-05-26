@@ -1,6 +1,6 @@
 /** @module controllers */
 /** @hidden */
-const fs = require('fs');
+import fs = require('fs');
 
 import restify = require('restify');
 
@@ -85,9 +85,9 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
     private _logger: CompositeLogger = new CompositeLogger();
     private _counters: CompositeCounters = new CompositeCounters();
-    private _maintenanceEnabled: boolean = false;
+    private _maintenanceEnabled = false;
     private _fileMaxSize: number = 200 * 1024 * 1024;
-    private _protocolUpgradeEnabled: boolean = false;
+    private _protocolUpgradeEnabled = false;
     private _uri: string;
     private _registrations: IRegisterable[] = [];
     private _allowedHeaders: string[] = ["trace_id"];
@@ -119,7 +119,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         this._fileMaxSize = config.getAsLongWithDefault('options.file_max_size', this._fileMaxSize);
         this._protocolUpgradeEnabled = config.getAsBooleanWithDefault('options.protocol_upgrade_enabled', this._protocolUpgradeEnabled);
 
-        let headers = config.getAsStringWithDefault("cors_headers", "").split(",");
+        const headers = config.getAsStringWithDefault("cors_headers", "").split(",");
         for (let header of headers) {
             header = header.trim();
             if (header != "") {
@@ -128,7 +128,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             }
         }
 
-        let origins = config.getAsStringWithDefault("cors_origins", "").split(",");
+        const origins = config.getAsStringWithDefault("cors_origins", "").split(",");
         for (let origin of origins) {
             origin = origin.trim();
             if (origin != "") {
@@ -183,28 +183,28 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
-        let port = connection.getAsInteger("port");
-        let host = connection.getAsString("host");
+        const port = connection.getAsInteger("port");
+        const host = connection.getAsString("host");
 
         try {
-            let options: restify.ServerOptions = {};
+            const options: restify.ServerOptions = {};
 
             if (connection.getAsStringWithDefault('protocol', 'http') == 'https') {
-                let sslKeyFile = connection.getAsNullableString('ssl_key_file');
-                let privateKey = fs.readFileSync(sslKeyFile).toString();
+                const sslKeyFile = connection.getAsNullableString('ssl_key_file');
+                const privateKey = fs.readFileSync(sslKeyFile).toString();
 
-                let sslCrtFile = connection.getAsNullableString('ssl_crt_file');
-                let certificate = fs.readFileSync(sslCrtFile).toString();
+                const sslCrtFile = connection.getAsNullableString('ssl_crt_file');
+                const certificate = fs.readFileSync(sslCrtFile).toString();
 
-                let ca = [];
-                let sslCaFile = connection.getAsNullableString('ssl_ca_file');
+                const ca = [];
+                const sslCaFile = connection.getAsNullableString('ssl_ca_file');
                 if (sslCaFile != null) {
                     let caText = fs.readFileSync(sslCaFile).toString();
                     while (caText != null && caText.trim().length > 0) {
-                        let crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
+                        const crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
                         if (crtIndex > -1) {
                             ca.push(caText.substring(crtIndex));
                             caText = caText.substring(0, crtIndex);
@@ -239,13 +239,14 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             //     this._server.use(restify.plugins.throttle(options.get("throttle")));
             
             // Configure CORS requests
-            let corsMiddleware = require('restify-cors-middleware2');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const corsMiddleware = require('restify-cors-middleware2');
 
             let origins = this._allowedOrigins;
             if (origins.length == 0) {
                 origins = ["*"];
             }
-            let cors = corsMiddleware({
+            const cors = corsMiddleware({
                 preflightMaxAge: 5, //Optional
                 origins: origins,
                 allowHeaders: this._allowedHeaders,
@@ -292,15 +293,15 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private addCompatibility(req: any, res: any, next: () => void): void {
         req.param = (name) => {
             if (req.query) {
-                let param = req.query[name];
+                const param = req.query[name];
                 if (param) return param;
             }
             if (req.body) {
-                let param = req.body[name];
+                const param = req.body[name];
                 if (param) return param;
             }
             if (req.params) {
-                let param = req.params[name];
+                const param = req.params[name];
                 if (param) return param;
             }
             return null;
@@ -376,7 +377,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     private performRegistrations(): void {
-        for (let registration of this._registrations) {
+        for (const registration of this._registrations) {
             registration.register();
         }
     }
@@ -416,19 +417,19 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
 
         route = this.fixRoute(route);
 
-        let asyncWrap = (fn) => {
+        const asyncWrap = (fn) => {
             return (req, res, next) => {
                 Promise.resolve(fn(req, res, next)).catch(next);
             };
         };
 
         // Hack!!! Wrapping action to preserve prototyping conte
-        let actionCurl = async (req, res, next) => { 
+        const actionCurl = async (req, res, next) => { 
             // Perform validation
             if (schema != null) {
-                let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let traceId = this.getTraceId(req);
-                let err = schema.validateAndReturnException(traceId, params, false);
+                const params = Object.assign({}, req.params, req.query, { body: req.body });
+                const traceId = this.getTraceId(req);
+                const err = schema.validateAndReturnException(traceId, params, false);
                 if (err != null) {
                     new Promise((resolve) => {
                         resolve(HttpResponseSender.sendError(req, res, err));
@@ -443,7 +444,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         };
 
         // Wrapping to preserve "this"
-        let self = this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
+        const self = this;
         this._server[method](route, asyncWrap(actionCurl));
     }   
 
@@ -462,7 +464,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         action: (req: any, res: any) => void): void {
             
         if (authorize) {
-            let nextAction = action;
+            const nextAction = action;
             action = async (req, res) => {
                 await authorize(req, res, async () => { await nextAction(req, res); });
             }
@@ -483,7 +485,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         route = this.fixRoute(route);
 
         this._server.use((req, res, next) => {
-            let match = (req.url.match(route) || []).length > 0;
+            const match = (req.url.match(route) || []).length > 0;
             if (route != null && route != "" && !match)
                 next();
             else action(req, res, next);

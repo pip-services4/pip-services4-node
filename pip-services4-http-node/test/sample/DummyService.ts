@@ -1,4 +1,3 @@
-import { IContext } from 'pip-services4-componnets-node';
 import { FilterParams } from 'pip-services4-data-node';
 import { PagingParams } from 'pip-services4-data-node';
 import { DataPage } from 'pip-services4-data-node';
@@ -9,6 +8,7 @@ import { CommandSet } from 'pip-services4-rpc-node';
 import { IDummyService } from './IDummyService';
 import { DummyCommandSet } from './DummyCommandSet';
 import { Dummy } from './Dummy';
+import { IContext } from 'pip-services4-components-node';
 
 export class DummyService implements IDummyService, ICommandable {
 	private _commandSet: DummyCommandSet;

@@ -4,7 +4,7 @@ import { HttpResponseSender } from '../controllers/HttpResponseSender';
 
 export class OwnerAuthorizer {
 
-    public owner(idParam: string = 'user_id'): (req: any, res: any, next: () => void) => void {
+    public owner(idParam = 'user_id'): (req: any, res: any, next: () => void) => void {
         return (req, res, next) => {
             if (req.user == null) {
                 HttpResponseSender.sendError(
@@ -16,7 +16,7 @@ export class OwnerAuthorizer {
                     ).withStatus(401)
                 );
             } else {
-                let userId = req.params[idParam] || req.param(idParam);
+                const userId = req.params[idParam] || req.param(idParam);
                 if (req.user_id != userId) {
                     HttpResponseSender.sendError(
                         req, res,
@@ -33,7 +33,7 @@ export class OwnerAuthorizer {
         };
     }
 
-    public ownerOrAdmin(idParam: string = 'user_id'): (req: any, res: any, next: () => void) => void {
+    public ownerOrAdmin(idParam = 'user_id'): (req: any, res: any, next: () => void) => void {
         return (req, res, next) => {
             if (req.user == null) {
                 HttpResponseSender.sendError(
@@ -45,10 +45,10 @@ export class OwnerAuthorizer {
                     ).withStatus(401)
                 );
             } else {
-                let userId = req.params[idParam] || req.param(idParam);
+                const userId = req.params[idParam] || req.param(idParam);
                 let roles: string[] = req.user != null ? req.user.roles : null;
                 roles = roles || [];
-                let admin = roles.includes('admin');
+                const admin = roles.includes('admin');
                 if (req.user_id != userId && !admin) {
                     HttpResponseSender.sendError(
                         req, res,

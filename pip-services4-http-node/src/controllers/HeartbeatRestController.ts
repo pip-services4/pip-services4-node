@@ -49,7 +49,7 @@ import { RestController } from './RestController';
  *     console.log("The Heartbeat service is accessible at http://+:8080/ping");
  */
 export class HeartbeatRestController extends RestController {
-    private _route: string = "heartbeat";
+    private _route = "heartbeat";
 
     /**
      * Creates a new instance of this service.

@@ -1,0 +1,177 @@
+import restify = require('restify');
+import { IContext } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { Schema } from 'pip-services4-data-node';
+import { IRegisterable } from './IRegisterable';
+/**
+ * Used for creating HTTP endpoints. An endpoint is a URL, at which a given service can be accessed by a client.
+ *
+ * ### Configuration parameters ###
+ *
+ * Parameters to pass to the [[configure]] method for component configuration:
+ *
+ * - cors_headers - a comma-separated list of allowed CORS headers
+ * - cors_origins - a comma-separated list of allowed CORS origins
+ * - connection(s) - the connection resolver's connections:
+ *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
+ *     - "connection.protocol" - the connection's protocol;
+ *     - "connection.host" - the target host;
+ *     - "connection.port" - the target port;
+ *     - "connection.uri" - the target URI.
+ * - credential - the HTTPS credentials:
+ *     - "credential.ssl_key_file" - the SSL private key in PEM
+ *     - "credential.ssl_crt_file" - the SSL certificate in PEM
+ *     - "credential.ssl_ca_file" - the certificate authorities (root cerfiticates) in PEM
+ *
+ * ### References ###
+ *
+ * A logger, counters, and a connection resolver can be referenced by passing the
+ * following references to the object's [[setReferences]] method:
+ *
+ * - logger: <code>"\*:logger:\*:\*:1.0"</code>;
+ * - counters: <code>"\*:counters:\*:\*:1.0"</code>;
+ * - discovery: <code>"\*:discovery:\*:\*:1.0"</code> (for the connection resolver).
+ *
+ * ### Examples ###
+ *
+ *     public MyMethod(_config: ConfigParams, _references: IReferences) {
+ *         let endpoint = new HttpEndpoint();
+ *         if (this._config)
+ *             endpoint.configure(this._config);
+ *         if (this._references)
+ *             endpoint.setReferences(this._references);
+ *         ...
+ *
+ *         await this._endpoint.open(context);
+ *         this._opened = true;
+ *         ...
+ *     }
+ */
+export declare class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
+    private static readonly _defaultConfig;
+    private _server;
+    private _connectionResolver;
+    private _logger;
+    private _counters;
+    private _maintenanceEnabled;
+    private _fileMaxSize;
+    private _protocolUpgradeEnabled;
+    private _uri;
+    private _registrations;
+    private _allowedHeaders;
+    private _allowedOrigins;
+    /**
+     * Configures this HttpEndpoint using the given configuration parameters.
+     *
+     * __Configuration parameters:__
+     * - __connection(s)__ - the connection resolver's connections;
+     *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
+     *     - "connection.protocol" - the connection's protocol;
+     *     - "connection.host" - the target host;
+     *     - "connection.port" - the target port;
+     *     - "connection.uri" - the target URI.
+     *     - "credential.ssl_key_file" - SSL private key in PEM
+     *     - "credential.ssl_crt_file" - SSL certificate in PEM
+     *     - "credential.ssl_ca_file" - Certificate authority (root certificate) in PEM
+     *
+     * @param config    configuration parameters, containing a "connection(s)" section.
+     *
+     * @see [[https://pip-services4-node.github.io/pip-services4-commons-node/classes/config.configparams.html ConfigParams]] (in the PipServices "Commons" package)
+     */
+    configure(config: ConfigParams): void;
+    /**
+     * Sets references to this endpoint's logger, counters, and connection resolver.
+     *
+     * __References:__
+     * - logger: <code>"\*:logger:\*:\*:1.0"</code>
+     * - counters: <code>"\*:counters:\*:\*:1.0"</code>
+     * - discovery: <code>"\*:discovery:\*:\*:1.0"</code> (for the connection resolver)
+     *
+     * @param references    an IReferences object, containing references to a logger, counters,
+     *                      and a connection resolver.
+     *
+     * @see [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/refer.ireferences.html IReferences]] (in the PipServices "Commons" package)
+     */
+    setReferences(references: IReferences): void;
+    /**
+     * Gets an HTTP server instance.
+     * @returns an HTTP server instance of <code>null</code> if endpoint is closed.
+     */
+    getServer(): restify.Server;
+    /**
+     * @returns whether or not this endpoint is open with an actively listening REST server.
+     */
+    isOpen(): boolean;
+    /**
+     * Opens a connection using the parameters resolved by the referenced connection
+     * resolver and creates a REST server (service) using the set options and parameters.
+     *
+     * @param context     (optional) a context to trace execution through call chain.
+     */
+    open(context: IContext): Promise<void>;
+    private addCompatibility;
+    private noCache;
+    private doMaintenance;
+    /**
+     * Closes this endpoint and the REST server (service) that was opened earlier.
+     *
+     * @param context     (optional) a context to trace execution through call chain.
+     */
+    close(context: IContext): Promise<void>;
+    /**
+     * Registers a registerable object for dynamic endpoint discovery.
+     *
+     * @param registration      the registration to add.
+     *
+     * @see [[IRegisterable]]
+     */
+    register(registration: IRegisterable): void;
+    /**
+     * Unregisters a registerable object, so that it is no longer used in dynamic
+     * endpoint discovery.
+     *
+     * @param registration      the registration to remove.
+     *
+     * @see [[IRegisterable]]
+     */
+    unregister(registration: IRegisterable): void;
+    private performRegistrations;
+    private fixRoute;
+    /**
+     * Returns context from request
+     * @param req -  http request
+     * @return Returns context from request
+     */
+    getTraceId(req: any): string;
+    /**
+     * Registers an action in this objects REST server (service) by the given method and route.
+     *
+     * @param method        the HTTP method of the route.
+     * @param route         the route to register in this object's REST server (service).
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    registerRoute(method: string, route: string, schema: Schema, action: (req: any, res: any) => void): void;
+    /**
+     * Registers an action with authorization in this objects REST server (service)
+     * by the given method and route.
+     *
+     * @param method        the HTTP method of the route.
+     * @param route         the route to register in this object's REST server (service).
+     * @param schema        the schema to use for parameter validation.
+     * @param authorize     the authorization interceptor
+     * @param action        the action to perform at the given route.
+     */
+    registerRouteWithAuth(method: string, route: string, schema: Schema, authorize: (req: any, res: any, next: () => void) => void, action: (req: any, res: any) => void): void;
+    /**
+     * Registers a middleware action for the given route.
+     *
+     * @param route         the route to register in this object's REST server (service).
+     * @param action        the middleware action to perform at the given route.
+     */
+    registerInterceptor(route: string, action: (req: any, res: any, next: () => void) => void): void;
+}

@@ -1,10 +1,9 @@
 /** @module controllers */
 /** @hidden */
-const fs = require('fs');
+import fs = require('fs');
 
-import { IContext } from 'pip-services4-components-node';
+import { IContext, IUnreferenceable } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
 import { InvalidStateException } from 'pip-services4-commons-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -134,8 +133,8 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
     protected _tracer: CompositeTracer = new CompositeTracer();
 
     protected _swaggerController: ISwaggerController;
-    protected _swaggerEnable: boolean = false;
-    protected _swaggerRoute: string = "swagger";
+    protected _swaggerEnable = false;
+    protected _swaggerRoute = "swagger";
 
     /**
      * Configures component by passing configuration parameters.
@@ -195,7 +194,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
     }
 
     private createEndpoint(): HttpEndpoint {
-        let endpoint = new HttpEndpoint();
+        const endpoint = new HttpEndpoint();
 
         if (this._config)
             endpoint.configure(this._config);
@@ -218,8 +217,8 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-		let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+		const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -463,7 +462,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
     }
 
     protected registerOpenApiSpecFromFile(path: string) {
-        let content = fs.readFileSync(path).toString();
+        const content = fs.readFileSync(path).toString();
         this.registerOpenApiSpec(content);
     }
 

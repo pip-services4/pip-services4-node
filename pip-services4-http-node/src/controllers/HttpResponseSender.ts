@@ -19,7 +19,7 @@ export class HttpResponseSender {
         error = error || {};
         error = ApplicationException.unwrapError(error);
         
-        let result = {
+        const result = {
             code: error.code || "UNDEFINED",
             status: error.status || 500,
             message: error.message || "Unknown error",

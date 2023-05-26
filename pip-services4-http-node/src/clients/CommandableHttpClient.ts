@@ -79,9 +79,9 @@ export abstract class CommandableHttpClient extends RestClient {
      * @returns                 a command execution result.
      */
     protected async callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
-        let timing = this.instrument(context, this._baseRoute + '.' + name);
+        const timing = this.instrument(context, this._baseRoute + '.' + name);
         try {
-            let response = await this.call<T>('post', name, context, {}, params || {});
+            const response = await this.call<T>('post', name, context, {}, params || {});
             timing.endTiming();
             return response;
         } catch (ex) {

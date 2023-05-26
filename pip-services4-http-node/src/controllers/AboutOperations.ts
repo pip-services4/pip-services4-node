@@ -1,5 +1,5 @@
 /** @module controllers */
-const os = require('os');
+import os = require('os');
 
 import { IReferences } from 'pip-services4-components-node';
 import { Descriptor } from 'pip-services4-components-node';
@@ -26,11 +26,11 @@ export class AboutOperations extends RestOperations {
     }
 
     private getNetworkAddresses(): string[] {
-        let interfaces = os.networkInterfaces();
-        let addresses: string[] = [];
-        for (let k in interfaces) {
-            for (let k2 in interfaces[k]) {
-                let address = interfaces[k][k2];
+        const interfaces = os.networkInterfaces();
+        const addresses: string[] = [];
+        for (const k in interfaces) {
+            for (const k2 in interfaces[k]) {
+                const address = interfaces[k][k2];
                 if (address.family === 'IPv4' && !address.internal) {
                     addresses.push(address.address);
                 }
@@ -40,7 +40,7 @@ export class AboutOperations extends RestOperations {
     }
 
     public about(req, res): void {
-        let about = {
+        const about = {
             server: {
                 name: this._contextInfo != null ? this._contextInfo.name : 'unknown',
                 description: this._contextInfo != null ? this._contextInfo.description : null,

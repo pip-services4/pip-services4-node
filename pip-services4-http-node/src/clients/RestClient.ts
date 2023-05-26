@@ -115,7 +115,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     /**
      * The number of retries.
      */
-    protected _retries: number = 1;
+    protected _retries = 1;
     /**
      * The default headers to be added to every request.
      */
@@ -123,17 +123,17 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     /**
      * The connection timeout in milliseconds.
      */
-    protected _connectTimeout: number = 10000;
+    protected _connectTimeout = 10000;
     /**
      * The invocation timeout in milliseconds.
      */
-    protected _timeout: number = 10000;
+    protected _timeout = 10000;
     /**
      * The remote service uri which is calculated on open.
      */
     protected _uri: string;
 
-    protected _contextLocation: string = "query"
+    protected _contextLocation = "query"
 
     /**
      * Configures component by passing configuration parameters.
@@ -178,8 +178,8 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         this._logger.trace(context, "Calling %s method", name);
         this._counters.incrementOne(name + ".call_count");
 
-		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+		const counterTiming = this._counters.beginTiming(name + ".call_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "call",
             this._logger, this._counters, counterTiming, traceTiming);
 	}
@@ -223,11 +223,12 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
 
         try {
             this._uri = connection.getAsString("uri");
-            let restify = require('restify-clients');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const restify = require('restify-clients');
             this._client = restify.createJsonClient({
                 url: this._uri,
                 connectTimeout: this._connectTimeout,
@@ -303,8 +304,8 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         params = params || {};
 
         if (filter) {
-            for (let prop in filter) {
-                if (filter.hasOwnProperty(prop))
+            for (const prop in filter) {
+                if (Object.prototype.hasOwnProperty.call(filter, prop))
                     params[prop] = filter[prop];
             }
         }
@@ -377,7 +378,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         }
 
         return new Promise((resolve, reject) => {
-            let action = (err, req, res, data) => {
+            const action = (err, req, res, data) => {
                 // Handling 204 codes
                 if (res && res.statusCode == 204)
                     resolve(null);
@@ -398,7 +399,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             else if (method == 'patch') this._client.patch(route, data, action);
             else if (method == 'delete') this._client.del(route, action);
             else {
-                let err = new UnknownException(
+                const err = new UnknownException(
                     context != null ? context.getTraceId() : null,
                     'UNSUPPORTED_METHOD',
                     'Method is not supported by REST client'

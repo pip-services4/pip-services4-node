@@ -8,16 +8,16 @@ import { TypeCode } from "pip-services4-commons-node";
 
 // Todo: Refactor to use plan JS objects
 export class CommandableSwaggerDocument {
-    private content: string = '';
+    private content = '';
 
     public commands: ICommand[];
 
-    public version: string = "3.0.2";
+    public version = "3.0.2";
     public baseRoute: string;
 
     public infoTitle: string;
     public infoDescription: string;
-    public infoVersion: string = "1";
+    public infoVersion = "1";
     public infoTermsOfService: string;
 
     public infoContactName: string;
@@ -44,7 +44,7 @@ export class CommandableSwaggerDocument {
     }
 
     public toString(): string {
-        let data = new Map<string, any>([
+        const data = new Map<string, any>([
             ['openapi', this.version],
             ['info', new Map<string, any>(
                 [
@@ -77,8 +77,8 @@ export class CommandableSwaggerDocument {
     }
 
     private createPathsData(): Map<string, any> {
-        let data = new Map<string, any>();
-        for (let command of this.commands) {
+        const data = new Map<string, any>();
+        for (const command of this.commands) {
             let path = this.baseRoute + "/" + command.getName();
             if (!path.startsWith("/")) path = "/" + path;
 
@@ -99,7 +99,7 @@ export class CommandableSwaggerDocument {
     }
 
     private createRequestBodyData(command: ICommand): Map<string, any> {
-        let schemaData = this.createSchemaData(command);
+        const schemaData = this.createSchemaData(command);
         return schemaData == null ? null : new Map<string, any>(
             [
                 ["content", new Map<string, any>(
@@ -115,7 +115,7 @@ export class CommandableSwaggerDocument {
     }
 
     private createSchemaData(command: ICommand): Map<string, object> {
-        let schema = (<any>command)._schema; //command.getSchema();// as ObjectSchema;
+        const schema = (<any>command)._schema; //command.getSchema();// as ObjectSchema;
 
         if (schema == null || schema.getProperties() == null)
             return null;
@@ -124,8 +124,8 @@ export class CommandableSwaggerDocument {
     }
 
     private createPropertyData(schema: any, includeRequired: boolean): Map<string, any> {
-        let properties = new Map<string, any>();
-        let required = [];
+        const properties = new Map<string, any>();
+        const required = [];
 
         schema.getProperties().forEach(property => {
 
@@ -133,8 +133,8 @@ export class CommandableSwaggerDocument {
                 properties.set(property.Name, this.objectType);
             }
             else {
-                let propertyName = property.getName();
-                let propertyType = property.getType();
+                const propertyName = property.getName();
+                const propertyType = property.getType();
 
                 if (propertyType instanceof ArraySchema) {
                     properties.set(propertyName, new Map<string, any>(
@@ -152,7 +152,7 @@ export class CommandableSwaggerDocument {
             }
         });
 
-        let data = new Map<string, any>(
+        const data = new Map<string, any>(
             [
                 ["properties", properties]
             ]
@@ -167,11 +167,11 @@ export class CommandableSwaggerDocument {
 
     private createPropertyTypeData(propertyType: any): Map<string, any> {
         if (propertyType instanceof ObjectSchema) {
-            let objectMap = this.createPropertyData(propertyType as ObjectSchema, false);
+            const objectMap = this.createPropertyData(propertyType as ObjectSchema, false);
             return new Map<string, any>([...Array.from(this.objectType.entries()), ...Array.from(objectMap.entries())])
         }
         else {
-            var typeCode: TypeCode;
+            let typeCode: TypeCode;
             
             if (propertyType in TypeCode) {
                 typeCode = propertyType;
@@ -277,12 +277,12 @@ export class CommandableSwaggerDocument {
     }
 
     protected writeName(indent: number, name: string) {
-        let spaces = this.getSpaces(indent);
+        const spaces = this.getSpaces(indent);
         this.content += spaces + name + ":\n";
     }
 
-    protected writeArrayItem(indent: number, name: string, isObjectItem: boolean = false) {
-        let spaces = this.getSpaces(indent);
+    protected writeArrayItem(indent: number, name: string, isObjectItem = false) {
+        const spaces = this.getSpaces(indent);
         this.content += spaces + "- ";
 
         if (isObjectItem)
@@ -294,14 +294,14 @@ export class CommandableSwaggerDocument {
     protected writeAsObject(indent: number, name: string, value: any) {
         if (value == null) return;
 
-        var spaces = this.getSpaces(indent);
+        const spaces = this.getSpaces(indent);
         this.content += spaces + name + ": " + value + "\n";
     }
 
     protected writeAsString(indent: number, name: string, value: string) {
         if (value == null) return;
 
-        let spaces = this.getSpaces(indent);
+        const spaces = this.getSpaces(indent);
         this.content += spaces + name + ": '" + value + "'\n";
     }
 

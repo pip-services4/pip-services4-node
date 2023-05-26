@@ -26,7 +26,7 @@ suite('HttpEndpoint', ()=> {
     let rest: any;
 
     suiteSetup(async () => {
-        let service = new DummyController();
+        let service = new DummyService();
 
         controller = new DummyRestController();
         controller.configure(ConfigParams.fromTuples(
