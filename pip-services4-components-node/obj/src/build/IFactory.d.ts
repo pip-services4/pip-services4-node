@@ -16,14 +16,14 @@ export interface IFactory {
      * a locator for component it is able to create that matches the given locator.
      * If the factory is not able to create a requested component is returns null.
      *
-     * @param locator 	a locator to identify component to be created.
-     * @returns			a locator for a component that the factory is able to create.
+     * @param locator     a locator to identify component to be created.
+     * @returns            a locator for a component that the factory is able to create.
      */
     canCreate(locator: any): any;
     /**
      * Creates a component identified by given locator.
      *
-     * @param locator 	a locator to identify component to be created.
+     * @param locator     a locator to identify component to be created.
      * @returns the created component.
      *
      * @throws a CreateException if the factory is not able to create the component.

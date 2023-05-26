@@ -46,7 +46,7 @@ export interface IOpenable extends IClosable {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context: IContext): Promise<void>;
 }

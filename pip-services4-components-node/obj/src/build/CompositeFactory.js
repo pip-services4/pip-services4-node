@@ -16,14 +16,14 @@ const CreateException_1 = require("./CreateException");
  *     factory.add(new DefaultCountersFactory());
  *
  *     let loggerLocator = new Descriptor("*", "logger", "*", "*", "1.0");
- *     factory.canCreate(loggerLocator); 		// Result: Descriptor("pip-service", "logger", "null", "default", "1.0")
- *     factory.create(loggerLocator); 			// Result: created NullLogger
+ *     factory.canCreate(loggerLocator);         // Result: Descriptor("pip-service", "logger", "null", "default", "1.0")
+ *     factory.create(loggerLocator);             // Result: created NullLogger
  */
 class CompositeFactory {
     /**
      * Creates a new instance of the factory.
      *
-     * @param factories 	a list of factories to embed into this factory.
+     * @param factories     a list of factories to embed into this factory.
      */
     constructor(...factories) {
         this._factories = [];
@@ -34,7 +34,7 @@ class CompositeFactory {
     /**
      * Adds a factory into the list of embedded factories.
      *
-     * @param factory 	a factory to be added.
+     * @param factory     a factory to be added.
      */
     add(factory) {
         if (factory == null) {
@@ -45,7 +45,7 @@ class CompositeFactory {
     /**
      * Removes a factory from the list of embedded factories.
      *
-     * @param factory 	the factory to remove.
+     * @param factory     the factory to remove.
      */
     remove(factory) {
         this._factories = this._factories.filter((f) => f != factory);
@@ -57,8 +57,8 @@ class CompositeFactory {
      * a locator for component it is able to create that matches the given locator.
      * If the factory is not able to create a requested component is returns null.
      *
-     * @param locator 	a locator to identify component to be created.
-     * @returns			a locator for a component that the factory is able to create.
+     * @param locator     a locator to identify component to be created.
+     * @returns            a locator for a component that the factory is able to create.
      */
     canCreate(locator) {
         if (locator == null) {
@@ -66,7 +66,7 @@ class CompositeFactory {
         }
         // Iterate from the latest factories
         for (let index = this._factories.length - 1; index >= 0; index--) {
-            let thisLocator = this._factories[index].canCreate(locator);
+            const thisLocator = this._factories[index].canCreate(locator);
             if (thisLocator != null) {
                 return thisLocator;
             }
@@ -76,7 +76,7 @@ class CompositeFactory {
     /**
      * Creates a component identified by given locator.
      *
-     * @param locator 	a locator to identify component to be created.
+     * @param locator     a locator to identify component to be created.
      * @returns the created component.
      *
      * @throws a CreateException if the factory is not able to create the component.
@@ -87,7 +87,7 @@ class CompositeFactory {
         }
         // Iterate from the latest factories
         for (let index = this._factories.length - 1; index >= 0; index--) {
-            let factory = this._factories[index];
+            const factory = this._factories[index];
             if (factory.canCreate(locator) != null) {
                 return factory.create(locator);
             }

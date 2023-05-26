@@ -28,11 +28,11 @@ import { IContext } from "../context/IContext";
  * 
  */
 export interface IClosable {
-	/**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-     * @param callback 			callback function that receives error or null no errors occured.
-	 */
-	close(context: IContext): Promise<void>;
+    /**
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param callback             callback function that receives error or null no errors occured.
+     */
+    close(context: IContext): Promise<void>;
 }

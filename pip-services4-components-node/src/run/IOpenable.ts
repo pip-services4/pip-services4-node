@@ -39,17 +39,17 @@ import { IClosable } from './IClosable'
  *     }
  */
 export interface IOpenable extends IClosable {
-	/**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
-	 */
-	isOpen(): boolean;
+    /**
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
+     */
+    isOpen(): boolean;
 
-	/**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 */
-	open(context: IContext): Promise<void>;
+    /**
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     */
+    open(context: IContext): Promise<void>;
 }

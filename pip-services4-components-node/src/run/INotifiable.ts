@@ -25,11 +25,11 @@ import { Parameters } from './Parameters';
  *     myComponent.notify("123", Parameters.fromTuples("event", "Test Event"));
  */
 export interface INotifiable {
-	/**
-	 * Notifies the component about occured event.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 * @param args 				notification arguments.
-	 */
-	notify(context: IContext, args: Parameters): void;
+    /**
+     * Notifies the component about occured event.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param args                 notification arguments.
+     */
+    notify(context: IContext, args: Parameters): void;
 }

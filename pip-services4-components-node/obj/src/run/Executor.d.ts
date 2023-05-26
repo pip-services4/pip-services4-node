@@ -13,8 +13,8 @@ export declare class Executor {
      * To be executed components must implement [[IExecutable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param component 		the component that is to be executed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param component         the component that is to be executed.
      * @param args              execution arguments.
      * @returns                 an execution result
      *
@@ -28,8 +28,8 @@ export declare class Executor {
      * To be executed components must implement [[IExecutable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param components 		a list of components that are to be executed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param components         a list of components that are to be executed.
      * @param args              execution arguments.
      * @returns                 an execution result
      *

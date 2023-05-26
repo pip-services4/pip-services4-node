@@ -23,7 +23,7 @@ export class OptionResolver {
      * @param configAsDefault   (optional) When set true the method returns the entire parameter set when "options" section is not found. Default: false
      * @returns                 configuration parameters from "options" section
      */
-    static resolve(config: ConfigParams, configAsDefault: boolean = false): ConfigParams {
+    static resolve(config: ConfigParams, configAsDefault = false): ConfigParams {
         let options = config.getSection("options");
 
         if (Object.keys(options).length == 0 && configAsDefault)  {

@@ -41,9 +41,9 @@ import { Parameters } from './Parameters';
 export class FixedRateTimer implements IClosable {
     private _task: INotifiable;
     private _callback: () => void;
-	private _delay: number;
-	private _interval: number;
-	private _timer: any;
+    private _delay: number;
+    private _interval: number;
+    private _timer: any;
     private _timeout: any;
     
     /**
@@ -58,16 +58,16 @@ export class FixedRateTimer implements IClosable {
      * @see [[setInterval]] 
      * @see [[setDelay]]
      */
-	public constructor(taskOrCallback: any = null, interval: number = null, delay: number = null) {
+    public constructor(taskOrCallback: any = null, interval: number = null, delay: number = null) {
         if (taskOrCallback != null && typeof taskOrCallback === "object" && typeof taskOrCallback.notify === "function") {
             this.setTask(taskOrCallback);
         } else { 
-		    this.setCallback(taskOrCallback);
+            this.setCallback(taskOrCallback);
         }
 
         this.setInterval(interval);
-		this.setDelay(delay);
-	}
+        this.setDelay(delay);
+    }
 
     /** 
      * Gets the INotifiable object that receives notifications from this timer.
@@ -83,7 +83,7 @@ export class FixedRateTimer implements IClosable {
      * 
      * @param value a INotifiable object to be triggered.
      */
-	public setTask(value: INotifiable): void {
+    public setTask(value: INotifiable): void {
         this._task = value;
         this._callback = () => { 
             this._task.notify(new Context({ trace_id: "pip-commons-timer" }), new Parameters()); 
@@ -123,7 +123,7 @@ export class FixedRateTimer implements IClosable {
      * 
      * @param value a delay in milliseconds. 
      */
-	public setDelay(value: number): void {
+    public setDelay(value: number): void {
         this._delay = value;
     }
     
@@ -141,7 +141,7 @@ export class FixedRateTimer implements IClosable {
      * 
      * @param value an interval in milliseconds.
      */
-	public setInterval(value: number): void {
+    public setInterval(value: number): void {
         this._interval = value;
     }
     
@@ -150,7 +150,7 @@ export class FixedRateTimer implements IClosable {
      * 
      * @returns true if the timer is started and false if it is stopped.
      */
-	public isStarted(): boolean {
+    public isStarted(): boolean {
         return this._timer != null;
     }
     
@@ -162,7 +162,7 @@ export class FixedRateTimer implements IClosable {
      * 
      * @see [[stop]]
      */
-	public start(): void {
+    public start(): void {
         // Stop previously set timer
         this.stop();
         
@@ -170,7 +170,7 @@ export class FixedRateTimer implements IClosable {
         if (this._interval == null || this._interval <= 0) return;
 
         // Introducing delay
-        let delay = Math.max(0, this._delay - this._interval);
+        const delay = Math.max(0, this._delay - this._interval);
 
         this._timeout = setTimeout(() => {
             this._timeout = null;
@@ -184,14 +184,14 @@ export class FixedRateTimer implements IClosable {
                 }
             }, this._interval);
         }, delay);
-	}
+    }
     
     /**
      * Stops the timer.
      * 
      * @see [[start]]
      */
-	public stop(): void {
+    public stop(): void {
         if (this._timeout != null) {
             clearTimeout(this._timeout);
             this._timeout = null;
@@ -201,7 +201,7 @@ export class FixedRateTimer implements IClosable {
             clearInterval(this._timer);
             this._timer = null;
         }
-	}
+    }
     
     /**
      * Closes the timer.
@@ -210,11 +210,12 @@ export class FixedRateTimer implements IClosable {
      * but besides that it is identical to stop().
      * 
      * @param context     (optional) a context to trace execution through call chain.
-     * @param callback 			callback function that receives error or null no errors occured.
+     * @param callback             callback function that receives error or null no errors occured.
      * 
      * @see [[stop]]
      */
-	public async close(context: IContext): Promise<void> {
-		this.stop();
-	}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async close(context: IContext): Promise<void> {
+        this.stop();
+    }
 }

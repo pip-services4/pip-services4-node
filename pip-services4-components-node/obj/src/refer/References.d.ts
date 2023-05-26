@@ -40,7 +40,7 @@ export declare class References implements IReferences {
     /**
      * Puts a new reference into this reference map.
      *
-     * @param locator 	a locator to find the reference by.
+     * @param locator     a locator to find the reference by.
      * @param component a component reference to be added.
      */
     put(locator: any, component: any): void;
@@ -49,7 +49,7 @@ export declare class References implements IReferences {
      * If many references match the locator, it removes only the first one.
      * When all references shall be removed, use [[removeAll]] method instead.
      *
-     * @param locator 	a locator to remove reference
+     * @param locator     a locator to remove reference
      * @returns the removed component reference.
      *
      * @see [[removeAll]]
@@ -58,7 +58,7 @@ export declare class References implements IReferences {
     /**
      * Removes all component references that match the specified locator.
      *
-     * @param locator 	the locator to remove references by.
+     * @param locator     the locator to remove references by.
      * @returns a list, containing all removed references.
      */
     removeAll(locator: any): any[];
@@ -77,14 +77,14 @@ export declare class References implements IReferences {
     /**
      * Gets an optional component reference that matches specified locator.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a matching component reference or null if nothing was found.
      */
     getOneOptional<T>(locator: any): T;
     /**
      * Gets a required component reference that matches specified locator.
      *
-     * @param locator 	the locator to find a reference by.
+     * @param locator     the locator to find a reference by.
      * @returns a matching component reference.
      * @throws a [[ReferenceException]] when no references found.
      */
@@ -92,7 +92,7 @@ export declare class References implements IReferences {
     /**
      * Gets all component references that match specified locator.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a list with matching component references or empty list if nothing was found.
      */
     getOptional<T>(locator: any): T[];
@@ -101,7 +101,7 @@ export declare class References implements IReferences {
      * At least one component reference must be present.
      * If it doesn't the method throws an error.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a list with matching component references.
      *
      * @throws a [[ReferenceException]] when no references found.
@@ -110,8 +110,8 @@ export declare class References implements IReferences {
     /**
      * Gets all component references that match specified locator.
      *
-     * @param locator 	the locator to find a reference by.
-     * @param required 	forces to raise an exception if no reference is found.
+     * @param locator     the locator to find a reference by.
+     * @param required     forces to raise an exception if no reference is found.
      * @returns a list with matching component references.
      *
      * @throws a [[ReferenceException]] when required is set to true but no references found.

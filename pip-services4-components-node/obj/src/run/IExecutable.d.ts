@@ -27,9 +27,9 @@ export interface IExecutable {
     /**
      * Executes component with arguments and receives execution result.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param args 				execution arguments.
-     * @result 					the execution result.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param args                 execution arguments.
+     * @result                     the execution result.
      */
     execute(context: IContext, args: Parameters): Promise<any>;
 }

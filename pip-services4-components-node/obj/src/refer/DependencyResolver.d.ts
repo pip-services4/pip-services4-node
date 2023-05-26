@@ -66,8 +66,8 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
     /**
      * Creates a new instance of the dependency resolver.
      *
-     * @param config		(optional) default configuration where key is dependency name and value is locator (descriptor)
-     * @param references	(optional) default component references
+     * @param config        (optional) default configuration where key is dependency name and value is locator (descriptor)
+     * @param references    (optional) default component references
      *
      * @see [[ConfigParams]]
      * @see [[configure]]
@@ -78,7 +78,7 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
     /**
      * Configures the component with specified parameters.
      *
-     * @param config 	configuration parameters to set.
+     * @param config     configuration parameters to set.
      *
      * @see [[ConfigParams]]
      */
@@ -86,27 +86,27 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
     /**
      * Sets the component references. References must match configured dependencies.
      *
-     * @param references 	references to set.
+     * @param references     references to set.
      */
     setReferences(references: IReferences): void;
     /**
      * Adds a new dependency into this resolver.
      *
-     * @param name 		the dependency's name.
-     * @param locator 	the locator to find the dependency by.
+     * @param name         the dependency's name.
+     * @param locator     the locator to find the dependency by.
      */
     put(name: string, locator: any): void;
     /**
      * Gets a dependency locator by its name.
      *
-     * @param name 	the name of the dependency to locate.
+     * @param name     the name of the dependency to locate.
      * @returns the dependency locator or null if locator was not configured.
      */
     private locate;
     /**
      * Gets all optional dependencies by their name.
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a list with found dependencies or empty list of no dependencies was found.
      */
     getOptional<T>(name: string): T[];
@@ -115,7 +115,7 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
      * At least one dependency must be present.
      * If no dependencies was found it throws a [[ReferenceException]]
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a list with found dependencies.
      *
      * @throws a [[ReferenceException]] if no dependencies were found.
@@ -124,7 +124,7 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
     /**
      * Gets one optional dependency by its name.
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a dependency reference or null of the dependency was not found
      */
     getOneOptional<T>(name: string): T;
@@ -133,7 +133,7 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
      * At least one dependency must present.
      * If the dependency was found it throws a [[ReferenceException]]
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a dependency reference
      *
      * @throws a [[ReferenceException]] if dependency was not found.
@@ -142,8 +142,8 @@ export declare class DependencyResolver implements IReferenceable, IReconfigurab
     /**
      * Finds all matching dependencies by their name.
      *
-     * @param name 		the dependency name to locate.
-     * @param required 	true to raise an exception when no dependencies are found.
+     * @param name         the dependency name to locate.
+     * @param required     true to raise an exception when no dependencies are found.
      * @returns a list of found dependencies
      *
      * @throws a [[ReferenceException]] of required is true and no dependencies found.

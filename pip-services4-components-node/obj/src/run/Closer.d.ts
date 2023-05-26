@@ -12,8 +12,8 @@ export declare class Closer {
      * To be closed components must implement [[ICloseable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param component 		the component that is to be closed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param component         the component that is to be closed.
      *
      * @see [[IClosable]]
      */
@@ -24,8 +24,8 @@ export declare class Closer {
      * To be closed components must implement [[ICloseable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param components 		the list of components that are to be closed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param components         the list of components that are to be closed.
      *
      * @see [[closeOne]]
      * @see [[IClosable]]

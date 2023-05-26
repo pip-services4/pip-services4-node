@@ -51,7 +51,7 @@ class References {
     /**
      * Puts a new reference into this reference map.
      *
-     * @param locator 	a locator to find the reference by.
+     * @param locator     a locator to find the reference by.
      * @param component a component reference to be added.
      */
     put(locator, component) {
@@ -65,7 +65,7 @@ class References {
      * If many references match the locator, it removes only the first one.
      * When all references shall be removed, use [[removeAll]] method instead.
      *
-     * @param locator 	a locator to remove reference
+     * @param locator     a locator to remove reference
      * @returns the removed component reference.
      *
      * @see [[removeAll]]
@@ -74,7 +74,7 @@ class References {
         if (locator == null)
             return null;
         for (let index = this._references.length - 1; index >= 0; index--) {
-            let reference = this._references[index];
+            const reference = this._references[index];
             if (reference.match(locator)) {
                 this._references.splice(index, 1);
                 return reference.getComponent();
@@ -85,15 +85,15 @@ class References {
     /**
      * Removes all component references that match the specified locator.
      *
-     * @param locator 	the locator to remove references by.
+     * @param locator     the locator to remove references by.
      * @returns a list, containing all removed references.
      */
     removeAll(locator) {
-        let components = [];
+        const components = [];
         if (locator == null)
             return components;
         for (let index = this._references.length - 1; index >= 0; index--) {
-            let reference = this._references[index];
+            const reference = this._references[index];
             if (reference.match(locator)) {
                 this._references.splice(index, 1);
                 components.push(reference.getComponent());
@@ -107,9 +107,9 @@ class References {
      * @returns a list with component locators.
      */
     getAllLocators() {
-        let locators = [];
+        const locators = [];
         for (let index = 0; index < this._references.length; index++) {
-            let reference = this._references[index];
+            const reference = this._references[index];
             locators.push(reference.getLocator());
         }
         return locators;
@@ -120,9 +120,9 @@ class References {
      * @returns a list with component references.
      */
     getAll() {
-        let components = [];
+        const components = [];
         for (let index = 0; index < this._references.length; index++) {
-            let reference = this._references[index];
+            const reference = this._references[index];
             components.push(reference.getComponent());
         }
         return components;
@@ -130,12 +130,12 @@ class References {
     /**
      * Gets an optional component reference that matches specified locator.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a matching component reference or null if nothing was found.
      */
     getOneOptional(locator) {
         try {
-            let components = this.find(locator, false);
+            const components = this.find(locator, false);
             return components.length > 0 ? components[0] : null;
         }
         catch (ex) {
@@ -145,18 +145,18 @@ class References {
     /**
      * Gets a required component reference that matches specified locator.
      *
-     * @param locator 	the locator to find a reference by.
+     * @param locator     the locator to find a reference by.
      * @returns a matching component reference.
      * @throws a [[ReferenceException]] when no references found.
      */
     getOneRequired(locator) {
-        let components = this.find(locator, true);
+        const components = this.find(locator, true);
         return components.length > 0 ? components[0] : null;
     }
     /**
      * Gets all component references that match specified locator.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a list with matching component references or empty list if nothing was found.
      */
     getOptional(locator) {
@@ -172,7 +172,7 @@ class References {
      * At least one component reference must be present.
      * If it doesn't the method throws an error.
      *
-     * @param locator 	the locator to find references by.
+     * @param locator     the locator to find references by.
      * @returns a list with matching component references.
      *
      * @throws a [[ReferenceException]] when no references found.
@@ -183,8 +183,8 @@ class References {
     /**
      * Gets all component references that match specified locator.
      *
-     * @param locator 	the locator to find a reference by.
-     * @param required 	forces to raise an exception if no reference is found.
+     * @param locator     the locator to find a reference by.
+     * @param required     forces to raise an exception if no reference is found.
      * @returns a list with matching component references.
      *
      * @throws a [[ReferenceException]] when required is set to true but no references found.
@@ -193,12 +193,12 @@ class References {
         if (locator == null) {
             throw new Error("Locator cannot be null");
         }
-        let components = [];
+        const components = [];
         // Search all references
         for (let index = this._references.length - 1; index >= 0; index--) {
-            let reference = this._references[index];
+            const reference = this._references[index];
             if (reference.match(locator)) {
-                let component = reference.getComponent();
+                const component = reference.getComponent();
                 components.push(component);
             }
         }

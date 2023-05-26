@@ -14,27 +14,27 @@ import { IFactory } from './IFactory';
  *     factory.add(new DefaultCountersFactory());
  *
  *     let loggerLocator = new Descriptor("*", "logger", "*", "*", "1.0");
- *     factory.canCreate(loggerLocator); 		// Result: Descriptor("pip-service", "logger", "null", "default", "1.0")
- *     factory.create(loggerLocator); 			// Result: created NullLogger
+ *     factory.canCreate(loggerLocator);         // Result: Descriptor("pip-service", "logger", "null", "default", "1.0")
+ *     factory.create(loggerLocator);             // Result: created NullLogger
  */
 export declare class CompositeFactory implements IFactory {
     private _factories;
     /**
      * Creates a new instance of the factory.
      *
-     * @param factories 	a list of factories to embed into this factory.
+     * @param factories     a list of factories to embed into this factory.
      */
     constructor(...factories: IFactory[]);
     /**
      * Adds a factory into the list of embedded factories.
      *
-     * @param factory 	a factory to be added.
+     * @param factory     a factory to be added.
      */
     add(factory: IFactory): void;
     /**
      * Removes a factory from the list of embedded factories.
      *
-     * @param factory 	the factory to remove.
+     * @param factory     the factory to remove.
      */
     remove(factory: IFactory): void;
     /**
@@ -44,14 +44,14 @@ export declare class CompositeFactory implements IFactory {
      * a locator for component it is able to create that matches the given locator.
      * If the factory is not able to create a requested component is returns null.
      *
-     * @param locator 	a locator to identify component to be created.
-     * @returns			a locator for a component that the factory is able to create.
+     * @param locator     a locator to identify component to be created.
+     * @returns            a locator for a component that the factory is able to create.
      */
     canCreate(locator: any): any;
     /**
      * Creates a component identified by given locator.
      *
-     * @param locator 	a locator to identify component to be created.
+     * @param locator     a locator to identify component to be created.
      * @returns the created component.
      *
      * @throws a CreateException if the factory is not able to create the component.

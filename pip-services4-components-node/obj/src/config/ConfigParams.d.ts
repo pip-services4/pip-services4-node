@@ -40,7 +40,7 @@ export declare class ConfigParams extends StringValueMap {
     /**
      * Creates a new ConfigParams and fills it with values.
      *
-     * @param values 	(optional) an object to be converted into key-value pairs to initialize this config map.
+     * @param values     (optional) an object to be converted into key-value pairs to initialize this config map.
      *
      * @see [[StringValueMap.constructor]]
      */
@@ -55,24 +55,24 @@ export declare class ConfigParams extends StringValueMap {
      * Gets parameters from specific section stored in this ConfigMap.
      * The section name is removed from parameter keys.
      *
-     * @param section	name of the section to retrieve configuration parameters from.
-     * @returns 		all configuration parameters that belong to the section named 'section'.
+     * @param section    name of the section to retrieve configuration parameters from.
+     * @returns         all configuration parameters that belong to the section named 'section'.
      */
     getSection(section: string): ConfigParams;
     /**
      * Adds parameters into this ConfigParams under specified section.
      * Keys for the new parameters are appended with section dot prefix.
      *
-     * @param section 			name of the section where add new parameters
-     * @param sectionParams 	new parameters to be added.
+     * @param section             name of the section where add new parameters
+     * @param sectionParams     new parameters to be added.
      */
     addSection(section: string, sectionParams: ConfigParams): void;
     /**
      * Overrides parameters with new values from specified ConfigParams
      * and returns a new ConfigParams object.
      *
-     * @param configParams		ConfigMap with parameters to override the current values.
-     * @returns					a new ConfigParams object.
+     * @param configParams        ConfigMap with parameters to override the current values.
+     * @returns                    a new ConfigParams object.
      *
      * @see [[setDefaults]]
      */
@@ -80,8 +80,8 @@ export declare class ConfigParams extends StringValueMap {
     /**
      * Set default values from specified ConfigParams and returns a new ConfigParams object.
      *
-     * @param defaultConfigParams	ConfigMap with default parameter values.
-     * @returns						a new ConfigParams object.
+     * @param defaultConfigParams    ConfigMap with default parameter values.
+     * @returns                        a new ConfigParams object.
      *
      * @see [[override]]
      */
@@ -89,16 +89,16 @@ export declare class ConfigParams extends StringValueMap {
     /**
      * Creates a new ConfigParams object filled with key-value pairs from specified object.
      *
-     * @param value		an object with key-value pairs used to initialize a new ConfigParams.
-     * @returns			a new ConfigParams object.
+     * @param value        an object with key-value pairs used to initialize a new ConfigParams.
+     * @returns            a new ConfigParams object.
      */
     static fromValue(value: any): ConfigParams;
     /**
      * Creates a new ConfigParams object filled with provided key-value pairs called tuples.
      * Tuples parameters contain a sequence of key1, value1, key2, value2, ... pairs.
      *
-     * @param tuples	the tuples to fill a new ConfigParams object.
-     * @returns			a new ConfigParams object.
+     * @param tuples    the tuples to fill a new ConfigParams object.
+     * @returns            a new ConfigParams object.
      *
      * @see [[StringValueMap.fromTuplesArray]]
      */
@@ -106,9 +106,9 @@ export declare class ConfigParams extends StringValueMap {
     /**
      * Creates a new ConfigParams object filled with key-value pairs serialized as a string.
      *
-     * @param line 		a string with serialized key-value pairs as "key1=value1;key2=value2;..."
-     * 					Example: "Key1=123;Key2=ABC;Key3=2016-09-16T00:00:00.00Z"
-     * @returns			a new ConfigParams object.
+     * @param line         a string with serialized key-value pairs as "key1=value1;key2=value2;..."
+     *                     Example: "Key1=123;Key2=ABC;Key3=2016-09-16T00:00:00.00Z"
+     * @returns            a new ConfigParams object.
      *
      * @see [[StringValueMap.fromString]]
      */
@@ -117,8 +117,8 @@ export declare class ConfigParams extends StringValueMap {
      * Merges two or more ConfigParams into one. The following ConfigParams override
      * previously defined parameters.
      *
-     * @param configs 	a list of ConfigParams objects to be merged.
-     * @returns			a new ConfigParams object.
+     * @param configs     a list of ConfigParams objects to be merged.
+     * @returns            a new ConfigParams object.
      *
      * @see [[StringValueMap.fromMaps]]
      */

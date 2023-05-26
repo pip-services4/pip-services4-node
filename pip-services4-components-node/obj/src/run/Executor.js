@@ -23,8 +23,8 @@ class Executor {
      * To be executed components must implement [[IExecutable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param component 		the component that is to be executed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param component         the component that is to be executed.
      * @param args              execution arguments.
      * @returns                 an execution result
      *
@@ -44,8 +44,8 @@ class Executor {
      * To be executed components must implement [[IExecutable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param components 		a list of components that are to be executed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param components         a list of components that are to be executed.
      * @param args              execution arguments.
      * @returns                 an execution result
      *
@@ -55,9 +55,9 @@ class Executor {
      */
     static execute(context, components, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            let results = [];
-            for (let component of components) {
-                let result = yield Executor.executeOne(context, component, args);
+            const results = [];
+            for (const component of components) {
+                const result = yield Executor.executeOne(context, component, args);
                 results.push(result);
             }
             return results;

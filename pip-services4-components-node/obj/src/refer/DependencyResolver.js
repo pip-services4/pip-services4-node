@@ -67,8 +67,8 @@ class DependencyResolver {
     /**
      * Creates a new instance of the dependency resolver.
      *
-     * @param config		(optional) default configuration where key is dependency name and value is locator (descriptor)
-     * @param references	(optional) default component references
+     * @param config        (optional) default configuration where key is dependency name and value is locator (descriptor)
+     * @param references    (optional) default component references
      *
      * @see [[ConfigParams]]
      * @see [[configure]]
@@ -87,20 +87,20 @@ class DependencyResolver {
     /**
      * Configures the component with specified parameters.
      *
-     * @param config 	configuration parameters to set.
+     * @param config     configuration parameters to set.
      *
      * @see [[ConfigParams]]
      */
     configure(config) {
-        let dependencies = config.getSection("dependencies");
-        let names = dependencies.getKeys();
+        const dependencies = config.getSection("dependencies");
+        const names = dependencies.getKeys();
         for (let index = 0; index < names.length; index++) {
-            let name = names[index];
-            let locator = dependencies.get(name);
+            const name = names[index];
+            const locator = dependencies.get(name);
             if (locator == null)
                 continue;
             try {
-                let descriptor = Descriptor_1.Descriptor.fromString(locator);
+                const descriptor = Descriptor_1.Descriptor.fromString(locator);
                 if (descriptor != null) {
                     this._dependencies[name] = descriptor;
                 }
@@ -116,7 +116,7 @@ class DependencyResolver {
     /**
      * Sets the component references. References must match configured dependencies.
      *
-     * @param references 	references to set.
+     * @param references     references to set.
      */
     setReferences(references) {
         this._references = references;
@@ -124,8 +124,8 @@ class DependencyResolver {
     /**
      * Adds a new dependency into this resolver.
      *
-     * @param name 		the dependency's name.
-     * @param locator 	the locator to find the dependency by.
+     * @param name         the dependency's name.
+     * @param locator     the locator to find the dependency by.
      */
     put(name, locator) {
         this._dependencies[name] = locator;
@@ -133,7 +133,7 @@ class DependencyResolver {
     /**
      * Gets a dependency locator by its name.
      *
-     * @param name 	the name of the dependency to locate.
+     * @param name     the name of the dependency to locate.
      * @returns the dependency locator or null if locator was not configured.
      */
     locate(name) {
@@ -148,11 +148,11 @@ class DependencyResolver {
     /**
      * Gets all optional dependencies by their name.
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a list with found dependencies or empty list of no dependencies was found.
      */
     getOptional(name) {
-        let locator = this.locate(name);
+        const locator = this.locate(name);
         return locator != null ? this._references.getOptional(locator) : null;
     }
     /**
@@ -160,13 +160,13 @@ class DependencyResolver {
      * At least one dependency must be present.
      * If no dependencies was found it throws a [[ReferenceException]]
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a list with found dependencies.
      *
      * @throws a [[ReferenceException]] if no dependencies were found.
      */
     getRequired(name) {
-        let locator = this.locate(name);
+        const locator = this.locate(name);
         if (locator == null) {
             throw new ReferenceException_1.ReferenceException(null, name);
         }
@@ -175,11 +175,11 @@ class DependencyResolver {
     /**
      * Gets one optional dependency by its name.
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a dependency reference or null of the dependency was not found
      */
     getOneOptional(name) {
-        let locator = this.locate(name);
+        const locator = this.locate(name);
         return locator != null ? this._references.getOneOptional(locator) : null;
     }
     /**
@@ -187,13 +187,13 @@ class DependencyResolver {
      * At least one dependency must present.
      * If the dependency was found it throws a [[ReferenceException]]
      *
-     * @param name 		the dependency name to locate.
+     * @param name         the dependency name to locate.
      * @returns a dependency reference
      *
      * @throws a [[ReferenceException]] if dependency was not found.
      */
     getOneRequired(name) {
-        let locator = this.locate(name);
+        const locator = this.locate(name);
         if (locator == null) {
             throw new ReferenceException_1.ReferenceException(null, name);
         }
@@ -202,8 +202,8 @@ class DependencyResolver {
     /**
      * Finds all matching dependencies by their name.
      *
-     * @param name 		the dependency name to locate.
-     * @param required 	true to raise an exception when no dependencies are found.
+     * @param name         the dependency name to locate.
+     * @param required     true to raise an exception when no dependencies are found.
      * @returns a list of found dependencies
      *
      * @throws a [[ReferenceException]] of required is true and no dependencies found.
@@ -212,7 +212,7 @@ class DependencyResolver {
         if (name == null) {
             throw new Error("Name cannot be null");
         }
-        let locator = this.locate(name);
+        const locator = this.locate(name);
         if (locator == null) {
             if (required) {
                 throw new ReferenceException_1.ReferenceException(null, name);
@@ -231,15 +231,15 @@ class DependencyResolver {
      * @see [[fromTuplesArray]]
      */
     static fromTuples(...tuples) {
-        let result = new DependencyResolver();
+        const result = new DependencyResolver();
         if (tuples == null || tuples.length == 0) {
             return result;
         }
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length)
                 break;
-            let name = pip_services4_commons_node_1.StringConverter.toString(tuples[index]);
-            let locator = tuples[index + 1];
+            const name = pip_services4_commons_node_1.StringConverter.toString(tuples[index]);
+            const locator = tuples[index + 1];
             result.put(name, locator);
         }
         return result;

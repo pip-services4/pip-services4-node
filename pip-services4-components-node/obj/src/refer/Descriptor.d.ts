@@ -19,9 +19,9 @@
  *     let locator1 = new Descriptor("mygroup", "connector", "aws", "default", "1.0");
  *     let locator2 = Descriptor.fromString("mygroup:connector:*:*:1.0");
  *
- *     locator1.match(locator2);		// Result: true
- *     locator1.equal(locator2);		// Result: true
- *     locator1.exactMatch(locator2);	// Result: false
+ *     locator1.match(locator2);        // Result: true
+ *     locator1.equal(locator2);        // Result: true
+ *     locator1.exactMatch(locator2);    // Result: false
  */
 export declare class Descriptor {
     private _group;
@@ -32,11 +32,11 @@ export declare class Descriptor {
     /**
      * Creates a new instance of the descriptor.
      *
-     * @param group 	a logical component group
-     * @param type 		a logical component type or contract
-     * @param kind 		a component implementation type
-     * @param name		a unique component name
-     * @param version 	a component implementation version
+     * @param group     a logical component group
+     * @param type         a logical component type or contract
+     * @param kind         a component implementation type
+     * @param name        a unique component name
+     * @param version     a component implementation version
      */
     constructor(group: string, type: string, kind: string, name: string, version: string);
     /**
@@ -74,7 +74,7 @@ export declare class Descriptor {
      * Partially matches this descriptor to another descriptor.
      * Fields that contain "*" or null are excluded from the match.
      *
-     * @param descriptor 	the descriptor to match this one against.
+     * @param descriptor     the descriptor to match this one against.
      * @returns true if descriptors match and false otherwise
      *
      * @see [[exactMatch]]
@@ -85,7 +85,7 @@ export declare class Descriptor {
      * Matches this descriptor to another descriptor by all fields.
      * No exceptions are made.
      *
-     * @param descriptor 	the descriptor to match this one against.
+     * @param descriptor     the descriptor to match this one against.
      * @returns true if descriptors match and false otherwise.
      *
      * @see [[match]]
@@ -103,7 +103,7 @@ export declare class Descriptor {
      * If value is a Descriptor it tries to match them,
      * otherwise the method returns false.
      *
-     * @param value 	the value to match against this descriptor.
+     * @param value     the value to match against this descriptor.
      * @returns true if the value is matching descriptor and false otherwise.
      *
      * @see [[match]]
@@ -124,5 +124,5 @@ export declare class Descriptor {
      * @returns         a newly created Descriptor.
      * @throws a [[ConfigException]] if the descriptor string is of a wrong format.
      */
-    static fromString(value: String): Descriptor;
+    static fromString(value: string): Descriptor;
 }

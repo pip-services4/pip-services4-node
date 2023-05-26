@@ -10,13 +10,13 @@ import { InternalException } from 'pip-services4-commons-node';
 export class CreateException extends InternalException {
 
     /**
-	 * Creates an error instance and assigns its values.
-	 * 
+     * Creates an error instance and assigns its values.
+     * 
      * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
      * @param messageOrLocator  human-readable error or locator of the component that cannot be created.
      */
-	public constructor(traceId: string = null, messageOrLocator: any) {
-		super(
+    public constructor(traceId: string = null, messageOrLocator: any) {
+        super(
             traceId, 
             "CANNOT_CREATE", 
             typeof(messageOrLocator) == 'string' ? messageOrLocator
@@ -24,8 +24,8 @@ export class CreateException extends InternalException {
         );
 
         if (typeof(messageOrLocator) != 'string' && messageOrLocator != null) {
-		    this.withDetails("locator", messageOrLocator);
+            this.withDetails("locator", messageOrLocator);
         }
-	}
+    }
     
 }

@@ -7,10 +7,10 @@ import { Parameters } from './Parameters';
  * @see [[IConfigurable]]
  */
 export interface IParameterized {
-	/**
-	 * Sets execution parameters.
-	 * 
-	 * @param parameters 	execution parameters.
-	 */
-	setParameters(parameters: Parameters): void;
+    /**
+     * Sets execution parameters.
+     * 
+     * @param parameters     execution parameters.
+     */
+    setParameters(parameters: Parameters): void;
 }

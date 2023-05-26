@@ -159,7 +159,7 @@ class FixedRateTimer {
         if (this._interval == null || this._interval <= 0)
             return;
         // Introducing delay
-        let delay = Math.max(0, this._delay - this._interval);
+        const delay = Math.max(0, this._delay - this._interval);
         this._timeout = setTimeout(() => {
             this._timeout = null;
             // Set a new timer
@@ -196,10 +196,11 @@ class FixedRateTimer {
      * but besides that it is identical to stop().
      *
      * @param context     (optional) a context to trace execution through call chain.
-     * @param callback 			callback function that receives error or null no errors occured.
+     * @param callback             callback function that receives error or null no errors occured.
      *
      * @see [[stop]]
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this.stop();

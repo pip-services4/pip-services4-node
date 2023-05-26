@@ -11,7 +11,7 @@ class ReferenceException extends pip_services4_commons_node_1.InternalException 
      * Creates an error instance and assigns its values.
      *
      * @param trace_id    (optional) a unique transaction id to trace execution through call chain.
-     * @param locator 			the locator to find reference to dependent component.
+     * @param locator             the locator to find reference to dependent component.
      */
     constructor(context, locator) {
         super(context.getTraceId(), "REF_ERROR", "Failed to obtain reference to " + locator);

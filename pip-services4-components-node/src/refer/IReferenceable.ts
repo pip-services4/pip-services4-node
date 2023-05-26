@@ -25,11 +25,11 @@ import { IReferences } from './IReferences';
  *     }
  */
 export interface IReferenceable {
-	/**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
-	 * @see [[IReferences]]
-	 */
-	setReferences(references: IReferences): void;
+    /**
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
+     * @see [[IReferences]]
+     */
+    setReferences(references: IReferences): void;
 }

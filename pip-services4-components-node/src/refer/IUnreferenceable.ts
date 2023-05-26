@@ -24,8 +24,8 @@
  *     }
  */
 export interface IUnreferenceable {
-	/**
-	 * Unsets (clears) previously set references to dependent components. 
-	 */
-	unsetReferences(): void;
+    /**
+     * Unsets (clears) previously set references to dependent components. 
+     */
+    unsetReferences(): void;
 }

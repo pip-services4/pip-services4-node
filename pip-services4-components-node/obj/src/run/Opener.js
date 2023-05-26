@@ -23,7 +23,7 @@ class Opener {
      * To be checked components must implement [[IOpenable]] interface.
      * If they don't the call to this method returns true.
      *
-     * @param component 	the component that is to be checked.
+     * @param component     the component that is to be checked.
      * @returns true if component is opened and false otherwise.
      *
      * @see [[IOpenable]]
@@ -40,7 +40,7 @@ class Opener {
      * To be checked components must implement [[IOpenable]] interface.
      * If they don't the call to this method returns true.
      *
-     * @param components 	a list of components that are to be checked.
+     * @param components     a list of components that are to be checked.
      * @returns true if all components are opened and false if at least one component is closed.
      *
      * @see [[isOpenOne]]
@@ -50,7 +50,7 @@ class Opener {
         if (components == null)
             return true;
         let result = true;
-        for (let component of components) {
+        for (const component of components) {
             result = result && Opener.isOpenOne(component);
         }
         return result;
@@ -61,8 +61,8 @@ class Opener {
      * To be opened components must implement [[IOpenable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param component 		the component that is to be opened.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param component         the component that is to be opened.
      *
      * @see [[IOpenable]]
      */
@@ -79,15 +79,15 @@ class Opener {
      * To be opened components must implement [[IOpenable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param components 		the list of components that are to be closed.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param components         the list of components that are to be closed.
      *
      * @see [[openOne]]
      * @see [[IOpenable]]
      */
     static open(context, components) {
         return __awaiter(this, void 0, void 0, function* () {
-            for (let component of components) {
+            for (const component of components) {
                 yield Opener.openOne(context, component);
             }
         });

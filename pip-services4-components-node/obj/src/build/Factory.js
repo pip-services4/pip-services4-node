@@ -35,7 +35,7 @@ class Factory {
     /**
      * Registers a component using a factory method.
      *
-     * @param locator 	a locator to identify component to be created.
+     * @param locator     a locator to identify component to be created.
      * @param factory   a factory function that receives a locator and returns a created component.
      */
     register(locator, factory) {
@@ -53,8 +53,8 @@ class Factory {
     /**
      * Registers a component using its type (a constructor function).
      *
-     * @param locator 		a locator to identify component to be created.
-     * @param type 			a component type.
+     * @param locator         a locator to identify component to be created.
+     * @param type             a component type.
      */
     registerAsType(locator, type) {
         if (locator == null) {
@@ -65,6 +65,7 @@ class Factory {
         }
         this._registrations.push({
             locator: locator,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             factory: (locator) => { return new type(); }
         });
     }
@@ -75,12 +76,12 @@ class Factory {
      * a locator for component it is able to create that matches the given locator.
      * If the factory is not able to create a requested component is returns null.
      *
-     * @param locator 	a locator to identify component to be created.
-     * @returns			a locator for a component that the factory is able to create.
+     * @param locator     a locator to identify component to be created.
+     * @returns            a locator for a component that the factory is able to create.
      */
     canCreate(locator) {
-        for (let registration of this._registrations) {
-            let thisLocator = registration.locator;
+        for (const registration of this._registrations) {
+            const thisLocator = registration.locator;
             if (thisLocator == locator || (typeof thisLocator.equals === "function" && thisLocator.equals(locator))) {
                 return thisLocator;
             }
@@ -90,14 +91,14 @@ class Factory {
     /**
      * Creates a component identified by given locator.
      *
-     * @param locator 	a locator to identify component to be created.
+     * @param locator     a locator to identify component to be created.
      * @returns the created component.
      *
      * @throws a CreateException if the factory is not able to create the component.
      */
     create(locator) {
-        for (let registration of this._registrations) {
-            let thisLocator = registration.locator;
+        for (const registration of this._registrations) {
+            const thisLocator = registration.locator;
             if (thisLocator == locator || (typeof thisLocator.equals === "function" && thisLocator.equals(locator)))
                 try {
                     return registration.factory(locator);

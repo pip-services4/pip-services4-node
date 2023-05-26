@@ -23,8 +23,8 @@ export interface ICleanable {
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param callback 			callback function that receives error or null no errors occured.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param callback             callback function that receives error or null no errors occured.
      */
     clear(context: IContext): Promise<void>;
 }

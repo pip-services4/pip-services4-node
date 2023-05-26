@@ -13,10 +13,10 @@ suite('ConfigParams', ()=> {
         );
 
         assert.equal(config.length(), 3);
-		assert.equal(config.get("Section1.Key1"), "Value1");
-		assert.equal(config.get("Section1.Key2"), "Value2");
-		assert.equal(config.get("Section1.Key3"), "Value3");
-		assert.isNull(config.get("Section1.Key4"));
+        assert.equal(config.get("Section1.Key1"), "Value1");
+        assert.equal(config.get("Section1.Key2"), "Value2");
+        assert.equal(config.get("Section1.Key3"), "Value3");
+        assert.isNull(config.get("Section1.Key4"));
 
         let section2 = ConfigParams.fromTuples(
             "Key1", "ValueA",
@@ -25,14 +25,14 @@ suite('ConfigParams', ()=> {
 
         config.addSection("Section2", section2);
         assert.equal(config.length(), 5);
-		assert.equal(config.get("Section2.Key1"), "ValueA");
-		assert.equal(config.get("Section2.Key2"), "ValueB");
+        assert.equal(config.get("Section2.Key1"), "ValueA");
+        assert.equal(config.get("Section2.Key2"), "ValueB");
 
         let section1 = config.getSection("Section1");
         assert.equal(section1.length(), 3);
-		assert.equal(section1.get("Key1"), "Value1");
-		assert.equal(section1.get("Key2"), "Value2");
-		assert.equal(section1.get("Key3"), "Value3");
+        assert.equal(section1.get("Key1"), "Value1");
+        assert.equal(section1.get("Key2"), "Value2");
+        assert.equal(section1.get("Key3"), "Value3");
         
     });    
 

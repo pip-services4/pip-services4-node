@@ -32,7 +32,9 @@
         "build": "tsc",
         "watch": "tsc --watch",
         "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
-        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
         "pip-services4-commons-node": "^0.0.1"
@@ -42,6 +44,10 @@
         "@types/mocha": "^10.0.1",
         "@types/node": "*",
         "chai": "^4.3.4",
-        "mocha": "^10.2.0"
+        "mocha": "^10.2.0",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "typescript": "*",
+        "eslint": "^8.32.0"
     }
 }

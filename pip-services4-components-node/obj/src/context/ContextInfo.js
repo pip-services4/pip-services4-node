@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContextInfo = void 0;
 /** @module info */
 /** @hidden */
-const os = require('os');
+const os = require("os");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
  * Context information component that provides detail information
@@ -14,9 +14,9 @@ const pip_services4_commons_node_1 = require("pip-services4-commons-node");
  *
  * ### Configuration parameters ###
  *
- * - name: 					the context (container or process) name
- * - description: 		   	human-readable description of the context
- * - properties: 			entire section of additional descriptive properties
+ * - name:                     the context (container or process) name
+ * - description:                human-readable description of the context
+ * - properties:             entire section of additional descriptive properties
  * - ...
  *
  * ### Example ###
@@ -27,17 +27,17 @@ const pip_services4_commons_node_1 = require("pip-services4-commons-node");
  *         "description", "My first microservice"
  *     ));
  *
- *     context.name;			// Result: "MyMicroservice"
- *     context.contextId;		// Possible result: "mylaptop"
- *     context.startTime;		// Possible result: 2018-01-01:22:12:23.45Z
- *     context.uptime;			// Possible result: 3454345
+ *     context.name;            // Result: "MyMicroservice"
+ *     context.contextId;        // Possible result: "mylaptop"
+ *     context.startTime;        // Possible result: 2018-01-01:22:12:23.45Z
+ *     context.uptime;            // Possible result: 3454345
  */
 class ContextInfo {
     /**
      * Creates a new instance of this context info.
      *
-     * @param name  		(optional) a context name.
-     * @param description 	(optional) a human-readable description of the context.
+     * @param name          (optional) a context name.
+     * @param description     (optional) a human-readable description of the context.
      */
     constructor(name, description) {
         this._name = "unknown";
@@ -67,7 +67,7 @@ class ContextInfo {
     /**
      * Sets the context name.
      *
-     * @param value		a new name for the context.
+     * @param value        a new name for the context.
      */
     set name(value) { this._name = value || "unknown"; }
     /**
@@ -124,7 +124,7 @@ class ContextInfo {
     /**
      * Sets context additional parameters.
      *
-     * @param properties 	a JSON object with context additional parameters
+     * @param properties     a JSON object with context additional parameters
     */
     set properties(properties) {
         this._properties = pip_services4_commons_node_1.StringValueMap.fromValue(properties);
@@ -132,11 +132,11 @@ class ContextInfo {
     /**
      * Creates a new ContextInfo and sets its configuration parameters.
      *
-     * @param config 	configuration parameters for the new ContextInfo.
+     * @param config     configuration parameters for the new ContextInfo.
      * @returns a newly created ContextInfo
      */
     static fromConfig(config) {
-        let result = new ContextInfo();
+        const result = new ContextInfo();
         result.configure(config);
         return result;
     }

@@ -29,8 +29,8 @@ class NameResolver {
     static resolve(config, defaultName = null) {
         let name = config.getAsNullableString("name") || config.getAsNullableString("id");
         if (name == null) {
-            let descriptorStr = config.getAsNullableString("descriptor");
-            let descriptor = Descriptor_1.Descriptor.fromString(descriptorStr);
+            const descriptorStr = config.getAsNullableString("descriptor");
+            const descriptor = Descriptor_1.Descriptor.fromString(descriptorStr);
             if (descriptor != null) {
                 name = descriptor.getName();
             }

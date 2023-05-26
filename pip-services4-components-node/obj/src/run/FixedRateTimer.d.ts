@@ -130,7 +130,7 @@ export declare class FixedRateTimer implements IClosable {
      * but besides that it is identical to stop().
      *
      * @param context     (optional) a context to trace execution through call chain.
-     * @param callback 			callback function that receives error or null no errors occured.
+     * @param callback             callback function that receives error or null no errors occured.
      *
      * @see [[stop]]
      */

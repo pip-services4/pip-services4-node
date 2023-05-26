@@ -26,12 +26,12 @@ import { Parameters } from './Parameters';
  *     console.log("Request: " + message + " Response: " + result);
  */
 export interface IExecutable {
-	/**
-	 * Executes component with arguments and receives execution result.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 * @param args 				execution arguments.
-     * @result 					the execution result. 
-	 */
-	execute(context: IContext, args: Parameters): Promise<any>;
+    /**
+     * Executes component with arguments and receives execution result.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param args                 execution arguments.
+     * @result                     the execution result. 
+     */
+    execute(context: IContext, args: Parameters): Promise<any>;
 }

@@ -78,9 +78,9 @@ export declare class Parameters extends AnyValueMap {
      * Overrides parameters with new values from specified Parameters
      * and returns a new Parameters object.
      *
-     * @param parameters		Parameters with parameters to override the current values.
-     * @param recursive			(optional) true to perform deep copy, and false for shallow copy. Default: false
-     * @returns					a new Parameters object.
+     * @param parameters        Parameters with parameters to override the current values.
+     * @param recursive            (optional) true to perform deep copy, and false for shallow copy. Default: false
+     * @returns                    a new Parameters object.
      *
      * @see [[setDefaults]]
      */
@@ -88,9 +88,9 @@ export declare class Parameters extends AnyValueMap {
     /**
      * Set default values from specified Parameters and returns a new Parameters object.
      *
-     * @param defaultParameters	Parameters with default parameter values.
-     * @param recursive			(optional) true to perform deep copy, and false for shallow copy. Default: false
-     * @returns						a new Parameters object.
+     * @param defaultParameters    Parameters with default parameter values.
+     * @param recursive            (optional) true to perform deep copy, and false for shallow copy. Default: false
+     * @returns                        a new Parameters object.
      *
      * @see [[override]]
      */
@@ -98,42 +98,42 @@ export declare class Parameters extends AnyValueMap {
     /**
      * Assigns (copies over) properties from the specified value to this map.
      *
-     * @param value 	value whose properties shall be copied over.
+     * @param value     value whose properties shall be copied over.
      */
     assignTo(value: any): void;
     /**
      * Picks select parameters from this Parameters and returns them as a new Parameters object.
      *
-     * @param paths 	keys to be picked and copied over to new Parameters.
+     * @param paths     keys to be picked and copied over to new Parameters.
      * @returns a new Parameters object.
      */
     pick(...paths: string[]): Parameters;
     /**
      * Omits selected parameters from this Parameters and returns the rest as a new Parameters object.
      *
-     * @param paths 	keys to be omitted from copying over to new Parameters.
+     * @param paths     keys to be omitted from copying over to new Parameters.
      * @returns a new Parameters object.
      */
     omit(...paths: string[]): Parameters;
     /**
      * Converts this map to JSON object.
      *
-     * @returns	a JSON representation of this map.
+     * @returns    a JSON representation of this map.
      */
     toJson(): string;
     /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      *
-     * @param value		an object with key-value pairs used to initialize a new Parameters.
-     * @returns			a new Parameters object.
+     * @param value        an object with key-value pairs used to initialize a new Parameters.
+     * @returns            a new Parameters object.
      */
     static fromValue(value: any): Parameters;
     /**
      * Creates a new Parameters object filled with provided key-value pairs called tuples.
      * Tuples parameters contain a sequence of key1, value1, key2, value2, ... pairs.
      *
-     * @param tuples	the tuples to fill a new Parameters object.
-     * @returns			a new Parameters object.
+     * @param tuples    the tuples to fill a new Parameters object.
+     * @returns            a new Parameters object.
      *
      * @see [[AnyValueMap.fromTuplesArray]]
      */
@@ -142,8 +142,8 @@ export declare class Parameters extends AnyValueMap {
      * Merges two or more Parameters into one. The following Parameters override
      * previously defined parameters.
      *
-     * @param configs 	a list of Parameters objects to be merged.
-     * @returns			a new Parameters object.
+     * @param configs     a list of Parameters objects to be merged.
+     * @returns            a new Parameters object.
      *
      * @see [[AnyValueMap.fromMaps]]
      */
@@ -151,7 +151,7 @@ export declare class Parameters extends AnyValueMap {
     /**
      * Creates new Parameters from JSON object.
      *
-     * @param json 	a JSON string containing parameters.
+     * @param json     a JSON string containing parameters.
      * @returns a new Parameters object.
      *
      * @see [[JsonConverter.toNullableMap]]
@@ -160,8 +160,8 @@ export declare class Parameters extends AnyValueMap {
     /**
      * Creates new Parameters from ConfigMap object.
      *
-     * @param config 	a ConfigParams that contain parameters.
-     * @returns			a new Parameters object.
+     * @param config     a ConfigParams that contain parameters.
+     * @returns            a new Parameters object.
      *
      * @see [[ConfigParams]]
      */

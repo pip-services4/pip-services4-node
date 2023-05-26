@@ -43,22 +43,22 @@ export declare class Context implements IContext {
     /**
      * Converts this map to JSON object.
      *
-     * @returns	a JSON representation of this map.
+     * @returns    a JSON representation of this map.
      */
     toJson(): string;
     /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      *
-     * @param value		an object with key-value pairs used to initialize a new Parameters.
-     * @returns			a new Parameters object.
+     * @param value        an object with key-value pairs used to initialize a new Parameters.
+     * @returns            a new Parameters object.
      */
     static fromValue(value: any): Context;
     /**
      * Creates a new Context object filled with provided key-value pairs called tuples.
      * Tuples parameters contain a sequence of key1, value1, key2, value2, ... pairs.
      *
-     * @param tuples	the tuples to fill a new Parameters object.
-     * @returns			a new Parameters object.
+     * @param tuples    the tuples to fill a new Parameters object.
+     * @returns            a new Parameters object.
      *
      * @see [[AnyValueMap.fromTuplesArray]]
      */
@@ -66,7 +66,7 @@ export declare class Context implements IContext {
     /**
      * Creates new Context from JSON object.
      *
-     * @param json 	a JSON string containing parameters.
+     * @param json     a JSON string containing parameters.
      * @returns a new Context object.
      *
      * @see [[JsonConverter.toNullableMap]]
@@ -75,8 +75,8 @@ export declare class Context implements IContext {
     /**
      * Creates new Context from ConfigMap object.
      *
-     * @param config 	a ConfigParams that contain parameters.
-     * @returns			a new Context object.
+     * @param config     a ConfigParams that contain parameters.
+     * @returns            a new Context object.
      *
      * @see [[ConfigParams]]
      */
@@ -84,7 +84,7 @@ export declare class Context implements IContext {
     /**
      * Creates new Context from trace id.
      *
-     * @param traceId 	a transaction id to trace execution through call chain.
+     * @param traceId     a transaction id to trace execution through call chain.
      * @returns a new Parameters object.
      */
     static fromTraceId(traceId: string): Context;

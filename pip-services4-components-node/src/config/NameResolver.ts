@@ -31,8 +31,8 @@ export class NameResolver {
         let name: string = config.getAsNullableString("name") || config.getAsNullableString("id");
 
         if (name == null) {
-            let descriptorStr: string = config.getAsNullableString("descriptor");
-            let descriptor: Descriptor = Descriptor.fromString(descriptorStr);
+            const descriptorStr: string = config.getAsNullableString("descriptor");
+            const descriptor: Descriptor = Descriptor.fromString(descriptorStr);
             if (descriptor != null) {
                 name = descriptor.getName();
             }

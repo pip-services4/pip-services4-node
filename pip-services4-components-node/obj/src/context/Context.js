@@ -35,7 +35,7 @@ class Context {
      * @returns  a trace id or <code>null</code> if it is not defined.
      */
     getTraceId() {
-        let context = this.get("trace_id") || this.get("trace_id");
+        const context = this.get("trace_id") || this.get("trace_id");
         return context != null ? "" + context : null;
     }
     /**
@@ -44,7 +44,7 @@ class Context {
      * @returns  a client name or <code>null</code> if it is not defined.
      */
     getClient() {
-        let client = this.get("client");
+        const client = this.get("client");
         return client != null ? "" + client : null;
     }
     /**
@@ -58,7 +58,7 @@ class Context {
     /**
      * Converts this map to JSON object.
      *
-     * @returns	a JSON representation of this map.
+     * @returns    a JSON representation of this map.
      */
     toJson() {
         return pip_services4_commons_node_2.JsonConverter.toJson(this._values);
@@ -66,8 +66,8 @@ class Context {
     /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      *
-     * @param value		an object with key-value pairs used to initialize a new Parameters.
-     * @returns			a new Parameters object.
+     * @param value        an object with key-value pairs used to initialize a new Parameters.
+     * @returns            a new Parameters object.
      */
     static fromValue(value) {
         return new Context(value);
@@ -76,32 +76,32 @@ class Context {
      * Creates a new Context object filled with provided key-value pairs called tuples.
      * Tuples parameters contain a sequence of key1, value1, key2, value2, ... pairs.
      *
-     * @param tuples	the tuples to fill a new Parameters object.
-     * @returns			a new Parameters object.
+     * @param tuples    the tuples to fill a new Parameters object.
+     * @returns            a new Parameters object.
      *
      * @see [[AnyValueMap.fromTuplesArray]]
      */
     static fromTuples(...tuples) {
-        let map = pip_services4_commons_node_1.AnyValueMap.fromTuples(...tuples);
+        const map = pip_services4_commons_node_1.AnyValueMap.fromTuples(...tuples);
         return new Context(map);
     }
     /**
      * Creates new Context from JSON object.
      *
-     * @param json 	a JSON string containing parameters.
+     * @param json     a JSON string containing parameters.
      * @returns a new Context object.
      *
      * @see [[JsonConverter.toNullableMap]]
      */
     static fromJson(json) {
-        let map = pip_services4_commons_node_2.JsonConverter.toNullableMap(json);
+        const map = pip_services4_commons_node_2.JsonConverter.toNullableMap(json);
         return new Context(map);
     }
     /**
      * Creates new Context from ConfigMap object.
      *
-     * @param config 	a ConfigParams that contain parameters.
-     * @returns			a new Context object.
+     * @param config     a ConfigParams that contain parameters.
+     * @returns            a new Context object.
      *
      * @see [[ConfigParams]]
      */
@@ -109,9 +109,9 @@ class Context {
         if (config == null) {
             return new Context();
         }
-        let values = new pip_services4_commons_node_1.AnyValueMap();
-        for (let key in config) {
-            if (config.hasOwnProperty(key)) {
+        const values = new pip_services4_commons_node_1.AnyValueMap();
+        for (const key in config) {
+            if (Object.prototype.hasOwnProperty.call(config, key)) {
                 values.put(key, config[key]);
             }
         }
@@ -120,11 +120,11 @@ class Context {
     /**
      * Creates new Context from trace id.
      *
-     * @param traceId 	a transaction id to trace execution through call chain.
+     * @param traceId     a transaction id to trace execution through call chain.
      * @returns a new Parameters object.
      */
     static fromTraceId(traceId) {
-        let map = run_1.Parameters.fromTuples("trace_id", traceId);
+        const map = run_1.Parameters.fromTuples("trace_id", traceId);
         return new Context(map);
     }
 }

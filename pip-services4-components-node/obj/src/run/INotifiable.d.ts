@@ -26,8 +26,8 @@ export interface INotifiable {
     /**
      * Notifies the component about occured event.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param args 				notification arguments.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param args                 notification arguments.
      */
     notify(context: IContext, args: Parameters): void;
 }

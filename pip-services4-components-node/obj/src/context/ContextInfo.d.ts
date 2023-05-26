@@ -9,9 +9,9 @@ import { IReconfigurable } from '../config/IReconfigurable';
  *
  * ### Configuration parameters ###
  *
- * - name: 					the context (container or process) name
- * - description: 		   	human-readable description of the context
- * - properties: 			entire section of additional descriptive properties
+ * - name:                     the context (container or process) name
+ * - description:                human-readable description of the context
+ * - properties:             entire section of additional descriptive properties
  * - ...
  *
  * ### Example ###
@@ -22,10 +22,10 @@ import { IReconfigurable } from '../config/IReconfigurable';
  *         "description", "My first microservice"
  *     ));
  *
- *     context.name;			// Result: "MyMicroservice"
- *     context.contextId;		// Possible result: "mylaptop"
- *     context.startTime;		// Possible result: 2018-01-01:22:12:23.45Z
- *     context.uptime;			// Possible result: 3454345
+ *     context.name;            // Result: "MyMicroservice"
+ *     context.contextId;        // Possible result: "mylaptop"
+ *     context.startTime;        // Possible result: 2018-01-01:22:12:23.45Z
+ *     context.uptime;            // Possible result: 3454345
  */
 export declare class ContextInfo implements IReconfigurable {
     private _name;
@@ -36,8 +36,8 @@ export declare class ContextInfo implements IReconfigurable {
     /**
      * Creates a new instance of this context info.
      *
-     * @param name  		(optional) a context name.
-     * @param description 	(optional) a human-readable description of the context.
+     * @param name          (optional) a context name.
+     * @param description     (optional) a human-readable description of the context.
      */
     constructor(name?: string, description?: string);
     /**
@@ -55,7 +55,7 @@ export declare class ContextInfo implements IReconfigurable {
     /**
      * Sets the context name.
      *
-     * @param value		a new name for the context.
+     * @param value        a new name for the context.
      */
     set name(value: string);
     /**
@@ -110,13 +110,13 @@ export declare class ContextInfo implements IReconfigurable {
     /**
      * Sets context additional parameters.
      *
-     * @param properties 	a JSON object with context additional parameters
+     * @param properties     a JSON object with context additional parameters
     */
     set properties(properties: any);
     /**
      * Creates a new ContextInfo and sets its configuration parameters.
      *
-     * @param config 	configuration parameters for the new ContextInfo.
+     * @param config     configuration parameters for the new ContextInfo.
      * @returns a newly created ContextInfo
      */
     static fromConfig(config: ConfigParams): ContextInfo;

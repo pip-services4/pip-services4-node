@@ -13,8 +13,8 @@ export declare class Notifier {
      * To be notiied components must implement [[INotifiable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param component 		the component that is to be notified.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param component         the component that is to be notified.
      * @param args              notifiation arguments.
      *
      * @see [[INotifiable]]
@@ -26,8 +26,8 @@ export declare class Notifier {
      * To be notified components must implement [[INotifiable]] interface.
      * If they don't the call to this method has no effect.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
-     * @param components 		a list of components that are to be notified.
+     * @param context     (optional) execution context to trace execution through call chain.
+     * @param components         a list of components that are to be notified.
      * @param args              notification arguments.
      *
      * @see [[notifyOne]]

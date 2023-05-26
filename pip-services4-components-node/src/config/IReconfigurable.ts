@@ -10,5 +10,6 @@ import { IConfigurable } from './IConfigurable';
  * 
  * @see [[IConfigurable]]
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IReconfigurable extends IConfigurable {
 }
