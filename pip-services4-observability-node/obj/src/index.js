@@ -18,4 +18,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./count"), exports);
 __exportStar(require("./log"), exports);
 __exportStar(require("./trace"), exports);
+__exportStar(require("./build"), exports);
 //# sourceMappingURL=index.js.map

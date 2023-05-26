@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultLoggerFactory = exports.LogMessage = exports.CompositeLogger = exports.ConsoleLogger = exports.CachedLogger = exports.NullLogger = exports.Logger = exports.LogLevelConverter = exports.LogLevel = void 0;
+exports.LogMessage = exports.CompositeLogger = exports.ConsoleLogger = exports.CachedLogger = exports.NullLogger = exports.Logger = exports.LogLevelConverter = exports.LogLevel = void 0;
 var LogLevel_1 = require("./LogLevel");
 Object.defineProperty(exports, "LogLevel", { enumerable: true, get: function () { return LogLevel_1.LogLevel; } });
 var LogLevelConverter_1 = require("./LogLevelConverter");
@@ -17,6 +17,4 @@ var CompositeLogger_1 = require("./CompositeLogger");
 Object.defineProperty(exports, "CompositeLogger", { enumerable: true, get: function () { return CompositeLogger_1.CompositeLogger; } });
 var LogMessage_1 = require("./LogMessage");
 Object.defineProperty(exports, "LogMessage", { enumerable: true, get: function () { return LogMessage_1.LogMessage; } });
-var DefaultLoggerFactory_1 = require("./DefaultLoggerFactory");
-Object.defineProperty(exports, "DefaultLoggerFactory", { enumerable: true, get: function () { return DefaultLoggerFactory_1.DefaultLoggerFactory; } });
 //# sourceMappingURL=index.js.map

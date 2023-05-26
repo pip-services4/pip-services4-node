@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultCountersFactory = exports.Counter = exports.CounterType = exports.CompositeCounters = exports.LogCounters = exports.NullCounters = exports.CachedCounters = exports.CounterTiming = void 0;
+exports.Counter = exports.CounterType = exports.CompositeCounters = exports.LogCounters = exports.NullCounters = exports.CachedCounters = exports.CounterTiming = void 0;
 /**
  * @module count
  *
@@ -25,6 +25,4 @@ var CounterType_1 = require("./CounterType");
 Object.defineProperty(exports, "CounterType", { enumerable: true, get: function () { return CounterType_1.CounterType; } });
 var Counter_1 = require("./Counter");
 Object.defineProperty(exports, "Counter", { enumerable: true, get: function () { return Counter_1.Counter; } });
-var DefaultCountersFactory_1 = require("./DefaultCountersFactory");
-Object.defineProperty(exports, "DefaultCountersFactory", { enumerable: true, get: function () { return DefaultCountersFactory_1.DefaultCountersFactory; } });
 //# sourceMappingURL=index.js.map

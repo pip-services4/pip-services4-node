@@ -12,4 +12,3 @@ export { CachedTracer } from './CachedTracer';
 export { LogTracer } from './LogTracer';
 export { CompositeTracer } from './CompositeTracer';
 export { OperationTrace } from './OperationTrace';
-export { DefaultTracerFactory } from './DefaultTracerFactory';

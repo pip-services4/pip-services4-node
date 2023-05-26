@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-observability-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "Component definitions for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -37,8 +37,8 @@
         "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^0.0.1",
-        "pip-services4-components-node": "^0.0.3"
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

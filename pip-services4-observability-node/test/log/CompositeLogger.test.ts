@@ -8,7 +8,6 @@ import { NullLogger } from '../../src/log/NullLogger';
 import { ConsoleLogger } from '../../src/log/ConsoleLogger';
 import { CompositeLogger } from '../../src/log/CompositeLogger';
 import { LogLevel } from '../../src/log/LogLevel';
-import { DefaultLoggerFactory } from '../../src/log/DefaultLoggerFactory';
 
 suite('CompositeLogger', ()=> {
     let _logger: CompositeLogger;
