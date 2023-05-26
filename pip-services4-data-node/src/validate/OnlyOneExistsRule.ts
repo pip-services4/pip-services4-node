@@ -42,13 +42,13 @@ export class OnlyOneExistsRule implements IValidationRule {
      * @param results   a list with validation results to add new results.
      */
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
-        let found: string[] = [];
+        const name = path || "value";
+        const found: string[] = [];
 
         for (let i = 0; i < this._properties.length; i++) {
-            let property: string = this._properties[i];
+            const property: string = this._properties[i];
 
-            let propertyValue = ObjectReader.getProperty(value, property);
+            const propertyValue = ObjectReader.getProperty(value, property);
 
             if (propertyValue) {
                 found.push(property);

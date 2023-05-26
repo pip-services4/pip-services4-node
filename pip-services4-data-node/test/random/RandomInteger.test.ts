@@ -5,15 +5,15 @@ import { RandomInteger } from '../../src/random/RandomInteger';
 suite('RandomInteger', ()=> {
 
     test('Next Integer', () => {
-    	let value = RandomInteger.nextInteger(5);
+        let value = RandomInteger.nextInteger(5);
         assert.isTrue(value <= 5);
         
-    	value = RandomInteger.nextInteger(2,5);
-    	assert.isTrue(value <= 5 && value >= 2);
+        value = RandomInteger.nextInteger(2,5);
+        assert.isTrue(value <= 5 && value >= 2);
    });
 
     test('Update Integer', () => {
-    	let value = RandomInteger.updateInteger(0, 5);
+        let value = RandomInteger.updateInteger(0, 5);
         assert.isTrue(value <= 5 && value >= -5);
         
         value = RandomInteger.updateInteger(5, 0);  

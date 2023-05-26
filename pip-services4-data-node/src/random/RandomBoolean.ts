@@ -18,16 +18,16 @@ export class RandomBoolean {
      * @param maxChances   a maximum number of chances
      */
     public static chance(chance: number, maxChances: number): boolean {
-    	chance = chance >= 0 ? chance : 0;
-    	maxChances = maxChances >= 0 ? maxChances : 0;
-    	if (chance == 0 && maxChances == 0) {
-        	return false;
+        chance = chance >= 0 ? chance : 0;
+        maxChances = maxChances >= 0 ? maxChances : 0;
+        if (chance == 0 && maxChances == 0) {
+            return false;
         }
-    	
+        
         maxChances = Math.max(maxChances, chance);
-        let start = (maxChances - chance) / 2;
-        let end = start + chance;
-        let hit = Math.random() * maxChances;
+        const start = (maxChances - chance) / 2;
+        const end = start + chance;
+        const hit = Math.random() * maxChances;
         return hit >= start && hit <= end;
     }
 

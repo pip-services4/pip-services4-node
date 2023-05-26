@@ -41,12 +41,12 @@ export class ValidationException extends BadRequestException {
      * @see [[ValidationResult]]
      */
     public static composeMessage(results: ValidationResult[]): string {
-        let builder: string = "Validation failed";
+        let builder = "Validation failed";
 
         if (results && results.length > 0) {
             let first = true;
             for (let i = 0; i < results.length; i++) {
-                let result: ValidationResult = results[i];
+                const result: ValidationResult = results[i];
 
                 if (result.getType() == ValidationResultType.Information) {
                     continue;
@@ -76,7 +76,7 @@ export class ValidationException extends BadRequestException {
         let hasErrors = false;
 
         for (let i = 0; i < results.length; i++) {
-            let result: ValidationResult = results[i];
+            const result: ValidationResult = results[i];
 
             if (result.getType() == ValidationResultType.Error) {
                 hasErrors = true;
@@ -102,7 +102,7 @@ export class ValidationException extends BadRequestException {
      * @see [[ValidationException]]
      */
     public static throwExceptionIfNeeded(traceId: string, results: ValidationResult[], strict: boolean): void {
-        let ex = ValidationException.fromResults(traceId, results, strict);
+        const ex = ValidationException.fromResults(traceId, results, strict);
         if (ex) throw ex;
     }
 

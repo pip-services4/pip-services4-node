@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-data-node",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "author": "Enterprise Innovation Consulting",
     "description": "Data Handling Components in Node.js / ES2017",
     "contributors": [
@@ -32,17 +32,24 @@
         "build": "tsc",
         "watch": "tsc --watch",
         "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
-        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "pip-services4-commons-node": "../pip-services4-commons-node",
+        "pip-services4-commons-node": "^0.0.1",
         "uuid": "^9.0.0"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
         "@types/mocha": "^10.0.1",
         "@types/node": "*",
+        "@types/uuid": "^9.0.1",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
         "chai": "^4.3.4",
-        "mocha": "^10.2.0"
+        "eslint": "^8.32.0",
+        "mocha": "^10.2.0",
+        "typescript": "*"
     }
 }

@@ -41,8 +41,8 @@ export class RandomFloat {
     public static updateFloat(value: number, range: number = null): number {
         if (range == null) range = 0;
         range = range == 0 ? 0.1 * value : range;
-        let minValue = value - range;
-        let maxValue = value + range;
+        const minValue = value - range;
+        const maxValue = value + range;
         return RandomFloat.nextFloat(minValue, maxValue);
     }
 }

@@ -41,8 +41,8 @@ export class RandomInteger {
     public static updateInteger(value: number, range: number = null): number {
         if (range == null) range = 0;
         range = range == 0 ? Math.floor(0.1 * value) : range;
-        let minValue = value - range;
-        let maxValue = value + range;
+        const minValue = value - range;
+        const maxValue = value + range;
         return RandomInteger.nextInteger(minValue, maxValue);
     }
 
@@ -56,9 +56,9 @@ export class RandomInteger {
      */
     public static sequence(min: number, max: number = null): number[] {
         max = max != null ? max : min;
-        let count = RandomInteger.nextInteger(min, max);
+        const count = RandomInteger.nextInteger(min, max);
 
-        let result: number[] = [];
+        const result: number[] = [];
         for (let i = 0; i < count; i++) {
             result.push(i);
         }

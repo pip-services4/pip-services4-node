@@ -26,11 +26,11 @@ export class RandomDateTime {
             min = new Date(max.getFullYear() - 10, 1, 1);
         }
 
-        let diff = max.getTime() - min.getTime();
+        const diff = max.getTime() - min.getTime();
         if (diff <= 0) return min;
 
-        let time = min.getTime() + RandomInteger.nextInteger(0, diff);
-        let date = new Date(time);
+        const time = min.getTime() + RandomInteger.nextInteger(0, diff);
+        const date = new Date(time);
         
         return new Date(date.getFullYear(), date.getMonth(), date.getDay());
     }
@@ -49,10 +49,10 @@ export class RandomDateTime {
             min = new Date(2000, 0, 1);
         }
 
-        let diff = max.getTime() - min.getTime();
+        const diff = max.getTime() - min.getTime();
         if (diff <= 0) return min;
 
-        let time = min.getTime() + RandomInteger.nextInteger(0, diff);
+        const time = min.getTime() + RandomInteger.nextInteger(0, diff);
         return new Date(time);
     }
 
@@ -66,7 +66,7 @@ export class RandomDateTime {
         range = range != 0 && range != null ? range : 10 * 24 * 3600000;
         if (range < 0) return value;
 
-        let time = value.valueOf() + RandomInteger.nextInteger(-range, range);
+        const time = value.valueOf() + RandomInteger.nextInteger(-range, range);
         return new Date(time);
     }
 

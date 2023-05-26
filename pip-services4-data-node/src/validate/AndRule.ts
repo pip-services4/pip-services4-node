@@ -45,8 +45,8 @@ export class AndRule implements IValidationRule {
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
         if (!this._rules) return;
 
-        for (var i = 0; i < this._rules.length; i++) {
-            let rule: IValidationRule = this._rules[i];
+        for (let i = 0; i < this._rules.length; i++) {
+            const rule: IValidationRule = this._rules[i];
             rule.validate(path, schema, value, results);
         }
     }

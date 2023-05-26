@@ -19,12 +19,12 @@ import { IChangeable } from './IChangeable';
  *     }
  */
 export interface ITrackable extends IChangeable {
-	/** The UTC time at which the object was created. */
-	create_time: Date;
-	
-	/** The UTC time at which the object was last changed (created, updated, or deleted). */
-	change_time: Date;
+    /** The UTC time at which the object was created. */
+    create_time: Date;
+    
+    /** The UTC time at which the object was last changed (created, updated, or deleted). */
+    change_time: Date;
 
-	/** The logical deletion flag. True when object is deleted and null or false otherwise */
-	deleted?: boolean;
+    /** The logical deletion flag. True when object is deleted and null or false otherwise */
+    deleted?: boolean;
 }

@@ -14,6 +14,6 @@
  *     }
  */
 export interface INamed {
-	/** The object's humand-readable name. */
-	name: string;
+    /** The object's humand-readable name. */
+    name: string;
 }

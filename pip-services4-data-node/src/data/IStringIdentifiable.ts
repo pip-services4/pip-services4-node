@@ -21,6 +21,6 @@ import { IIdentifiable } from './IIdentifiable';
  *     }
  */
 export interface IStringIdentifiable extends IIdentifiable<string> {
-	/** The object's unique string id. */
-	id: string;
+    /** The object's unique string id. */
+    id: string;
 }

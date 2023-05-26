@@ -42,11 +42,11 @@ export class AtLeastOneExistsRule implements IValidationRule {
      * @param results   a list with validation results to add new results.
      */
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
-        let found: string[] = [];
+        const name = path || "value";
+        const found: string[] = [];
 
-        for (var i = 0; i < this._properties.length; i++) {
-            let propertyValue = ObjectReader.getProperty(value, this._properties[i]);
+        for (let i = 0; i < this._properties.length; i++) {
+            const propertyValue = ObjectReader.getProperty(value, this._properties[i]);
             if (propertyValue != null) {
                 found.push(this._properties[i]);
             }

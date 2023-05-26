@@ -125,7 +125,7 @@ export class RandomText {
      */
     public static phrase(minLength: number, maxLength: number = null): string {
         maxLength = Math.max(minLength, maxLength || minLength);
-        let size = RandomInteger.nextInteger(minLength, maxLength);
+        const size = RandomInteger.nextInteger(minLength, maxLength);
         if (size <= 0) return "";
 
         let result = '';
@@ -179,7 +179,7 @@ export class RandomText {
     public static words(min: number, max: number = null): string {
         let result = '';
 
-        let count = RandomInteger.nextInteger(min, max || min);
+        const count = RandomInteger.nextInteger(min, max || min);
         for (let i = 0; i < count; i++) {
             result += RandomString.pick(RandomText._allWords);
         }
@@ -224,7 +224,7 @@ export class RandomText {
      */
     public static text(minLength: number, maxLength: number = null): string {
         maxLength = Math.max(minLength, maxLength || minLength);
-        let size = RandomInteger.nextInteger(minLength, maxLength);
+        const size = RandomInteger.nextInteger(minLength, maxLength);
 
         let result = '';
         result += RandomString.pick(RandomText._allWords);

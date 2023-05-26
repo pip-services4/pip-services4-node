@@ -42,7 +42,7 @@ export class ValueComparisonRule implements IValidationRule {
      * @param results   a list with validation results to add new results.
      */
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
+        const name = path || "value";
 
         if (!ObjectComparator.compare(value, this._operation, this._value)) {
             results.push(

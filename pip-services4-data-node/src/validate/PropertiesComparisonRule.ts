@@ -50,9 +50,9 @@ export class PropertiesComparisonRule implements IValidationRule {
      * @param results   a list with validation results to add new results.
      */
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
-        let value1 = ObjectReader.getProperty(value, this._property1);
-        let value2 = ObjectReader.getProperty(value, this._property2);
+        const name = path || "value";
+        const value1 = ObjectReader.getProperty(value, this._property1);
+        const value2 = ObjectReader.getProperty(value, this._property2);
 
         if (!ObjectComparator.compare(value1, this._operation, value2)) {
             results.push(

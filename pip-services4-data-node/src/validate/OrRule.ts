@@ -46,17 +46,17 @@ export class OrRule implements IValidationRule {
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
         if (!this._rules || this._rules.length == 0) return;
 
-        let localResults: ValidationResult[] = [];
+        const localResults: ValidationResult[] = [];
 
         for (let i = 0; i < this._rules.length; i++) {
-            let resultCount = localResults.length;
+            const resultCount = localResults.length;
 
             this._rules[i].validate(path, schema, value, localResults);
 
             if (resultCount == localResults.length) return;
         }
 
-        results.push.apply(results, localResults);
+        results.push.apply(results, ...localResults);
     }
 
 }

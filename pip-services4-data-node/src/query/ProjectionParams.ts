@@ -37,7 +37,7 @@ export class ProjectionParams extends Array<string> {
         (<any>this).__proto__ = ProjectionParams.prototype;
 
         if (values != null) {
-            for (let value of values) {
+            for (const value of values) {
                 this.push("" + value);
             }
         }
@@ -89,7 +89,7 @@ export class ProjectionParams extends Array<string> {
                         closeBracketIndex = index;
 
                         if (openBracketIndex >= 0 && closeBracketIndex > 0) {
-                            let previousPrefix = prefix;
+                            const previousPrefix = prefix;
 
                             if (prefix && prefix.length > 0) {
                                 prefix = prefix + "." + value.substring(0, openBracketIndex);
@@ -167,9 +167,9 @@ export class ProjectionParams extends Array<string> {
      * @returns         a newly created ProjectionParams.
      */
     public static fromString(...values: string[]) {
-        let result = new ProjectionParams();
+        const result = new ProjectionParams();
 
-        for (let value of values) {
+        for (const value of values) {
             this.parseValue("", result, value);
         }
 

@@ -24,10 +24,10 @@ export class RandomDouble {
             min = 0;
         }
 
-    	if (max - min <= 0) {
-    		return min;
+        if (max - min <= 0) {
+            return min;
         }
-    	
+        
         return min + Math.random() * (max - min);
     }
 
@@ -37,11 +37,11 @@ export class RandomDouble {
      * @param value     a double value to drift.
      * @param range     (optional) a range. Default: 10% of the value
      */
-	public static updateDouble(value: number, range: number = null): number {		
+    public static updateDouble(value: number, range: number = null): number {        
         if (range == null) range = 0;
         range = range == 0 ? 0.1 * value : range;
-        let minValue = value - range;
-        let maxValue = value + range;
+        const minValue = value - range;
+        const maxValue = value + range;
         return RandomDouble.nextDouble(minValue, maxValue);
     }    
 }

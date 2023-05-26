@@ -26,7 +26,7 @@ export class MultiString {
      */
     public constructor(map: any = null) {
         if (map != null) {
-    	    this.append(map);
+            this.append(map);
         }
     }
 
@@ -49,8 +49,8 @@ export class MultiString {
         
         // Default to the first property
         if (value == null) {
-            for (let language in this) {
-                if (this.hasOwnProperty(language))
+            for (const language in this) {
+                if (Object.prototype.hasOwnProperty.call(this, language))
                 value = this[language];
                 break;
             }
@@ -64,11 +64,11 @@ export class MultiString {
      * 
      * @returns a list with language codes. 
      */
-	public getLanguages(): string[] {
-        let languages: string[] = [];
-		
-		for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+    public getLanguages(): string[] {
+        const languages: string[] = [];
+        
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 languages.push(key);
             }
         }
@@ -82,7 +82,7 @@ export class MultiString {
      * @param language  a language two-symbol code.
      * @param value     a new translation for the specified language.
      */
-	public put(language: string, value: any): any {
+    public put(language: string, value: any): any {
         this[language] = StringConverter.toNullableString(value);
     }
 
@@ -101,26 +101,25 @@ export class MultiString {
      * @param map   the map with language-translation pairs.
      */
     public append(map: any): void {
-    	if (map == null) return;
-    	
-		for (let key in map) {
-            let value = map[key];
-            if (map.hasOwnProperty(key)) {
+        if (map == null) return;
+        
+        for (const key in map) {
+            const value = map[key];
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
                 this[key] = StringConverter.toNullableString(value);
             }
-		}
+        }
     }
 
     /**
      * Clears all translations from this MultiString object.
      */
     public clear(): any {
-    	for (let key in this) {
-            let value = this[key];
-            if (this.hasOwnProperty(key)) {
-    		    delete this[key];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                delete this[key];
             }
-    	}
+        }
     }
 
     /** 
@@ -129,9 +128,9 @@ export class MultiString {
      * @returns the number of translations.
      */
     public length(): number {
-        let count: number = 0;
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        let count = 0;
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 count ++;
             }
         }        
@@ -169,20 +168,20 @@ export class MultiString {
      * @returns         a MultiString Object.
      */
     public static fromTuplesArray(tuples: any[]): MultiString {
-    	let result = new MultiString();
-    	if (tuples == null || tuples.length == 0) {
-    		return result;
+        const result = new MultiString();
+        if (tuples == null || tuples.length == 0) {
+            return result;
         }
-    	
+        
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length) break;
 
-            let name = StringConverter.toString(tuples[index]);
-            let value = StringConverter.toNullableString(tuples[index + 1]);
+            const name = StringConverter.toString(tuples[index]);
+            const value = StringConverter.toNullableString(tuples[index + 1]);
 
             result[name] = value;
         }
         
-    	return result;
+        return result;
     }    
 }

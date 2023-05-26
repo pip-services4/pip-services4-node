@@ -65,7 +65,7 @@ export class ArraySchema extends Schema {
      * @param results   a list with validation results to add new results.
      */
     protected performValidation(path: string, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
+        const name = path || "value";
         value = ObjectReader.getValue(value);
 
         super.performValidation(path, value, results);
@@ -74,7 +74,7 @@ export class ArraySchema extends Schema {
 
         if (Array.isArray(value)) {
             for (let index = 0; index < value.length; index++) {
-                let elementPath = path != "" ? path + "." + index : index.toString();
+                const elementPath = path != "" ? path + "." + index : index.toString();
                 this.performTypeValidation(elementPath, this.getValueType(), value[index], results);
             }
         } else {

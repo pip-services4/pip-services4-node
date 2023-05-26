@@ -37,7 +37,7 @@ export class DataPage<T> {
      * @param total     (optional) .
      */
     public constructor(data: T[] = null, total: number = null) {
-		this.total = total;
-		this.data = data;
+        this.total = total;
+        this.data = data;
     }
 }

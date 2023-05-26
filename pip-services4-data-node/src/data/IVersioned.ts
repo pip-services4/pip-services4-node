@@ -29,6 +29,6 @@
  *     }
  */
 export interface IVersioned {
-	/** The object's version. */
-	version: string;
+    /** The object's version. */
+    version: string;
 }

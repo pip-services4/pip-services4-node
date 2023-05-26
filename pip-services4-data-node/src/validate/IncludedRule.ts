@@ -41,11 +41,11 @@ export class IncludedRule implements IValidationRule {
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
         if (!this._values) return;
 
-        let name = path || "value";
-        let found: boolean = false;
+        const name = path || "value";
+        let found = false;
 
-        for (var i = 0; i < this._values.length && !found; i++) {
-            let thisValue: any = this._values[i];
+        for (let i = 0; i < this._values.length && !found; i++) {
+            const thisValue: any = this._values[i];
 
             if (ObjectComparator.compare(value, 'EQ', thisValue)) {
                 found = true;

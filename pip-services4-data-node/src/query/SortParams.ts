@@ -15,24 +15,24 @@ import { SortField } from './SortField';
  *     myDataClient.getDataByFilter(filter, paging, sorting, (err, page) => {...});
  */
 export class SortParams extends Array<SortField> {
-	/**
-	 * Creates a new instance and initializes it with specified sort fields.
-	 * 
+    /**
+     * Creates a new instance and initializes it with specified sort fields.
+     * 
      * @param fields    a list of fields to sort by.
      */
-	public constructor(...fields: SortField[]) {
+    public constructor(...fields: SortField[]) {
         super();
 
         // Set the prototype explicitly.
         // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
         (<any>this).__proto__ = SortParams.prototype;
 
-		if (fields != null) {
-			for (let index = 0; index < fields.length; index++) {
-				this.push(fields[index]);
-			}
-		}
-	}
-	
-	// Todo: add fromTuples factory method.
+        if (fields != null) {
+            for (let index = 0; index < fields.length; index++) {
+                this.push(fields[index]);
+            }
+        }
+    }
+    
+    // Todo: add fromTuples factory method.
 }

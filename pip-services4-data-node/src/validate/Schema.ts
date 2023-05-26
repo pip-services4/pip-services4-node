@@ -130,7 +130,7 @@ export class Schema {
      * @param results   a list with validation results to add new results.
      */
     protected performValidation(path: string, value: any, results: ValidationResult[]): void {
-        let name = path || "value";
+        const name = path || "value";
 
         if (value == null) {
             if (this.isRequired()) {
@@ -149,7 +149,7 @@ export class Schema {
             // Check validation rules
             if (this._rules != null) {
                 for (let i = 0; i < this._rules.length; i++) {
-                    let rule: IValidationRule = this._rules[i];
+                    const rule: IValidationRule = this._rules[i];
                     rule.validate(path, this, value, results);
                 }
             }
@@ -184,7 +184,7 @@ export class Schema {
 
         // Perform validation against the schema
         if (type instanceof Schema) {
-            let schema: Schema = type as Schema;
+            const schema: Schema = type as Schema;
             schema.performValidation(path, value, results);
             return;
         }
@@ -193,8 +193,8 @@ export class Schema {
         value = ObjectReader.getValue(value);
         if (value == null) return;
 
-        let name = path || "value";
-        let valueType: TypeCode = TypeConverter.toTypeCode(value);
+        const name = path || "value";
+        const valueType: TypeCode = TypeConverter.toTypeCode(value);
 
         // Match types
         if (TypeMatcher.matchType(type, valueType, value)) {
@@ -222,7 +222,7 @@ export class Schema {
      * @see [[ValidationResult]]
      */
     public validate(value: any): ValidationResult[] {
-        let results: ValidationResult[] = [];
+        const results: ValidationResult[] = [];
         this.performValidation("", value, results);
         return results;
     }
@@ -234,8 +234,8 @@ export class Schema {
      * @param value             a value to be validated.
      * @param strict            true to treat warnings as errors.
      */
-    public validateAndReturnException(traceId: string, value: any, strict: boolean = false): ValidationException {
-        let results: ValidationResult[] = this.validate(value);
+    public validateAndReturnException(traceId: string, value: any, strict = false): ValidationException {
+        const results: ValidationResult[] = this.validate(value);
         return ValidationException.fromResults(traceId, results, strict);
     }
 
@@ -248,8 +248,8 @@ export class Schema {
      * 
      * @see [[ValidationException.throwExceptionIfNeeded]]
      */
-    public validateAndThrowException(traceId: string, value: any, strict: boolean = false): void {
-        let results: ValidationResult[] = this.validate(value);
+    public validateAndThrowException(traceId: string, value: any, strict = false): void {
+        const results: ValidationResult[] = this.validate(value);
         ValidationException.throwExceptionIfNeeded(traceId, results, strict);
     }
 

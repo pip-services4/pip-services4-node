@@ -43,8 +43,8 @@
      * @param total     (optional) a total number of objects in the result.
      */
     public constructor(data: T[] = null, token: string = null, total: number = null) {
-		this.total = total;
+        this.total = total;
         this.token = token;
-		this.data = data;
+        this.data = data;
     }
 }

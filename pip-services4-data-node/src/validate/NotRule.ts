@@ -44,8 +44,8 @@ export class NotRule implements IValidationRule {
     public validate(path: string, schema: Schema, value: any, results: ValidationResult[]): void {
         if (!this._rule) return;
 
-        let name = path || "value";
-        let localResults: ValidationResult[] = [];
+        const name = path || "value";
+        const localResults: ValidationResult[] = [];
 
         this._rule.validate(path, schema, value, localResults);
 

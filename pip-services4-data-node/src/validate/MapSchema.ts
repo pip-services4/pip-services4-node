@@ -96,13 +96,13 @@ export class MapSchema extends Schema {
 
         if (!value) return;
 
-        let name = path || "value";
-        let valueType: TypeCode = TypeConverter.toTypeCode(value);
-        let map: any = valueType === TypeCode.Map ? value : null;
+        const name = path || "value";
+        const valueType: TypeCode = TypeConverter.toTypeCode(value);
+        const map: any = valueType === TypeCode.Map ? value : null;
 
         if (map) {
-            for (var key in map) {
-                var elementPath = path != "" ? path + "." + key : StringConverter.toString(key);
+            for (const key in map) {
+                const elementPath = path != "" ? path + "." + key : StringConverter.toString(key);
 
                 this.performTypeValidation(elementPath, this.getKeyType(), key, results);
                 this.performTypeValidation(elementPath, this.getValueType(), map[key], results);

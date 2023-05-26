@@ -62,14 +62,14 @@ export class ObjectComparator {
             return value1.equals(value2);
         }
 
-        let number1 = DoubleConverter.toNullableDouble(value1)
-        let number2 = DoubleConverter.toNullableDouble(value2)
+        const number1 = DoubleConverter.toNullableDouble(value1)
+        const number2 = DoubleConverter.toNullableDouble(value2)
         if (number1 != null && number2 != null) {
             return number1 == number2
         }
     
-        let str1 = StringConverter.toNullableString(value1)
-        let str2 = StringConverter.toNullableString(value1)
+        const str1 = StringConverter.toNullableString(value1)
+        const str2 = StringConverter.toNullableString(value1)
         if (str1 == null && str2 == null) {
             return str1 == str2
         }        
@@ -98,8 +98,8 @@ export class ObjectComparator {
      * @returns true if the first value is less than second and false otherwise.
      */
     public static isLess(value1: any, value2: any): boolean {
-        let number1 = DoubleConverter.toNullableDouble(value1);
-        let number2 = DoubleConverter.toNullableDouble(value2);
+        const number1 = DoubleConverter.toNullableDouble(value1);
+        const number2 = DoubleConverter.toNullableDouble(value2);
 
         if (number1 == null || number2 == null) {
             return false;
@@ -117,8 +117,8 @@ export class ObjectComparator {
      * @returns true if the first value is greater than second and false otherwise.
      */
     public static isGreater(value1: any, value2: any): boolean {
-        let number1 = DoubleConverter.toNullableDouble(value1);
-        let number2 = DoubleConverter.toNullableDouble(value2);
+        const number1 = DoubleConverter.toNullableDouble(value1);
+        const number2 = DoubleConverter.toNullableDouble(value2);
 
         if (number1 == null || number2 == null) {
             return false;
@@ -142,8 +142,8 @@ export class ObjectComparator {
             return false;
         }
 
-        let str1: string = StringConverter.toString(value);
-        let str2: string = StringConverter.toString(regexp);
+        const str1: string = StringConverter.toString(value);
+        const str2: string = StringConverter.toString(regexp);
         
         return !!str1.match(str2);
     }
