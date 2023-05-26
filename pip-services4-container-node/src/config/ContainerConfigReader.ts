@@ -1,8 +1,10 @@
 /** @module config */
-import { JsonConfigReader } from 'pip-services4-components-node';
-import { YamlConfigReader } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { JsonConfigReader } from 'pip-services4-config-node';
+import { YamlConfigReader } from 'pip-services4-config-node';
+import { ConfigException } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { ContainerConfig } from './ContainerConfig';
 
@@ -22,7 +24,11 @@ export class ContainerConfigReader {
      */
     public static readFromFile(context: IContext, path: string, parameters: ConfigParams): ContainerConfig {
         if (path == null) {
-            throw new ConfigException(context, "NO_PATH", "Missing config file path");
+            throw new ConfigException(
+                context != null ? context.getTraceId() : null,
+                "NO_PATH",
+                "Missing config file path"
+            );
         }
 
         let ext = path.split('.').pop();

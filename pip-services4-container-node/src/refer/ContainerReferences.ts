@@ -1,8 +1,8 @@
 /** @module refer */
 import { TypeReflector } from 'pip-services4-commons-node';
-import { ReferenceException } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
+import { ReferenceException } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
 import { CreateException } from 'pip-services4-components-node';
 
 import { ComponentConfig } from '../config/ComponentConfig';

@@ -1,5 +1,5 @@
 /** @module config */
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { ComponentConfig } from './ComponentConfig';
 

@@ -1,7 +1,7 @@
 /** @module test */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { Factory } from 'pip-services4-components-node';
 
-import { Factory } from '../../../pip-services4-commons-node/src/build/Factory';
 import { Shutdown } from './Shutdown';
 
 /**

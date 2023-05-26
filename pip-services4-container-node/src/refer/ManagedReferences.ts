@@ -1,6 +1,8 @@
 /** @module refer */
-import { IOpenable } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
 import { ReferencesDecorator } from './ReferencesDecorator';
 import { BuildReferencesDecorator } from './BuildReferencesDecorator';

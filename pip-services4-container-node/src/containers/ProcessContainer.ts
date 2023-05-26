@@ -2,8 +2,9 @@
 /** @hidden */
 let process = require('process');
 
-import { ConsoleLogger } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ConsoleLogger } from 'pip-services4-observability-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { Container } from './Container';
 

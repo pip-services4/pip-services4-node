@@ -1,8 +1,9 @@
 /** @module test */
-import { ConfigParams } from "pip-services4-commons-node";
-import { IConfigurable } from "pip-services4-commons-node";
-import { IOpenable } from "pip-services4-commons-node";
-import { RandomInteger } from "pip-services4-commons-node";
+
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from "pip-services4-components-node";
+import { IConfigurable } from "pip-services4-components-node";
+import { IOpenable } from "pip-services4-components-node";
 import { ApplicationException } from "pip-services4-commons-node";
 
 /**
@@ -68,7 +69,7 @@ export class Shutdown implements IConfigurable, IOpenable {
             clearInterval(this._interval);
         }
 
-        let timeout = RandomInteger.nextInteger(this._minTimeout, this._maxTimeout);
+        let timeout = this.nextTimeout(this._minTimeout, this._maxTimeout);
         this._interval = setInterval(() => {
             this.shutdown();
         }, timeout);
@@ -86,6 +87,19 @@ export class Shutdown implements IConfigurable, IOpenable {
         }
     }
 
+    private nextTimeout(min: number, max: number = null): number {
+        if (max == null) {
+            max = min;
+            min = 0;
+        }
+
+        if (max - min <= 0) {
+            return min;
+        }
+
+        return Math.floor(min + Math.random() * (max - min));
+    }
+    
     /**
      * Crashes the process using the configured crash mode.
      */

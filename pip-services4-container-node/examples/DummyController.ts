@@ -1,12 +1,13 @@
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { INotifiable } from 'pip-services4-commons-node';
-import { FixedRateTimer } from 'pip-services4-commons-node';
-import { Parameters } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+import { IContext } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IReconfigurable } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { INotifiable } from 'pip-services4-components-node';
+import { FixedRateTimer } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 export class DummyController implements IReferenceable, IReconfigurable, IOpenable, INotifiable {
     private readonly _timer = new FixedRateTimer(this, 1000, 1000);

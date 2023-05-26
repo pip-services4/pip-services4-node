@@ -1,8 +1,8 @@
 /** @module config */
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
 import { TypeDescriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-components-node';
 
 /**
  * Configuration of a component inside a container.
@@ -43,7 +43,11 @@ export class ComponentConfig {
         let type = TypeDescriptor.fromString(config.getAsNullableString("type"));
 
         if (descriptor == null && type == null) {
-            throw new ConfigException(null, "BAD_CONFIG", "Component configuration must have descriptor or type");
+            throw new ConfigException(
+                null,
+                "BAD_CONFIG",
+                "Component configuration must have descriptor or type"
+            );
         }
 
         return new ComponentConfig(descriptor, type, config);

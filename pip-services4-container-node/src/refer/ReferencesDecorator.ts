@@ -1,5 +1,6 @@
 /** @module refer */
-import { IReferences } from 'pip-services4-commons-node';
+
+import { IReferences } from 'pip-services4-components-node';
 
 /**
  * Chainable decorator for IReferences that allows to inject additional capabilities

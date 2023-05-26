@@ -2,12 +2,10 @@
 import { IFactory } from 'pip-services4-components-node';
 import { CompositeFactory } from 'pip-services4-components-node';
 import { DefaultObservabilityFactory } from 'pip-services4-observability-node';
-import { DefaultConfigReaderFactory } from 'pip-services4-components-node';
-import { DefaultCacheFactory } from 'pip-services4-components-node';
-import { DefaultCredentialStoreFactory } from 'pip-services4-components-node';
-import { DefaultDiscoveryFactory } from 'pip-services4-components-node';
-import { DefaultInfoFactory } from 'pip-services4-components-node';
-import { DefaultTestFactory } from 'pip-services4-components-node';
+import { DefaultConfigFactory } from 'pip-services4-config-node';
+import { DefaultLogicFactory } from 'pip-services4-logic-node';
+import { DefaultContextFactory } from 'pip-services4-components-node';
+import { DefaultTestFactory } from '../test/DefaultTestFactory';
 
 /**
  * Creates default container components (loggers, counters, caches, locks, etc.) by their descriptors.
@@ -31,14 +29,10 @@ export class DefaultContainerFactory extends CompositeFactory {
     public constructor(...factories: IFactory[]) {
         super(...factories);
 
-        this.add(new DefaultInfoFactory());
-        this.add(new DefaultLoggerFactory());
-        this.add(new DefaultCountersFactory());
-        this.add(new DefaultTracerFactory());
-        this.add(new DefaultConfigReaderFactory());
-        this.add(new DefaultCacheFactory());
-        this.add(new DefaultCredentialStoreFactory());
-        this.add(new DefaultDiscoveryFactory());
+        this.add(new DefaultContextFactory());
+        this.add(new DefaultObservabilityFactory());
+        this.add(new DefaultLogicFactory());
+        this.add(new DefaultConfigFactory());
         this.add(new DefaultTestFactory());
     }
 

@@ -1,19 +1,20 @@
 /** @module core */
-import { Descriptor } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
 
-import { ILogger } from 'pip-services4-components-node';
+import { IContext } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IUnreferenceable } from 'pip-services4-components-node';
+import { InvalidStateException } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+
+import { ILogger } from 'pip-services4-observability-node';
 import { IFactory } from 'pip-services4-components-node';
-import { NullLogger } from 'pip-services4-components-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+import { NullLogger } from 'pip-services4-observability-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { ContextInfo } from 'pip-services4-components-node';
-import { DefaultInfoFactory } from 'pip-services4-components-node';
 
 import { DefaultContainerFactory } from '../build/DefaultContainerFactory';
 import { ContainerConfig } from '../config/ContainerConfig';
@@ -173,7 +174,7 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     public async open(context: IContext): Promise<void> {
         if (this._references != null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "ALREADY_OPENED",
                 "Container was already opened"
             );
