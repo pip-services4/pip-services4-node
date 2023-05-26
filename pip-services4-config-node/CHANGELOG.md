@@ -2,3 +2,7 @@
 
 ## <a name="0.0.1"></a> 0.0.1 (2023-05-24) 
 Extracted from Components module from Pip.Services 3
+
+### Breaking changes:
+* Replaced **correlationId** with **context**
+* Merged default factories under **DefaultObservabilityFactory**

@@ -1,9 +1,7 @@
 /** @module build */
 import { IFactory } from 'pip-services4-components-node';
 import { CompositeFactory } from 'pip-services4-components-node';
-import { DefaultLoggerFactory } from 'pip-services4-components-node';
-import { DefaultCountersFactory } from 'pip-services4-components-node';
-import { DefaultTracerFactory } from 'pip-services4-components-node';
+import { DefaultObservabilityFactory } from 'pip-services4-observability-node';
 import { DefaultConfigReaderFactory } from 'pip-services4-components-node';
 import { DefaultCacheFactory } from 'pip-services4-components-node';
 import { DefaultCredentialStoreFactory } from 'pip-services4-components-node';

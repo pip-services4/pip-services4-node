@@ -1,5 +1,5 @@
 import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
 
 import { DummyController } from './DummyController';
 
