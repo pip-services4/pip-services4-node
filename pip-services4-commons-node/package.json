@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-commons-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "Portable Core Abstractions in Node.js / ES2017",
     "contributors": [
