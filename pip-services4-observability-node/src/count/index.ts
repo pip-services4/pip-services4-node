@@ -17,4 +17,3 @@ export { LogCounters } from './LogCounters';
 export { CompositeCounters } from './CompositeCounters';
 export { CounterType } from './CounterType';
 export { Counter } from './Counter';
-export { DefaultCountersFactory } from './DefaultCountersFactory';

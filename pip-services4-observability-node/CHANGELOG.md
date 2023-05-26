@@ -7,3 +7,7 @@ Extracted the code from components module in Pip.Services 3
 * **log** package with Logger components
 * **count** package with Performance Counter components
 * **trace** package with Tracer components
+
+### Breaking changes:
+* Replaced **correlationId** with **context**
+* Merged default factories under **DefaultObservabilityFactory**
