@@ -43,7 +43,7 @@ export class VariableCollection implements IVariableCollection {
      * @returns a list with variables.
      */
     public getAll(): IVariable[] {
-        let result: IVariable[] = [];
+        const result: IVariable[] = [];
         result.push(...this._variables);
         return result;
     }
@@ -56,7 +56,7 @@ export class VariableCollection implements IVariableCollection {
     public findIndexByName(name: string): number {
         name = name.toUpperCase();
         for (let i = 0; i < this._variables.length; i++) {
-            let varName = this._variables[i].name.toUpperCase();
+            const varName = this._variables[i].name.toUpperCase();
             if (varName == name) {
                 return i;
             }
@@ -70,7 +70,7 @@ export class VariableCollection implements IVariableCollection {
      * @returns A variable or <code>null</code> if function was not found.
      */
     public findByName(name: string): IVariable {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         return index >= 0 ? this._variables[index] : null;
     }
 
@@ -101,7 +101,7 @@ export class VariableCollection implements IVariableCollection {
      * @param name The variable name to be removed.
      */
     public removeByName(name: string): void {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         if (index >= 0) {
             this.remove(index);
         }
@@ -118,7 +118,7 @@ export class VariableCollection implements IVariableCollection {
      * Clears all stored variables (assigns null values).
      */
     public clearValues(): void {
-        for (let v of this._variables) {
+        for (const v of this._variables) {
             v.value = new Variant();
         }
     }

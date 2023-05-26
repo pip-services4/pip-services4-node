@@ -10,6 +10,7 @@ class CharValidator {
      * Default contructor to prevent creation of a class instance.
      */
     constructor() {
+        //
     }
     static isEof(value) {
         return value == CharValidator.Eof || value == -1;

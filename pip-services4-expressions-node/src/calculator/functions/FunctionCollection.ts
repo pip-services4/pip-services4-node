@@ -42,7 +42,7 @@ export class FunctionCollection implements IFunctionCollection {
      * @returns a list with functions.
      */
     public getAll(): IFunction[] {
-        let result: IFunction[] = [];
+        const result: IFunction[] = [];
         result.push(...this._functions);
         return result;
     }
@@ -55,7 +55,7 @@ export class FunctionCollection implements IFunctionCollection {
     public findIndexByName(name: string): number {
         name = name.toUpperCase();
         for (let i = 0; i < this._functions.length; i++) {
-            let varName = this._functions[i].name.toUpperCase();
+            const varName = this._functions[i].name.toUpperCase();
             if (varName == name) {
                 return i;
             }
@@ -69,7 +69,7 @@ export class FunctionCollection implements IFunctionCollection {
      * @returns A function or <code>null</code> if function was not found.
      */
     public findByName(name: string): IFunction {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         return index >= 0 ? this._functions[index] : null;
     }
 
@@ -86,7 +86,7 @@ export class FunctionCollection implements IFunctionCollection {
      * @param name The function name to be removed.
      */
     public removeByName(name: string): void {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         if (index >= 0) {
             this.remove(index);
         }

@@ -19,5 +19,4 @@ var VariantType;
     VariantType[VariantType["Object"] = 9] = "Object";
     VariantType[VariantType["Array"] = 10] = "Array";
 })(VariantType = exports.VariantType || (exports.VariantType = {}));
-;
 //# sourceMappingURL=VariantType.js.map

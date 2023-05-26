@@ -58,7 +58,7 @@ export class Token {
 
     public equals(obj: any): boolean {
         if (obj instanceof Token) {
-            let token = <Token>obj;
+            const token = <Token>obj;
             return token._type == this._type && token._value == this._value;
         }
         return false;

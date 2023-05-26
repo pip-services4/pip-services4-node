@@ -11,7 +11,7 @@ import { MustacheException } from "./MustacheException";
 export class MustacheTemplate {
     private _defaultVariables: any = {};
     private _parser: MustacheParser = new MustacheParser();
-    private _autoVariables: boolean = true;
+    private _autoVariables = true;
 
     /**
      * Constructs this class and assigns mustache template.
@@ -98,7 +98,7 @@ export class MustacheTemplate {
         name = name.toLowerCase();
         let result = undefined;
 
-        for (let propName in variables) {
+        for (const propName in variables) {
             if (propName.toLowerCase() == name) {
                 result = result || variables[propName];
             }
@@ -114,8 +114,8 @@ export class MustacheTemplate {
     public createVariables(variables: any): void {
         if (variables == null) return;
 
-        for (let variableName of this._parser.variableNames) {
-            let found = this.getVariable(variables, variableName) != undefined;
+        for (const variableName of this._parser.variableNames) {
+            const found = this.getVariable(variables, variableName) != undefined;
             if (!found) {
                 variables[variableName] = null;
             }
@@ -150,17 +150,17 @@ export class MustacheTemplate {
     }
 
     private isDefinedVariable(variables: any, name: string): boolean {
-        let value = this.getVariable(variables, name);
+        const value = this.getVariable(variables, name);
         return value != null && value != "";
     }
 
     private escapeString(value: string): string {
         if (value == null) return null;
-
+        
         return value
             .replace(/[\\]/g, '\\\\')
-            .replace(/[\"]/g, '\\\"')
-            .replace(/[/]/g, '\/')
+            .replace(/["]/g, '\\"')
+            .replace(/[/]/g, '/')
             .replace(/[\b]/g, '\\b')
             .replace(/[\f]/g, '\\f')
             .replace(/[\n]/g, '\\n')
@@ -173,35 +173,40 @@ export class MustacheTemplate {
 
         let result = "";
 
-        for (let token of tokens) {
+        for (const token of tokens) {
             switch (token.type) {
                 case MustacheTokenType.Comment:
                     // Skip;
                     break;
-                case MustacheTokenType.Value:
+                case MustacheTokenType.Value: {
                     result += token.value || "";
                     break;
-                case MustacheTokenType.Variable:
-                    let value1 = this.getVariable(variables, token.value);
-                    result += value1 || "";
-                    break;
-                case MustacheTokenType.EscapedVariable:
+                }
+                case MustacheTokenType.Variable: {
+                        const value1 = this.getVariable(variables, token.value);
+                        result += value1 || "";
+                        break;
+                }
+                case MustacheTokenType.EscapedVariable: {
                     let value2 = this.getVariable(variables, token.value);
                     value2 = this.escapeString(value2);
                     result += value2 || "";
                     break;
-                case MustacheTokenType.Section:
-                    let defined1 = this.isDefinedVariable(variables, token.value);
+                }
+                case MustacheTokenType.Section: {
+                    const defined1 = this.isDefinedVariable(variables, token.value);
                     if (defined1 && token.tokens != null) {
                         result += this.evaluateTokens(token.tokens, variables);
                     }
                     break;
-                case MustacheTokenType.InvertedSection:
-                    let defined2 = this.isDefinedVariable(variables, token.value);
+                }
+                case MustacheTokenType.InvertedSection: {
+                    const defined2 = this.isDefinedVariable(variables, token.value);
                     if (!defined2 && token.tokens != null) {
                         result += this.evaluateTokens(token.tokens, variables);
                     }
                     break;
+                }
                 case MustacheTokenType.Partial:
                     throw new MustacheException(null, "PARTIALS_NOT_SUPPORTED", "Partials are not supported", token.line, token.column);
                 default:

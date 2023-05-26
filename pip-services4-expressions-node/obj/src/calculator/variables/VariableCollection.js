@@ -40,7 +40,7 @@ class VariableCollection {
      * @returns a list with variables.
      */
     getAll() {
-        let result = [];
+        const result = [];
         result.push(...this._variables);
         return result;
     }
@@ -52,7 +52,7 @@ class VariableCollection {
     findIndexByName(name) {
         name = name.toUpperCase();
         for (let i = 0; i < this._variables.length; i++) {
-            let varName = this._variables[i].name.toUpperCase();
+            const varName = this._variables[i].name.toUpperCase();
             if (varName == name) {
                 return i;
             }
@@ -65,7 +65,7 @@ class VariableCollection {
      * @returns A variable or <code>null</code> if function was not found.
      */
     findByName(name) {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         return index >= 0 ? this._variables[index] : null;
     }
     /**
@@ -93,7 +93,7 @@ class VariableCollection {
      * @param name The variable name to be removed.
      */
     removeByName(name) {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         if (index >= 0) {
             this.remove(index);
         }
@@ -108,7 +108,7 @@ class VariableCollection {
      * Clears all stored variables (assigns null values).
      */
     clearValues() {
-        for (let v of this._variables) {
+        for (const v of this._variables) {
             v.value = new Variant_1.Variant();
         }
     }

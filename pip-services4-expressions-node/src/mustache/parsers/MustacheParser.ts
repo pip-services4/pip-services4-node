@@ -14,7 +14,7 @@ import { MustacheLexicalState } from "./MustacheLexicalState";
  */
 export class MustacheParser {
     private _tokenizer: ITokenizer = new MustacheTokenizer();
-    private _template: string = "";
+    private _template = "";
     private _originalTokens: Token[] = [];
     private _initialTokens: MustacheToken[] = [];
     private _currentTokenIndex: number;
@@ -144,7 +144,7 @@ export class MustacheParser {
      * @param column The column number where the token is.
      */
     private addTokenToResult(type: MustacheTokenType, value: string, line: number, column: number): MustacheToken  {
-        let token = new MustacheToken(type, value, line, column);
+        const token = new MustacheToken(type, value, line, column);
         this._resultTokens.push(token);
         return token;
     }
@@ -164,7 +164,7 @@ export class MustacheParser {
 
     private composeMustache(tokens: Token[]): string {
         let builder = "";
-        for (let token of tokens) {
+        for (const token of tokens) {
             builder = builder + token.value;
         }
         return builder
@@ -175,7 +175,7 @@ export class MustacheParser {
             this.completeLexicalAnalysis();
             this.performSyntaxAnalysis();
             if (this.hasMoreTokens()) {
-                let token = this.getCurrentToken();
+                const token = this.getCurrentToken();
                 throw new MustacheException(null, MustacheErrorCode.ErrorNear, "Syntax error near " + token.value, token.line, token.column);
             }
             this.lookupVariables();
@@ -192,7 +192,7 @@ export class MustacheParser {
         let operator2: string = null;
         let variable: string = null;
 
-        for (let token of this._originalTokens) {
+        for (const token of this._originalTokens) {
             let tokenType = MustacheTokenType.Unknown;
             let tokenValue = null;
 
@@ -314,14 +314,14 @@ export class MustacheParser {
     private performSyntaxAnalysis(): void {
         this.checkForMoreTokens();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             this.moveToNextToken();
 
             if (token.type == MustacheTokenType.SectionEnd) {
                 throw new MustacheException(null, MustacheErrorCode.UnexpectedSectionEnd, "Unexpected section end for variable '" + token.value + "'", token.line, token.column);
             }
 
-            let result = this.addTokenToResult(token.type, token.value, token.line, token.column);
+            const result = this.addTokenToResult(token.type, token.value, token.line, token.column);
 
             if (token.type == MustacheTokenType.Section || token.type == MustacheTokenType.InvertedSection) {
                 result.tokens.push(...this.performSyntaxAnalysisForSection(token.value));
@@ -333,11 +333,11 @@ export class MustacheParser {
      * Performs a syntax analysis for section
      */
     private performSyntaxAnalysisForSection(variable: string): MustacheToken[] {
-        let result: MustacheToken[] = [];
+        const result: MustacheToken[] = [];
 
         this.checkForMoreTokens();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             this.moveToNextToken();
 
             if (token.type == MustacheTokenType.SectionEnd && (token.value == variable || token.value == null)) {
@@ -348,7 +348,7 @@ export class MustacheParser {
                 throw new MustacheException(null, MustacheErrorCode.UnexpectedSectionEnd, "Unexpected section end for variable '" + variable + "'", token.line, token.column);
             }
 
-            let resultToken = new MustacheToken(token.type, token.value, token.line, token.column);
+            const resultToken = new MustacheToken(token.type, token.value, token.line, token.column);
 
             if (token.type == MustacheTokenType.Section || token.type == MustacheTokenType.InvertedSection) {
                 resultToken.tokens.push(...this.performSyntaxAnalysisForSection(token.value));
@@ -357,7 +357,7 @@ export class MustacheParser {
             result.push(resultToken);
         }
 
-        let token = this.getCurrentToken();
+        const token = this.getCurrentToken();
         throw new MustacheException(null, MustacheErrorCode.NotClosedSection, "Not closed section for variable '" + variable + "'", token.line, token.column);
     }
 
@@ -368,12 +368,12 @@ export class MustacheParser {
         if (this._originalTokens == null) return;
 
         this._variableNames = [];
-        for (let token of this._initialTokens) {
+        for (const token of this._initialTokens) {
             if (token.type != MustacheTokenType.Value
                 && token.type != MustacheTokenType.Comment
                 && token.value != null) {
-                let variableName = token.value.toLowerCase();
-                let found = this._variableNames.some((v) => v.toLowerCase() == variableName);
+                const variableName = token.value.toLowerCase();
+                const found = this._variableNames.some((v) => v.toLowerCase() == variableName);
                 if (!found) {
                     this._variableNames.push(token.value);
                 }

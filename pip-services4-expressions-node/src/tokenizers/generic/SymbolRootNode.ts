@@ -26,7 +26,7 @@ export class SymbolRootNode extends SymbolNode {
         if (value == '') {
             throw new Error("Value must have at least 1 character");
         }
-        let childNode = this.ensureChildWithChar(value.charCodeAt(0));
+        const childNode = this.ensureChildWithChar(value.charCodeAt(0));
         if (childNode.tokenType == TokenType.Unknown) {
             childNode.valid = true;
             childNode.tokenType = TokenType.Symbol;
@@ -40,9 +40,9 @@ export class SymbolRootNode extends SymbolNode {
      * @returns A symbol string from a scanner
      */
     public nextToken(scanner: IScanner): Token {
-        let nextSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const nextSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
 
         let childNode = this.findChildWithChar(nextSymbol);
         if (childNode != null) {

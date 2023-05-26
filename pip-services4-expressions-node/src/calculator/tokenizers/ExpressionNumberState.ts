@@ -22,8 +22,8 @@ export class ExpressionNumberState extends GenericNumberState {
       * @returns The next token from the top of the stream.
       */
      public nextToken(scanner: IScanner, tokenizer: ITokenizer): Token {
-        let line = scanner.peekLine();
-        let column = scanner.peekColumn();
+        const line = scanner.peekLine();
+        const column = scanner.peekColumn();
 
         // Process leading minus.
         if (scanner.peek() == this.MINUS) {
@@ -31,7 +31,7 @@ export class ExpressionNumberState extends GenericNumberState {
         }
 
         // Process numbers using base class algorithm.
-        let token = super.nextToken(scanner, tokenizer);
+        const token = super.nextToken(scanner, tokenizer);
 
         // Exit if number was not detected.
         if (token.type != TokenType.Integer && token.type != TokenType.Float) {

@@ -297,9 +297,9 @@ class Variant {
      */
     equals(obj) {
         if (obj instanceof Variant) {
-            let varObj = obj;
-            let value1 = this._value;
-            let value2 = varObj._value;
+            const varObj = obj;
+            const value1 = this._value;
+            const value2 = varObj._value;
             if (value1 == null || value2 == null) {
                 return value1 == value2;
             }
@@ -320,7 +320,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromInteger(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asInteger = value;
         return result;
     }
@@ -330,7 +330,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromLong(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asLong = value;
         return result;
     }
@@ -340,7 +340,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromBoolean(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asBoolean = value;
         return result;
     }
@@ -350,7 +350,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromFloat(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asFloat = value;
         return result;
     }
@@ -360,7 +360,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromDouble(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asDouble = value;
         return result;
     }
@@ -370,7 +370,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromString(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asString = value;
         return result;
     }
@@ -380,7 +380,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromDateTime(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asDateTime = value;
         return result;
     }
@@ -390,7 +390,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromTimeSpan(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asTimeSpan = value;
         return result;
     }
@@ -400,7 +400,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromObject(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asObject = value;
         return result;
     }
@@ -410,7 +410,7 @@ class Variant {
      * @returns a created variant object.
      */
     static fromArray(value) {
-        let result = new Variant();
+        const result = new Variant();
         result.asArray = value;
         return result;
     }

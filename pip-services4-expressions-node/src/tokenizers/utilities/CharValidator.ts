@@ -12,6 +12,7 @@ export class CharValidator {
      * Default contructor to prevent creation of a class instance.
      */
     private constructor() {
+        //
     }
 
     public static isEof(value: number): boolean {

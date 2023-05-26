@@ -40,4 +40,4 @@ export enum ExpressionTokenType {
     Function,
     Variable,
     Constant
-};
+}

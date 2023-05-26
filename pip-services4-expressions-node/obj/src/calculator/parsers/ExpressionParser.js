@@ -198,7 +198,7 @@ class ExpressionParser {
     }
     composeExpression(tokens) {
         let builder = "";
-        for (let token of tokens) {
+        for (const token of tokens) {
             builder = builder + token.value;
         }
         return builder;
@@ -208,7 +208,7 @@ class ExpressionParser {
             this.completeLexicalAnalysis();
             this.performSyntaxAnalysis();
             if (this.hasMoreTokens()) {
-                let token = this.getCurrentToken();
+                const token = this.getCurrentToken();
                 throw new SyntaxException_1.SyntaxException(null, SyntaxErrorCode_1.SyntaxErrorCode.ErrorNear, "Syntax error near " + token.value, token.line, token.column);
             }
         }
@@ -217,7 +217,7 @@ class ExpressionParser {
      * Tokenizes the given expression and prepares an initial tokens list.
      */
     completeLexicalAnalysis() {
-        for (let token of this._originalTokens) {
+        for (const token of this._originalTokens) {
             let tokenType = ExpressionTokenType_1.ExpressionTokenType.Unknown;
             let tokenValue = Variant_1.Variant.Empty;
             switch (token.type) {
@@ -226,7 +226,7 @@ class ExpressionParser {
                     continue;
                 case TokenType_1.TokenType.Keyword:
                     {
-                        let temp = token.value.toUpperCase();
+                        const temp = token.value.toUpperCase();
                         if (temp == "TRUE") {
                             tokenType = ExpressionTokenType_1.ExpressionTokenType.Constant;
                             tokenValue = Variant_1.Variant.fromBoolean(true);
@@ -271,7 +271,7 @@ class ExpressionParser {
                     }
                 case TokenType_1.TokenType.Symbol:
                     {
-                        let temp = token.value.toUpperCase();
+                        const temp = token.value.toUpperCase();
                         for (let i = 0; i < this.Operators.length; i++) {
                             if (temp == this.Operators[i]) {
                                 tokenType = this.OperatorTypes[i];
@@ -294,7 +294,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel1();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType_1.ExpressionTokenType.And
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Or
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Xor) {
@@ -311,7 +311,7 @@ class ExpressionParser {
      */
     performSyntaxAnalysisAtLevel1() {
         this.checkForMoreTokens();
-        let token = this.getCurrentToken();
+        const token = this.getCurrentToken();
         if (token.type == ExpressionTokenType_1.ExpressionTokenType.Not) {
             this.moveToNextToken();
             this.performSyntaxAnalysisAtLevel2();
@@ -328,7 +328,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel3();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType_1.ExpressionTokenType.Equal
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.NotEqual
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.More
@@ -350,7 +350,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel4();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType_1.ExpressionTokenType.Plus
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Minus
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Like) {
@@ -384,7 +384,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel5();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType_1.ExpressionTokenType.Star
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Slash
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.Procent) {
@@ -403,7 +403,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel6();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType_1.ExpressionTokenType.Power
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.In
                 || token.type == ExpressionTokenType_1.ExpressionTokenType.ShiftLeft
@@ -437,7 +437,7 @@ class ExpressionParser {
         this.checkForMoreTokens();
         // Identify function calls.
         let primitiveToken = this.getCurrentToken();
-        let nextToken = this.getNextToken();
+        const nextToken = this.getNextToken();
         if (primitiveToken.type == ExpressionTokenType_1.ExpressionTokenType.Variable
             && nextToken != null && nextToken.type == ExpressionTokenType_1.ExpressionTokenType.LeftBrace) {
             primitiveToken = new ExpressionToken_1.ExpressionToken(ExpressionTokenType_1.ExpressionTokenType.Function, primitiveToken.value, primitiveToken.line, primitiveToken.column);
@@ -448,7 +448,7 @@ class ExpressionParser {
         }
         else if (primitiveToken.type == ExpressionTokenType_1.ExpressionTokenType.Variable) {
             this.moveToNextToken();
-            let temp = primitiveToken.value.asString;
+            const temp = primitiveToken.value.asString;
             if (this._variableNames.indexOf(temp) < 0) {
                 this._variableNames.push(temp);
             }

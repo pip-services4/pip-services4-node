@@ -40,7 +40,9 @@ export abstract class AbstractTokenizer implements ITokenizer {
     protected _nextToken: Token;
     protected _lastTokenType: TokenType = TokenType.Unknown;
 
-    protected constructor() {}
+    protected constructor() {
+        //
+    }
 
     public getCharacterState(symbol: number): ITokenizerState {
         return this._map.lookup(symbol);
@@ -70,7 +72,7 @@ export abstract class AbstractTokenizer implements ITokenizer {
     }
 
     public nextToken(): Token {
-        let token = this._nextToken == null ? this.readNextToken() : this._nextToken;
+        const token = this._nextToken == null ? this.readNextToken() : this._nextToken;
         this._nextToken = null;
         return token;
     }
@@ -80,13 +82,14 @@ export abstract class AbstractTokenizer implements ITokenizer {
             return null;
         }
 
-        let line = this._scanner.peekLine();
-        let column = this._scanner.peekColumn();
+        const line = this._scanner.peekLine();
+        const column = this._scanner.peekColumn();
         let token: Token = null;
 
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             // Read character
-            let nextChar = this._scanner.peek();
+            const nextChar = this._scanner.peek();
 
             // If reached Eof then exit
             if (CharValidator.isEof(nextChar)) {
@@ -95,7 +98,7 @@ export abstract class AbstractTokenizer implements ITokenizer {
             }
 
             // Get state for character
-            let state = this.getCharacterState(nextChar);
+            const state = this.getCharacterState(nextChar);
             if (state != null) {
                 token = state.nextToken(this._scanner, this);
             }
@@ -159,7 +162,7 @@ export abstract class AbstractTokenizer implements ITokenizer {
 
     public tokenizeStream(scanner: IScanner): Token[] {
         this.scanner = scanner;
-        let tokenList: Token[] = [];
+        const tokenList: Token[] = [];
         for (let token = this.nextToken(); token != null; token = this.nextToken()) {
             tokenList.push(token);
         }
@@ -167,13 +170,13 @@ export abstract class AbstractTokenizer implements ITokenizer {
     }
 
     public tokenizeBuffer(buffer: string): Token[] {
-        let scanner = new StringScanner(buffer);
+        const scanner = new StringScanner(buffer);
         return this.tokenizeStream(scanner);
     }
 
     public tokenizeStreamToStrings(scanner: IScanner): string[] {
         this.scanner = scanner;
-        let stringList: string[] = [];
+        const stringList: string[] = [];
         for (let token = this.nextToken(); token != null; token = this.nextToken()) {
             stringList.push(token.value);
         }
@@ -181,7 +184,7 @@ export abstract class AbstractTokenizer implements ITokenizer {
     }
 
     public tokenizeBufferToStrings(buffer: string): string[]  {
-        let scanner = new StringScanner(buffer);
+        const scanner = new StringScanner(buffer);
         return this.tokenizeStreamToStrings(scanner);
     }
 }

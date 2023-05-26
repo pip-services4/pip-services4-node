@@ -19,10 +19,10 @@ class CsvWordState extends GenericWordState_1.GenericWordState {
         this.setWordChars(0x0000, 0xfffe, true);
         this.setWordChars(CsvConstant_1.CsvConstant.CR, CsvConstant_1.CsvConstant.CR, false);
         this.setWordChars(CsvConstant_1.CsvConstant.LF, CsvConstant_1.CsvConstant.LF, false);
-        for (let fieldSeparator of fieldSeparators) {
+        for (const fieldSeparator of fieldSeparators) {
             this.setWordChars(fieldSeparator, fieldSeparator, false);
         }
-        for (let quoteSymbol of quoteSymbols) {
+        for (const quoteSymbol of quoteSymbols) {
             this.setWordChars(quoteSymbol, quoteSymbol, false);
         }
     }

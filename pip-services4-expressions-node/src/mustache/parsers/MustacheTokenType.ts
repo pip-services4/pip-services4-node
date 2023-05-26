@@ -12,4 +12,4 @@ export enum MustacheTokenType {
     SectionEnd,
     Partial,
     Comment
-};
+}

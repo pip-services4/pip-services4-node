@@ -18,16 +18,16 @@ export class CCommentState extends CppCommentState {
      * @returns The next token from the top of the stream.
      */
     public nextToken(scanner: IScanner, tokenizer: ITokenizer): Token {
-        let firstSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const firstSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
 
         if (firstSymbol != this.SLASH) {
             scanner.unread();
             throw new Error("Incorrect usage of CCommentState.");
         }
 
-        let secondSymbol = scanner.read();
+        const secondSymbol = scanner.read();
         if (secondSymbol == this.STAR) {
             return new Token(TokenType.Comment, "/*" + this.getMultiLineComment(scanner), line, column);
         } else {

@@ -23,14 +23,14 @@ class ExpressionNumberState extends GenericNumberState_1.GenericNumberState {
       * @returns The next token from the top of the stream.
       */
     nextToken(scanner, tokenizer) {
-        let line = scanner.peekLine();
-        let column = scanner.peekColumn();
+        const line = scanner.peekLine();
+        const column = scanner.peekColumn();
         // Process leading minus.
         if (scanner.peek() == this.MINUS) {
             return tokenizer.symbolState.nextToken(scanner, tokenizer);
         }
         // Process numbers using base class algorithm.
-        let token = super.nextToken(scanner, tokenizer);
+        const token = super.nextToken(scanner, tokenizer);
         // Exit if number was not detected.
         if (token.type != TokenType_1.TokenType.Integer && token.type != TokenType_1.TokenType.Float) {
             return token;

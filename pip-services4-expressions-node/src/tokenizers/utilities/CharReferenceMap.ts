@@ -45,7 +45,7 @@ export class CharReferenceMap<T> {
         if (symbol < 0x0100) {
             return this._initialInterval[symbol];
         } else {
-            for (let interval of this._otherIntervals) {
+            for (const interval of this._otherIntervals) {
                 if (interval.inRange(symbol)) {
                     return interval.reference;
                 }

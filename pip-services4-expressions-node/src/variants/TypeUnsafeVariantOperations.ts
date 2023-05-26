@@ -23,14 +23,14 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
      */
     public convert(value: Variant, newType: VariantType): Variant {
         if (newType == VariantType.Null) {
-            let result = new Variant();
+            const result = new Variant();
             return result;
         }
         if (newType == value.type || newType == VariantType.Object) {
             return value;
         }
         if (newType == VariantType.String) {
-            let result = new Variant();
+            const result = new Variant();
             result.asString = StringConverter.toString(value.asObject);
             return result;
         }
@@ -60,7 +60,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromNull(newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = 0;
@@ -98,7 +98,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromInteger(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Long:
                 result.asLong = value.asInteger;
@@ -124,7 +124,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromLong(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = value.asLong;
@@ -150,7 +150,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromFloat(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = Math.trunc(value.asFloat);
@@ -170,7 +170,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromDouble(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = Math.trunc(value.asDouble);
@@ -190,7 +190,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromString(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = IntegerConverter.toInteger(value.asString);
@@ -219,7 +219,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromBoolean(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = value.asBoolean ? 1 : 0;
@@ -242,7 +242,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromDateTime(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = value.asDateTime.getTime();
@@ -259,7 +259,7 @@ export class TypeUnsafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromTimeSpan(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Integer:
                 result.asInteger = value.asTimeSpan;

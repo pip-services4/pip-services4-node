@@ -24,9 +24,10 @@ class GenericWhitespaceState {
      * @param tokenizer A tokenizer class that controls the process.
      * @returns The next token from the top of the stream.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nextToken(scanner, tokenizer) {
-        let line = scanner.peekLine();
-        let column = scanner.peekColumn();
+        const line = scanner.peekLine();
+        const column = scanner.peekColumn();
         let nextSymbol;
         let tokenValue = "";
         for (nextSymbol = scanner.read(); this._map.lookup(nextSymbol); nextSymbol = scanner.read()) {

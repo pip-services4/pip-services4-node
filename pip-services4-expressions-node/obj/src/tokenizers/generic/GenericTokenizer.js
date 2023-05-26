@@ -35,7 +35,7 @@ class GenericTokenizer extends AbstractTokenizer_1.AbstractTokenizer {
         this.setCharacterState('-'.charCodeAt(0), '-'.charCodeAt(0), this.numberState);
         this.setCharacterState('0'.charCodeAt(0), '9'.charCodeAt(0), this.numberState);
         this.setCharacterState('.'.charCodeAt(0), '.'.charCodeAt(0), this.numberState);
-        this.setCharacterState('\"'.charCodeAt(0), '\"'.charCodeAt(0), this.quoteState);
+        this.setCharacterState('"'.charCodeAt(0), '"'.charCodeAt(0), this.quoteState);
         this.setCharacterState('\''.charCodeAt(0), '\''.charCodeAt(0), this.quoteState);
         this.setCharacterState('#'.charCodeAt(0), '#'.charCodeAt(0), this.commentState);
     }

@@ -17,7 +17,7 @@ class TypeSafeVariantOperations extends AbstractVariantOperations_1.AbstractVari
      */
     convert(value, newType) {
         if (newType == VariantType_1.VariantType.Null) {
-            let result = new Variant_1.Variant();
+            const result = new Variant_1.Variant();
             return result;
         }
         if (newType == value.type || newType == VariantType_1.VariantType.Object) {
@@ -45,7 +45,7 @@ class TypeSafeVariantOperations extends AbstractVariantOperations_1.AbstractVari
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromInteger(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Long:
                 result.asLong = value.asInteger;
@@ -61,7 +61,7 @@ class TypeSafeVariantOperations extends AbstractVariantOperations_1.AbstractVari
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromLong(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Float:
                 result.asFloat = value.asLong;
@@ -74,7 +74,7 @@ class TypeSafeVariantOperations extends AbstractVariantOperations_1.AbstractVari
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromFloat(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Double:
                 result.asDouble = value.asFloat;

@@ -45,5 +45,4 @@ var ExpressionTokenType;
     ExpressionTokenType[ExpressionTokenType["Variable"] = 35] = "Variable";
     ExpressionTokenType[ExpressionTokenType["Constant"] = 36] = "Constant";
 })(ExpressionTokenType = exports.ExpressionTokenType || (exports.ExpressionTokenType = {}));
-;
 //# sourceMappingURL=ExpressionTokenType.js.map

@@ -19,7 +19,7 @@ export class CalculationStack {
         if (this._values.length == 0) {
             throw new Error("Stack is empty.");
         }
-        let result = this._values[this._values.length - 1];
+        const result = this._values[this._values.length - 1];
         this._values.splice(this._values.length - 1, 1);
         return result;
     }

@@ -328,9 +328,9 @@ export class Variant {
      */
     public equals(obj: any): boolean {
         if (obj instanceof Variant) {
-            let varObj = <Variant>obj;
-            let value1 = this._value;
-            let value2 = varObj._value;
+            const varObj = <Variant>obj;
+            const value1 = this._value;
+            const value2 = varObj._value;
             if (value1 == null || value2 == null) {
                 return value1 == value2;
             }
@@ -353,7 +353,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromInteger(value: number): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asInteger = value;
         return result;
     }
@@ -364,7 +364,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromLong(value: number): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asLong = value;
         return result;
     }
@@ -375,7 +375,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromBoolean(value: boolean): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asBoolean = value;
         return result;
     }
@@ -386,7 +386,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromFloat(value: number): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asFloat = value;
         return result;
     }
@@ -397,7 +397,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromDouble(value: number): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asDouble = value;
         return result;
     }
@@ -408,7 +408,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromString(value: string): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asString = value;
         return result;
     }
@@ -419,7 +419,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromDateTime(value: Date): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asDateTime = value;
         return result;
     }
@@ -430,7 +430,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromTimeSpan(value: number): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asTimeSpan = value;
         return result;
     }
@@ -441,7 +441,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromObject(value: any): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asObject = value;
         return result;
     }
@@ -452,7 +452,7 @@ export class Variant {
      * @returns a created variant object.
      */
     public static fromArray(value: Variant[]): Variant {
-        let result = new Variant();
+        const result = new Variant();
         result.asArray = value;
         return result;
     }

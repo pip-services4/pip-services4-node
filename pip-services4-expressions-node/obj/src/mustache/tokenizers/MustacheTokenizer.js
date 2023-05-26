@@ -36,7 +36,7 @@ class MustacheTokenizer extends AbstractTokenizer_1.AbstractTokenizer {
         this.setCharacterState('_'.charCodeAt(0), '_'.charCodeAt(0), this.wordState);
         this.setCharacterState(0x00c0, 0x00ff, this.wordState);
         this.setCharacterState(0x0100, 0xfffe, this.wordState);
-        this.setCharacterState('\"'.charCodeAt(0), '\"'.charCodeAt(0), this.quoteState);
+        this.setCharacterState('"'.charCodeAt(0), '"'.charCodeAt(0), this.quoteState);
         this.setCharacterState('\''.charCodeAt(0), '\''.charCodeAt(0), this.quoteState);
         this.skipWhitespaces = true;
         this.skipComments = true;
@@ -52,14 +52,14 @@ class MustacheTokenizer extends AbstractTokenizer_1.AbstractTokenizer {
         }
         // Process quotes
         if (this._special) {
-            let token = this._specialState.nextToken(this._scanner, this);
+            const token = this._specialState.nextToken(this._scanner, this);
             if (token != null && token.value != "") {
                 return token;
             }
         }
         // Proces other tokens
         this._special = false;
-        let token = super.readNextToken();
+        const token = super.readNextToken();
         // Switch to quote when '{{' or '{{{' symbols found
         if (token != null && (token.value == "}}" || token.value == "}}}")) {
             this._special = true;

@@ -21,11 +21,11 @@ export class CsvWordState extends GenericWordState {
         this.setWordChars(CsvConstant.CR, CsvConstant.CR, false);
         this.setWordChars(CsvConstant.LF, CsvConstant.LF, false);
 
-        for (let fieldSeparator of fieldSeparators) {
+        for (const fieldSeparator of fieldSeparators) {
             this.setWordChars(fieldSeparator, fieldSeparator, false);
         }
 
-        for (let quoteSymbol of quoteSymbols) {
+        for (const quoteSymbol of quoteSymbols) {
             this.setWordChars(quoteSymbol, quoteSymbol, false);
         }
     }

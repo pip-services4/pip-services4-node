@@ -104,9 +104,9 @@ export class StringScanner implements IScanner {
         }
 
         // Update line and columns
-        let charBefore = this.charAt(this._position - 1);
-        let charAt = this.charAt(this._position);
-        let charAfter = this.charAt(this._position + 1);
+        const charBefore = this.charAt(this._position - 1);
+        const charAt = this.charAt(this._position);
+        const charAfter = this.charAt(this._position + 1);
 
         if (this.isLine(charBefore, charAt, charAfter)) {
             this._line++;
@@ -132,9 +132,9 @@ export class StringScanner implements IScanner {
      * @returns The next character line number in the stream
      */
     public peekLine(): number {
-        let charBefore = this.charAt(this._position);
-        let charAt = this.charAt(this._position + 1);
-        let charAfter = this.charAt(this._position + 2);
+        const charBefore = this.charAt(this._position);
+        const charAt = this.charAt(this._position + 1);
+        const charAfter = this.charAt(this._position + 2);
 
         return this.isLine(charBefore, charAt, charAfter) ? this._line + 1 : this._line;
     }
@@ -144,9 +144,9 @@ export class StringScanner implements IScanner {
      * @returns The next character column number in the stream
      */
     public peekColumn(): number {
-        let charBefore = this.charAt(this._position);
-        let charAt = this.charAt(this._position + 1);
-        let charAfter = this.charAt(this._position + 2);
+        const charBefore = this.charAt(this._position);
+        const charAt = this.charAt(this._position + 1);
+        const charAfter = this.charAt(this._position + 2);
 
         if (this.isLine(charBefore, charAt, charAfter)) {
             return 0;

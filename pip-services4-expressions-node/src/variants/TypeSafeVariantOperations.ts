@@ -15,7 +15,7 @@ export class TypeSafeVariantOperations extends AbstractVariantOperations {
      */
     public convert(value: Variant, newType: VariantType): Variant {
         if (newType == VariantType.Null) {
-            let result = new Variant();
+            const result = new Variant();
             return result;
         }
         if (newType == value.type || newType == VariantType.Object) {
@@ -45,7 +45,7 @@ export class TypeSafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromInteger(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Long:
                 result.asLong = value.asInteger;
@@ -62,7 +62,7 @@ export class TypeSafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromLong(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Float:
                 result.asFloat = value.asLong;
@@ -76,7 +76,7 @@ export class TypeSafeVariantOperations extends AbstractVariantOperations {
     }
 
     private convertFromFloat(value: Variant, newType: VariantType): Variant {
-        let result = new Variant();
+        const result = new Variant();
         switch (newType) {
             case VariantType.Double:
                 result.asDouble = value.asFloat;

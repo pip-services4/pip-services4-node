@@ -9,4 +9,4 @@ export enum MustacheLexicalState {
     Variable,
     Comment,
     Closure
-};
+}

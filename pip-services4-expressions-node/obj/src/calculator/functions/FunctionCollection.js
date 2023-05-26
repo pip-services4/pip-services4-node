@@ -39,7 +39,7 @@ class FunctionCollection {
      * @returns a list with functions.
      */
     getAll() {
-        let result = [];
+        const result = [];
         result.push(...this._functions);
         return result;
     }
@@ -51,7 +51,7 @@ class FunctionCollection {
     findIndexByName(name) {
         name = name.toUpperCase();
         for (let i = 0; i < this._functions.length; i++) {
-            let varName = this._functions[i].name.toUpperCase();
+            const varName = this._functions[i].name.toUpperCase();
             if (varName == name) {
                 return i;
             }
@@ -64,7 +64,7 @@ class FunctionCollection {
      * @returns A function or <code>null</code> if function was not found.
      */
     findByName(name) {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         return index >= 0 ? this._functions[index] : null;
     }
     /**
@@ -79,7 +79,7 @@ class FunctionCollection {
      * @param name The function name to be removed.
      */
     removeByName(name) {
-        let index = this.findIndexByName(name);
+        const index = this.findIndexByName(name);
         if (index >= 0) {
             this.remove(index);
         }

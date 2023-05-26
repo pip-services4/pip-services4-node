@@ -46,7 +46,7 @@ export class ExpressionParser {
     ];
 
     private _tokenizer: ITokenizer = new ExpressionTokenizer();
-    private _expression: string = "";
+    private _expression = "";
     private _originalTokens: Token[] = [];
     private _initialTokens: ExpressionToken[] = [];
     private _currentTokenIndex: number;
@@ -217,7 +217,7 @@ export class ExpressionParser {
 
     private composeExpression(tokens: Token[]): string {
         let builder = "";
-        for (let token of tokens) {
+        for (const token of tokens) {
             builder = builder + token.value;
         }
         return builder
@@ -228,7 +228,7 @@ export class ExpressionParser {
             this.completeLexicalAnalysis();
             this.performSyntaxAnalysis();
             if (this.hasMoreTokens()) {
-                let token = this.getCurrentToken();
+                const token = this.getCurrentToken();
                 throw new SyntaxException(null, SyntaxErrorCode.ErrorNear, "Syntax error near " + token.value, token.line, token.column);
             }
         }
@@ -238,7 +238,7 @@ export class ExpressionParser {
      * Tokenizes the given expression and prepares an initial tokens list.
      */
     private completeLexicalAnalysis(): void {
-        for (let token of this._originalTokens) {
+        for (const token of this._originalTokens) {
             let tokenType = ExpressionTokenType.Unknown;
             let tokenValue = Variant.Empty;
 
@@ -248,7 +248,7 @@ export class ExpressionParser {
                     continue;
                 case TokenType.Keyword:
                     {
-                        let temp = token.value.toUpperCase();
+                        const temp = token.value.toUpperCase();
                         if (temp == "TRUE") {
                             tokenType = ExpressionTokenType.Constant;
                             tokenValue = Variant.fromBoolean(true);
@@ -291,7 +291,7 @@ export class ExpressionParser {
                     }
                 case TokenType.Symbol:
                     {
-                        let temp = token.value.toUpperCase();
+                        const temp = token.value.toUpperCase();
                         for (let i = 0; i < this.Operators.length; i++) {
                             if (temp == this.Operators[i]) {
                                 tokenType = this.OperatorTypes[i];
@@ -315,7 +315,7 @@ export class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel1();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType.And
                 || token.type == ExpressionTokenType.Or
                 || token.type == ExpressionTokenType.Xor) {
@@ -333,7 +333,7 @@ export class ExpressionParser {
      */
     private performSyntaxAnalysisAtLevel1(): void {
         this.checkForMoreTokens();
-        let token = this.getCurrentToken();
+        const token = this.getCurrentToken();
         if (token.type == ExpressionTokenType.Not) {
             this.moveToNextToken();
             this.performSyntaxAnalysisAtLevel2();
@@ -350,7 +350,7 @@ export class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel3();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType.Equal
                 || token.type == ExpressionTokenType.NotEqual
                 || token.type == ExpressionTokenType.More
@@ -373,7 +373,7 @@ export class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel4();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType.Plus
                 || token.type == ExpressionTokenType.Minus
                 || token.type == ExpressionTokenType.Like) {
@@ -404,7 +404,7 @@ export class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel5();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType.Star
                 || token.type == ExpressionTokenType.Slash
                 || token.type == ExpressionTokenType.Procent) {
@@ -424,7 +424,7 @@ export class ExpressionParser {
         this.checkForMoreTokens();
         this.performSyntaxAnalysisAtLevel6();
         while (this.hasMoreTokens()) {
-            let token = this.getCurrentToken();
+            const token = this.getCurrentToken();
             if (token.type == ExpressionTokenType.Power
                 || token.type == ExpressionTokenType.In
                 || token.type == ExpressionTokenType.ShiftLeft
@@ -459,7 +459,7 @@ export class ExpressionParser {
 
         // Identify function calls.
         let primitiveToken = this.getCurrentToken();
-        let nextToken = this.getNextToken();
+        const nextToken = this.getNextToken();
         if (primitiveToken.type == ExpressionTokenType.Variable
             && nextToken != null && nextToken.type == ExpressionTokenType.LeftBrace) {
             primitiveToken = new ExpressionToken(ExpressionTokenType.Function, primitiveToken.value, primitiveToken.line, primitiveToken.column);
@@ -471,7 +471,7 @@ export class ExpressionParser {
         } else if (primitiveToken.type == ExpressionTokenType.Variable) {
             this.moveToNextToken();
 
-            let temp = primitiveToken.value.asString;
+            const temp = primitiveToken.value.asString;
             if (this._variableNames.indexOf(temp) < 0) {
                 this._variableNames.push(temp);
             }

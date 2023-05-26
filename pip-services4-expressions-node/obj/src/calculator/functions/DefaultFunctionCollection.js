@@ -69,7 +69,7 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
      * @param expectedParamCount The expected number of function parameters.
      */
     checkParamCount(params, expectedParamCount) {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (expectedParamCount != paramCount) {
             throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected " + expectedParamCount
                 + " parameters but was found " + paramCount);
@@ -84,6 +84,7 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     getParameter(params, paramIndex) {
         return params[paramIndex];
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ticksFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
@@ -92,26 +93,27 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     }
     timeSpanFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount != 1 && paramCount != 3 && paramCount != 4 && paramCount != 5) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected 1, 3, 4 or 5 parameters");
             }
-            let result = new Variant_1.Variant();
+            const result = new Variant_1.Variant();
             if (paramCount == 1) {
-                let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
+                const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
                 result.asTimeSpan = value.asLong;
             }
             else if (paramCount > 2) {
-                let value1 = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
-                let value2 = variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.Long);
-                let value3 = variantOperations.convert(this.getParameter(params, 2), VariantType_1.VariantType.Long);
-                let value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType_1.VariantType.Long) : Variant_1.Variant.fromLong(0);
-                let value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType_1.VariantType.Long) : Variant_1.Variant.fromLong(0);
+                const value1 = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
+                const value2 = variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.Long);
+                const value3 = variantOperations.convert(this.getParameter(params, 2), VariantType_1.VariantType.Long);
+                const value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType_1.VariantType.Long) : Variant_1.Variant.fromLong(0);
+                const value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType_1.VariantType.Long) : Variant_1.Variant.fromLong(0);
                 result.asTimeSpan = (((value1.asLong * 24 + value2.asLong) * 60 + value3.asLong) * 60 + value4.asLong) * 1000 + value5.asLong;
             }
             return result;
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nowFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
@@ -120,42 +122,42 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     }
     dateFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount < 1 || paramCount > 7) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected from 1 to 7 parameters");
             }
             if (paramCount == 1) {
-                let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
+                const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Long);
                 return Variant_1.Variant.fromDateTime(new Date(value.asLong));
             }
-            let value1 = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Integer);
-            let value2 = paramCount > 1 ? variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(1);
-            let value3 = paramCount > 2 ? variantOperations.convert(this.getParameter(params, 2), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(1);
-            let value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
-            let value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
-            let value6 = paramCount > 5 ? variantOperations.convert(this.getParameter(params, 5), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
-            let value7 = paramCount > 6 ? variantOperations.convert(this.getParameter(params, 6), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
-            let date = new Date(value1.asInteger, value2.asInteger - 1, value3.asInteger, value4.asInteger, value5.asInteger, value6.asInteger, value7.asInteger);
+            const value1 = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Integer);
+            const value2 = paramCount > 1 ? variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(1);
+            const value3 = paramCount > 2 ? variantOperations.convert(this.getParameter(params, 2), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(1);
+            const value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
+            const value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
+            const value6 = paramCount > 5 ? variantOperations.convert(this.getParameter(params, 5), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
+            const value7 = paramCount > 6 ? variantOperations.convert(this.getParameter(params, 6), VariantType_1.VariantType.Integer) : Variant_1.Variant.fromInteger(0);
+            const date = new Date(value1.asInteger, value2.asInteger - 1, value3.asInteger, value4.asInteger, value5.asInteger, value6.asInteger, value7.asInteger);
             return Variant_1.Variant.fromDateTime(date);
         });
     }
     dayOfWeekFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.DateTime);
-            let date = value.asDateTime;
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.DateTime);
+            const date = value.asDateTime;
             return Variant_1.Variant.fromInteger(date.getDay());
         });
     }
     minFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount < 2) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected at least 2 parameters");
             }
             let result = this.getParameter(params, 0);
             for (let i = 1; i < paramCount; i++) {
-                let value = this.getParameter(params, i);
+                const value = this.getParameter(params, i);
                 if (variantOperations.more(result, value).asBoolean) {
                     result = value;
                 }
@@ -165,13 +167,13 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     }
     maxFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount < 2) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected at least 2 parameters");
             }
             let result = this.getParameter(params, 0);
             for (let i = 1; i < paramCount; i++) {
-                let value = this.getParameter(params, i);
+                const value = this.getParameter(params, i);
                 if (variantOperations.less(result, value).asBoolean) {
                     result = value;
                 }
@@ -181,13 +183,13 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     }
     sumFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount < 2) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected at least 2 parameters");
             }
             let result = this.getParameter(params, 0);
             for (let i = 1; i < paramCount; i++) {
-                let value = this.getParameter(params, i);
+                const value = this.getParameter(params, i);
                 result = variantOperations.add(result, value);
             }
             return result;
@@ -196,51 +198,55 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     ifFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 3);
-            let value1 = this.getParameter(params, 0);
-            let value2 = this.getParameter(params, 1);
-            let value3 = this.getParameter(params, 2);
-            let condition = variantOperations.convert(value1, VariantType_1.VariantType.Boolean);
+            const value1 = this.getParameter(params, 0);
+            const value2 = this.getParameter(params, 1);
+            const value3 = this.getParameter(params, 2);
+            const condition = variantOperations.convert(value1, VariantType_1.VariantType.Boolean);
             return condition.asBoolean ? value2 : value3;
         });
     }
     chooseFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
-            let paramCount = params.length;
+            const paramCount = params.length;
             if (paramCount < 3) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected at least 3 parameters");
             }
-            let value1 = this.getParameter(params, 0);
-            let condition = variantOperations.convert(value1, VariantType_1.VariantType.Integer);
-            let paramIndex = condition.asInteger;
+            const value1 = this.getParameter(params, 0);
+            const condition = variantOperations.convert(value1, VariantType_1.VariantType.Integer);
+            const paramIndex = condition.asInteger;
             if (paramCount < paramIndex + 1) {
                 throw new ExpressionException_1.ExpressionException(null, "WRONG_PARAM_COUNT", "Expected at least " + (paramIndex + 1) + " parameters");
             }
             return this.getParameter(params, paramIndex);
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     eFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
             return new Variant_1.Variant(Math.E);
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     piFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
             return new Variant_1.Variant(Math.PI);
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     rndFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
             return new Variant_1.Variant(Math.random());
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     absFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
             let value = this.getParameter(params, 0);
-            let result = new Variant_1.Variant();
+            const result = new Variant_1.Variant();
             switch (value.type) {
                 case VariantType_1.VariantType.Integer:
                     result.asInteger = Math.abs(value.asInteger);
@@ -265,108 +271,110 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     acosFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.acos(value.asDouble));
         });
     }
     asinFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.asin(value.asDouble));
         });
     }
     atanFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.atan(value.asDouble));
         });
     }
     expFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.exp(value.asDouble));
         });
     }
     logFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.log(value.asDouble));
         });
     }
     log10FunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.log10(value.asDouble));
         });
     }
     ceilFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.ceil(value.asDouble));
         });
     }
     floorFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.floor(value.asDouble));
         });
     }
     roundFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.round(value.asDouble));
         });
     }
     truncFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return Variant_1.Variant.fromInteger(Math.trunc(value.asDouble));
         });
     }
     cosFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.cos(value.asDouble));
         });
     }
     sinFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.sin(value.asDouble));
         });
     }
     tanFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.tan(value.asDouble));
         });
     }
     sqrtFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.Double);
             return new Variant_1.Variant(Math.sqrt(value.asDouble));
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     emptyFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 1);
-            let value = this.getParameter(params, 0);
+            const value = this.getParameter(params, 0);
             return new Variant_1.Variant(value.isEmpty());
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nullFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 0);
@@ -376,14 +384,15 @@ class DefaultFunctionCollection extends FunctionCollection_1.FunctionCollection 
     containsFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkParamCount(params, 2);
-            let containerstr = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.String);
-            let substring = variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.String);
+            const containerstr = variantOperations.convert(this.getParameter(params, 0), VariantType_1.VariantType.String);
+            const substring = variantOperations.convert(this.getParameter(params, 1), VariantType_1.VariantType.String);
             if (containerstr.isEmpty() || containerstr.isNull()) {
                 return Variant_1.Variant.fromBoolean(false);
             }
             return Variant_1.Variant.fromBoolean(containerstr.asString.indexOf(substring.asString) >= 0);
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     arrayFunctionCalculator(params, variantOperations) {
         return __awaiter(this, void 0, void 0, function* () {
             return Variant_1.Variant.fromArray(params);

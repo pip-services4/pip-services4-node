@@ -12,7 +12,7 @@ import { CsvQuoteState } from "./CsvQuoteState";
 export class CsvTokenizer extends AbstractTokenizer {
     private _fieldSeparators: number[] = [ ','.charCodeAt(0) ];
     private _quoteSymbols: number[] = [ '"'.charCodeAt(0) ];
-    private _endOfLine: string = "\n\r";
+    private _endOfLine = "\n\r";
 
     /**
      * Separator for fields in CSV stream.
@@ -29,14 +29,14 @@ export class CsvTokenizer extends AbstractTokenizer {
             throw new Error("value");
         }
 
-        for (let fieldSeparator of value) {
+        for (const fieldSeparator of value) {
             if (fieldSeparator == CsvConstant.CR
                 || fieldSeparator == CsvConstant.LF
                 || fieldSeparator == CsvConstant.Nil) {
                 throw new Error("Invalid field separator.");
             }
 
-            for (let quoteSymbol of this.quoteSymbols) {
+            for (const quoteSymbol of this.quoteSymbols) {
                 if (fieldSeparator == quoteSymbol) {
                     throw new Error("Invalid field separator.");
                 }
@@ -76,14 +76,14 @@ export class CsvTokenizer extends AbstractTokenizer {
         if (value == null) {
             throw new Error("value");
         }
-        for (let quoteSymbol of value) {
+        for (const quoteSymbol of value) {
             if (quoteSymbol == CsvConstant.CR
                 || quoteSymbol == CsvConstant.LF
                 || quoteSymbol == CsvConstant.Nil) {
                 throw new Error("Invalid quote symbol.");
             }
 
-            for (let fieldSeparator of this.fieldSeparators) {
+            for (const fieldSeparator of this.fieldSeparators) {
                 if (quoteSymbol == fieldSeparator) {
                     throw new Error("Invalid quote symbol.");
                 }
@@ -104,11 +104,11 @@ export class CsvTokenizer extends AbstractTokenizer {
         this.setCharacterState(CsvConstant.CR, CsvConstant.CR, this.symbolState);
         this.setCharacterState(CsvConstant.LF, CsvConstant.LF, this.symbolState);
 
-        for (let fieldSeparator of this.fieldSeparators) {
+        for (const fieldSeparator of this.fieldSeparators) {
             this.setCharacterState(fieldSeparator, fieldSeparator, this.symbolState);
         }
         
-        for (let quoteSymbol of this.quoteSymbols) {
+        for (const quoteSymbol of this.quoteSymbols) {
             this.setCharacterState(quoteSymbol, quoteSymbol, this.quoteState);
         }
     }

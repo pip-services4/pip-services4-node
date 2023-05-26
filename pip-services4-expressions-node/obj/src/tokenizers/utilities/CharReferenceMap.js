@@ -38,7 +38,7 @@ class CharReferenceMap {
             return this._initialInterval[symbol];
         }
         else {
-            for (let interval of this._otherIntervals) {
+            for (const interval of this._otherIntervals) {
                 if (interval.inRange(symbol)) {
                     return interval.reference;
                 }

@@ -35,11 +35,11 @@ class ExpressionWordState extends GenericWordState_1.GenericWordState {
       * @returns The next token from the top of the stream.
       */
     nextToken(scanner, tokenizer) {
-        let line = scanner.peekLine();
-        let column = scanner.peekColumn();
-        let token = super.nextToken(scanner, tokenizer);
-        let value = token.value.toUpperCase();
-        for (let keyword of this.keywords) {
+        const line = scanner.peekLine();
+        const column = scanner.peekColumn();
+        const token = super.nextToken(scanner, tokenizer);
+        const value = token.value.toUpperCase();
+        for (const keyword of this.keywords) {
             if (keyword == value) {
                 return new Token_1.Token(TokenType_1.TokenType.Keyword, token.value, line, column);
             }

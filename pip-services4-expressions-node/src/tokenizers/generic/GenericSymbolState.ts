@@ -32,6 +32,7 @@ export class GenericSymbolState implements ISymbolState {
      * @param tokenizer A tokenizer class that controls the process.
      * @returns The next token from the top of the stream.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public nextToken(scanner: IScanner, tokenizer: ITokenizer): Token {
         return this._symbols.nextToken(scanner);
     }

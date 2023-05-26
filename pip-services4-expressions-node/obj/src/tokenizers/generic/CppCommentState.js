@@ -54,14 +54,14 @@ class CppCommentState extends GenericCommentState_1.GenericCommentState {
      * @returns The next token from the top of the stream.
      */
     nextToken(scanner, tokenizer) {
-        let firstSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const firstSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
         if (firstSymbol != this.SLASH) {
             scanner.unread();
             throw new Error("Incorrect usage of CppCommentState.");
         }
-        let secondSymbol = scanner.read();
+        const secondSymbol = scanner.read();
         if (secondSymbol == this.STAR) {
             return new Token_1.Token(TokenType_1.TokenType.Comment, "/*" + this.getMultiLineComment(scanner), line, column);
         }

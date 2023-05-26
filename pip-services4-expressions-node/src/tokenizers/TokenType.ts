@@ -18,4 +18,4 @@ export enum TokenType {
     Whitespace,
     Comment,
     Special
-};
+}

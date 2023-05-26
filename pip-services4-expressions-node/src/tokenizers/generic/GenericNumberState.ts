@@ -27,8 +27,8 @@ export class GenericNumberState implements INumberState {
         let gotADigit = false;
         let tokenValue = "";
         let nextSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const line = scanner.line();
+        const column = scanner.column();
 
         // Parses leading minus.
         if (nextSymbol == this.MINUS) {

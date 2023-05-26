@@ -14,4 +14,4 @@ export enum VariantType {
     TimeSpan,
     Object,
     Array
-};
+}

@@ -18,10 +18,11 @@ export class ExpressionQuoteState implements IQuoteState {
       * @param tokenizer A tokenizer class that controls the process.
       * @returns The next token from the top of the stream.
       */
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public nextToken(scanner: IScanner, tokenizer: ITokenizer): Token {
-        let firstSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const firstSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
         let tokenValue = "";
         tokenValue = tokenValue + String.fromCharCode(firstSymbol);
 
@@ -52,8 +53,8 @@ export class ExpressionQuoteState implements IQuoteState {
     public encodeString(value: string, quoteSymbol: number): string {
         if (value == null) return null;
 
-        let quoteString = String.fromCharCode(quoteSymbol);
-        let result = quoteString
+        const quoteString = String.fromCharCode(quoteSymbol);
+        const result = quoteString
             + value.replace(quoteString, quoteString + quoteString)
             + quoteString;
         return result;
@@ -70,7 +71,7 @@ export class ExpressionQuoteState implements IQuoteState {
 
         if (value.length >= 2 && value.charCodeAt(0) == quoteSymbol
             && value.charCodeAt(value.length - 1) == quoteSymbol) {
-            let quoteString = String.fromCharCode(quoteSymbol);
+            const quoteString = String.fromCharCode(quoteSymbol);
             return value.substring(1, value.length - 1).replace(quoteString + quoteString, quoteString);
         }
         return value;

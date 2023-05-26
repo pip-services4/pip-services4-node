@@ -22,5 +22,4 @@ var TokenType;
     TokenType[TokenType["Comment"] = 12] = "Comment";
     TokenType[TokenType["Special"] = 13] = "Special";
 })(TokenType = exports.TokenType || (exports.TokenType = {}));
-;
 //# sourceMappingURL=TokenType.js.map

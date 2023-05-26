@@ -62,7 +62,7 @@ export class DefaultFunctionCollection extends FunctionCollection {
      * @param expectedParamCount The expected number of function parameters.
      */
     protected checkParamCount(params: Variant[], expectedParamCount: number): void {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (expectedParamCount != paramCount) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
                 "Expected " + expectedParamCount
@@ -80,28 +80,29 @@ export class DefaultFunctionCollection extends FunctionCollection {
         return params[paramIndex];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async ticksFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return Variant.fromLong(new Date().getTime());
     }
 
     private async timeSpanFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount != 1 && paramCount != 3 && paramCount != 4 && paramCount != 5) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT", "Expected 1, 3, 4 or 5 parameters");
         }
 
-        let result = new Variant();
+        const result = new Variant();
 
         if (paramCount == 1) {
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
             result.asTimeSpan = value.asLong;
         } else if (paramCount > 2) {
-            let value1 = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
-            let value2 = variantOperations.convert(this.getParameter(params, 1), VariantType.Long);
-            let value3 = variantOperations.convert(this.getParameter(params, 2), VariantType.Long);
-            let value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType.Long) : Variant.fromLong(0);
-            let value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType.Long) : Variant.fromLong(0);
+            const value1 = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
+            const value2 = variantOperations.convert(this.getParameter(params, 1), VariantType.Long);
+            const value3 = variantOperations.convert(this.getParameter(params, 2), VariantType.Long);
+            const value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType.Long) : Variant.fromLong(0);
+            const value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType.Long) : Variant.fromLong(0);
 
             result.asTimeSpan = (((value1.asLong * 24 + value2.asLong) * 60 + value3.asLong) * 60 + value4.asLong) * 1000 + value5.asLong;
         }
@@ -109,51 +110,52 @@ export class DefaultFunctionCollection extends FunctionCollection {
         return result;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async nowFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return Variant.fromDateTime(new Date());
     }
 
     private async dateFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount < 1 || paramCount > 7) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT", "Expected from 1 to 7 parameters");
         }
 
         if (paramCount == 1) {
-            let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
+            const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Long);
             return Variant.fromDateTime(new Date(value.asLong));
         }
 
-        let value1 = variantOperations.convert(this.getParameter(params, 0), VariantType.Integer);
-        let value2 = paramCount > 1 ? variantOperations.convert(this.getParameter(params, 1), VariantType.Integer) : Variant.fromInteger(1);
-        let value3 = paramCount > 2 ? variantOperations.convert(this.getParameter(params, 2), VariantType.Integer) : Variant.fromInteger(1);
-        let value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType.Integer) : Variant.fromInteger(0);
-        let value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType.Integer) : Variant.fromInteger(0);
-        let value6 = paramCount > 5 ? variantOperations.convert(this.getParameter(params, 5), VariantType.Integer) : Variant.fromInteger(0);
-        let value7 = paramCount > 6 ? variantOperations.convert(this.getParameter(params, 6), VariantType.Integer) : Variant.fromInteger(0);
+        const value1 = variantOperations.convert(this.getParameter(params, 0), VariantType.Integer);
+        const value2 = paramCount > 1 ? variantOperations.convert(this.getParameter(params, 1), VariantType.Integer) : Variant.fromInteger(1);
+        const value3 = paramCount > 2 ? variantOperations.convert(this.getParameter(params, 2), VariantType.Integer) : Variant.fromInteger(1);
+        const value4 = paramCount > 3 ? variantOperations.convert(this.getParameter(params, 3), VariantType.Integer) : Variant.fromInteger(0);
+        const value5 = paramCount > 4 ? variantOperations.convert(this.getParameter(params, 4), VariantType.Integer) : Variant.fromInteger(0);
+        const value6 = paramCount > 5 ? variantOperations.convert(this.getParameter(params, 5), VariantType.Integer) : Variant.fromInteger(0);
+        const value7 = paramCount > 6 ? variantOperations.convert(this.getParameter(params, 6), VariantType.Integer) : Variant.fromInteger(0);
 
-        let date = new Date(value1.asInteger, value2.asInteger-1, value3.asInteger,
+        const date = new Date(value1.asInteger, value2.asInteger-1, value3.asInteger,
             value4.asInteger, value5.asInteger, value6.asInteger, value7.asInteger);
         return Variant.fromDateTime(date);
     }
 
     private async dayOfWeekFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.DateTime);
-        let date = value.asDateTime;
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.DateTime);
+        const date = value.asDateTime;
         return Variant.fromInteger(date.getDay());
     }
 
     private async minFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount < 2) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
                 "Expected at least 2 parameters");
         }
         let result = this.getParameter(params, 0);
         for (let i = 1; i < paramCount; i++) {
-            let value = this.getParameter(params, i);
+            const value = this.getParameter(params, i);
             if (variantOperations.more(result, value).asBoolean) {
                 result = value;
             }
@@ -162,14 +164,14 @@ export class DefaultFunctionCollection extends FunctionCollection {
     }
 
     private async maxFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount < 2) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
                 "Expected at least 2 parameters");
         }
         let result = this.getParameter(params, 0);
         for (let i = 1; i < paramCount; i++) {
-            let value = this.getParameter(params, i);
+            const value = this.getParameter(params, i);
             if (variantOperations.less(result, value).asBoolean) {
                 result = value;
             }
@@ -178,14 +180,14 @@ export class DefaultFunctionCollection extends FunctionCollection {
     }
 
     private async sumFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount < 2) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
                 "Expected at least 2 parameters");
         }
         let result = this.getParameter(params, 0);
         for (let i = 1; i < paramCount; i++) {
-            let value = this.getParameter(params, i);
+            const value = this.getParameter(params, i);
             result = variantOperations.add(result, value);
         }
         return result;
@@ -193,23 +195,23 @@ export class DefaultFunctionCollection extends FunctionCollection {
 
     private async ifFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 3);
-        let value1 = this.getParameter(params, 0);
-        let value2 = this.getParameter(params, 1);
-        let value3 = this.getParameter(params, 2);
-        let condition = variantOperations.convert(value1, VariantType.Boolean);
+        const value1 = this.getParameter(params, 0);
+        const value2 = this.getParameter(params, 1);
+        const value3 = this.getParameter(params, 2);
+        const condition = variantOperations.convert(value1, VariantType.Boolean);
         return condition.asBoolean ? value2 : value3;
     }
 
     private async chooseFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
-        let paramCount = params.length;
+        const paramCount = params.length;
         if (paramCount < 3) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
                 "Expected at least 3 parameters");
         }
 
-        let value1 = this.getParameter(params, 0);
-        let condition = variantOperations.convert(value1, VariantType.Integer);
-        let paramIndex = condition.asInteger;
+        const value1 = this.getParameter(params, 0);
+        const condition = variantOperations.convert(value1, VariantType.Integer);
+        const paramIndex = condition.asInteger;
 
         if (paramCount < paramIndex + 1) {
             throw new ExpressionException(null, "WRONG_PARAM_COUNT",
@@ -219,25 +221,29 @@ export class DefaultFunctionCollection extends FunctionCollection {
         return this.getParameter(params, paramIndex);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async eFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return new Variant(Math.E);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async piFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return new Variant(Math.PI);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async rndFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return new Variant(Math.random());
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async absFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
         let value = this.getParameter(params, 0);
-        let result = new Variant();
+        const result = new Variant();
         switch (value.type) {
             case VariantType.Integer:
                 result.asInteger = Math.abs(value.asInteger);
@@ -261,94 +267,96 @@ export class DefaultFunctionCollection extends FunctionCollection {
 
     private async acosFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.acos(value.asDouble));
     }
 
     private async asinFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.asin(value.asDouble));
     }
 
     private async atanFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.atan(value.asDouble));
     }
 
     private async expFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.exp(value.asDouble));
     }
 
     private async logFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.log(value.asDouble));
     }
 
     private async log10FunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.log10(value.asDouble));
     }
 
     private async ceilFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.ceil(value.asDouble));
     }
 
     private async floorFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.floor(value.asDouble));
     }
 
     private async roundFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.round(value.asDouble));
     }
 
     private async truncFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return Variant.fromInteger(Math.trunc(value.asDouble));
     }
 
     private async cosFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.cos(value.asDouble));
     }
 
     private async sinFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.sin(value.asDouble));
     }
 
     private async tanFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.tan(value.asDouble));
     }
 
     private async sqrtFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
+        const value = variantOperations.convert(this.getParameter(params, 0), VariantType.Double);
         return new Variant(Math.sqrt(value.asDouble));
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async emptyFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 1);
-        let value = this.getParameter(params, 0);
+        const value = this.getParameter(params, 0);
         return new Variant(value.isEmpty());
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async nullFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 0);
         return new Variant();
@@ -356,8 +364,8 @@ export class DefaultFunctionCollection extends FunctionCollection {
 
     private async containsFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         this.checkParamCount(params, 2);
-        let containerstr = variantOperations.convert(this.getParameter(params, 0), VariantType.String);
-        let substring = variantOperations.convert(this.getParameter(params, 1), VariantType.String);
+        const containerstr = variantOperations.convert(this.getParameter(params, 0), VariantType.String);
+        const substring = variantOperations.convert(this.getParameter(params, 1), VariantType.String);
 
         if (containerstr.isEmpty() || containerstr.isNull()) {
             return Variant.fromBoolean(false);
@@ -366,6 +374,7 @@ export class DefaultFunctionCollection extends FunctionCollection {
         return Variant.fromBoolean(containerstr.asString.indexOf(substring.asString) >= 0);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async arrayFunctionCalculator(params: Variant[], variantOperations: IVariantOperations): Promise<Variant> {
         return Variant.fromArray(params);
     }

@@ -21,10 +21,11 @@ class GenericQuoteState {
      * @param tokenizer A tokenizer class that controls the process.
      * @returns The next token from the top of the stream.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nextToken(scanner, tokenizer) {
-        let firstSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const firstSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
         let tokenValue = String.fromCharCode(firstSymbol);
         for (let nextSymbol = scanner.read(); !CharValidator_1.CharValidator.isEof(nextSymbol); nextSymbol = scanner.read()) {
             tokenValue = tokenValue + String.fromCharCode(nextSymbol);
@@ -43,7 +44,7 @@ class GenericQuoteState {
     encodeString(value, quoteSymbol) {
         if (value == null)
             return null;
-        let result = String.fromCharCode(quoteSymbol) + value + String.fromCharCode(quoteSymbol);
+        const result = String.fromCharCode(quoteSymbol) + value + String.fromCharCode(quoteSymbol);
         return result;
     }
     /**

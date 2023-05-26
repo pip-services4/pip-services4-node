@@ -63,7 +63,7 @@ class SymbolNode {
      */
     addDescendantLine(value, tokenType) {
         if (value.length > 0) {
-            let childNode = this.ensureChildWithChar(value.charCodeAt(0));
+            const childNode = this.ensureChildWithChar(value.charCodeAt(0));
             childNode.addDescendantLine(value.substring(1), tokenType);
         }
         else {
@@ -76,8 +76,8 @@ class SymbolNode {
      * @param scanner
      */
     deepestRead(scanner) {
-        let nextSymbol = scanner.read();
-        let childNode = !CharValidator_1.CharValidator.isEof(nextSymbol)
+        const nextSymbol = scanner.read();
+        const childNode = !CharValidator_1.CharValidator.isEof(nextSymbol)
             ? this.findChildWithChar(nextSymbol) : null;
         if (childNode == null) {
             scanner.unread();

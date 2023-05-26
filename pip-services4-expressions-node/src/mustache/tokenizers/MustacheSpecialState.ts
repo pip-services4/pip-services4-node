@@ -19,9 +19,10 @@ export class MustacheSpecialState implements ITokenizerState {
      * @param tokenizer A tokenizer class that controls the process.
      * @returns The next token from the top of the stream.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public nextToken(scanner: IScanner, tokenizer: ITokenizer): Token {
-        let line = scanner.peekLine();
-        let column = scanner.peekColumn();
+        const line = scanner.peekLine();
+        const column = scanner.peekColumn();
         let tokenValue = "";
 
         for (let nextSymbol = scanner.read(); !CharValidator.isEof(nextSymbol); nextSymbol = scanner.read()) {

@@ -24,14 +24,14 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
      */
     convert(value, newType) {
         if (newType == VariantType_1.VariantType.Null) {
-            let result = new Variant_1.Variant();
+            const result = new Variant_1.Variant();
             return result;
         }
         if (newType == value.type || newType == VariantType_1.VariantType.Object) {
             return value;
         }
         if (newType == VariantType_1.VariantType.String) {
-            let result = new Variant_1.Variant();
+            const result = new Variant_1.Variant();
             result.asString = pip_services4_commons_node_1.StringConverter.toString(value.asObject);
             return result;
         }
@@ -59,7 +59,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromNull(newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = 0;
@@ -96,7 +96,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromInteger(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Long:
                 result.asLong = value.asInteger;
@@ -121,7 +121,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromLong(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = value.asLong;
@@ -146,7 +146,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromFloat(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = Math.trunc(value.asFloat);
@@ -165,7 +165,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromDouble(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = Math.trunc(value.asDouble);
@@ -184,7 +184,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromString(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = pip_services4_commons_node_2.IntegerConverter.toInteger(value.asString);
@@ -212,7 +212,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromBoolean(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = value.asBoolean ? 1 : 0;
@@ -234,7 +234,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromDateTime(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = value.asDateTime.getTime();
@@ -250,7 +250,7 @@ class TypeUnsafeVariantOperations extends AbstractVariantOperations_1.AbstractVa
             + " to " + this.typeToString(newType) + " is not supported.");
     }
     convertFromTimeSpan(value, newType) {
-        let result = new Variant_1.Variant();
+        const result = new Variant_1.Variant();
         switch (newType) {
             case VariantType_1.VariantType.Integer:
                 result.asInteger = value.asTimeSpan;

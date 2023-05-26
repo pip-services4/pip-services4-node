@@ -22,9 +22,9 @@ class CsvSymbolState extends GenericSymbolState_1.GenericSymbolState {
     }
     nextToken(scanner, tokenizer) {
         // Optimization...
-        let nextSymbol = scanner.read();
-        let line = scanner.line();
-        let column = scanner.column();
+        const nextSymbol = scanner.read();
+        const line = scanner.line();
+        const column = scanner.column();
         if (nextSymbol != CsvConstant_1.CsvConstant.LF && nextSymbol != CsvConstant_1.CsvConstant.CR) {
             return new Token_1.Token(TokenType_1.TokenType.Symbol, String.fromCharCode(nextSymbol), line, column);
         }

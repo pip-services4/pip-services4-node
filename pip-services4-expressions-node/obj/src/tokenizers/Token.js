@@ -48,7 +48,7 @@ class Token {
     }
     equals(obj) {
         if (obj instanceof Token) {
-            let token = obj;
+            const token = obj;
             return token._type == this._type && token._value == this._value;
         }
         return false;

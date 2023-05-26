@@ -114,7 +114,7 @@ class ExpressionCalculator {
      * @param variables The list of variables to be populated.
      */
     createVariables(variables) {
-        for (let variableName of this._parser.variableNames) {
+        for (const variableName of this._parser.variableNames) {
             if (variables.findByName(variableName) == null) {
                 variables.add(new Variable_1.Variable(variableName));
             }
@@ -154,10 +154,10 @@ class ExpressionCalculator {
      */
     evaluateWithVariablesAndFunctions(variables, functions) {
         return __awaiter(this, void 0, void 0, function* () {
-            let stack = new CalculationStack_1.CalculationStack();
+            const stack = new CalculationStack_1.CalculationStack();
             variables = variables || this._defaultVariables;
             functions = functions || this._defaultFunctions;
-            for (let token of this.resultTokens) {
+            for (const token of this.resultTokens) {
                 if (yield this.evaluateConstant(token, stack)) {
                     continue;
                 }
@@ -201,7 +201,7 @@ class ExpressionCalculator {
             if (token.type != ExpressionTokenType_1.ExpressionTokenType.Variable) {
                 return false;
             }
-            let variable = variables.findByName(token.value.asString);
+            const variable = variables.findByName(token.value.asString);
             if (variable == null) {
                 throw new ExpressionException_1.ExpressionException(null, "VAR_NOT_FOUND", "Variable " + token.value.asString + " was not found", token.line, token.column);
             }
@@ -214,18 +214,18 @@ class ExpressionCalculator {
             if (token.type != ExpressionTokenType_1.ExpressionTokenType.Function) {
                 return false;
             }
-            let func = functions.findByName(token.value.asString);
+            const func = functions.findByName(token.value.asString);
             if (func == null) {
                 throw new ExpressionException_1.ExpressionException(null, "FUNC_NOT_FOUND", "Function " + token.value.asString + " was not found", token.line, token.column);
             }
             // Retrieve function parameters
-            let params = [];
+            const params = [];
             let paramCount = stack.pop().asInteger;
             while (paramCount > 0) {
                 params.splice(0, 0, stack.pop());
                 paramCount--;
             }
-            let functionResult = yield func.calculate(params, this._variantOperations);
+            const functionResult = yield func.calculate(params, this._variantOperations);
             stack.push(functionResult);
             return true;
         });
@@ -235,22 +235,22 @@ class ExpressionCalculator {
             switch (token.type) {
                 case ExpressionTokenType_1.ExpressionTokenType.And:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.and(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Or:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.or(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Xor:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.xor(value1, value2));
                         return true;
                     }
@@ -269,43 +269,43 @@ class ExpressionCalculator {
             switch (token.type) {
                 case ExpressionTokenType_1.ExpressionTokenType.Plus:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.add(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Minus:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.sub(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Star:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.mul(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Slash:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.div(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Procent:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.mod(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Power:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.pow(value1, value2));
                         return true;
                     }
@@ -316,15 +316,15 @@ class ExpressionCalculator {
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.ShiftLeft:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.lsh(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.ShiftRight:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.rsh(value1, value2));
                         return true;
                     }
@@ -338,43 +338,43 @@ class ExpressionCalculator {
             switch (token.type) {
                 case ExpressionTokenType_1.ExpressionTokenType.Equal:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.equal(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.NotEqual:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.notEqual(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.More:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.more(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Less:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.less(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.EqualMore:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.moreEqual(value1, value2));
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.EqualLess:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         stack.push(this._variantOperations.lessEqual(value1, value2));
                         return true;
                     }
@@ -388,16 +388,16 @@ class ExpressionCalculator {
             switch (token.type) {
                 case ExpressionTokenType_1.ExpressionTokenType.In:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
-                        let rvalue = this._variantOperations.in(value2, value1);
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
+                        const rvalue = this._variantOperations.in(value2, value1);
                         stack.push(rvalue);
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.NotIn:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
                         let rvalue = this._variantOperations.in(value2, value1);
                         rvalue = Variant_1.Variant.fromBoolean(!rvalue.asBoolean);
                         stack.push(rvalue);
@@ -405,21 +405,21 @@ class ExpressionCalculator {
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.Element:
                     {
-                        let value2 = stack.pop();
-                        let value1 = stack.pop();
-                        let rvalue = this._variantOperations.getElement(value1, value2);
+                        const value2 = stack.pop();
+                        const value1 = stack.pop();
+                        const rvalue = this._variantOperations.getElement(value1, value2);
                         stack.push(rvalue);
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.IsNull:
                     {
-                        let rvalue = new Variant_1.Variant(stack.pop().isNull());
+                        const rvalue = new Variant_1.Variant(stack.pop().isNull());
                         stack.push(rvalue);
                         return true;
                     }
                 case ExpressionTokenType_1.ExpressionTokenType.IsNotNull:
                     {
-                        let rvalue = new Variant_1.Variant(!stack.pop().isNull());
+                        const rvalue = new Variant_1.Variant(!stack.pop().isNull());
                         stack.push(rvalue);
                         return true;
                     }

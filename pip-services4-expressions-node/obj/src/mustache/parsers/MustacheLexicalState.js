@@ -14,5 +14,4 @@ var MustacheLexicalState;
     MustacheLexicalState[MustacheLexicalState["Comment"] = 4] = "Comment";
     MustacheLexicalState[MustacheLexicalState["Closure"] = 5] = "Closure";
 })(MustacheLexicalState = exports.MustacheLexicalState || (exports.MustacheLexicalState = {}));
-;
 //# sourceMappingURL=MustacheLexicalState.js.map

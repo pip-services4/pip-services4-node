@@ -12,7 +12,7 @@ import { GenericWhitespaceState } from "../../tokenizers/generic/GenericWhitespa
 import { MustacheSpecialState } from "./MustacheSpecialState";
 
 export class MustacheTokenizer extends AbstractTokenizer {
-    private _special: boolean = true;
+    private _special = true;
     private _specialState: ITokenizerState;
 
     /**
@@ -45,7 +45,7 @@ export class MustacheTokenizer extends AbstractTokenizer {
         this.setCharacterState(0x00c0, 0x00ff, this.wordState);
         this.setCharacterState(0x0100, 0xfffe, this.wordState);
 
-        this.setCharacterState('\"'.charCodeAt(0), '\"'.charCodeAt(0), this.quoteState);
+        this.setCharacterState('"'.charCodeAt(0), '"'.charCodeAt(0), this.quoteState);
         this.setCharacterState('\''.charCodeAt(0), '\''.charCodeAt(0), this.quoteState);
 
         this.skipWhitespaces = true;
@@ -65,7 +65,7 @@ export class MustacheTokenizer extends AbstractTokenizer {
 
         // Process quotes
         if (this._special) {
-            let token = this._specialState.nextToken(this._scanner, this);
+            const token = this._specialState.nextToken(this._scanner, this);
             if (token != null && token.value != "") {
                 return token;
             }
@@ -73,7 +73,7 @@ export class MustacheTokenizer extends AbstractTokenizer {
 
         // Proces other tokens
         this._special = false;
-        let token = super.readNextToken();
+        const token = super.readNextToken();
         // Switch to quote when '{{' or '{{{' symbols found
         if (token != null && (token.value == "}}" || token.value == "}}}")) {
             this._special = true;

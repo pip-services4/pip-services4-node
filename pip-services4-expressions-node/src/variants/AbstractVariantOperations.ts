@@ -56,7 +56,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
      public add(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -97,7 +97,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public sub(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -138,7 +138,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public mul(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -173,7 +173,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public div(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -208,7 +208,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public mod(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -237,7 +237,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public pow(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -266,7 +266,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public and(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -298,7 +298,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public or(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -330,7 +330,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public xor(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -362,7 +362,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public lsh(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -391,7 +391,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public rsh(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -419,7 +419,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public not(value: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value.type == VariantType.Null) {
@@ -447,7 +447,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public negative(value: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value.type == VariantType.Null) {
@@ -479,7 +479,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public equal(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null && value2.type == VariantType.Null) {
@@ -534,7 +534,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public notEqual(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null && value2.type == VariantType.Null) {
@@ -589,7 +589,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public more(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -633,7 +633,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public less(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -677,7 +677,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public moreEqual(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -721,7 +721,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public lessEqual(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -765,7 +765,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public in(value1: Variant, value2: Variant): Variant {        
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
@@ -779,9 +779,9 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
         }
 
         if (value1.type == VariantType.Array) {
-            let array = value1.asArray;
-            for (let element of array) {
-                let eq = this.equal(value2, element);
+            const array = value1.asArray;
+            for (const element of array) {
+                const eq = this.equal(value2, element);
                 if (eq.type == VariantType.Boolean && eq.asBoolean) {
                     result.asBoolean = true;
                     return result;
@@ -800,7 +800,7 @@ export abstract class AbstractVariantOperations implements IVariantOperations {
      * @returns A result variant object.
      */
     public getElement(value1: Variant, value2: Variant): Variant {
-        let result = new Variant();
+        const result = new Variant();
 
         // Processes VariantType.Null values.
         if (value1.type == VariantType.Null || value2.type == VariantType.Null) {
