@@ -30,12 +30,14 @@ import { StateValue } from './StateValue';
  */
 export class MemoryStateStore implements IStateStore, IReconfigurable {
     private _states: any = {};
-    private _timeout: number = 0;
+    private _timeout = 0;
 
 	/**
 	 * Creates a new instance of the state store.
 	 */
-    public constructor() { }
+    public constructor() {
+        //
+     }
 
 	/**
      * Configures component by passing configuration parameters.
@@ -55,11 +57,11 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
     private cleanup(): void {
         if (this._timeout == 0) return;
 
-        let cutOffTime: number = new Date().getTime() - this._timeout;
+        const cutOffTime: number = new Date().getTime() - this._timeout;
 
         // Cleanup obsolete entries
-        for (let prop in this._states) {
-            let entry: StateEntry = <StateEntry>this._states[prop];
+        for (const prop in this._states) {
+            const entry: StateEntry = <StateEntry>this._states[prop];
             // Remove obsolete entry
             if (entry.getLastUpdateTime() < cutOffTime) {
                 delete this._states[prop];
@@ -84,7 +86,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
         this.cleanup();
 
         // Get entry from the store
-        let entry: StateEntry = <StateEntry>this._states[key];
+        const entry: StateEntry = <StateEntry>this._states[key];
 
         // Store has nothing
         if (entry == null) {
@@ -105,10 +107,10 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
         // Cleanup the stored states
         this.cleanup();
 
-        let result: StateValue<T>[] = [];
+        const result: StateValue<T>[] = [];
         
-        for (let key of keys) {
-            let value = await this.load<T>(context, key);
+        for (const key of keys) {
+            const value = await this.load<T>(context, key);
             result.push({ key: key, value: value });
         }
 
@@ -168,7 +170,7 @@ export class MemoryStateStore implements IStateStore, IReconfigurable {
         this.cleanup();
 
         // Get the entry
-        let entry: StateEntry = <StateEntry>this._states[key];
+        const entry: StateEntry = <StateEntry>this._states[key];
 
         // Remove entry from the cache
         if (entry != null) {

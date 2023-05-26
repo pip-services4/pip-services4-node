@@ -31,15 +31,17 @@ import { CacheEntry } from './CacheEntry';
  */
 export class MemoryCache implements ICache, IReconfigurable {
     private _cache: any = {};
-    private _count: number = 0;
+    private _count = 0;
 
-    private _timeout: number = 60000;
-    private _maxSize: number = 1000;
+    private _timeout = 60000;
+    private _maxSize = 1000;
 
 	/**
 	 * Creates a new instance of the cache.
 	 */
-    public constructor() { }
+    public constructor() { 
+        //
+    }
 
 	/**
      * Configures component by passing configuration parameters.
@@ -59,12 +61,12 @@ export class MemoryCache implements ICache, IReconfigurable {
 	 */
     private cleanup(): void {
         let oldest: CacheEntry = null;
-        let now: number = new Date().getTime();
+        // const now: number = new Date().getTime();
         this._count = 0;
 
         // Cleanup obsolete entries and find the oldest
-        for (let prop in this._cache) {
-            let entry: CacheEntry = <CacheEntry>this._cache[prop];
+        for (const prop in this._cache) {
+            const entry: CacheEntry = <CacheEntry>this._cache[prop];
             // Remove obsolete entry
             if (entry.isExpired()) {
                 delete this._cache[prop];
@@ -98,7 +100,7 @@ export class MemoryCache implements ICache, IReconfigurable {
         }
 
         // Get entry from the cache
-        let entry: CacheEntry = <CacheEntry>this._cache[key];
+        const entry: CacheEntry = <CacheEntry>this._cache[key];
 
         // Cache has nothing
         if (entry == null) {
@@ -174,7 +176,7 @@ export class MemoryCache implements ICache, IReconfigurable {
         }
 
         // Get the entry
-        let entry: CacheEntry = <CacheEntry>this._cache[key];
+        const entry: CacheEntry = <CacheEntry>this._cache[key];
 
         // Remove entry from the cache
         if (entry != null) {

@@ -18,7 +18,7 @@ import { ILock } from './ILock';
  * @see [[ILock]]
  */
 export abstract class Lock implements ILock, IReconfigurable {
-    private _retryTimeout: number = 100;
+    private _retryTimeout = 100;
 
     /**
      * Configures component by passing configuration parameters.
@@ -58,7 +58,7 @@ export abstract class Lock implements ILock, IReconfigurable {
      * @param timeout           a lock acquisition timeout.
      */
     public async acquireLock(context: IContext, key: string, ttl: number, timeout: number): Promise<void> {
-        let retryTime = new Date().getTime() + timeout;
+        const retryTime = new Date().getTime() + timeout;
 
         // Try to get lock first
         let ok = await this.tryAcquireLock(context, key, ttl);
@@ -72,10 +72,10 @@ export abstract class Lock implements ILock, IReconfigurable {
             await new Promise(request => setTimeout(request, this._retryTimeout));
 
             // When timeout expires return false
-            let now = new Date().getTime();
+            const now = new Date().getTime();
             if (now > retryTime) {
                 throw new ConflictException(
-                    context,
+                    context != null ? context.getTraceId() : null,
                     "LOCK_TIMEOUT",
                     "Acquiring lock " + key + " failed on timeout"
                 ).withDetails("key", key);
