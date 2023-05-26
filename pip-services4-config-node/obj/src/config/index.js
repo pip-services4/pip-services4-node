@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultConfigReaderFactory = exports.YamlConfigReader = exports.MemoryConfigReader = exports.JsonConfigReader = exports.FileConfigReader = exports.ConfigReader = void 0;
+exports.YamlConfigReader = exports.MemoryConfigReader = exports.JsonConfigReader = exports.FileConfigReader = exports.ConfigReader = void 0;
 /**
  * @module config
  *
@@ -24,6 +24,4 @@ var MemoryConfigReader_1 = require("./MemoryConfigReader");
 Object.defineProperty(exports, "MemoryConfigReader", { enumerable: true, get: function () { return MemoryConfigReader_1.MemoryConfigReader; } });
 var YamlConfigReader_1 = require("./YamlConfigReader");
 Object.defineProperty(exports, "YamlConfigReader", { enumerable: true, get: function () { return YamlConfigReader_1.YamlConfigReader; } });
-var DefaultConfigReaderFactory_1 = require("./DefaultConfigReaderFactory");
-Object.defineProperty(exports, "DefaultConfigReaderFactory", { enumerable: true, get: function () { return DefaultConfigReaderFactory_1.DefaultConfigReaderFactory; } });
 //# sourceMappingURL=index.js.map
