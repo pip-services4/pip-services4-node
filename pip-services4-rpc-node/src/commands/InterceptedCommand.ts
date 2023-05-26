@@ -1,8 +1,11 @@
 /** @module commands */
+
+import { IContext } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node/src/run/Parameters';
+import { ValidationResult } from 'pip-services4-data-node';
+
 import { ICommand } from './ICommand';
 import { ICommandInterceptor } from './ICommandInterceptor';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
-import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
 
 /**
  * Implements a [[ICommand command]] wrapped by an interceptor.

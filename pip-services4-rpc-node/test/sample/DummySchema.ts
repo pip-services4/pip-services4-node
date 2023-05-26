@@ -1,6 +1,6 @@
 import { TypeCode } from 'pip-services4-commons-node';
-import { ArraySchema } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
+import { ArraySchema } from 'pip-services4-data-node';
+import { ObjectSchema } from 'pip-services4-data-node';
 import { SubDummySchema } from './SubDummySchema';
 
 export class DummySchema extends ObjectSchema {

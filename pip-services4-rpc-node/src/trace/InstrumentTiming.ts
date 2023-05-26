@@ -1,9 +1,10 @@
 /** @module services */
 
-import { ILogger } from "pip-services4-components-node";
-import { ICounters } from "pip-services4-components-node";
-import { CounterTiming } from "pip-services4-components-node";
-import { TraceTiming } from "pip-services4-components-node";
+import { IContext } from 'pip-services4-components-node';
+import { ILogger } from 'pip-services4-observability-node';
+import { ICounters } from 'pip-services4-observability-node';
+import { CounterTiming } from 'pip-services4-observability-node';
+import { TraceTiming } from 'pip-services4-observability-node';
 
 export class InstrumentTiming {
     private _context: IContext;

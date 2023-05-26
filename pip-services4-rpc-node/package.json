@@ -16,7 +16,6 @@
         "microservice",
         "communication",
         "rpc",
-        "rest",
         "library"
     ],
     "noAnalyze": true,
@@ -38,7 +37,8 @@
     "dependencies": {
         "pip-services4-commons-node": "^0.0.1",
         "pip-services4-components-node": "^0.0.1",
-        "pip-services4-observability-node": "^0.0.1"
+        "pip-services4-observability-node": "^0.0.1",
+        "pip-services4-data-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

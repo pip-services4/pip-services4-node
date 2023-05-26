@@ -1,8 +1,9 @@
 const assert = require('chai').assert;
 
+import { Parameters } from 'pip-services4-components-node';
+
 import { CommandExec } from './CommandExec';
 import { Command } from '../../src/commands/Command';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
 
 suite('Command', ()=> {
 

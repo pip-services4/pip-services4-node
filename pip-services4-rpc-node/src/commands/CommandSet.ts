@@ -1,15 +1,18 @@
 /** @module commands */
+
+import { IContext } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node';
+import { BadRequestException } from 'pip-services4-commons-node';
+import { ValidationException } from 'pip-services4-data-node';
+import { ValidationResult } from 'pip-services4-data-node';
+import { ValidationResultType } from 'pip-services4-data-node';
+import { IdGenerator } from 'pip-services4-data-node';
+
 import { ICommand } from './ICommand';
 import { IEvent } from './IEvent';
 import { IEventListener } from './IEventListener';
 import { ICommandInterceptor } from './ICommandInterceptor';
 import { InterceptedCommand } from './InterceptedCommand';
-import { BadRequestException } from '../../../pip-services4-commons-node/src/errors/BadRequestException';
-import { ValidationException } from '../../../pip-services4-commons-node/src/validate/ValidationException';
-import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
-import { ValidationResultType } from '../../../pip-services4-commons-node/src/validate/ValidationResultType';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
-import { IdGenerator } from '../../../pip-services4-commons-node/src/data/IdGenerator';
 
 /**
  * Contains a set of commands and events supported by a [[ICommandable commandable]] object.
@@ -26,11 +29,11 @@ import { IdGenerator } from '../../../pip-services4-commons-node/src/data/IdGene
  * ### Example ###
  * 
  *     export class MyDataCommandSet extends CommandSet {
- *         private _controller: IMyDataController;
+ *         private _service: IMyDataService;
  *      
- *         constructor(controller: IMyDataController) { // Any data controller interface
+ *         constructor(service: IMyDataService) { // Any data service interface
  *             super();
- *             this._controller = controller;
+ *             this._service = service;
  *             this.addCommand(this.makeGetMyDataCommand());
  *         }   
  *      
@@ -40,7 +43,7 @@ import { IdGenerator } from '../../../pip-services4-commons-node/src/data/IdGene
  *               null,
  *               async (context: IContext, args: Parameters) => Promise<any> {
  *                   let param = args.getAsString('param');
- *                   return await this._controller.getMyData(context, param);
+ *                   return await this._service.getMyData(context, param);
  *               }
  *             );
  *         }

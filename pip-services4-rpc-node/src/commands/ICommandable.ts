@@ -1,4 +1,5 @@
 /** @module commands */
+
 import { CommandSet } from './CommandSet';
 
 /**
@@ -6,14 +7,14 @@ import { CommandSet } from './CommandSet';
  * The commandable object exposes its functonality as commands and events groupped
  * into a [[CommandSet CommandSet]].
  * 
- * This interface is typically implemented by controllers and is used to auto generate
+ * This interface is typically implemented by services and is used to auto generate
  * external interfaces.
  * 
  * @see [[CommandSet]]
  * 
  * ### Example ###
  * 
- *     export class MyDataController implements ICommandable, IMyDataController {
+ *     export class MyDataService implements ICommandable, IMyDataService {
  *       private _commandSet : MyDataCommandSet; 
  *             
  *       public getCommandSet(): CommandSet {

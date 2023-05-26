@@ -1,8 +1,11 @@
 /** @module commands */
+
+import { IContext } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node';
+import { InvocationException } from 'pip-services4-commons-node';
+
 import { IEvent } from './IEvent';
 import { IEventListener } from './IEventListener';
-import { InvocationException } from '../../../pip-services4-commons-node/src/errors/InvocationException';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
 
 /**
  * Concrete implementation of [[IEvent IEvent]] interface.

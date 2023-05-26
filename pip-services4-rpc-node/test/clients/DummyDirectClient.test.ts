@@ -1,8 +1,8 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
-import { Dummy } from '../Dummy';
-import { DummyController } from '../DummyController';
+import { Dummy } from '../sample/Dummy';
+import { DummyService } from '../sample/DummyService';
 import { DummyClientFixture } from './DummyClientFixture';
 import { DummyDirectClient } from './DummyDirectClient';
 
@@ -14,11 +14,11 @@ suite('DummyDirectClient', ()=> {
     let fixture: DummyClientFixture;
 
     suiteSetup(async () => {
-        let ctrl = new DummyController();
+        let ctrl = new DummyService();
         client = new DummyDirectClient();
 
         let references: References = References.fromTuples(
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), ctrl
         );
         client.setReferences(references);
 

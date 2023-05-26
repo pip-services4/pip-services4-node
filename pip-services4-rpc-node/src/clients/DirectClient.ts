@@ -1,19 +1,21 @@
 /** @module clients */
-import { IOpenable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { DependencyResolver } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
+import { CompositeCounters } from 'pip-services4-observability-node';
+import { CompositeTracer } from 'pip-services4-observability-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 
 import { InstrumentTiming } from '../trace/InstrumentTiming';
 
 /**
- * Abstract client that calls controller directly in the same memory space.
+ * Abstract client that calls service directly in the same memory space.
  * 
  * It is used when multiple microservices are deployed in a single container (monolyth)
  * and communication between them can be done by direct calls rather then through 
@@ -22,30 +24,30 @@ import { InstrumentTiming } from '../trace/InstrumentTiming';
  * ### Configuration parameters ###
  * 
  * - dependencies:
- *   - controller:            override controller descriptor
+ *   - service:            override service descriptor
  * 
  * ### References ###
  * 
  * - <code>\*:logger:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
  * - <code>\*:tracer:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/trace.itracer.html ITracer]] components to record traces
- * - <code>\*:controller:\*:\*:1.0</code>     controller to call business methods
+ * - <code>\*:service:\*:\*:1.0</code>     service to call business methods
  * 
  * ### Example ###
  * 
- *     class MyDirectClient extends DirectClient<IMyController> implements IMyClient {
+ *     class MyDirectClient extends DirectClient<IMyService> implements IMyClient {
  * 
  *         public constructor() {
  *           super();
- *           this._dependencyResolver.put('controller', new Descriptor(
- *               "mygroup", "controller", "*", "*", "*"));
+ *           this._dependencyResolver.put('service', new Descriptor(
+ *               "mygroup", "service", "*", "*", "*"));
  *         }
  *         ...
  * 
  *         public async getData(context: IContext, id: string): Promise<MyData> {
  *           let timing = this.instrument(context, 'myclient.get_data');
  *           try {
- *             return await this._controller.getData(context, id);
+ *             return await this._service.getData(context, id);
  *           } catch (ex) {
  *             timing.endFailure(ex);
  *           } finally {
@@ -57,16 +59,16 @@ import { InstrumentTiming } from '../trace/InstrumentTiming';
  * 
  *     let client = new MyDirectClient();
  *     client.setReferences(References.fromTuples(
- *         new Descriptor("mygroup","controller","default","default","1.0"), controller
+ *         new Descriptor("mygroup","service","default","default","1.0"), service
  *     ));
  * 
  *     let result = await client.getData("123", "1");
  */
 export abstract class DirectClient<T> implements IConfigurable, IReferenceable, IOpenable {
     /** 
-     * The controller reference.
+     * The service reference.
      */
-    protected _controller: T;
+    protected _service: T;
     /** 
      * The open flag.
      */
@@ -84,7 +86,7 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
      */
     protected _counters: CompositeCounters = new CompositeCounters();
     /** 
-     * The dependency resolver to get controller reference.
+     * The dependency resolver to get service reference.
      */
     protected _dependencyResolver: DependencyResolver = new DependencyResolver();
             
@@ -92,7 +94,7 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
      * Creates a new instance of the client.
      */
     public constructor() {
-        this._dependencyResolver.put('controller', 'none');
+        this._dependencyResolver.put('service', 'none');
     }
 
     /**
@@ -114,7 +116,7 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
 		this._counters.setReferences(references);
         this._tracer.setReferences(references);
         this._dependencyResolver.setReferences(references);
-        this._controller = this._dependencyResolver.getOneRequired<T>('controller');
+        this._service = this._dependencyResolver.getOneRequired<T>('service');
 	}
         
     /**
@@ -173,8 +175,8 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
             return;
         }
     	
-        if (this._controller == null) {
-            throw new ConnectionException(context, 'NO_CONTROLLER', 'Controller reference is missing');
+        if (this._service == null) {
+            throw new ConnectionException(context, 'NO_CONTROLLER', 'Service reference is missing');
         } 
 
         this._opened = true;

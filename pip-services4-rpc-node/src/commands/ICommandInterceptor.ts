@@ -1,7 +1,10 @@
 /** @module commands */
+
+import { IContext } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node';
+import { ValidationResult } from 'pip-services4-data-node';
+
 import { ICommand } from './ICommand';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
-import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
 
 /**
  * An interface for stackable command intercepters, which can extend

@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
+import { FilterParams } from 'pip-services4-components-node';
+import { PagingParams } from 'pip-services4-components-node';
 
 import { IDummyClient } from './IDummyClient';
 

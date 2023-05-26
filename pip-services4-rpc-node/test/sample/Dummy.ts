@@ -1,4 +1,4 @@
-import { IStringIdentifiable } from 'pip-services4-commons-node';
+import { IStringIdentifiable } from 'pip-services4-data-node';
 import { SubDummy } from './SubDummy';
 
 export class Dummy implements IStringIdentifiable {

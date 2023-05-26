@@ -1,7 +1,8 @@
 /** @module commands */
-import { IExecutable } from '../../../pip-services4-commons-node/src/run/IExecutable';
-import { Parameters } from '../../../pip-services4-commons-node/src/run/Parameters';
-import { ValidationResult } from '../../../pip-services4-commons-node/src/validate/ValidationResult';
+
+import { IExecutable } from 'pip-services4-components-node';
+import { Parameters } from 'pip-services4-components-node';
+import { ValidationResult } from 'pip-services4-data-node';
 
 /**
  * An interface for Commands, which are part of the Command design pattern.

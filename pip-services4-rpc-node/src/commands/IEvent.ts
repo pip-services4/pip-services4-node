@@ -1,5 +1,5 @@
 /** @module commands */
-import { ICommand } from './ICommand';
+
 import { IEventListener } from './IEventListener';
 import { INotifiable } from '../../../pip-services4-commons-node/src/run/INotifiable';
 
