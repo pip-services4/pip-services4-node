@@ -11,13 +11,13 @@ import { Shutdown } from './Shutdown';
  * @see [[Shutdown]]
  */
 export class DefaultTestFactory extends Factory {
-	private static readonly ShutdownDescriptor = new Descriptor("pip-services", "shutdown", "*", "*", "1.0");
+    private static readonly ShutdownDescriptor = new Descriptor("pip-services", "shutdown", "*", "*", "1.0");
 
-	/**
-	 * Create a new instance of the factory.
-	 */
-	public constructor() {
+    /**
+     * Create a new instance of the factory.
+     */
+    public constructor() {
         super();
-		this.registerAsType(DefaultTestFactory.ShutdownDescriptor, Shutdown);
-	}
+        this.registerAsType(DefaultTestFactory.ShutdownDescriptor, Shutdown);
+    }
 }

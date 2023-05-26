@@ -12,22 +12,20 @@ import { CompositeLogger } from 'pip-services4-observability-node';
 export class DummyController implements IReferenceable, IReconfigurable, IOpenable, INotifiable {
     private readonly _timer = new FixedRateTimer(this, 1000, 1000);
     private readonly _logger: CompositeLogger = new CompositeLogger();
-    private _message: string = "Hello World!";
-    private _counter: number = 0;
+    private _message = "Hello World!";
+    private _counter = 0;
 
-    public constructor() {}
-
-	public get message(): string { 
+    public get message(): string { 
         return this._message; 
     }
-	public set message(value: string) { 
+    public set message(value: string) { 
         this._message = value; 
     }
 
-	public get counter(): number { 
+    public get counter(): number { 
         return this._counter; 
     }
-	public set counter(value: number) { 
+    public set counter(value: number) { 
         this._counter = value; 
     }
 
@@ -47,12 +45,13 @@ export class DummyController implements IReferenceable, IReconfigurable, IOpenab
         this._timer.start();
         this._logger.trace(context, "Dummy controller opened");
     }
-		
+        
     public async close(context: IContext): Promise<void> {
         this._timer.stop();
         this._logger.trace(context, "Dummy controller closed");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public notify(context: IContext, args: Parameters): void {
         this._logger.info(context, "%d - %s", this.counter++, this.message);
     }

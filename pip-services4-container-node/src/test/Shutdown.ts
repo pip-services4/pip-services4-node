@@ -30,14 +30,16 @@ import { ApplicationException } from "pip-services4-commons-node";
  */
 export class Shutdown implements IConfigurable, IOpenable {
     private _interval: any;
-    private _mode: string = 'exception';
-    private _minTimeout: number = 300000;
-    private _maxTimeout: number = 900000;
+    private _mode = 'exception';
+    private _minTimeout = 300000;
+    private _maxTimeout = 900000;
 
     /**
      * Creates a new instance of the shutdown component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -50,36 +52,38 @@ export class Shutdown implements IConfigurable, IOpenable {
         this._maxTimeout = config.getAsIntegerWithDefault('max_timeout', this._maxTimeout);
     }
 
-	/**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
-	 */
+    /**
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
+     */
     public isOpen(): boolean {
         return this._interval != null;
     }
 
-	/**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 */
+    /**
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async open(context: IContext): Promise<void> {
         if (this._interval != null) {
             clearInterval(this._interval);
         }
 
-        let timeout = this.nextTimeout(this._minTimeout, this._maxTimeout);
+        const timeout = this.nextTimeout(this._minTimeout, this._maxTimeout);
         this._interval = setInterval(() => {
             this.shutdown();
         }, timeout);
     }
 
-	/**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
-	 */
+    /**
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         if (this._interval != null) {
             clearInterval(this._interval);
@@ -105,14 +109,15 @@ export class Shutdown implements IConfigurable, IOpenable {
      */
     public shutdown(): void {
         if (this._mode == 'null' || this._mode == 'nullpointer') {
-            let obj = null;
+            const obj = null;
             obj.crash = 123;
         } else if (this._mode == 'zero' || this._mode == 'dividebyzero') {
-            let crash = 0 / 100;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const crash = 0 / 100;
         } else if (this._mode == 'exit' || this._mode == 'processexit') {
             process.exit(1);
         } else {
-            let err = new ApplicationException('test', null, 'CRASH', 'Crash test exception');
+            const err = new ApplicationException('test', null, 'CRASH', 'Crash test exception');
             throw err;
         }
     }

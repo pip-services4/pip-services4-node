@@ -51,10 +51,10 @@ import { ContainerReferences } from '../refer/ContainerReferences';
  * 
  * ### Configuration parameters ###
  * 
- * - name: 					the context (container or process) name
- * - description: 		   	human-readable description of the context
- * - properties: 			    entire section of additional descriptive properties
- * 	   - ...
+ * - name:                     the context (container or process) name
+ * - description:                human-readable description of the context
+ * - properties:                 entire section of additional descriptive properties
+ *        - ...
  * 
  * ### Example ###
  * 
@@ -121,23 +121,24 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
-	public setReferences(references: IReferences): void { 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public setReferences(references: IReferences): void { 
         // Override in child classes
     }
 
     /**
-	 * Unsets (clears) previously set references to dependent components. 
+     * Unsets (clears) previously set references to dependent components. 
      */
     public unsetReferences(): void {
         // Override in child classes
     }
 
     private initReferences(references: IReferences): void {
-        let existingInfo = references.getOneOptional<ContextInfo>(new Descriptor("*", "context-info", "*", "*", "1.0"));
+        const existingInfo = references.getOneOptional<ContextInfo>(new Descriptor("*", "context-info", "*", "*", "1.0"));
         if (existingInfo == null) {
             references.put(new Descriptor("pip-services", "context-info", "default", "default", "1.0"), this._info);
         } else {
@@ -158,18 +159,18 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._references != null;
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
         if (this._references != null) {
@@ -190,7 +191,7 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
             this.setReferences(this._references);
 
             // Get custom description if available
-            let infoDescriptor = new Descriptor("*", "context-info", "*", "*", "*");
+            const infoDescriptor = new Descriptor("*", "context-info", "*", "*", "*");
             this._info = this._references.getOneOptional<ContextInfo>(infoDescriptor);
 
             await this._references.open(context);
@@ -208,9 +209,9 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     }
         
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         // Skip if container wasn't opened

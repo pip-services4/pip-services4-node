@@ -1,8 +1,8 @@
 /** @module core */
 /** @hidden */
-let process = require('process');
+import process = require('process');
 
-import { IContext } from 'pip-services4-components-node';
+import { Context, IContext } from 'pip-services4-components-node';
 import { ConsoleLogger } from 'pip-services4-observability-node';
 import { ConfigParams } from 'pip-services4-components-node';
 
@@ -28,7 +28,7 @@ import { Container } from './Container';
  *     container.run(process.args);
  */
 export class ProcessContainer extends Container {
-    protected _configPath: string = './config/config.yml';
+    protected _configPath = './config/config.yml';
 
     /**
      * Creates a new instance of the container.
@@ -43,7 +43,7 @@ export class ProcessContainer extends Container {
 
     private getConfigPath(args: string[]): string {
         for (let index = 0; index < args.length; index++) {
-            let arg = args[index];
+            const arg = args[index];
             let nextArg = index < args.length - 1 ? args[index + 1] : null;
             nextArg = nextArg && nextArg.startsWith('-') ? null : nextArg;
             if (nextArg != null) {
@@ -59,7 +59,7 @@ export class ProcessContainer extends Container {
         // Process command line parameters
         let line = '';
         for (let index = 0; index < args.length; index++) {
-            let arg = args[index];
+            const arg = args[index];
             let nextArg = index < args.length - 1 ? args[index + 1] : null;
             nextArg = nextArg && nextArg.startsWith('-') ? null : nextArg;
             if (nextArg != null) {
@@ -71,7 +71,7 @@ export class ProcessContainer extends Container {
                 }
             }
         }
-        let parameters = ConfigParams.fromString(line);
+        const parameters = ConfigParams.fromString(line);
 
         // Process environmental variables
         parameters.append(process.env);
@@ -81,7 +81,7 @@ export class ProcessContainer extends Container {
 
     private showHelp(args: string[]) {
         for (let index = 0; index < args.length; index++) {
-            let arg = args[index];
+            const arg = args[index];
             if (arg == "--help" || arg == "-h") {
                 return true;
             }
@@ -97,7 +97,7 @@ export class ProcessContainer extends Container {
     private captureErrors(context: IContext): void {
         // Log uncaught exceptions
         process.on('uncaughtException', (ex) => {
-			this._logger.fatal(context, ex, "Process is terminated");
+            this._logger.fatal(context, ex, "Process is terminated");
             process.exit(1);
         });
     }
@@ -131,15 +131,15 @@ export class ProcessContainer extends Container {
             return;
         }
 
-        let context = this._info.name;
-        let path = this.getConfigPath(args);
-        let parameters = this.getParameters(args);
+        const context = Context.fromTraceId(this._info.name);
+        const path = this.getConfigPath(args);
+        const parameters = this.getParameters(args);
         this.readConfigFromFile(context, path, parameters);
 
         this.captureErrors(context);
         this.captureExit(context);
 
-    	this.open(context);
+        this.open(context);
     }
 
 }

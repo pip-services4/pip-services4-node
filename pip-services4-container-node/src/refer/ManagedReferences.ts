@@ -45,18 +45,18 @@ export class ManagedReferences extends ReferencesDecorator implements IOpenable 
     }
 
     /** 
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._linker.isOpen() && this._runner.isOpen();
     }
     
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
         await this._linker.open(context);
@@ -65,9 +65,9 @@ export class ManagedReferences extends ReferencesDecorator implements IOpenable 
 
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         await this._runner.close(context);
@@ -75,13 +75,13 @@ export class ManagedReferences extends ReferencesDecorator implements IOpenable 
     }
 
     /**
-	 * Creates a new ManagedReferences object filled with provided key-value pairs called tuples.
-	 * Tuples parameters contain a sequence of locator1, component1, locator2, component2, ... pairs.
-	 * 
-	 * @param tuples	the tuples to fill a new ManagedReferences object.
-	 * @returns			a new ManagedReferences object.
+     * Creates a new ManagedReferences object filled with provided key-value pairs called tuples.
+     * Tuples parameters contain a sequence of locator1, component1, locator2, component2, ... pairs.
+     * 
+     * @param tuples    the tuples to fill a new ManagedReferences object.
+     * @returns            a new ManagedReferences object.
      */
-	public static fromTuples(...tuples: any[]): ManagedReferences {
-		return new ManagedReferences(tuples);
-	}
+    public static fromTuples(...tuples: any[]): ManagedReferences {
+        return new ManagedReferences(tuples);
+    }
 }

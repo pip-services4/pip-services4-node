@@ -25,7 +25,7 @@ export class ContainerReferences extends ManagedReferences {
      */
     public putFromConfig(config: ContainerConfig): void {
         for (let i = 0; i < config.length; i++) {
-            let componentConfig: ComponentConfig = config[i];
+            const componentConfig: ComponentConfig = config[i];
             let component: any;
             let locator: any;
 
@@ -37,13 +37,13 @@ export class ContainerReferences extends ManagedReferences {
                 }
                 // Or create component statically
                 else if (componentConfig.descriptor != null) {
-					locator = componentConfig.descriptor;
-					let factory = this._builder.findFactory(locator);
-					component = this._builder.create(locator, factory);
-					if (component == null) {
-						throw new ReferenceException(null, locator);
+                    locator = componentConfig.descriptor;
+                    const factory = this._builder.findFactory(locator);
+                    component = this._builder.create(locator, factory);
+                    if (component == null) {
+                        throw new ReferenceException(null, locator);
                     }
-					locator = this._builder.clarifyLocator(locator, factory);
+                    locator = this._builder.clarifyLocator(locator, factory);
                 }
 
                 // Check that component was created
@@ -57,13 +57,13 @@ export class ContainerReferences extends ManagedReferences {
 
                 if (component.configure) {
                     // Configure component
-                    let configurable = component as IConfigurable;
+                    const configurable = component as IConfigurable;
                     configurable.configure(componentConfig.config);
                 }
 
                 // Set references to factories
                 if (component.canCreate && component.create) {
-                    let referenceable = component as IReferenceable;
+                    const referenceable = component as IReferenceable;
                     referenceable.setReferences(this);
                 }
             } catch (ex) {
@@ -72,5 +72,5 @@ export class ContainerReferences extends ManagedReferences {
             }
         }
     }
-		
+        
 }

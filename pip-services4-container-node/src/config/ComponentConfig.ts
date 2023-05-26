@@ -1,8 +1,7 @@
 /** @module config */
 import { Descriptor } from 'pip-services4-components-node';
-import { TypeDescriptor } from 'pip-services4-commons-node';
+import { ConfigException, TypeDescriptor } from 'pip-services4-commons-node';
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node';
 
 /**
  * Configuration of a component inside a container.
@@ -25,9 +24,9 @@ export class ComponentConfig {
         this.config = config;
     }
 
-	public descriptor: Descriptor = null;
-	public type: TypeDescriptor = null;
-	public config: ConfigParams = null;
+    public descriptor: Descriptor = null;
+    public type: TypeDescriptor = null;
+    public config: ConfigParams = null;
 
     /**
      * Creates a new instance of ComponentConfig based on
@@ -39,8 +38,8 @@ export class ComponentConfig {
      * @throws ConfigException when neither component descriptor or type is found.
      */
     public static fromConfig(config: ConfigParams): ComponentConfig {
-        let descriptor = Descriptor.fromString(config.getAsNullableString("descriptor"));
-        let type = TypeDescriptor.fromString(config.getAsNullableString("type"));
+        const descriptor = Descriptor.fromString(config.getAsNullableString("descriptor"));
+        const type = TypeDescriptor.fromString(config.getAsNullableString("type"));
 
         if (descriptor == null && type == null) {
             throw new ConfigException(
@@ -52,5 +51,5 @@ export class ComponentConfig {
 
         return new ComponentConfig(descriptor, type, config);
     }
-		
+        
 }

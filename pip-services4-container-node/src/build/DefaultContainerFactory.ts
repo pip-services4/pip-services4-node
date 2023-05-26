@@ -2,10 +2,10 @@
 import { IFactory } from 'pip-services4-components-node';
 import { CompositeFactory } from 'pip-services4-components-node';
 import { DefaultObservabilityFactory } from 'pip-services4-observability-node';
-import { DefaultConfigFactory } from 'pip-services4-config-node';
 import { DefaultLogicFactory } from 'pip-services4-logic-node';
 import { DefaultContextFactory } from 'pip-services4-components-node';
 import { DefaultTestFactory } from '../test/DefaultTestFactory';
+import { DefaultConfigFactory } from 'pip-services4-config-node';
 
 /**
  * Creates default container components (loggers, counters, caches, locks, etc.) by their descriptors.
@@ -22,10 +22,10 @@ import { DefaultTestFactory } from '../test/DefaultTestFactory';
  */
 export class DefaultContainerFactory extends CompositeFactory {
     /**
-	 * Create a new instance of the factory and sets nested factories.
+     * Create a new instance of the factory and sets nested factories.
      * 
      * @param factories     a list of nested factories
-	 */
+     */
     public constructor(...factories: IFactory[]) {
         super(...factories);
 

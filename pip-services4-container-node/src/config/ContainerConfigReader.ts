@@ -3,10 +3,10 @@
 import { IContext } from 'pip-services4-components-node';
 import { JsonConfigReader } from 'pip-services4-config-node';
 import { YamlConfigReader } from 'pip-services4-config-node';
-import { ConfigException } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 
 import { ContainerConfig } from './ContainerConfig';
+import { ConfigException } from 'pip-services4-commons-node';
 
 /**
  * Helper class that reads container configuration from JSON or YAML file.
@@ -31,7 +31,7 @@ export class ContainerConfigReader {
             );
         }
 
-        let ext = path.split('.').pop();
+        const ext = path.split('.').pop();
 
         if (ext == "json") {
             return ContainerConfigReader.readFromJsonFile(context, path, parameters);
@@ -54,7 +54,7 @@ export class ContainerConfigReader {
      * @returns the read container configuration
      */
     public static readFromJsonFile(context: IContext, path: string, parameters: ConfigParams): ContainerConfig {
-        let config = JsonConfigReader.readConfig(context, path, parameters);
+        const config = JsonConfigReader.readConfig(context, path, parameters);
         return ContainerConfig.fromConfig(config);
     }
 
@@ -67,8 +67,8 @@ export class ContainerConfigReader {
      * @returns the read container configuration
      */
     public static readFromYamlFile(context: IContext, path: string, parameters: ConfigParams): ContainerConfig {
-        let config = YamlConfigReader.readConfig(context, path, parameters);
+        const config = YamlConfigReader.readConfig(context, path, parameters);
         return ContainerConfig.fromConfig(config);
     }
-		
+        
 }

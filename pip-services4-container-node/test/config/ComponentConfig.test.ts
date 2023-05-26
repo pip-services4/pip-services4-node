@@ -1,10 +1,10 @@
 const assert = require('chai').assert;
 
 import { ConfigParams } from 'pip-services4-components-node';
-import { TypeDescriptor } from 'pip-services4-components-node';
 import { Descriptor } from 'pip-services4-components-node';
 
 import { ComponentConfig } from '../../src/config/ComponentConfig';
+import { TypeDescriptor } from 'pip-services4-commons-node';
 
 suite('ComponentConfig', ()=> {
     let componentConfig: ComponentConfig;
