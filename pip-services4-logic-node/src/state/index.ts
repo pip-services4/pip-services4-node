@@ -11,5 +11,4 @@
  export { IStateStore } from './IStateStore';
  export { NullStateStore } from './NullStateStore';
  export { MemoryStateStore } from './MemoryStateStore';
- export { DefaultStateStoreFactory } from './DefaultStateStoreFactory';
  

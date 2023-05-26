@@ -34,8 +34,8 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
     },
     "dependencies": {
-        "pip-services4-components-node": "^0.0.1",
-        "pip-services4-expressions-node": "^1.0.0"
+        "pip-services4-commons-node": "^0.0.1",
+        "pip-services4-components-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

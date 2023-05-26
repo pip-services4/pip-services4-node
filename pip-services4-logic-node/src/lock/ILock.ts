@@ -1,5 +1,7 @@
 /** @module lock */
 
+import { IContext } from 'pip-services4-components-node';
+
 /**
  * Interface for locks to synchronize work or parallel processes and to prevent collisions.
  * 

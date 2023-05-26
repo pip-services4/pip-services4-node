@@ -1,6 +1,8 @@
 /** @module lock */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IReconfigurable } from 'pip-services4-components-node';
 import { ConflictException } from 'pip-services4-commons-node';
 
 import { ILock } from './ILock';

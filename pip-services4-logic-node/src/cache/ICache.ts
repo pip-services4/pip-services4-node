@@ -1,5 +1,7 @@
 /** @module cache */
 
+import { IContext } from 'pip-services4-components-node';
+
 /**
  * Interface for caches that are used to cache values to improve performance.
  */

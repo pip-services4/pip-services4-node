@@ -1,4 +1,7 @@
 /** @module cache */
+
+import { IContext } from 'pip-services4-components-node';
+
 import { ICache } from './ICache';
 
 /**

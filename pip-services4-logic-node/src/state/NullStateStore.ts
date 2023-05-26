@@ -1,5 +1,7 @@
 /** @module state */
 
+import { IContext } from 'pip-services4-components-node';
+
 import { IStateStore } from "./IStateStore";
 import { StateValue } from "./StateValue";
 

@@ -1,4 +1,7 @@
 /** @module lock */
+
+import { IContext } from 'pip-services4-components-node';
+
 import { Lock } from './Lock';
 
 /**
