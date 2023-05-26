@@ -21,8 +21,8 @@ import { Counter } from './Counter';
  *     (default: 0)
  */
 export abstract class CachedCounters implements ICounters, IReconfigurable, ICounterTimingCallback {
-    protected _interval: number = 300000;
-    protected _resetTimeout: number = 0;
+    protected _interval = 300000;
+    protected _resetTimeout = 0;
     protected _cache: { [id: string]: Counter } = {};
     protected _updated: boolean;
     protected _lastDumpTime: number = new Date().getTime();
@@ -31,7 +31,9 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
     /**
      * Creates a new CachedCounters object.
      */
-    public CachedCounters() { }
+    public constructor() { 
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -88,12 +90,12 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
     }
 
     /**
-	 * Begins measurement of execution time interval.
-	 * It returns [[CounterTiming]] object which has to be called at
-	 * [[CounterTiming.endTiming]] to end the measurement and update the counter.
-	 * 
-	 * @param name 	a counter name of Interval type.
-	 * @returns a [[CounterTiming]] callback object to end timing.
+     * Begins measurement of execution time interval.
+     * It returns [[CounterTiming]] object which has to be called at
+     * [[CounterTiming.endTiming]] to end the measurement and update the counter.
+     * 
+     * @param name     a counter name of Interval type.
+     * @returns a [[CounterTiming]] callback object to end timing.
      */
     public beginTiming(name: string): CounterTiming {
         return new CounterTiming(name, this);
@@ -107,7 +109,7 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
     public dump(): void {
         if (!this._updated) return;
 
-        let counters = this.getAll();
+        const counters = this.getAll();
 
         this.save(counters);
 
@@ -135,7 +137,7 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
     private resetIfNeeded(): void {
         if (this._resetTimeout == 0) return;
 
-        let now = new Date().getTime();
+        const now = new Date().getTime();
         if (now - this._lastResetTime > this._resetTimeout) {
             this._cache = {};
             this._updated = false;
@@ -149,11 +151,11 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
      * @returns a list with counters.
      */
     public getAll(): Counter[] {
-        let result: Counter[] = [];
+        const result: Counter[] = [];
 
         this.resetIfNeeded();
 
-        for (let key in this._cache) {
+        for (const key in this._cache) {
             result.push(this._cache[key]);
         }
 
@@ -208,76 +210,76 @@ export abstract class CachedCounters implements ICounters, IReconfigurable, ICou
      * @see [[CounterTiming.endTiming]]
      */
     public endTiming(name: string, elapsed: number): void {
-        let counter: Counter = this.get(name, CounterType.Interval);
+        const counter: Counter = this.get(name, CounterType.Interval);
         this.calculateStats(counter, elapsed);
         this.update();
     }
 
     /**
-	 * Calculates min/average/max statistics based on the current and previous values.
-	 * 
-	 * @param name 		a counter name of Statistics type
-	 * @param value		a value to update statistics
-	 */
+     * Calculates min/average/max statistics based on the current and previous values.
+     * 
+     * @param name         a counter name of Statistics type
+     * @param value        a value to update statistics
+     */
     public stats(name: string, value: number): void {
-        let counter: Counter = this.get(name, CounterType.Statistics);
+        const counter: Counter = this.get(name, CounterType.Statistics);
         this.calculateStats(counter, value);
         this.update();
     }
 
     /**
-	 * Records the last calculated measurement value.
-	 * 
-	 * Usually this method is used by metrics calculated
-	 * externally.
-	 * 
-	 * @param name 		a counter name of Last type.
-	 * @param value		a last value to record.
-	 */
+     * Records the last calculated measurement value.
+     * 
+     * Usually this method is used by metrics calculated
+     * externally.
+     * 
+     * @param name         a counter name of Last type.
+     * @param value        a last value to record.
+     */
     public last(name: string, value: number): void {
-        let counter: Counter = this.get(name, CounterType.LastValue);
+        const counter: Counter = this.get(name, CounterType.LastValue);
         counter.last = value;
         this.update();
     }
 
     /**
-	 * Records the current time as a timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 */
+     * Records the current time as a timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     */
     public timestampNow(name: string): void {
         this.timestamp(name, new Date());
     }
 
     /**
-	 * Records the given timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 * @param value		a timestamp to record.
-	 */
+     * Records the given timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     * @param value        a timestamp to record.
+     */
     public timestamp(name: string, value: Date): void {
-        let counter: Counter = this.get(name, CounterType.Timestamp);
+        const counter: Counter = this.get(name, CounterType.Timestamp);
         counter.time = value;
         this.update();
     }
 
     /**
-	 * Increments counter by 1.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 */
+     * Increments counter by 1.
+     * 
+     * @param name         a counter name of Increment type.
+     */
     public incrementOne(name: string): void {
         this.increment(name, 1);
     }
 
     /**
-	 * Increments counter by given value.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 * @param value		a value to add to the counter.
-	 */
+     * Increments counter by given value.
+     * 
+     * @param name         a counter name of Increment type.
+     * @param value        a value to add to the counter.
+     */
     public increment(name: string, value: number): void {
-        let counter: Counter = this.get(name, CounterType.Increment);
+        const counter: Counter = this.get(name, CounterType.Increment);
         counter.count = counter.count ? counter.count + value : value;
         this.update();
     }

@@ -17,17 +17,17 @@ const Counter_1 = require("./Counter");
  *     (default: 0)
  */
 class CachedCounters {
+    /**
+     * Creates a new CachedCounters object.
+     */
     constructor() {
         this._interval = 300000;
         this._resetTimeout = 0;
         this._cache = {};
         this._lastDumpTime = new Date().getTime();
         this._lastResetTime = new Date().getTime();
+        //
     }
-    /**
-     * Creates a new CachedCounters object.
-     */
-    CachedCounters() { }
     /**
      * Configures component by passing configuration parameters.
      *
@@ -75,7 +75,7 @@ class CachedCounters {
      * It returns [[CounterTiming]] object which has to be called at
      * [[CounterTiming.endTiming]] to end the measurement and update the counter.
      *
-     * @param name 	a counter name of Interval type.
+     * @param name     a counter name of Interval type.
      * @returns a [[CounterTiming]] callback object to end timing.
      */
     beginTiming(name) {
@@ -89,7 +89,7 @@ class CachedCounters {
     dump() {
         if (!this._updated)
             return;
-        let counters = this.getAll();
+        const counters = this.getAll();
         this.save(counters);
         this._updated = false;
         this._lastDumpTime = new Date().getTime();
@@ -114,7 +114,7 @@ class CachedCounters {
     resetIfNeeded() {
         if (this._resetTimeout == 0)
             return;
-        let now = new Date().getTime();
+        const now = new Date().getTime();
         if (now - this._lastResetTime > this._resetTimeout) {
             this._cache = {};
             this._updated = false;
@@ -127,9 +127,9 @@ class CachedCounters {
      * @returns a list with counters.
      */
     getAll() {
-        let result = [];
+        const result = [];
         this.resetIfNeeded();
-        for (let key in this._cache) {
+        for (const key in this._cache) {
             result.push(this._cache[key]);
         }
         return result;
@@ -175,18 +175,18 @@ class CachedCounters {
      * @see [[CounterTiming.endTiming]]
      */
     endTiming(name, elapsed) {
-        let counter = this.get(name, CounterType_1.CounterType.Interval);
+        const counter = this.get(name, CounterType_1.CounterType.Interval);
         this.calculateStats(counter, elapsed);
         this.update();
     }
     /**
      * Calculates min/average/max statistics based on the current and previous values.
      *
-     * @param name 		a counter name of Statistics type
-     * @param value		a value to update statistics
+     * @param name         a counter name of Statistics type
+     * @param value        a value to update statistics
      */
     stats(name, value) {
-        let counter = this.get(name, CounterType_1.CounterType.Statistics);
+        const counter = this.get(name, CounterType_1.CounterType.Statistics);
         this.calculateStats(counter, value);
         this.update();
     }
@@ -196,18 +196,18 @@ class CachedCounters {
      * Usually this method is used by metrics calculated
      * externally.
      *
-     * @param name 		a counter name of Last type.
-     * @param value		a last value to record.
+     * @param name         a counter name of Last type.
+     * @param value        a last value to record.
      */
     last(name, value) {
-        let counter = this.get(name, CounterType_1.CounterType.LastValue);
+        const counter = this.get(name, CounterType_1.CounterType.LastValue);
         counter.last = value;
         this.update();
     }
     /**
      * Records the current time as a timestamp.
      *
-     * @param name 		a counter name of Timestamp type.
+     * @param name         a counter name of Timestamp type.
      */
     timestampNow(name) {
         this.timestamp(name, new Date());
@@ -215,18 +215,18 @@ class CachedCounters {
     /**
      * Records the given timestamp.
      *
-     * @param name 		a counter name of Timestamp type.
-     * @param value		a timestamp to record.
+     * @param name         a counter name of Timestamp type.
+     * @param value        a timestamp to record.
      */
     timestamp(name, value) {
-        let counter = this.get(name, CounterType_1.CounterType.Timestamp);
+        const counter = this.get(name, CounterType_1.CounterType.Timestamp);
         counter.time = value;
         this.update();
     }
     /**
      * Increments counter by 1.
      *
-     * @param name 		a counter name of Increment type.
+     * @param name         a counter name of Increment type.
      */
     incrementOne(name) {
         this.increment(name, 1);
@@ -234,11 +234,11 @@ class CachedCounters {
     /**
      * Increments counter by given value.
      *
-     * @param name 		a counter name of Increment type.
-     * @param value		a value to add to the counter.
+     * @param name         a counter name of Increment type.
+     * @param value        a value to add to the counter.
      */
     increment(name, value) {
-        let counter = this.get(name, CounterType_1.CounterType.Increment);
+        const counter = this.get(name, CounterType_1.CounterType.Increment);
         counter.count = counter.count ? counter.count + value : value;
         this.update();
     }

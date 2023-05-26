@@ -16,7 +16,7 @@ import { LogLevel } from './LogLevel';
  * 
  * ### References ###
  * 
- * - <code>\*:logger:\*:\*:1.0</code> 	(optional) [[ILogger]] components to pass log messages
+ * - <code>\*:logger:\*:\*:1.0</code>     (optional) [[ILogger]] components to pass log messages
  * 
  * @see [[ILogger]]
  * 
@@ -43,48 +43,48 @@ import { LogLevel } from './LogLevel';
  * 
  */
 export class CompositeLogger extends Logger implements IReferenceable {
-	private readonly _loggers: ILogger[] = [];
+    private readonly _loggers: ILogger[] = [];
 
-	/**
+    /**
      * Creates a new instance of the logger.
      * 
-	 * @param references 	references to locate the component dependencies. 
+     * @param references     references to locate the component dependencies. 
      */
-	public constructor(references: IReferences = null) {
-		super();
+    public constructor(references: IReferences = null) {
+        super();
 
-		if (references) {
-			this.setReferences(references);
-		}
-	}
+        if (references) {
+            this.setReferences(references);
+        }
+    }
 
-	/**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+    /**
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
-	public setReferences(references: IReferences): void {
-		super.setReferences(references);
+    public setReferences(references: IReferences): void {
+        super.setReferences(references);
 
-		let loggers: any[] = references.getOptional<ILogger>(new Descriptor(null, "logger", null, null, null));
-        for (let logger of loggers) {
+        const loggers: any[] = references.getOptional<ILogger>(new Descriptor(null, "logger", null, null, null));
+        for (const logger of loggers) {
             if (typeof logger.log === "function") {
                 this._loggers.push(logger);
-			}
+            }
         }
-	}
+    }
 
-	/**
+    /**
      * Writes a log message to the logger destination(s).
      * 
      * @param level             a log level.
      * @param context     (optional) a context to trace execution through call chain.
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
-	 */
-	protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
-		for (let logger of this._loggers)  {
-			logger.log(level, context, error, message);
-		}
-	}
+     */
+    protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
+        for (const logger of this._loggers)  {
+            logger.log(level, context, error, message);
+        }
+    }
 }

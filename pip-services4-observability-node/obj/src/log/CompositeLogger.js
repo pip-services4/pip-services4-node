@@ -11,7 +11,7 @@ const Logger_1 = require("./Logger");
  *
  * ### References ###
  *
- * - <code>\*:logger:\*:\*:1.0</code> 	(optional) [[ILogger]] components to pass log messages
+ * - <code>\*:logger:\*:\*:1.0</code>     (optional) [[ILogger]] components to pass log messages
  *
  * @see [[ILogger]]
  *
@@ -41,7 +41,7 @@ class CompositeLogger extends Logger_1.Logger {
     /**
      * Creates a new instance of the logger.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     constructor(references = null) {
         super();
@@ -53,12 +53,12 @@ class CompositeLogger extends Logger_1.Logger {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         super.setReferences(references);
-        let loggers = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "logger", null, null, null));
-        for (let logger of loggers) {
+        const loggers = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "logger", null, null, null));
+        for (const logger of loggers) {
             if (typeof logger.log === "function") {
                 this._loggers.push(logger);
             }
@@ -73,7 +73,7 @@ class CompositeLogger extends Logger_1.Logger {
      * @param message           a human-readable message to log.
      */
     write(level, context, error, message) {
-        for (let logger of this._loggers) {
+        for (const logger of this._loggers) {
             logger.log(level, context, error, message);
         }
     }

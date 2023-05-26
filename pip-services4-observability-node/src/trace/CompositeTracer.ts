@@ -47,7 +47,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
     /**
      * Creates a new instance of the tracer.
      * 
-	 * @param references 	references to locate the component dependencies. 
+     * @param references     references to locate the component dependencies. 
      */
     public constructor(references: IReferences = null) {
         if (references != null)
@@ -55,14 +55,14 @@ export class CompositeTracer implements ITracer, IReferenceable {
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
-        let tracers = references.getOptional<ITracer>(new Descriptor(null, "tracer", null, null, null));
+        const tracers = references.getOptional<ITracer>(new Descriptor(null, "tracer", null, null, null));
         for (let i = 0; i < tracers.length; i++) {
-            let tracer: any = tracers[i];
+            const tracer: any = tracers[i];
 
             if (tracer != this)
                 this._tracers.push(tracer);
@@ -78,7 +78,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
      * @param duration          execution duration in milliseconds. 
      */
     public trace(context: IContext, component: string, operation: string, duration: number) : void {
-        for (let tracer of this._tracers) {
+        for (const tracer of this._tracers) {
             tracer.trace(context, component, operation, duration);
         }
     }
@@ -93,7 +93,7 @@ export class CompositeTracer implements ITracer, IReferenceable {
       * @param duration          execution duration in milliseconds. 
       */
     public failure(context: IContext, component: string, operation: string, error: Error, duration: number) : void {
-        for (let tracer of this._tracers) {
+        for (const tracer of this._tracers) {
             tracer.failure(context, component, operation, error, duration);
         }
     }

@@ -55,7 +55,7 @@ export declare class LogTracer implements IConfigurable, IReferenceable, ITracer
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      *
      */
     setReferences(references: IReferences): void;

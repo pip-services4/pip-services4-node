@@ -49,10 +49,10 @@ export class ConsoleLogger extends Logger {
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-	protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
+    protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
         if (this.getLevel() < level) return;
 
-        let result: string = '[';
+        let result = '[';
         result += context != null ? context.getTraceId() : "---";
         result += ':';
         result += LogLevelConverter.toString(level);
@@ -77,6 +77,6 @@ export class ConsoleLogger extends Logger {
         } else {
             console.log(result);
         }
-	}
+    }
 
 }

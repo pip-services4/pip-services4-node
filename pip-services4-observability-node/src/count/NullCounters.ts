@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /** @module count */
 import { CounterTiming } from './CounterTiming';
 import { ICounters } from './ICounters';
@@ -12,69 +14,69 @@ import { ICounters } from './ICounters';
  */
 export class NullCounters implements ICounters {
 
-	/**
-	 * Creates a new instance of the counter.
-	 */
-	public NullCounters() { }
-
-	/**
-	 * Begins measurement of execution time interval.
-	 * It returns [[CounterTiming]] object which has to be called at
-	 * [[CounterTiming.endTiming]] to end the measurement and update the counter.
-	 * 
-	 * @param name 	a counter name of Interval type.
-	 * @returns a [[CounterTiming]] callback object to end timing.
+    /**
+     * Creates a new instance of the counter.
      */
-	public beginTiming(name: string): CounterTiming {
-		return new CounterTiming();
-	}
+    public constructor() { }
 
-	/**
-	 * Calculates min/average/max statistics based on the current and previous values.
-	 * 
-	 * @param name 		a counter name of Statistics type
-	 * @param value		a value to update statistics
-	 */
-	public stats(name: string, value: number): void { }
+    /**
+     * Begins measurement of execution time interval.
+     * It returns [[CounterTiming]] object which has to be called at
+     * [[CounterTiming.endTiming]] to end the measurement and update the counter.
+     * 
+     * @param name     a counter name of Interval type.
+     * @returns a [[CounterTiming]] callback object to end timing.
+     */
+    public beginTiming(name: string): CounterTiming {
+        return new CounterTiming();
+    }
 
-	/**
-	 * Records the last calculated measurement value.
-	 * 
-	 * Usually this method is used by metrics calculated
-	 * externally.
-	 * 
-	 * @param name 		a counter name of Last type.
-	 * @param value		a last value to record.
-	 */
-	public last(name: string, value: number): void { }
+    /**
+     * Calculates min/average/max statistics based on the current and previous values.
+     * 
+     * @param name         a counter name of Statistics type
+     * @param value        a value to update statistics
+     */
+    public stats(name: string, value: number): void { }
 
-	/**
-	 * Records the current time as a timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 */
-	public timestampNow(name: string): void { }
+    /**
+     * Records the last calculated measurement value.
+     * 
+     * Usually this method is used by metrics calculated
+     * externally.
+     * 
+     * @param name         a counter name of Last type.
+     * @param value        a last value to record.
+     */
+    public last(name: string, value: number): void { }
 
-	/**
-	 * Records the given timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 * @param value		a timestamp to record.
-	 */
-	public timestamp(name: string, value: Date): void { }
+    /**
+     * Records the current time as a timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     */
+    public timestampNow(name: string): void { }
 
-	/**
-	 * Increments counter by 1.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 */
-	public incrementOne(name: string): void { }
+    /**
+     * Records the given timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     * @param value        a timestamp to record.
+     */
+    public timestamp(name: string, value: Date): void { }
 
-	/**
-	 * Increments counter by given value.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 * @param value		a value to add to the counter.
-	 */
-	public increment(name: string, value: number): void { }
+    /**
+     * Increments counter by 1.
+     * 
+     * @param name         a counter name of Increment type.
+     */
+    public incrementOne(name: string): void { }
+
+    /**
+     * Increments counter by given value.
+     * 
+     * @param name         a counter name of Increment type.
+     * @param value        a value to add to the counter.
+     */
+    public increment(name: string, value: number): void { }
 }

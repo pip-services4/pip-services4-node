@@ -31,10 +31,10 @@ import { LogLevelConverter } from './LogLevelConverter';
  */
 export abstract class CachedLogger extends Logger {
     protected _cache: LogMessage[] = [];
-    protected _updated: boolean = false;
+    protected _updated = false;
     protected _lastDumpTime: number = new Date().getTime();
-    protected _maxCacheSize: number = 100;
-    protected _interval: number = 10000;
+    protected _maxCacheSize = 100;
+    protected _interval = 10000;
     
     /**
      * Creates a new instance of the logger.
@@ -51,9 +51,9 @@ export abstract class CachedLogger extends Logger {
      * @param error             an error object associated with this message.
      * @param message           a human-readable message to log.
      */
-	protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
-		let errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
-		let logMessage: LogMessage = <LogMessage>{
+    protected write(level: LogLevel, context: IContext, error: Error, message: string): void {
+        const errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
+        const logMessage: LogMessage = <LogMessage>{
             time: new Date(),
             level: LogLevelConverter.toString(level),
             source: this._source,
@@ -61,11 +61,11 @@ export abstract class CachedLogger extends Logger {
             error: errorDesc,
             message: message
         };
-		
+        
         this._cache.push(logMessage);
-		
-		this.update();
-	}
+        
+        this.update();
+    }
 
     /**
      * Saves log messages from the cache.
@@ -92,7 +92,7 @@ export abstract class CachedLogger extends Logger {
      */
     public clear(): void {
         this._cache = [];
-	    this._updated = false;
+        this._updated = false;
     }
 
     /**
@@ -104,7 +104,7 @@ export abstract class CachedLogger extends Logger {
         if (this._updated) {
             if (!this._updated) return;
             
-            let messages = this._cache;
+            const messages = this._cache;
             this._cache = [];
             
             this.save(messages)
@@ -114,10 +114,12 @@ export abstract class CachedLogger extends Logger {
                 this._cache = messages;
 
                 // Truncate cache
-                let deleteCount = this._cache.length - this._maxCacheSize;
+                const deleteCount = this._cache.length - this._maxCacheSize;
                 if (deleteCount > 0) {
                     this._cache.splice(0, deleteCount);
                 }
+                
+                console.error(err);
             });
 
             this._updated = false;
@@ -132,11 +134,11 @@ export abstract class CachedLogger extends Logger {
      * @see [[dump]]
      */
     protected update(): void {
-    	this._updated = true;
-    	let now = new Date().getTime();
+        this._updated = true;
+        const now = new Date().getTime();
 
-    	if (now > this._lastDumpTime + this._interval) {
+        if (now > this._lastDumpTime + this._interval) {
             this.dump();
-    	}
+        }
     }
 }

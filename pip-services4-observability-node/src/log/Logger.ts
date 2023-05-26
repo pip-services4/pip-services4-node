@@ -1,6 +1,6 @@
 /** @module log */
 /** @hidden */ 
-let util = require('util');
+import util = require('util');
 
 import { IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
@@ -38,7 +38,9 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     /**
      * Creates a new instance of the logger.
      */
-    protected constructor() { }
+    protected constructor() { 
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -54,12 +56,12 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences) {
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "*", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
@@ -222,11 +224,11 @@ export abstract class Logger implements ILogger, IReconfigurable, IReferenceable
      * @returns a human-reable error description.
      */
     protected composeError(error: Error): string {
-        let builder: string = "";
+        let builder = "";
 
         builder += error.message;
 
-        let appError: any = error;
+        const appError: any = error;
         if (appError.cause) {
             builder += " Caused by: ";
             builder += appError.cause;

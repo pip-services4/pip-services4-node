@@ -45,8 +45,8 @@ class CachedLogger extends Logger_1.Logger {
      * @param message           a human-readable message to log.
      */
     write(level, context, error, message) {
-        let errorDesc = error != null ? pip_services4_commons_node_1.ErrorDescriptionFactory.create(error) : null;
-        let logMessage = {
+        const errorDesc = error != null ? pip_services4_commons_node_1.ErrorDescriptionFactory.create(error) : null;
+        const logMessage = {
             time: new Date(),
             level: LogLevelConverter_1.LogLevelConverter.toString(level),
             source: this._source,
@@ -83,7 +83,7 @@ class CachedLogger extends Logger_1.Logger {
         if (this._updated) {
             if (!this._updated)
                 return;
-            let messages = this._cache;
+            const messages = this._cache;
             this._cache = [];
             this.save(messages)
                 .catch((err) => {
@@ -91,10 +91,11 @@ class CachedLogger extends Logger_1.Logger {
                 messages.push(...this._cache);
                 this._cache = messages;
                 // Truncate cache
-                let deleteCount = this._cache.length - this._maxCacheSize;
+                const deleteCount = this._cache.length - this._maxCacheSize;
                 if (deleteCount > 0) {
                     this._cache.splice(0, deleteCount);
                 }
+                console.error(err);
             });
             this._updated = false;
             this._lastDumpTime = new Date().getTime();
@@ -108,7 +109,7 @@ class CachedLogger extends Logger_1.Logger {
      */
     update() {
         this._updated = true;
-        let now = new Date().getTime();
+        const now = new Date().getTime();
         if (now > this._lastDumpTime + this._interval) {
             this.dump();
         }

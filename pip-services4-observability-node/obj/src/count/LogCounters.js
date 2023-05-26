@@ -40,18 +40,17 @@ const CompositeLogger_1 = require("../log/CompositeLogger");
  *     counters.dump();
  */
 class LogCounters extends CachedCounters_1.CachedCounters {
-    constructor() {
-        super(...arguments);
-        this._logger = new CompositeLogger_1.CompositeLogger();
-    }
     /**
      * Creates a new instance of the counters.
      */
-    LogCounters() { }
+    constructor() {
+        super();
+        this._logger = new CompositeLogger_1.CompositeLogger();
+    }
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      *
      */
     setReferences(references) {

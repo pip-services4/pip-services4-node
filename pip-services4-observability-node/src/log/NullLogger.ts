@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /** @module log */
 
 import { IContext } from 'pip-services4-components-node';
@@ -15,27 +17,27 @@ import { LogLevel } from './LogLevel';
  */
 export class NullLogger implements ILogger {
 
-	/**
-	 * Creates a new instance of the logger.
-	 */
-	public constructor() { }
+    /**
+     * Creates a new instance of the logger.
+     */
+    public constructor() { }
 
-	/**
+    /**
      * Gets the maximum log level. 
      * Messages with higher log level are filtered out.
      * 
      * @returns the maximum log level.
      */
-	public getLevel(): LogLevel { return LogLevel.None; }
+    public getLevel(): LogLevel { return LogLevel.None; }
 
-	/**
+    /**
      * Set the maximum log level.
      * 
      * @param value     a new maximum log level.
      */
-	public setLevel(value: LogLevel): void { }
+    public setLevel(value: LogLevel): void { }
 
-	/**
+    /**
      * Logs a message at specified log level.
      * 
      * @param level             a log level.
@@ -44,9 +46,9 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public log(level: LogLevel, context: IContext, error: Error, message: string, ...args: any[]): void { }
+    public log(level: LogLevel, context: IContext, error: Error, message: string, ...args: any[]): void { }
 
-	/**
+    /**
      * Logs fatal (unrecoverable) message that caused the process to crash.
      * 
      * @param context     (optional) a context to trace execution through call chain.
@@ -54,7 +56,7 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public fatal(context: IContext, error: Error, message: string, ...args: any[]): void { }
+    public fatal(context: IContext, error: Error, message: string, ...args: any[]): void { }
 
     /**
      * Logs recoverable application error.
@@ -64,7 +66,7 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public error(context: IContext, error: Error, message: string, ...args: any[]): void { }
+    public error(context: IContext, error: Error, message: string, ...args: any[]): void { }
 
     /**
      * Logs a warning that may or may not have a negative impact.
@@ -73,7 +75,7 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public warn(context: IContext, message: string, ...args: any[]): void { }
+    public warn(context: IContext, message: string, ...args: any[]): void { }
 
     /**
      * Logs an important information message
@@ -82,7 +84,7 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public info(context: IContext, message: string, ...args: any[]): void { }
+    public info(context: IContext, message: string, ...args: any[]): void { }
 
     /**
      * Logs a high-level debug information for troubleshooting.
@@ -91,8 +93,8 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public debug(context: IContext, message: string, ...args: any[]): void { }
-	
+    public debug(context: IContext, message: string, ...args: any[]): void { }
+    
     /**
      * Logs a low-level debug information for troubleshooting. 
      * 
@@ -100,5 +102,5 @@ export class NullLogger implements ILogger {
      * @param message           a human-readable message to log.
      * @param args              arguments to parameterize the message. 
      */
-	public trace(context: IContext, message: string, ...args: any[]): void { }
+    public trace(context: IContext, message: string, ...args: any[]): void { }
 }

@@ -48,13 +48,15 @@ export class LogCounters extends CachedCounters implements IReferenceable {
     /**
      * Creates a new instance of the counters.
      */
-    public LogCounters() { }
+    public constructor() { 
+        super();
+    }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
-	 * 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
+     * 
      */
     public setReferences(references: IReferences): void {
         this._logger.setReferences(references);

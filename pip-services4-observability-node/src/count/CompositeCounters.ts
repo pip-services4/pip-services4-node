@@ -46,7 +46,7 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     /**
      * Creates a new instance of the counters.
      * 
-	 * @param references 	references to locate the component dependencies. 
+     * @param references     references to locate the component dependencies. 
      */
     public CompositeCounters(references: IReferences = null) {
         if (references != null) {
@@ -55,14 +55,14 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
-        let counters = references.getOptional<ICounters>(new Descriptor(null, "counters", null, null, null));
+        const counters = references.getOptional<ICounters>(new Descriptor(null, "counters", null, null, null));
         for (let i = 0; i < counters.length; i++) {
-            let counter: ICounters = counters[i];
+            const counter: ICounters = counters[i];
 
             if (counter != this as ICounters) {
                 this._counters.push(counter);
@@ -71,12 +71,12 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Begins measurement of execution time interval.
-	 * It returns [[CounterTiming]] object which has to be called at
-	 * [[CounterTiming.endTiming]] to end the measurement and update the counter.
-	 * 
-	 * @param name 	a counter name of Interval type.
-	 * @returns a [[CounterTiming]] callback object to end timing.
+     * Begins measurement of execution time interval.
+     * It returns [[CounterTiming]] object which has to be called at
+     * [[CounterTiming.endTiming]] to end the measurement and update the counter.
+     * 
+     * @param name     a counter name of Interval type.
+     * @returns a [[CounterTiming]] callback object to end timing.
      */
     public beginTiming(name: string): CounterTiming {
         return new CounterTiming(name, this);
@@ -92,8 +92,8 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
      */
     public endTiming(name: string, elapsed: number): void {
         for (let i = 0; i < this._counters.length; i++) {
-            let counter: any = this._counters[i];
-            let callback = counter as ICounterTimingCallback;
+            const counter: any = this._counters[i];
+            const callback = counter as ICounterTimingCallback;
             if (callback != null) {
                 callback.endTiming(name, elapsed);
             }
@@ -101,11 +101,11 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Calculates min/average/max statistics based on the current and previous values.
-	 * 
-	 * @param name 		a counter name of Statistics type
-	 * @param value		a value to update statistics
-	 */
+     * Calculates min/average/max statistics based on the current and previous values.
+     * 
+     * @param name         a counter name of Statistics type
+     * @param value        a value to update statistics
+     */
     public stats(name: string, value: number): void {
         for (let i = 0; i < this._counters.length; i++) {
             this._counters[i].stats(name, value);
@@ -113,14 +113,14 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Records the last calculated measurement value.
-	 * 
-	 * Usually this method is used by metrics calculated
-	 * externally.
-	 * 
-	 * @param name 		a counter name of Last type.
-	 * @param value		a last value to record.
-	 */
+     * Records the last calculated measurement value.
+     * 
+     * Usually this method is used by metrics calculated
+     * externally.
+     * 
+     * @param name         a counter name of Last type.
+     * @param value        a last value to record.
+     */
     public last(name: string, value: number): void {
         for (let i = 0; i < this._counters.length; i++) {
             this._counters[i].last(name, value);
@@ -128,20 +128,20 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Records the current time as a timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 */
+     * Records the current time as a timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     */
     public timestampNow(name: string): void {
         this.timestamp(name, new Date());
     }
 
     /**
-	 * Records the given timestamp.
-	 * 
-	 * @param name 		a counter name of Timestamp type.
-	 * @param value		a timestamp to record.
-	 */
+     * Records the given timestamp.
+     * 
+     * @param name         a counter name of Timestamp type.
+     * @param value        a timestamp to record.
+     */
     public timestamp(name: string, value: Date): void {
         for (let i = 0; i < this._counters.length; i++) {
             this._counters[i].timestamp(name, value);
@@ -149,20 +149,20 @@ export class CompositeCounters implements ICounters, ICounterTimingCallback, IRe
     }
 
     /**
-	 * Increments counter by 1.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 */
+     * Increments counter by 1.
+     * 
+     * @param name         a counter name of Increment type.
+     */
     public incrementOne(name: string): void {
         this.increment(name, 1);
     }
 
     /**
-	 * Increments counter by given value.
-	 * 
-	 * @param name 		a counter name of Increment type.
-	 * @param value		a value to add to the counter.
-	 */
+     * Increments counter by given value.
+     * 
+     * @param name         a counter name of Increment type.
+     * @param value        a value to add to the counter.
+     */
     public increment(name: string, value: number): void {
         if (name == null || name == "") {
             throw new Error("Name cannot be null");

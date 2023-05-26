@@ -34,15 +34,17 @@ import { OperationTrace } from './OperationTrace';
 export abstract class CachedTracer implements ITracer, IReconfigurable, IReferenceable {
     protected _source: string = null;
     protected _cache: OperationTrace[] = [];
-    protected _updated: boolean = false;
+    protected _updated = false;
     protected _lastDumpTime: number = new Date().getTime();
-    protected _maxCacheSize: number = 100;
-    protected _interval: number = 10000;
+    protected _maxCacheSize = 100;
+    protected _interval = 10000;
     
     /**
      * Creates a new instance of the logger.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -56,12 +58,12 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
      public setReferences(references: IReferences) {
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "*", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
@@ -77,13 +79,13 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
       * @param error             an error object associated with this trace.
       * @param duration          execution duration in milliseconds. 
      */
-	protected write(context: IContext, component: string, operation: string, error: Error, duration: number): void {
-		let errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
+    protected write(context: IContext, component: string, operation: string, error: Error, duration: number): void {
+        const errorDesc: ErrorDescription = error != null ? ErrorDescriptionFactory.create(error) : null;
 
         // Account for cases when component and operation are combined in component.
         if (operation == null || operation == "") {
             if (component != null && component != "")  {
-                let pos = component.lastIndexOf(".");
+                const pos = component.lastIndexOf(".");
                 if (pos > 0) {
                     operation = component.substring(pos + 1);
                     component = component.substring(0, pos);
@@ -91,7 +93,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
             } 
         }
 
-        let trace: OperationTrace = <OperationTrace>{
+        const trace: OperationTrace = <OperationTrace>{
             time: new Date(),
             source: this._source,
             component: component, 
@@ -100,11 +102,11 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
             duration: duration,
             error: errorDesc
         };
-		
+        
         this._cache.push(trace);
-		
-		this.update();
-	}
+        
+        this.update();
+    }
 
     /**
      * Records an operation trace with its name and duration
@@ -156,7 +158,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
      */
     public clear(): void {
         this._cache = [];
-	    this._updated = false;
+        this._updated = false;
     }
 
     /**
@@ -168,7 +170,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
         if (this._updated) {
             if (!this._updated) return;
             
-            let traces = this._cache;
+            const traces = this._cache;
             this._cache = [];
             
             this.save(traces, (err) => {
@@ -178,7 +180,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
                     this._cache = traces;
 
                     // Truncate cache
-                    let deleteCount = this._cache.length - this._maxCacheSize;
+                    const deleteCount = this._cache.length - this._maxCacheSize;
                     if (deleteCount > 0)
                         this._cache.splice(0, deleteCount);
                 }
@@ -196,15 +198,15 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
      * @see [[dump]]
      */
     protected update(): void {
-    	this._updated = true;
-    	let now = new Date().getTime();
+        this._updated = true;
+        const now = new Date().getTime();
 
-    	if (now > this._lastDumpTime + this._interval) {
-    		try {
-    			this.dump();
-    		} catch (ex) {
-    			// Todo: decide what to do
-    		}
-    	}
+        if (now > this._lastDumpTime + this._interval) {
+            try {
+                this.dump();
+            } catch (ex) {
+                // Todo: decide what to do
+            }
+        }
     }
 }

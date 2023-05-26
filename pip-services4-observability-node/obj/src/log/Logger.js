@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logger = void 0;
 /** @module log */
 /** @hidden */
-let util = require('util');
+const util = require("util");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
 const LogLevel_1 = require("./LogLevel");
 const LogLevelConverter_1 = require("./LogLevelConverter");
@@ -31,6 +31,7 @@ class Logger {
     constructor() {
         this._level = LogLevel_1.LogLevel.Info;
         this._source = null;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -44,10 +45,10 @@ class Logger {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
-        let contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
         }
@@ -187,7 +188,7 @@ class Logger {
     composeError(error) {
         let builder = "";
         builder += error.message;
-        let appError = error;
+        const appError = error;
         if (appError.cause) {
             builder += " Caused by: ";
             builder += appError.cause;

@@ -51,7 +51,9 @@ export class LogTracer implements IConfigurable, IReferenceable, ITracer {
     /**
      * Creates a new instance of the tracer.
      */
-    public constructor() { }
+    public constructor() { 
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -66,10 +68,10 @@ export class LogTracer implements IConfigurable, IReferenceable, ITracer {
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
-	 * 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
+     * 
      */
     public setReferences(references: IReferences): void {
         this._logger.setReferences(references);

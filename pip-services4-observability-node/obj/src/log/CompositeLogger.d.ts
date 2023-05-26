@@ -11,7 +11,7 @@ import { LogLevel } from './LogLevel';
  *
  * ### References ###
  *
- * - <code>\*:logger:\*:\*:1.0</code> 	(optional) [[ILogger]] components to pass log messages
+ * - <code>\*:logger:\*:\*:1.0</code>     (optional) [[ILogger]] components to pass log messages
  *
  * @see [[ILogger]]
  *
@@ -42,13 +42,13 @@ export declare class CompositeLogger extends Logger implements IReferenceable {
     /**
      * Creates a new instance of the logger.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     constructor(references?: IReferences);
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references: IReferences): void;
     /**

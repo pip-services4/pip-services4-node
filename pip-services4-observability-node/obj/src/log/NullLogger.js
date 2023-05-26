@@ -1,4 +1,6 @@
 "use strict";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /** @module log */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NullLogger = void 0;

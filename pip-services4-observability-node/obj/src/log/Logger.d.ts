@@ -38,7 +38,7 @@ export declare abstract class Logger implements ILogger, IReconfigurable, IRefer
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references: IReferences): void;
     /**

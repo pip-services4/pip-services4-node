@@ -43,11 +43,11 @@ export declare class LogCounters extends CachedCounters implements IReferenceabl
     /**
      * Creates a new instance of the counters.
      */
-    LogCounters(): void;
+    constructor();
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      *
      */
     setReferences(references: IReferences): void;

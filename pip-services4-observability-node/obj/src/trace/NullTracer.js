@@ -1,4 +1,6 @@
 "use strict";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /** @module trace */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NullTracer = void 0;

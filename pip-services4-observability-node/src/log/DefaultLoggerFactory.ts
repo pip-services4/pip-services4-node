@@ -15,17 +15,17 @@ import { CompositeLogger } from './CompositeLogger';
  * @see [[CompositeLogger]]
  */
 export class DefaultLoggerFactory extends Factory {
-	private static readonly NullLoggerDescriptor = new Descriptor("pip-services", "logger", "null", "*", "1.0");
-	private static readonly ConsoleLoggerDescriptor = new Descriptor("pip-services", "logger", "console", "*", "1.0");
-	private static readonly CompositeLoggerDescriptor = new Descriptor("pip-services", "logger", "composite", "*", "1.0");
+    private static readonly NullLoggerDescriptor = new Descriptor("pip-services", "logger", "null", "*", "1.0");
+    private static readonly ConsoleLoggerDescriptor = new Descriptor("pip-services", "logger", "console", "*", "1.0");
+    private static readonly CompositeLoggerDescriptor = new Descriptor("pip-services", "logger", "composite", "*", "1.0");
 
-	/**
-	 * Create a new instance of the factory.
-	 */
-	public constructor() {
+    /**
+     * Create a new instance of the factory.
+     */
+    public constructor() {
         super();
-		this.registerAsType(DefaultLoggerFactory.NullLoggerDescriptor, NullLogger);
-		this.registerAsType(DefaultLoggerFactory.ConsoleLoggerDescriptor, ConsoleLogger);
-		this.registerAsType(DefaultLoggerFactory.CompositeLoggerDescriptor, CompositeLogger);
-	}
+        this.registerAsType(DefaultLoggerFactory.NullLoggerDescriptor, NullLogger);
+        this.registerAsType(DefaultLoggerFactory.ConsoleLoggerDescriptor, ConsoleLogger);
+        this.registerAsType(DefaultLoggerFactory.CompositeLoggerDescriptor, CompositeLogger);
+    }
 }

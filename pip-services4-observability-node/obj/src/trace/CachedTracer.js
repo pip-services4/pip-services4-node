@@ -33,6 +33,7 @@ class CachedTracer {
         this._lastDumpTime = new Date().getTime();
         this._maxCacheSize = 100;
         this._interval = 10000;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -47,10 +48,10 @@ class CachedTracer {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
-        let contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
         }
@@ -65,18 +66,18 @@ class CachedTracer {
       * @param duration          execution duration in milliseconds.
      */
     write(context, component, operation, error, duration) {
-        let errorDesc = error != null ? pip_services4_commons_node_1.ErrorDescriptionFactory.create(error) : null;
+        const errorDesc = error != null ? pip_services4_commons_node_1.ErrorDescriptionFactory.create(error) : null;
         // Account for cases when component and operation are combined in component.
         if (operation == null || operation == "") {
             if (component != null && component != "") {
-                let pos = component.lastIndexOf(".");
+                const pos = component.lastIndexOf(".");
                 if (pos > 0) {
                     operation = component.substring(pos + 1);
                     component = component.substring(0, pos);
                 }
             }
         }
-        let trace = {
+        const trace = {
             time: new Date(),
             source: this._source,
             component: component,
@@ -138,7 +139,7 @@ class CachedTracer {
         if (this._updated) {
             if (!this._updated)
                 return;
-            let traces = this._cache;
+            const traces = this._cache;
             this._cache = [];
             this.save(traces, (err) => {
                 if (err) {
@@ -146,7 +147,7 @@ class CachedTracer {
                     traces.push(...this._cache);
                     this._cache = traces;
                     // Truncate cache
-                    let deleteCount = this._cache.length - this._maxCacheSize;
+                    const deleteCount = this._cache.length - this._maxCacheSize;
                     if (deleteCount > 0)
                         this._cache.splice(0, deleteCount);
                 }
@@ -163,7 +164,7 @@ class CachedTracer {
      */
     update() {
         this._updated = true;
-        let now = new Date().getTime();
+        const now = new Date().getTime();
         if (now > this._lastDumpTime + this._interval) {
             try {
                 this.dump();

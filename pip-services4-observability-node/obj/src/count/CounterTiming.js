@@ -19,8 +19,8 @@ class CounterTiming {
     /**
      * Creates a new instance of the timing callback object.
      *
-     * @param counter 		an associated counter name
-     * @param callback 		a callback that shall be called when endTiming is called.
+     * @param counter         an associated counter name
+     * @param callback         a callback that shall be called when endTiming is called.
      */
     constructor(counter = null, callback = null) {
         this._counter = counter;
@@ -33,7 +33,7 @@ class CounterTiming {
      */
     endTiming() {
         if (this._callback != null) {
-            let elapsed = new Date().getTime() - this._start;
+            const elapsed = new Date().getTime() - this._start;
             this._callback.endTiming(this._counter, elapsed);
         }
     }

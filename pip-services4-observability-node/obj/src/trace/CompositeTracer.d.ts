@@ -42,13 +42,13 @@ export declare class CompositeTracer implements ITracer, IReferenceable {
     /**
      * Creates a new instance of the tracer.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     constructor(references?: IReferences);
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references: IReferences): void;
     /**

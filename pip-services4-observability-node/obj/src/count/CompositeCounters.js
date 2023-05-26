@@ -43,7 +43,7 @@ class CompositeCounters {
     /**
      * Creates a new instance of the counters.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     CompositeCounters(references = null) {
         if (references != null) {
@@ -53,12 +53,12 @@ class CompositeCounters {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
-        let counters = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "counters", null, null, null));
+        const counters = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "counters", null, null, null));
         for (let i = 0; i < counters.length; i++) {
-            let counter = counters[i];
+            const counter = counters[i];
             if (counter != this) {
                 this._counters.push(counter);
             }
@@ -69,7 +69,7 @@ class CompositeCounters {
      * It returns [[CounterTiming]] object which has to be called at
      * [[CounterTiming.endTiming]] to end the measurement and update the counter.
      *
-     * @param name 	a counter name of Interval type.
+     * @param name     a counter name of Interval type.
      * @returns a [[CounterTiming]] callback object to end timing.
      */
     beginTiming(name) {
@@ -85,8 +85,8 @@ class CompositeCounters {
      */
     endTiming(name, elapsed) {
         for (let i = 0; i < this._counters.length; i++) {
-            let counter = this._counters[i];
-            let callback = counter;
+            const counter = this._counters[i];
+            const callback = counter;
             if (callback != null) {
                 callback.endTiming(name, elapsed);
             }
@@ -95,8 +95,8 @@ class CompositeCounters {
     /**
      * Calculates min/average/max statistics based on the current and previous values.
      *
-     * @param name 		a counter name of Statistics type
-     * @param value		a value to update statistics
+     * @param name         a counter name of Statistics type
+     * @param value        a value to update statistics
      */
     stats(name, value) {
         for (let i = 0; i < this._counters.length; i++) {
@@ -109,8 +109,8 @@ class CompositeCounters {
      * Usually this method is used by metrics calculated
      * externally.
      *
-     * @param name 		a counter name of Last type.
-     * @param value		a last value to record.
+     * @param name         a counter name of Last type.
+     * @param value        a last value to record.
      */
     last(name, value) {
         for (let i = 0; i < this._counters.length; i++) {
@@ -120,7 +120,7 @@ class CompositeCounters {
     /**
      * Records the current time as a timestamp.
      *
-     * @param name 		a counter name of Timestamp type.
+     * @param name         a counter name of Timestamp type.
      */
     timestampNow(name) {
         this.timestamp(name, new Date());
@@ -128,8 +128,8 @@ class CompositeCounters {
     /**
      * Records the given timestamp.
      *
-     * @param name 		a counter name of Timestamp type.
-     * @param value		a timestamp to record.
+     * @param name         a counter name of Timestamp type.
+     * @param value        a timestamp to record.
      */
     timestamp(name, value) {
         for (let i = 0; i < this._counters.length; i++) {
@@ -139,7 +139,7 @@ class CompositeCounters {
     /**
      * Increments counter by 1.
      *
-     * @param name 		a counter name of Increment type.
+     * @param name         a counter name of Increment type.
      */
     incrementOne(name) {
         this.increment(name, 1);
@@ -147,8 +147,8 @@ class CompositeCounters {
     /**
      * Increments counter by given value.
      *
-     * @param name 		a counter name of Increment type.
-     * @param value		a value to add to the counter.
+     * @param name         a counter name of Increment type.
+     * @param value        a value to add to the counter.
      */
     increment(name, value) {
         if (name == null || name == "") {

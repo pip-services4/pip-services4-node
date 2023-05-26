@@ -41,7 +41,7 @@ class CompositeTracer {
     /**
      * Creates a new instance of the tracer.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     constructor(references = null) {
         this._tracers = [];
@@ -51,12 +51,12 @@ class CompositeTracer {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
-        let tracers = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "tracer", null, null, null));
+        const tracers = references.getOptional(new pip_services4_components_node_1.Descriptor(null, "tracer", null, null, null));
         for (let i = 0; i < tracers.length; i++) {
-            let tracer = tracers[i];
+            const tracer = tracers[i];
             if (tracer != this)
                 this._tracers.push(tracer);
         }
@@ -70,7 +70,7 @@ class CompositeTracer {
      * @param duration          execution duration in milliseconds.
      */
     trace(context, component, operation, duration) {
-        for (let tracer of this._tracers) {
+        for (const tracer of this._tracers) {
             tracer.trace(context, component, operation, duration);
         }
     }
@@ -84,7 +84,7 @@ class CompositeTracer {
      * @param duration          execution duration in milliseconds.
      */
     failure(context, component, operation, error, duration) {
-        for (let tracer of this._tracers) {
+        for (const tracer of this._tracers) {
             tracer.failure(context, component, operation, error, duration);
         }
     }

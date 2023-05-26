@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /** @module trace */
 
 import { IContext } from 'pip-services4-components-node';
@@ -14,10 +16,10 @@ import { ITracer } from './ITracer';
  * @see [[ITracer]]
  */
 export class NullTracer implements ITracer {
-	/**
-	 * Creates a new instance of the tracer.
-	 */
-	public NullTracer() { }
+    /**
+     * Creates a new instance of the tracer.
+     */
+    public NullTracer() { }
 
     /**
      * Records an operation trace with its name and duration

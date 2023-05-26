@@ -45,6 +45,7 @@ class LogTracer {
     constructor() {
         this._logger = new CompositeLogger_1.CompositeLogger();
         this._logLevel = LogLevel_1.LogLevel.Debug;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -57,7 +58,7 @@ class LogTracer {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      *
      */
     setReferences(references) {

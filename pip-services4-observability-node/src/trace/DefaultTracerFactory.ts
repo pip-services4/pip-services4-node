@@ -15,17 +15,17 @@ import { CompositeTracer } from './CompositeTracer';
  * @see [[CompositeTracer]]
  */
 export class DefaultTracerFactory extends Factory {
-	private static readonly NullTracerDescriptor = new Descriptor("pip-services", "tracer", "null", "*", "1.0");
-	private static readonly LogTracerDescriptor = new Descriptor("pip-services", "tracer", "log", "*", "1.0");
-	private static readonly CompositeTracerDescriptor = new Descriptor("pip-services", "tracer", "composite", "*", "1.0");
+    private static readonly NullTracerDescriptor = new Descriptor("pip-services", "tracer", "null", "*", "1.0");
+    private static readonly LogTracerDescriptor = new Descriptor("pip-services", "tracer", "log", "*", "1.0");
+    private static readonly CompositeTracerDescriptor = new Descriptor("pip-services", "tracer", "composite", "*", "1.0");
 
-	/**
-	 * Create a new instance of the factory.
-	 */
-	public constructor() {
+    /**
+     * Create a new instance of the factory.
+     */
+    public constructor() {
         super();
-		this.registerAsType(DefaultTracerFactory.NullTracerDescriptor, NullTracer);
-		this.registerAsType(DefaultTracerFactory.LogTracerDescriptor, LogTracer);
-		this.registerAsType(DefaultTracerFactory.CompositeTracerDescriptor, CompositeTracer);
-	}
+        this.registerAsType(DefaultTracerFactory.NullTracerDescriptor, NullTracer);
+        this.registerAsType(DefaultTracerFactory.LogTracerDescriptor, LogTracer);
+        this.registerAsType(DefaultTracerFactory.CompositeTracerDescriptor, CompositeTracer);
+    }
 }

@@ -26,9 +26,9 @@ export declare class TraceTiming {
      * Creates a new instance of the timing callback object.
      *
      * @param context     (optional) a context to trace execution through call chain.
-     * @param component 	an associated component name
-     * @param operation 	an associated operation name
-     * @param callback 		a callback that shall be called when endTiming is called.
+     * @param component     an associated component name
+     * @param operation     an associated operation name
+     * @param callback         a callback that shall be called when endTiming is called.
      */
     constructor(context: IContext, component: string, operation: string, tracer?: ITracer);
     /**
