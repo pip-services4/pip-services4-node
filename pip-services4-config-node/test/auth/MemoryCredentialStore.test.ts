@@ -32,7 +32,7 @@ suite('MemoryCredentialStore', ()=> {
 			'access_id', '123'
 		);
 
-		await credentialStore.store(new Context(), 'key3', credConfig);
+		await credentialStore.store(null, 'key3', credConfig);
 
 		let cred3 = await credentialStore.lookup(Context.fromTraceId("context"), 'key3');
 

@@ -26,7 +26,7 @@ suite('MemoryDiscovery', () => {
         assert.equal("10.1.1.101", connection.getHost());
         assert.equal(8082, connection.getPort());
         // Resolve all
-        discovery.register(new pip_services4_components_node_1.Context(), "key1", ConnectionParams_1.ConnectionParams.fromTuples("host", "10.3.3.151"));
+        discovery.register(null, "key1", ConnectionParams_1.ConnectionParams.fromTuples("host", "10.3.3.151"));
         let connections = yield discovery.resolveAll(pip_services4_components_node_1.Context.fromTraceId("context"), "key1");
         assert.isTrue(connections.length > 1);
     }));

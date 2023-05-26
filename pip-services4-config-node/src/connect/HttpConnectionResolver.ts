@@ -93,10 +93,10 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             );
         }
 
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) return;
 
-        let protocol: string = connection.getProtocolWithDefault("http");
+        const protocol: string = connection.getProtocolWithDefault("http");
         if ("http" != protocol && "https" != protocol) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -105,7 +105,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             ).withDetails("protocol", protocol);
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -114,7 +114,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             );
         }
 
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -145,7 +145,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
                         );
                     } else if (credential.getAsNullableString('ssl_crt_file') == null) {
                         throw new ConfigException(
-                            context.getTraceId(),
+                            context != null ? context.getTraceId() : null,
                             "NO_SSL_CRT_FILE",
                             "SSL crt file is not configured in credentials"
                         );
@@ -161,9 +161,9 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         let uri = connection.getAsString("uri");
 
         if (uri == null || uri == "") {
-            let protocol = connection.getAsStringWithDefault("protocol", "http");
-            let host = connection.getAsString("host");
-            let port = connection.getAsInteger("port");
+            const protocol = connection.getAsStringWithDefault("protocol", "http");
+            const host = connection.getAsString("host");
+            const port = connection.getAsInteger("port");
 
             uri = protocol + "://" + host;
             if (port > 0) {
@@ -171,8 +171,8 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             }
             connection.setAsObject("uri", uri);
         } else {
-            let address = url.parse(uri);
-            let protocol = ("" + address.protocol).replace(':', '');
+            const address = url.parse(uri);
+            const protocol = ("" + address.protocol).replace(':', '');
 
             connection.setAsObject("protocol", protocol);
             connection.setAsObject("host", address.hostname);
@@ -196,8 +196,8 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      * @returns 			    a resolved connection options
      */
     public async resolve(context: IContext): Promise<ConfigParams> {
-        let connection = await this._connectionResolver.resolve(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connection = await this._connectionResolver.resolve(context);
+        const credential = await this._credentialResolver.lookup(context);
         this.validateConnection(context, connection, credential);
         return this.composeConnection([connection], credential);
     }
@@ -211,10 +211,10 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      */
     public async resolveAll(context: IContext): Promise<ConfigParams> {
         let connections = await this._connectionResolver.resolveAll(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
 
         connections = connections || [];
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection, credential);
         }
         
@@ -229,8 +229,8 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
      * @param connection        a connection to register.
      */
     public async register(context: IContext): Promise<void> {
-        let connection = await this._connectionResolver.resolve(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connection = await this._connectionResolver.resolve(context);
+        const credential = await this._credentialResolver.lookup(context);
 
         // Validate connection
         this.validateConnection(context, connection, credential);

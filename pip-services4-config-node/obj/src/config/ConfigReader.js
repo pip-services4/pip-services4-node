@@ -20,6 +20,7 @@ class ConfigReader {
      */
     constructor() {
         this._parameters = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -27,7 +28,7 @@ class ConfigReader {
      * @param config    configuration parameters to be set.
      */
     configure(config) {
-        let parameters = config.getSection("parameters");
+        const parameters = config.getSection("parameters");
         if (parameters.length() > 0) {
             this._parameters = parameters;
         }
@@ -43,13 +44,14 @@ class ConfigReader {
      */
     parameterize(config, parameters) {
         parameters = this._parameters.override(parameters);
-        let template = new pip_services4_expressions_node_1.MustacheTemplate(config);
+        const template = new pip_services4_expressions_node_1.MustacheTemplate(config);
         return template.evaluateWithVariables(parameters);
     }
     /**
      * Adds a listener that will be notified when configuration is changed
      * @param listener a listener to be added.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     addChangeListener(listener) {
         // Do nothing...
     }
@@ -57,6 +59,7 @@ class ConfigReader {
      * Remove a previously added change listener.
      * @param listener a listener to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeChangeListener(listener) {
         // Do nothing...
     }

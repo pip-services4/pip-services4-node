@@ -79,7 +79,7 @@ class ConnectionResolver {
      * @param config    configuration parameters to be set.
      */
     configure(config) {
-        let connections = ConnectionParams_1.ConnectionParams.manyFromConfig(config);
+        const connections = ConnectionParams_1.ConnectionParams.manyFromConfig(config);
         this._connections.push(...connections);
     }
     /**
@@ -114,18 +114,18 @@ class ConnectionResolver {
             if (!connection.useDiscovery()) {
                 return null;
             }
-            let key = connection.getDiscoveryKey();
+            const key = connection.getDiscoveryKey();
             if (this._references == null) {
                 return null;
             }
-            let discoveryDescriptor = new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*");
-            let discoveries = this._references.getOptional(discoveryDescriptor);
+            const discoveryDescriptor = new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*");
+            const discoveries = this._references.getOptional(discoveryDescriptor);
             if (discoveries.length == 0) {
                 throw new pip_services4_components_node_2.ReferenceException(context, discoveryDescriptor);
             }
-            for (let discovery of discoveries) {
-                let discoveryTyped = discovery;
-                let result = yield discoveryTyped.resolveOne(context, key);
+            for (const discovery of discoveries) {
+                const discoveryTyped = discovery;
+                const result = yield discoveryTyped.resolveOne(context, key);
                 if (result != null) {
                     return result;
                 }
@@ -147,8 +147,8 @@ class ConnectionResolver {
             if (this._connections.length == 0) {
                 return null;
             }
-            let connections = [];
-            for (let connection of this._connections) {
+            const connections = [];
+            for (const connection of this._connections) {
                 if (!connection.useDiscovery()) {
                     return connection; //If a connection is not configured for discovery use - return it.
                 }
@@ -160,8 +160,8 @@ class ConnectionResolver {
                 return null;
             }
             let resolved = null;
-            for (let connection of connections) {
-                let result = yield this.resolveInDiscovery(context, connection);
+            for (const connection of connections) {
+                const result = yield this.resolveInDiscovery(context, connection);
                 if (result != null) {
                     resolved = new ConnectionParams_1.ConnectionParams(pip_services4_components_node_1.ConfigParams.mergeConfigs(connection, result));
                 }
@@ -172,21 +172,21 @@ class ConnectionResolver {
     resolveAllInDiscovery(context, connection) {
         return __awaiter(this, void 0, void 0, function* () {
             let resolved = [];
-            let key = connection.getDiscoveryKey();
+            const key = connection.getDiscoveryKey();
             if (!connection.useDiscovery()) {
                 return [];
             }
             if (this._references == null) {
                 return [];
             }
-            let discoveryDescriptor = new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*");
-            let discoveries = this._references.getOptional(discoveryDescriptor);
+            const discoveryDescriptor = new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*");
+            const discoveries = this._references.getOptional(discoveryDescriptor);
             if (discoveries.length == 0) {
                 throw new pip_services4_components_node_2.ReferenceException(context, discoveryDescriptor);
             }
-            for (let discovery of discoveries) {
-                let discoveryTyped = discovery;
-                let result = yield discoveryTyped.resolveAll(context, key);
+            for (const discovery of discoveries) {
+                const discoveryTyped = discovery;
+                const result = yield discoveryTyped.resolveAll(context, key);
                 if (result != null) {
                     resolved = resolved.concat(result);
                 }
@@ -205,9 +205,9 @@ class ConnectionResolver {
      */
     resolveAll(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let resolved = [];
-            let toResolve = [];
-            for (let connection of this._connections) {
+            const resolved = [];
+            const toResolve = [];
+            for (const connection of this._connections) {
                 if (connection.useDiscovery())
                     toResolve.push(connection);
                 else
@@ -216,11 +216,11 @@ class ConnectionResolver {
             if (toResolve.length <= 0) {
                 return resolved;
             }
-            for (let connection of toResolve) {
-                let result = yield this.resolveAllInDiscovery(context, connection);
+            for (const connection of toResolve) {
+                const result = yield this.resolveAllInDiscovery(context, connection);
                 if (result != null) {
                     for (let index = 0; index < result.length; index++) {
-                        let localResolvedConnection = new ConnectionParams_1.ConnectionParams(pip_services4_components_node_1.ConfigParams.mergeConfigs(connection, result[index]));
+                        const localResolvedConnection = new ConnectionParams_1.ConnectionParams(pip_services4_components_node_1.ConfigParams.mergeConfigs(connection, result[index]));
                         resolved.push(localResolvedConnection);
                     }
                 }
@@ -233,15 +233,15 @@ class ConnectionResolver {
             if (!connection.useDiscovery()) {
                 return false;
             }
-            let key = connection.getDiscoveryKey();
+            const key = connection.getDiscoveryKey();
             if (this._references == null) {
                 return false;
             }
-            let discoveries = this._references.getOptional(new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*"));
+            const discoveries = this._references.getOptional(new pip_services4_components_node_3.Descriptor("*", "discovery", "*", "*", "*"));
             if (discoveries == null) {
                 return false;
             }
-            for (let discovery of discoveries) {
+            for (const discovery of discoveries) {
                 yield discovery.register(context, key, connection);
             }
             return true;
@@ -259,7 +259,7 @@ class ConnectionResolver {
      */
     register(context, connection) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ok = yield this.registerInDiscovery(context, connection);
+            const ok = yield this.registerInDiscovery(context, connection);
             if (ok) {
                 this._connections.push(connection);
             }

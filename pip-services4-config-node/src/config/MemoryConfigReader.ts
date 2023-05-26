@@ -67,11 +67,11 @@ export class MemoryConfigReader implements IConfigReader, IReconfigurable {
     public async readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams> {
         if (parameters != null) {
             let config = new ConfigParams(this._config).toString();
-            let template = new MustacheTemplate(config);
+            const template = new MustacheTemplate(config);
             config = template.evaluateWithVariables(parameters);
             return ConfigParams.fromString(config);
         } else {
-            let config = new ConfigParams(this._config);;
+            const config = new ConfigParams(this._config);
             return config;
         }
     }
@@ -80,6 +80,7 @@ export class MemoryConfigReader implements IConfigReader, IReconfigurable {
      * Adds a listener that will be notified when configuration is changed
      * @param listener a listener to be added.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public addChangeListener(listener: INotifiable): void {
         // Do nothing...
     }
@@ -88,6 +89,7 @@ export class MemoryConfigReader implements IConfigReader, IReconfigurable {
       * Remove a previously added change listener.
       * @param listener a listener to be removed.
       */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeChangeListener(listener: INotifiable): void {
         // Do nothing...
     }

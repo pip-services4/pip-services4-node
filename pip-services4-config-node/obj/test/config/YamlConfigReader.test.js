@@ -6,7 +6,7 @@ const YamlConfigReader_1 = require("../../src/config/YamlConfigReader");
 suite('YamlConfigReader', () => {
     test('Config Sections', () => {
         let parameters = pip_services4_components_node_1.ConfigParams.fromTuples("param1", "Test Param 1", "param2", "Test Param 2");
-        let config = YamlConfigReader_1.YamlConfigReader.readConfig(new pip_services4_components_node_1.Context(), "./data/config.yaml", parameters);
+        let config = YamlConfigReader_1.YamlConfigReader.readConfig(null, "./data/config.yaml", parameters);
         assert.equal(config.length(), 9);
         assert.equal(config.getAsInteger("field1.field11"), 123);
         assert.equal(config.get("field1.field12"), "ABC");

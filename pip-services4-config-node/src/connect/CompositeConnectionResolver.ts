@@ -53,7 +53,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * The cluster support (multiple connections)
      */
-    protected _clusterSupported: boolean = true;
+    protected _clusterSupported = true;
 
     /**
      * The default protocol
@@ -63,7 +63,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     /**
      * The default port number
      */
-    protected _defaultPort: number = 0;
+    protected _defaultPort = 0;
 
     /**
      * The list of supported protocols
@@ -113,7 +113,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
                     );
                 }
 
-                for (let connection of connections) {
+                for (const connection of connections) {
                     this.validateConnection(context, connection);
                 }
 
@@ -146,7 +146,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         parameters: ConfigParams): ConfigParams {
 
         // Validate connection parameters
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
 
@@ -174,12 +174,12 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         }
 
         // URI usually contains all information
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return;
         }
 
-        let protocol = connection.getProtocolWithDefault(this._defaultProtocol);
+        const protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -195,7 +195,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
             );
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -204,7 +204,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
             );
         }
 
-        let port = connection.getPortWithDefault(this._defaultPort);
+        const port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
             throw new ConfigException(
                 context != null ? context.getTraceId() : null,
@@ -221,6 +221,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * @param context     (optional) a context to trace execution through call chain.
      * @param credential  credential parameters to be validated
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validateCredential(context: IContext, credential: CredentialParams): void {
         // By default the rules are open
     }
@@ -241,7 +242,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         let options = new ConfigParams();
 
         // Merge connection parameters
-        for (let connection of connections) {
+        for (const connection of connections) {
             options = this.mergeConnection(options, connection);
         }
 
@@ -266,7 +267,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * @returns merged connection options.
      */
     protected mergeConnection(options: ConfigParams, connection: ConnectionParams): ConfigParams {
-        let mergedOptions = options.setDefaults(connection);
+        const mergedOptions = options.setDefaults(connection);
         return mergedOptions;
     }
 
@@ -279,7 +280,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * @returns merged connection options.
      */
     protected mergeCredential(options: ConfigParams, credential: CredentialParams): ConfigParams {
-        let mergedOptions = options.override(credential);
+        const mergedOptions = options.override(credential);
         return mergedOptions;
     }
 
@@ -292,7 +293,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
      * @returns merged connection options.
      */
      protected mergeOptional(options: ConfigParams, parameters: ConfigParams): ConfigParams {
-        let mergedOptions = options.setDefaults(parameters);
+        const mergedOptions = options.setDefaults(parameters);
         return mergedOptions;
     }
 

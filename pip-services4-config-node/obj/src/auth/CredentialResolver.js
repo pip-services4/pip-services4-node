@@ -78,7 +78,7 @@ class CredentialResolver {
      * @param config    configuration parameters to be set.
      */
     configure(config) {
-        let credentials = CredentialParams_1.CredentialParams.manyFromConfig(config);
+        const credentials = CredentialParams_1.CredentialParams.manyFromConfig(config);
         this._credentials.push(...credentials);
     }
     /**
@@ -113,17 +113,17 @@ class CredentialResolver {
             if (!credential.useCredentialStore()) {
                 return credential;
             }
-            let key = credential.getStoreKey();
+            const key = credential.getStoreKey();
             if (this._references == null) {
                 return null;
             }
-            let storeDescriptor = new pip_services4_components_node_2.Descriptor("*", "credential-store", "*", "*", "*");
-            let stores = this._references.getOptional(storeDescriptor);
+            const storeDescriptor = new pip_services4_components_node_2.Descriptor("*", "credential-store", "*", "*", "*");
+            const stores = this._references.getOptional(storeDescriptor);
             if (stores.length == 0) {
                 throw new pip_services4_components_node_1.ReferenceException(context, storeDescriptor);
             }
-            for (let store of stores) {
-                let result = yield store.lookup(context, key);
+            for (const store of stores) {
+                const result = yield store.lookup(context, key);
                 if (result != null) {
                     return result;
                 }
@@ -143,8 +143,8 @@ class CredentialResolver {
             if (this._credentials.length == 0) {
                 return null;
             }
-            let lookupCredentials = [];
-            for (let credential of this._credentials) {
+            const lookupCredentials = [];
+            for (const credential of this._credentials) {
                 if (!credential.useCredentialStore()) {
                     return credential;
                 }
@@ -152,8 +152,8 @@ class CredentialResolver {
                     lookupCredentials.push(credential);
                 }
             }
-            for (let credential of lookupCredentials) {
-                let result = yield this.lookupInStores(context, credential);
+            for (const credential of lookupCredentials) {
+                const result = yield this.lookupInStores(context, credential);
                 if (result != null) {
                     return result;
                 }

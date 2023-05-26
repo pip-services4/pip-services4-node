@@ -68,7 +68,7 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
         try {
             let content = fs.readFileSync(super.getPath(), 'utf8');
             content = this.parameterize(content, parameters);
-            let data = yaml.load(content);
+            const data = yaml.load(content);
             return data;
         }
         catch (e) {
@@ -86,8 +86,8 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
      */
     readConfig(context, parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let value = this.readObject(context, parameters);
-            let config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+            const value = this.readObject(context, parameters);
+            const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
             return config;
         });
     }
@@ -111,8 +111,8 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
      * @param callback          callback function that receives configuration or error.
      */
     static readConfig(context, path, parameters) {
-        let value = new YamlConfigReader(path).readObject(context, parameters);
-        let config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+        const value = new YamlConfigReader(path).readObject(context, parameters);
+        const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
         return config;
     }
 }

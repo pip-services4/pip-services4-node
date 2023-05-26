@@ -29,7 +29,7 @@ suite('MemoryDiscovery', ()=> {
         assert.equal(8082, connection.getPort());      
 
         // Resolve all
-        discovery.register(new Context(), "key1",
+        discovery.register(null, "key1",
             ConnectionParams.fromTuples("host", "10.3.3.151")
         );
 

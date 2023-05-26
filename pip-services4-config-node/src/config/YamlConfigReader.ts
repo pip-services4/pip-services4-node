@@ -67,7 +67,7 @@ export class YamlConfigReader extends FileConfigReader {
         try {
             let content = fs.readFileSync(super.getPath(), 'utf8');
             content = this.parameterize(content, parameters);
-            let data = yaml.load(content);
+            const data = yaml.load(content);
             return data;
         } catch (e) {
             throw new FileException(
@@ -88,8 +88,8 @@ export class YamlConfigReader extends FileConfigReader {
      * @returns                 retrieved configuration parameters.
      */
     public async readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams> {
-        let value: any = this.readObject(context, parameters);
-        let config = ConfigParams.fromValue(value);
+        const value: any = this.readObject(context, parameters);
+        const config = ConfigParams.fromValue(value);
         return config;
     }
 
@@ -114,8 +114,8 @@ export class YamlConfigReader extends FileConfigReader {
      * @param callback          callback function that receives configuration or error.
      */
     public static readConfig(context: IContext, path: string, parameters: ConfigParams): ConfigParams {
-        let value: any = new YamlConfigReader(path).readObject(context, parameters);
-        let config = ConfigParams.fromValue(value);
+        const value: any = new YamlConfigReader(path).readObject(context, parameters);
+        const config = ConfigParams.fromValue(value);
         return config;
     }
 }

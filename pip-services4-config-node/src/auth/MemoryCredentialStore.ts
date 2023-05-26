@@ -66,10 +66,10 @@ export class MemoryCredentialStore implements ICredentialStore, IReconfigurable 
      */
     public readCredentials(config: ConfigParams) {
         this._items.clear();
-        let sections = config.getSectionNames();
+        const sections = config.getSectionNames();
         for (let index = 0; index < sections.length; index++) {
-            let section = sections[index];
-            let value = config.getSection(section);
+            const section = sections[index];
+            const value = config.getSection(section);
             this._items.append(CredentialParams.fromTuples(section, value));
         }
     }

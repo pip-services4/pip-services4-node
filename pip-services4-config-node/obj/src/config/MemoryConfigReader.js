@@ -70,13 +70,12 @@ class MemoryConfigReader {
         return __awaiter(this, void 0, void 0, function* () {
             if (parameters != null) {
                 let config = new pip_services4_components_node_1.ConfigParams(this._config).toString();
-                let template = new pip_services4_expressions_node_1.MustacheTemplate(config);
+                const template = new pip_services4_expressions_node_1.MustacheTemplate(config);
                 config = template.evaluateWithVariables(parameters);
                 return pip_services4_components_node_1.ConfigParams.fromString(config);
             }
             else {
-                let config = new pip_services4_components_node_1.ConfigParams(this._config);
-                ;
+                const config = new pip_services4_components_node_1.ConfigParams(this._config);
                 return config;
             }
         });
@@ -85,6 +84,7 @@ class MemoryConfigReader {
      * Adds a listener that will be notified when configuration is changed
      * @param listener a listener to be added.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     addChangeListener(listener) {
         // Do nothing...
     }
@@ -92,6 +92,7 @@ class MemoryConfigReader {
      * Remove a previously added change listener.
      * @param listener a listener to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeChangeListener(listener) {
         // Do nothing...
     }

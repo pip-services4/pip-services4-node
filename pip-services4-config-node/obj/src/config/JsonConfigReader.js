@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonConfigReader = void 0;
 /** @module config */
 /** @hidden */
-const fs = require('fs');
+const fs = require("fs");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
@@ -62,7 +62,7 @@ class JsonConfigReader extends FileConfigReader_1.FileConfigReader {
      */
     readObject(context, parameters) {
         if (super.getPath() == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context.getTraceId(), "NO_PATH", "Missing config file path");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PATH", "Missing config file path");
         }
         try {
             // Todo: make this async?
@@ -71,7 +71,7 @@ class JsonConfigReader extends FileConfigReader_1.FileConfigReader {
             return pip_services4_commons_node_2.JsonConverter.toNullableMap(data);
         }
         catch (e) {
-            throw new pip_services4_commons_node_1.FileException(context.getTraceId(), "READ_FAILED", "Failed reading configuration " + super.getPath() + ": " + e)
+            throw new pip_services4_commons_node_1.FileException(context != null ? context.getTraceId() : null, "READ_FAILED", "Failed reading configuration " + super.getPath() + ": " + e)
                 .withDetails("path", super.getPath())
                 .withCause(e);
         }
@@ -85,8 +85,8 @@ class JsonConfigReader extends FileConfigReader_1.FileConfigReader {
      */
     readConfig(context, parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let value = this.readObject(context, parameters);
-            let config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+            const value = this.readObject(context, parameters);
+            const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
             return config;
         });
     }
@@ -110,8 +110,8 @@ class JsonConfigReader extends FileConfigReader_1.FileConfigReader {
      * @returns                 retrieved configuration parameters.
      */
     static readConfig(context, path, parameters) {
-        let value = new JsonConfigReader(path).readObject(context, parameters);
-        let config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+        const value = new JsonConfigReader(path).readObject(context, parameters);
+        const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
         return config;
     }
 }

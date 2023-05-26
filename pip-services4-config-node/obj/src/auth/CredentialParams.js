@@ -159,7 +159,7 @@ class CredentialParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a new CredentialParams object.
      */
     static fromString(line) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromString(line);
+        const map = pip_services4_commons_node_1.StringValueMap.fromString(line);
         return new CredentialParams(map);
     }
     /**
@@ -170,7 +170,7 @@ class CredentialParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a new CredentialParams object.
      */
     static fromTuples(...tuples) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
+        const map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
         return new CredentialParams(map);
     }
     /**
@@ -182,16 +182,16 @@ class CredentialParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a list of retrieved CredentialParams
      */
     static manyFromConfig(config) {
-        let result = [];
-        let credentials = config.getSection("credentials");
+        const result = [];
+        const credentials = config.getSection("credentials");
         if (credentials.length() > 0) {
-            for (let section of credentials.getSectionNames()) {
-                let credential = credentials.getSection(section);
+            for (const section of credentials.getSectionNames()) {
+                const credential = credentials.getSection(section);
                 result.push(new CredentialParams(credential));
             }
         }
         else {
-            let credential = config.getSection("credential");
+            const credential = config.getSection("credential");
             if (credential.length() > 0) {
                 result.push(new CredentialParams(credential));
             }
@@ -209,7 +209,7 @@ class CredentialParams extends pip_services4_components_node_1.ConfigParams {
      * @see [[manyFromConfig]]
      */
     static fromConfig(config) {
-        let credentials = this.manyFromConfig(config);
+        const credentials = this.manyFromConfig(config);
         return credentials.length > 0 ? credentials[0] : null;
     }
 }

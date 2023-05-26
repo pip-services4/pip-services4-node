@@ -12,6 +12,6 @@ export class SyntaxException extends BadRequestException {
         if (line != 0 || column != 0) {
             message = message + " at line " + line + " and column " + column;
         }
-        super(context.getTraceId(), code, message);
+        super(context != null ? context.getTraceId() : null, code, message);
     }
 }

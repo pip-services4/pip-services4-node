@@ -175,7 +175,7 @@ class ConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @see [[StringValueMap.fromString]]
      */
     static fromString(line) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromString(line);
+        const map = pip_services4_commons_node_1.StringValueMap.fromString(line);
         return new ConnectionParams(map);
     }
     /**
@@ -186,7 +186,7 @@ class ConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a new ConnectionParams object.
      */
     static fromTuples(...tuples) {
-        let map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
+        const map = pip_services4_commons_node_1.StringValueMap.fromTuplesArray(tuples);
         return new ConnectionParams(map);
     }
     /**
@@ -198,17 +198,17 @@ class ConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a list of retrieved ConnectionParams
      */
     static manyFromConfig(config) {
-        let result = [];
-        let connections = config.getSection("connections");
+        const result = [];
+        const connections = config.getSection("connections");
         if (connections.length() > 0) {
-            let connectionSections = connections.getSectionNames();
+            const connectionSections = connections.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let connection = connections.getSection(connectionSections[index]);
+                const connection = connections.getSection(connectionSections[index]);
                 result.push(new ConnectionParams(connection));
             }
         }
         else {
-            let connection = config.getSection("connection");
+            const connection = config.getSection("connection");
             if (connection.length() > 0) {
                 result.push(new ConnectionParams(connection));
             }
@@ -226,7 +226,7 @@ class ConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @see [[manyFromConfig]]
      */
     static fromConfig(config) {
-        let connections = this.manyFromConfig(config);
+        const connections = this.manyFromConfig(config);
         return connections.length > 0 ? connections[0] : null;
     }
 }

@@ -17,7 +17,7 @@ suite('CompositeConnectionResolver', () => {
         let config = pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "localhost", "connection.port", 3000, "credential.username", "user", "credential.password", "pass");
         let connectionResolver = new CompositeConnectionResolver_1.CompositeConnectionResolver();
         connectionResolver.configure(config);
-        let options = yield connectionResolver.resolve(new pip_services4_components_node_1.Context());
+        let options = yield connectionResolver.resolve(null);
         assert.equal(options.get("protocol"), "http");
         assert.equal(options.get("host"), "localhost");
         assert.equal(options.get("port"), "3000");

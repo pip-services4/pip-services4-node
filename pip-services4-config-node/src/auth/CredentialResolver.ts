@@ -75,7 +75,7 @@ export class CredentialResolver {
      * @param config    configuration parameters to be set.
      */
     public configure(config: ConfigParams): void {
-        let credentials: CredentialParams[] = CredentialParams.manyFromConfig(config);
+        const credentials: CredentialParams[] = CredentialParams.manyFromConfig(config);
         this._credentials.push(...credentials);
     }
 
@@ -114,19 +114,19 @@ export class CredentialResolver {
             return credential;
         }
 
-        let key: string = credential.getStoreKey();
+        const key: string = credential.getStoreKey();
         if (this._references == null) {
             return null;
         }
 
-        let storeDescriptor = new Descriptor("*", "credential-store", "*", "*", "*")
-        let stores = this._references.getOptional<ICredentialStore>(storeDescriptor)
+        const storeDescriptor = new Descriptor("*", "credential-store", "*", "*", "*")
+        const stores = this._references.getOptional<ICredentialStore>(storeDescriptor)
         if (stores.length == 0) {
             throw new ReferenceException(context, storeDescriptor);
         }
 
-        for (let store of stores) {
-            let result = await store.lookup(context, key);
+        for (const store of stores) {
+            const result = await store.lookup(context, key);
             if (result != null) {
                 return result;
             }
@@ -147,9 +147,9 @@ export class CredentialResolver {
             return null;
         }
 
-        let lookupCredentials: CredentialParams[] = [];
+        const lookupCredentials: CredentialParams[] = [];
 
-        for (let credential of this._credentials) {
+        for (const credential of this._credentials) {
             if (!credential.useCredentialStore()) {
                 return credential;
             } else {
@@ -157,8 +157,8 @@ export class CredentialResolver {
             }
         }
 
-        for (let credential of lookupCredentials) {
-            let result = await this.lookupInStores(context, credential);
+        for (const credential of lookupCredentials) {
+            const result = await this.lookupInStores(context, credential);
             if (result != null) {
                 return result;
             }

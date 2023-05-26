@@ -11,7 +11,7 @@ suite('JsonConfigReader', ()=> {
             "param1", "Test Param 1",
             "param2", "Test Param 2"
         );
-        let config: ConfigParams = JsonConfigReader.readConfig(new Context(), "./data/config.json", parameters);
+        let config: ConfigParams = JsonConfigReader.readConfig(null, "./data/config.json", parameters);
 
         assert.equal(config.length(), 9);
         assert.equal(config.getAsInteger("field1.field11"), 123);

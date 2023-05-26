@@ -170,7 +170,7 @@ export class CredentialParams extends ConfigParams {
 	 * @returns			a new CredentialParams object.
 	 */
     public static fromString(line: string): CredentialParams {
-        let map = StringValueMap.fromString(line);
+        const map = StringValueMap.fromString(line);
         return new CredentialParams(map);
     }
 
@@ -182,7 +182,7 @@ export class CredentialParams extends ConfigParams {
 	 * @returns			a new CredentialParams object.
 	 */
 	public static fromTuples(...tuples: any[]): CredentialParams {
-		let map = StringValueMap.fromTuplesArray(tuples);
+		const map = StringValueMap.fromTuplesArray(tuples);
 		return new CredentialParams(map);
     }
     
@@ -195,17 +195,17 @@ export class CredentialParams extends ConfigParams {
 	 * @returns			a list of retrieved CredentialParams
 	 */
     public static manyFromConfig(config: ConfigParams): CredentialParams[] {
-        let result: CredentialParams[] = [];
+        const result: CredentialParams[] = [];
 
-        let credentials: ConfigParams = config.getSection("credentials");
+        const credentials: ConfigParams = config.getSection("credentials");
 
         if (credentials.length() > 0) {
-            for (let section of credentials.getSectionNames()) {
-                let credential: ConfigParams = credentials.getSection(section);
+            for (const section of credentials.getSectionNames()) {
+                const credential: ConfigParams = credentials.getSection(section);
                 result.push(new CredentialParams(credential));
             }
         } else {
-            let credential: ConfigParams = config.getSection("credential");
+            const credential: ConfigParams = config.getSection("credential");
             if (credential.length() > 0) {
                 result.push(new CredentialParams(credential));
             }
@@ -225,7 +225,7 @@ export class CredentialParams extends ConfigParams {
 	 * @see [[manyFromConfig]]
 	 */
     public static fromConfig(config: ConfigParams): CredentialParams {
-        let credentials: CredentialParams[] = this.manyFromConfig(config);
+        const credentials: CredentialParams[] = this.manyFromConfig(config);
         return credentials.length > 0 ? credentials[0] : null;
     }
 }

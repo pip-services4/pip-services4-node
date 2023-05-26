@@ -101,7 +101,7 @@ class CompositeConnectionResolver {
             if (connections.length > 0 && !this._clusterSupported) {
                 throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "MULTIPLE_CONNECTIONS_NOT_SUPPORTED", "Multiple (cluster) connections are not supported");
             }
-            for (let connection of connections) {
+            for (const connection of connections) {
                 this.validateConnection(context, connection);
             }
             //     return connections;
@@ -128,7 +128,7 @@ class CompositeConnectionResolver {
      */
     compose(context, connections, credential, parameters) {
         // Validate connection parameters
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
         // Validate credential parameters
@@ -148,22 +148,22 @@ class CompositeConnectionResolver {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Connection parameters are not set is not set");
         }
         // URI usually contains all information
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return;
         }
-        let protocol = connection.getProtocolWithDefault(this._defaultProtocol);
+        const protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         if (this._supportedProtocols != null && this._supportedProtocols.indexOf(protocol) < 0) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPortWithDefault(this._defaultPort);
+        const port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
@@ -175,6 +175,7 @@ class CompositeConnectionResolver {
      * @param context     (optional) a context to trace execution through call chain.
      * @param credential  credential parameters to be validated
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     validateCredential(context, credential) {
         // By default the rules are open
     }
@@ -191,7 +192,7 @@ class CompositeConnectionResolver {
         // Connection options
         let options = new pip_services4_components_node_1.ConfigParams();
         // Merge connection parameters
-        for (let connection of connections) {
+        for (const connection of connections) {
             options = this.mergeConnection(options, connection);
         }
         // Merge credential parameters
@@ -211,7 +212,7 @@ class CompositeConnectionResolver {
      * @returns merged connection options.
      */
     mergeConnection(options, connection) {
-        let mergedOptions = options.setDefaults(connection);
+        const mergedOptions = options.setDefaults(connection);
         return mergedOptions;
     }
     /**
@@ -223,7 +224,7 @@ class CompositeConnectionResolver {
      * @returns merged connection options.
      */
     mergeCredential(options, credential) {
-        let mergedOptions = options.override(credential);
+        const mergedOptions = options.override(credential);
         return mergedOptions;
     }
     /**
@@ -235,7 +236,7 @@ class CompositeConnectionResolver {
      * @returns merged connection options.
      */
     mergeOptional(options, parameters) {
-        let mergedOptions = options.setDefaults(parameters);
+        const mergedOptions = options.setDefaults(parameters);
         return mergedOptions;
     }
     /**

@@ -1,6 +1,6 @@
 /** @module config */
 /** @hidden */ 
-const fs = require('fs');
+import fs = require('fs');
 
 import { IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
@@ -57,7 +57,7 @@ export class JsonConfigReader extends FileConfigReader {
     public readObject(context: IContext, parameters: ConfigParams): any {
         if (super.getPath() == null) {
             throw new ConfigException(
-                context.getTraceId(),
+                context != null ? context.getTraceId() : null,
                 "NO_PATH",
                 "Missing config file path"
             );
@@ -70,7 +70,7 @@ export class JsonConfigReader extends FileConfigReader {
             return JsonConverter.toNullableMap(data);
         } catch (e) {
             throw new FileException(
-                context.getTraceId(),
+                context != null ? context.getTraceId() : null,
                 "READ_FAILED",
                 "Failed reading configuration " + super.getPath() + ": " + e
             )
@@ -87,8 +87,8 @@ export class JsonConfigReader extends FileConfigReader {
      * @param callback          callback function that receives configuration or error.
      */
     public async readConfig(context: IContext, parameters: ConfigParams): Promise<ConfigParams> {
-        let value = this.readObject(context, parameters);
-        let config = ConfigParams.fromValue(value);
+        const value = this.readObject(context, parameters);
+        const config = ConfigParams.fromValue(value);
         return config;
     }
 
@@ -113,8 +113,8 @@ export class JsonConfigReader extends FileConfigReader {
      * @returns                 retrieved configuration parameters.
      */
     public static readConfig(context: IContext, path: string, parameters: ConfigParams): ConfigParams {
-        let value: any = new JsonConfigReader(path).readObject(context, parameters);
-        let config = ConfigParams.fromValue(value);
+        const value: any = new JsonConfigReader(path).readObject(context, parameters);
+        const config = ConfigParams.fromValue(value);
         return config;
     }
 }

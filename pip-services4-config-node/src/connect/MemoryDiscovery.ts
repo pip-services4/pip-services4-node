@@ -7,13 +7,6 @@ import { IReconfigurable } from 'pip-services4-components-node';
 import { ConnectionParams } from './ConnectionParams';
 import { IDiscovery } from './IDiscovery';
 
-/**
- * Used to store key-identifiable information about connections.
- */
-class DiscoveryItem {
-    public key: string;
-    public connection: ConnectionParams;
-}
 
 /**
  * Discovery service that keeps connections in memory.
@@ -63,7 +56,9 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
      * 
      * @param config    configuration parameters to be set.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public configure(config: ConfigParams): void {
+        //
     }
 
     /**
@@ -76,12 +71,12 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
         this._items.clear();
 
         if (config.length() > 0) {
-            let connectionSections: string[] = config.getSectionNames();
+            const connectionSections: string[] = config.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let key = connectionSections[index]
-                let value: ConfigParams = config.getSection(key);
+                const key = connectionSections[index]
+                const value: ConfigParams = config.getSection(key);
 
-                let connectionsList = this._items.get(key) ?? [];
+                const connectionsList = this._items.get(key) ?? [];
                 connectionsList.push(new ConnectionParams(value));
                 this._items.set(key, connectionsList);
             }
@@ -97,7 +92,7 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
      * @returns 			    the registered connection parameters.
      */
     public async register(context: IContext, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
-        let connectionsList = this._items.get(key) ?? [];
+        const connectionsList = this._items.get(key) ?? [];
         connectionsList.push(new ConnectionParams(connection));
         this._items.set(key, connectionsList);
 
@@ -113,7 +108,7 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
      */
     public async resolveOne(context: IContext, key: string): Promise<ConnectionParams> {
         let connection: ConnectionParams = null;
-        let connections = this._items.get(key) ?? [];
+        const connections = this._items.get(key) ?? [];
         
         if (connections.length > 0) 
             connection = connections[0];
@@ -129,7 +124,7 @@ export class MemoryDiscovery implements IDiscovery, IReconfigurable {
      * @returns                 all found connection parameters
      */
     public async resolveAll(context: IContext, key: string): Promise<ConnectionParams[]> {
-        let connections: ConnectionParams[] = this._items.get(key) ?? [];
+        const connections: ConnectionParams[] = this._items.get(key) ?? [];
         
         return connections.filter(c => c != null);
     }

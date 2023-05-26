@@ -16,7 +16,7 @@ export interface ICredentialStore {
      * @param key               a key to uniquely identify the credential.
      * @param credential        a credential to be stored.
      */
-    store(context: IContext, key: String, credential: CredentialParams): Promise<void>;
+    store(context: IContext, key: string, credential: CredentialParams): Promise<void>;
     /**
      * Lookups credential parameters by its key.
      *

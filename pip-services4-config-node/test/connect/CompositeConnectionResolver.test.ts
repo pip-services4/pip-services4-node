@@ -17,7 +17,7 @@ suite('CompositeConnectionResolver', ()=> {
 
         let connectionResolver = new CompositeConnectionResolver();
         connectionResolver.configure(config);
-        let options = await connectionResolver.resolve(new Context());
+        let options = await connectionResolver.resolve(null);
 		assert.equal(options.get("protocol"), "http");
 		assert.equal(options.get("host"), "localhost");
 		assert.equal(options.get("port"), "3000");

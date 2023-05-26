@@ -70,10 +70,10 @@ class MemoryCredentialStore {
      */
     readCredentials(config) {
         this._items.clear();
-        let sections = config.getSectionNames();
+        const sections = config.getSectionNames();
         for (let index = 0; index < sections.length; index++) {
-            let section = sections[index];
-            let value = config.getSection(section);
+            const section = sections[index];
+            const value = config.getSection(section);
             this._items.append(CredentialParams_1.CredentialParams.fromTuples(section, value));
         }
     }

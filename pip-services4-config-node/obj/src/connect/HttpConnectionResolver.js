@@ -89,18 +89,18 @@ class HttpConnectionResolver {
         if (connection == null) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "HTTP connection is not set");
         }
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null)
             return;
-        let protocol = connection.getProtocolWithDefault("http");
+        const protocol = connection.getProtocolWithDefault("http");
         if ("http" != protocol && "https" != protocol) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection").withDetails("protocol", protocol);
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
             throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
@@ -119,7 +119,7 @@ class HttpConnectionResolver {
                         throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_SSL_KEY_FILE", "SSL key file is not configured in credentials");
                     }
                     else if (credential.getAsNullableString('ssl_crt_file') == null) {
-                        throw new pip_services4_commons_node_1.ConfigException(context.getTraceId(), "NO_SSL_CRT_FILE", "SSL crt file is not configured in credentials");
+                        throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_SSL_CRT_FILE", "SSL crt file is not configured in credentials");
                     }
                 }
             }
@@ -129,9 +129,9 @@ class HttpConnectionResolver {
         let connection = pip_services4_components_node_1.ConfigParams.mergeConfigs(...connections);
         let uri = connection.getAsString("uri");
         if (uri == null || uri == "") {
-            let protocol = connection.getAsStringWithDefault("protocol", "http");
-            let host = connection.getAsString("host");
-            let port = connection.getAsInteger("port");
+            const protocol = connection.getAsStringWithDefault("protocol", "http");
+            const host = connection.getAsString("host");
+            const port = connection.getAsInteger("port");
             uri = protocol + "://" + host;
             if (port > 0) {
                 uri += ":" + port;
@@ -139,8 +139,8 @@ class HttpConnectionResolver {
             connection.setAsObject("uri", uri);
         }
         else {
-            let address = url.parse(uri);
-            let protocol = ("" + address.protocol).replace(':', '');
+            const address = url.parse(uri);
+            const protocol = ("" + address.protocol).replace(':', '');
             connection.setAsObject("protocol", protocol);
             connection.setAsObject("host", address.hostname);
             connection.setAsObject("port", address.port);
@@ -161,8 +161,8 @@ class HttpConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const connection = yield this._connectionResolver.resolve(context);
+            const credential = yield this._credentialResolver.lookup(context);
             this.validateConnection(context, connection, credential);
             return this.composeConnection([connection], credential);
         });
@@ -177,9 +177,9 @@ class HttpConnectionResolver {
     resolveAll(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let connections = yield this._connectionResolver.resolveAll(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             connections = connections || [];
-            for (let connection of connections) {
+            for (const connection of connections) {
                 this.validateConnection(context, connection, credential);
             }
             return this.composeConnection(connections, credential);
@@ -194,8 +194,8 @@ class HttpConnectionResolver {
      */
     register(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const connection = yield this._connectionResolver.resolve(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Validate connection
             this.validateConnection(context, connection, credential);
             yield this._connectionResolver.register(context, connection);

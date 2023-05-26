@@ -25,7 +25,7 @@ suite('MemoryCredentialStore', () => {
         assert.equal(cred2.getUsername(), "user2");
         assert.equal(cred2.getPassword(), "pass2");
         let credConfig = CredentialParams_1.CredentialParams.fromTuples('user', 'user3', 'pass', 'pass3', 'access_id', '123');
-        yield credentialStore.store(new pip_services4_components_node_1.Context(), 'key3', credConfig);
+        yield credentialStore.store(null, 'key3', credConfig);
         let cred3 = yield credentialStore.lookup(pip_services4_components_node_1.Context.fromTraceId("context"), 'key3');
         assert.equal(cred3.getUsername(), "user3");
         assert.equal(cred3.getPassword(), "pass3");

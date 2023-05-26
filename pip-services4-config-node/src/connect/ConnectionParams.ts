@@ -188,7 +188,7 @@ export class ConnectionParams extends ConfigParams {
 	 * @see [[StringValueMap.fromString]]
      */
     public static fromString(line: string): ConnectionParams {
-        let map: StringValueMap = StringValueMap.fromString(line);
+        const map: StringValueMap = StringValueMap.fromString(line);
         return new ConnectionParams(map);
     }
 
@@ -200,7 +200,7 @@ export class ConnectionParams extends ConfigParams {
 	 * @returns			a new ConnectionParams object.
 	 */
 	public static fromTuples(...tuples: any[]): ConnectionParams {
-		let map = StringValueMap.fromTuplesArray(tuples);
+		const map = StringValueMap.fromTuplesArray(tuples);
 		return new ConnectionParams(map);
     }
 
@@ -213,17 +213,17 @@ export class ConnectionParams extends ConfigParams {
 	 * @returns			a list of retrieved ConnectionParams
 	 */
     public static manyFromConfig(config: ConfigParams): ConnectionParams[] {
-        let result: ConnectionParams[] = [];
-        let connections: ConfigParams = config.getSection("connections");
+        const result: ConnectionParams[] = [];
+        const connections: ConfigParams = config.getSection("connections");
 
         if (connections.length() > 0) {
-            let connectionSections: string[] = connections.getSectionNames();
+            const connectionSections: string[] = connections.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let connection: ConfigParams = connections.getSection(connectionSections[index]);
+                const connection: ConfigParams = connections.getSection(connectionSections[index]);
                 result.push(new ConnectionParams(connection));
             }
         } else {
-            let connection: ConfigParams = config.getSection("connection");
+            const connection: ConfigParams = config.getSection("connection");
             if (connection.length() > 0) {
                 result.push(new ConnectionParams(connection));
             }
@@ -243,7 +243,7 @@ export class ConnectionParams extends ConfigParams {
 	 * @see [[manyFromConfig]]
 	 */
     public static fromConfig(config: ConfigParams): ConnectionParams {
-        let connections: ConnectionParams[] = this.manyFromConfig(config);
+        const connections: ConnectionParams[] = this.manyFromConfig(config);
         return connections.length > 0 ? connections[0] : null;
     }
 

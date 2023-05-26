@@ -12,7 +12,7 @@ suite('HttpConnectionResolver', () => {
             "connection.uri", "http://somewhere.com:777"
         ));
 
-        let connection = await resolver.resolve(new Context());
+        let connection = await resolver.resolve(null);
         assert.equal("http", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(777, connection.getAsInteger("port"));
@@ -26,7 +26,7 @@ suite('HttpConnectionResolver', () => {
             "connection.port", 777
         ));
 
-        let connection = await resolver.resolve(new Context());
+        let connection = await resolver.resolve(null);
         assert.equal("http://somewhere.com:777", connection.getAsString("uri"));
     });
 
@@ -40,7 +40,7 @@ suite('HttpConnectionResolver', () => {
             "credential.ssl_crt_file", "ssl_crt_file"
         ));
 
-        let connection = await resolver.resolve(new Context());
+        let connection = await resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));
@@ -58,7 +58,7 @@ suite('HttpConnectionResolver', () => {
             "credential.internal_network", "internal_network"
         ));
 
-        let connection = await resolver.resolve(new Context());
+        let connection = await resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));
@@ -76,7 +76,7 @@ suite('HttpConnectionResolver', () => {
         ));
 
         try {
-            await resolver.resolve(new Context());
+            await resolver.resolve(null);
             assert.fail("Should throw an exception");
         } catch (err) {
             assert.equal("NO_CREDENTIAL", err.code);
@@ -95,7 +95,7 @@ suite('HttpConnectionResolver', () => {
         ));
 
         try {
-            await resolver.resolve(new Context());
+            await resolver.resolve(null);
             assert.fail("Should throw an exception");
         } catch (err) {
             assert.equal("NO_SSL_CRT_FILE", err.code);
@@ -114,7 +114,7 @@ suite('HttpConnectionResolver', () => {
         ));
 
         try {
-            await resolver.resolve(new Context());
+            await resolver.resolve(null);
             assert.fail("Should throw an exception");
         } catch (err) {
             assert.equal("NO_SSL_KEY_FILE", err.code);
@@ -133,7 +133,7 @@ suite('HttpConnectionResolver', () => {
             "credential.ssl_crt_file", "ssl_crt_file"
         ));
 
-        let connection = await resolver.resolve(new Context());
+        let connection = await resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));

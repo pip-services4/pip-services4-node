@@ -75,7 +75,7 @@ export class ConnectionResolver {
      * @param config    configuration parameters to be set.
      */
     public configure(config: ConfigParams): void {
-        let connections: ConnectionParams[] = ConnectionParams.manyFromConfig(config);
+        const connections: ConnectionParams[] = ConnectionParams.manyFromConfig(config);
         this._connections.push(...connections);
     }
 
@@ -114,20 +114,20 @@ export class ConnectionResolver {
             return null;
         }
 
-        let key: string = connection.getDiscoveryKey();
+        const key: string = connection.getDiscoveryKey();
         if (this._references == null) {
             return null;
         }
 
-        let discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
-        let discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
+        const discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
+        const discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
         if (discoveries.length == 0) {
             throw new ReferenceException(context, discoveryDescriptor);
         }
 
-        for (let discovery of discoveries) {
-            let discoveryTyped: IDiscovery = discovery;
-            let result = await discoveryTyped.resolveOne(context, key);
+        for (const discovery of discoveries) {
+            const discoveryTyped: IDiscovery = discovery;
+            const result = await discoveryTyped.resolveOne(context, key);
             if (result != null) {
                 return result;
             }
@@ -150,9 +150,9 @@ export class ConnectionResolver {
             return null;
         }
 
-        let connections: ConnectionParams[] = [];
+        const connections: ConnectionParams[] = [];
 
-        for (let connection of this._connections) {
+        for (const connection of this._connections) {
             if (!connection.useDiscovery()) {
                 return connection;  //If a connection is not configured for discovery use - return it.
             } else {
@@ -165,8 +165,8 @@ export class ConnectionResolver {
         }
 
         let resolved: ConnectionParams = null;
-        for (let connection of connections) {
-            let result = await this.resolveInDiscovery(context, connection);
+        for (const connection of connections) {
+            const result = await this.resolveInDiscovery(context, connection);
             if (result != null) {
                 resolved = new ConnectionParams(ConfigParams.mergeConfigs(connection, result));
             }
@@ -176,7 +176,7 @@ export class ConnectionResolver {
 
     private async resolveAllInDiscovery(context: IContext, connection: ConnectionParams): Promise<ConnectionParams[]> {
         let resolved: ConnectionParams[] = [];
-        let key: string = connection.getDiscoveryKey();
+        const key: string = connection.getDiscoveryKey();
 
         if (!connection.useDiscovery()) {
             return [];
@@ -186,15 +186,15 @@ export class ConnectionResolver {
             return [];
         }
 
-        let discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
-        let discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
+        const discoveryDescriptor = new Descriptor("*", "discovery", "*", "*", "*")
+        const discoveries: any[] = this._references.getOptional<any>(discoveryDescriptor)
         if (discoveries.length == 0) {
             throw new ReferenceException(context, discoveryDescriptor);
         }
 
-        for (let discovery of discoveries) {
-            let discoveryTyped: IDiscovery = discovery;
-            let result = await discoveryTyped.resolveAll(context, key);
+        for (const discovery of discoveries) {
+            const discoveryTyped: IDiscovery = discovery;
+            const result = await discoveryTyped.resolveAll(context, key);
             if (result != null) {
                 resolved = resolved.concat(result);
             }
@@ -213,10 +213,10 @@ export class ConnectionResolver {
      * @see [[IDiscovery]]
      */
     public async resolveAll(context: IContext): Promise<ConnectionParams[]> {
-        let resolved: ConnectionParams[] = [];
-        let toResolve: ConnectionParams[] = [];
+        const resolved: ConnectionParams[] = [];
+        const toResolve: ConnectionParams[] = [];
 
-        for (let connection of this._connections) {
+        for (const connection of this._connections) {
             if (connection.useDiscovery())
                 toResolve.push(connection);
             else
@@ -227,11 +227,11 @@ export class ConnectionResolver {
             return resolved;
         }
 
-        for (let connection of toResolve) {
-            let result = await this.resolveAllInDiscovery(context, connection);
+        for (const connection of toResolve) {
+            const result = await this.resolveAllInDiscovery(context, connection);
             if (result != null) {
                 for (let index = 0; index < result.length; index++) {
-                    let localResolvedConnection: ConnectionParams = new ConnectionParams(ConfigParams.mergeConfigs(connection, result[index]));
+                    const localResolvedConnection: ConnectionParams = new ConnectionParams(ConfigParams.mergeConfigs(connection, result[index]));
                     resolved.push(localResolvedConnection);
                 }
             }
@@ -245,17 +245,17 @@ export class ConnectionResolver {
             return false;
         }
 
-        let key = connection.getDiscoveryKey();
+        const key = connection.getDiscoveryKey();
         if (this._references == null) {
             return false;
         }
 
-        let discoveries = this._references.getOptional<IDiscovery>(new Descriptor("*", "discovery", "*", "*", "*"));
+        const discoveries = this._references.getOptional<IDiscovery>(new Descriptor("*", "discovery", "*", "*", "*"));
         if (discoveries == null) {
             return false;
         }
 
-        for (let discovery of discoveries) {
+        for (const discovery of discoveries) {
             await discovery.register(context, key, connection);
         }
 
@@ -273,7 +273,7 @@ export class ConnectionResolver {
      * @see [[IDiscovery]]
      */
     public async register(context: IContext, connection: ConnectionParams): Promise<void> {
-        let ok = await this.registerInDiscovery(context, connection);
+        const ok = await this.registerInDiscovery(context, connection);
         if (ok) {
             this._connections.push(connection);
         }

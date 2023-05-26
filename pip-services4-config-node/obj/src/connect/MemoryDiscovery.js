@@ -13,11 +13,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemoryDiscovery = void 0;
 const ConnectionParams_1 = require("./ConnectionParams");
 /**
- * Used to store key-identifiable information about connections.
- */
-class DiscoveryItem {
-}
-/**
  * Discovery service that keeps connections in memory.
  *
  * ### Configuration parameters ###
@@ -63,7 +58,9 @@ class MemoryDiscovery {
      *
      * @param config    configuration parameters to be set.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     configure(config) {
+        //
     }
     /**
      * Reads connections from configuration parameters.
@@ -75,11 +72,11 @@ class MemoryDiscovery {
         var _a;
         this._items.clear();
         if (config.length() > 0) {
-            let connectionSections = config.getSectionNames();
+            const connectionSections = config.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let key = connectionSections[index];
-                let value = config.getSection(key);
-                let connectionsList = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
+                const key = connectionSections[index];
+                const value = config.getSection(key);
+                const connectionsList = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
                 connectionsList.push(new ConnectionParams_1.ConnectionParams(value));
                 this._items.set(key, connectionsList);
             }
@@ -96,7 +93,7 @@ class MemoryDiscovery {
     register(context, key, connection) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let connectionsList = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
+            const connectionsList = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
             connectionsList.push(new ConnectionParams_1.ConnectionParams(connection));
             this._items.set(key, connectionsList);
             return connection;
@@ -113,7 +110,7 @@ class MemoryDiscovery {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let connection = null;
-            let connections = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
+            const connections = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
             if (connections.length > 0)
                 connection = connections[0];
             return connection;
@@ -129,7 +126,7 @@ class MemoryDiscovery {
     resolveAll(context, key) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
+            const connections = (_a = this._items.get(key)) !== null && _a !== void 0 ? _a : [];
             return connections.filter(c => c != null);
         });
     }

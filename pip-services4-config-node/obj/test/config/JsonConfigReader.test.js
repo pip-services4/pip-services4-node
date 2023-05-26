@@ -6,7 +6,7 @@ const JsonConfigReader_1 = require("../../src/config/JsonConfigReader");
 suite('JsonConfigReader', () => {
     test('Config Sections', () => {
         let parameters = pip_services4_components_node_1.ConfigParams.fromTuples("param1", "Test Param 1", "param2", "Test Param 2");
-        let config = JsonConfigReader_1.JsonConfigReader.readConfig(new pip_services4_components_node_1.Context(), "./data/config.json", parameters);
+        let config = JsonConfigReader_1.JsonConfigReader.readConfig(null, "./data/config.json", parameters);
         assert.equal(config.length(), 9);
         assert.equal(config.getAsInteger("field1.field11"), 123);
         assert.equal(config.get("field1.field12"), "ABC");

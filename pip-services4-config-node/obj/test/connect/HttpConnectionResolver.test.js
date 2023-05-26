@@ -16,7 +16,7 @@ suite('HttpConnectionResolver', () => {
     test('Resolve URI', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.uri", "http://somewhere.com:777"));
-        let connection = yield resolver.resolve(new pip_services4_components_node_1.Context());
+        let connection = yield resolver.resolve(null);
         assert.equal("http", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(777, connection.getAsInteger("port"));
@@ -24,13 +24,13 @@ suite('HttpConnectionResolver', () => {
     test('Resolve Parameters', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "somewhere.com", "connection.port", 777));
-        let connection = yield resolver.resolve(new pip_services4_components_node_1.Context());
+        let connection = yield resolver.resolve(null);
         assert.equal("http://somewhere.com:777", connection.getAsString("uri"));
     }));
     test('TestHttpsWithCredentialsConnectionParams', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https", "credential.ssl_key_file", "ssl_key_file", "credential.ssl_crt_file", "ssl_crt_file"));
-        let connection = yield resolver.resolve(new pip_services4_components_node_1.Context());
+        let connection = yield resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));
@@ -41,7 +41,7 @@ suite('HttpConnectionResolver', () => {
     test('TestHttpsWithNoCredentialsConnectionParams', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https", "credential.internal_network", "internal_network"));
-        let connection = yield resolver.resolve(new pip_services4_components_node_1.Context());
+        let connection = yield resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));
@@ -53,7 +53,7 @@ suite('HttpConnectionResolver', () => {
         let resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https"));
         try {
-            yield resolver.resolve(new pip_services4_components_node_1.Context());
+            yield resolver.resolve(null);
             assert.fail("Should throw an exception");
         }
         catch (err) {
@@ -66,7 +66,7 @@ suite('HttpConnectionResolver', () => {
         resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https", "credential.ssl_key_file", "ssl_key_file"));
         try {
-            yield resolver.resolve(new pip_services4_components_node_1.Context());
+            yield resolver.resolve(null);
             assert.fail("Should throw an exception");
         }
         catch (err) {
@@ -79,7 +79,7 @@ suite('HttpConnectionResolver', () => {
         resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https", "credential.ssl_crt_file", "ssl_crt_file"));
         try {
-            yield resolver.resolve(new pip_services4_components_node_1.Context());
+            yield resolver.resolve(null);
             assert.fail("Should throw an exception");
         }
         catch (err) {
@@ -91,7 +91,7 @@ suite('HttpConnectionResolver', () => {
         // ssl_key_file,  ssl_crt_file present
         resolver = new HttpConnectionResolver_1.HttpConnectionResolver();
         resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "somewhere.com", "connection.port", 123, "connection.protocol", "https", "credential.ssl_key_file", "ssl_key_file", "credential.ssl_crt_file", "ssl_crt_file"));
-        let connection = yield resolver.resolve(new pip_services4_components_node_1.Context());
+        let connection = yield resolver.resolve(null);
         assert.equal("https", connection.getAsString("protocol"));
         assert.equal("somewhere.com", connection.getAsString("host"));
         assert.equal(123, connection.getAsInteger("port"));

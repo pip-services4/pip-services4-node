@@ -20,7 +20,9 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
     /**
      * Creates a new instance of the config reader.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -28,7 +30,7 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
      * @param config    configuration parameters to be set.
      */
     public configure(config: ConfigParams): void {
-        let parameters = config.getSection("parameters")
+        const parameters = config.getSection("parameters")
         if (parameters.length() > 0) {
             this._parameters = parameters;
         }
@@ -55,7 +57,7 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
     protected parameterize(config: string, parameters: ConfigParams): string {
         parameters = this._parameters.override(parameters);
 
-        let template = new MustacheTemplate(config);
+        const template = new MustacheTemplate(config);
         return template.evaluateWithVariables(parameters);
     }
 
@@ -63,6 +65,7 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
      * Adds a listener that will be notified when configuration is changed
      * @param listener a listener to be added.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public addChangeListener(listener: INotifiable): void {
         // Do nothing...
     }
@@ -71,6 +74,7 @@ export abstract class ConfigReader implements IConfigurable, IConfigReader {
      * Remove a previously added change listener.
      * @param listener a listener to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeChangeListener(listener: INotifiable): void {
         // Do nothing...
     }
