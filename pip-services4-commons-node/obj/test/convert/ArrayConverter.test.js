@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const ArrayConverter_1 = require("../../src/convert/ArrayConverter");
 suite('ArrayConverter', () => {
     test('To Array', () => {

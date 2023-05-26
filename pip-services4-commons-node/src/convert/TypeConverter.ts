@@ -117,7 +117,7 @@ export class TypeConverter {
 	 */
 	public static toType<T>(type: TypeCode, value: any): T {
 		// Convert to the specified type
-		let result: T = TypeConverter.toNullableType<T>(type, value);
+		const result: T = TypeConverter.toNullableType<T>(type, value);
 		if (result != null) return result;
 
 		// Define and return default value based on type
@@ -155,7 +155,7 @@ export class TypeConverter {
 	 * @see [[toTypeCode]]
 	 */
 	public static toTypeWithDefault<T>(type: TypeCode, value: any, defaultValue: T): T {
-		let result: T = TypeConverter.toNullableType<T>(type, value);
+		const result: T = TypeConverter.toNullableType<T>(type, value);
 		return result != null ? result : defaultValue;
 	}
 

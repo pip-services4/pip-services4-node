@@ -27,7 +27,7 @@ export class LongConverter {
         if (value instanceof Date) return value.getTime();
         if (typeof value === "boolean") return value ? 1 : 0;
 
-        let result = parseFloat(value);
+        const result = parseFloat(value);
         return isNaN(result) ? null : Math.round(result);
     }
 
@@ -53,7 +53,7 @@ export class LongConverter {
      * @see [[toNullableLong]]
      */
     public static toLongWithDefault(value: any, defaultValue: number): number {
-        let result = LongConverter.toNullableLong(value);
+        const result = LongConverter.toNullableLong(value);
         return result != null ? result : defaultValue;
     }
 

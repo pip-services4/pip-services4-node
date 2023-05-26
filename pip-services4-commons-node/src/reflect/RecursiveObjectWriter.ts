@@ -18,8 +18,8 @@ export class RecursiveObjectWriter {
 
 	private static createProperty(obj: any, names: string[], nameIndex: number): any {
 		// If next field is index then create an array
-		let subField = names.length > nameIndex + 1 ? names[nameIndex + 1] : null;
-		let subFieldIndex = IntegerConverter.toNullableInteger(subField);
+		const subField = names.length > nameIndex + 1 ? names[nameIndex + 1] : null;
+		const subFieldIndex = IntegerConverter.toNullableInteger(subField);
 		if (subFieldIndex != null) {
 			return [];
 		}
@@ -62,9 +62,9 @@ export class RecursiveObjectWriter {
 	public static setProperty(obj: any, name: string, value: any): void {
         if (obj == null || name == null) return;
 
-        let names = name.split(".");
+        const names = name.split(".");
         if (names == null || names.length == 0) {
-        	return;
+			return;
 		}
 
         RecursiveObjectWriter.performSetProperty(obj, names, 0, value);
@@ -88,8 +88,8 @@ export class RecursiveObjectWriter {
 	public static setProperties(obj: any, values: any): void {
 		if (values == null) return;
 		
-		for (let key in values) {
-            let value = values[key];
+		for (const key in values) {
+            const value = values[key];
 			RecursiveObjectWriter.setProperty(obj, key, value);
 		}
 	}
@@ -105,7 +105,7 @@ export class RecursiveObjectWriter {
 	public static copyProperties(dest: any, src: any): void {
 		if (dest == null || src == null) return;
 		
-		let values = RecursiveObjectReader.getProperties(src);
+		const values = RecursiveObjectReader.getProperties(src);
 		RecursiveObjectWriter.setProperties(dest, values);
 	}
 

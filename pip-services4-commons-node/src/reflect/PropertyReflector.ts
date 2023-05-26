@@ -42,10 +42,10 @@ export class PropertyReflector {
 		}
 		
         name = name.toLowerCase();
-        for (let field in obj) {
-            let fieldValue = obj[field];
-        	if (PropertyReflector.matchField(field, fieldValue, name)) {
-        		return true;
+        for (const field in obj) {
+            const fieldValue = obj[field];
+			if (PropertyReflector.matchField(field, fieldValue, name)) {
+				return true;
 			}
         }
 		
@@ -69,16 +69,16 @@ export class PropertyReflector {
 
 		name = name.toLowerCase()
 
-		let fields: string[] = this.getAllFieldsOfObject(obj)
+		const fields: string[] = this.getAllFieldsOfObject(obj)
 		
 		for (let index = 0; index < fields.length; index++) {
-            let fieldValue = obj[fields[index]];
-        	try {
-	        	if (PropertyReflector.matchField(fields[index], fieldValue, name)) {
-	        		return fieldValue;
+            const fieldValue = obj[fields[index]];
+			try {
+				if (PropertyReflector.matchField(fields[index], fieldValue, name)) {
+					return fieldValue;
 				}
-        	} catch (ex) {
-        		// Ignore exceptions
+			} catch (ex) {
+				// Ignore exceptions
 			}
         }
 		
@@ -86,11 +86,11 @@ export class PropertyReflector {
 	}
 
 	private static getAllFieldsOfObject(obj: any):string[] {
-		let properties: string[] = [];
+		const properties: string[] = [];
 		
 		while (obj != null && Object.getPrototypeOf(obj) != null) {
 			// enumerable props
-			for (let prop in obj) {
+			for (const prop in obj) {
 				properties.push(prop.toString())
 			}
 
@@ -114,16 +114,16 @@ export class PropertyReflector {
      * @returns a list with property names.
      */
 	public static getPropertyNames(obj: any): string[] {
-        let properties: string[] = [];
-		let fields: string[] = this.getAllFieldsOfObject(obj)
+        const properties: string[] = [];
+		const fields: string[] = this.getAllFieldsOfObject(obj)
 		
 		for (let index = 0; index < fields.length; index++) {
-            let fieldValue = obj[fields[index]];
-        	if (PropertyReflector.matchField(fields[index], fieldValue, null)) {
-        		properties.push(fields[index]);
+            const fieldValue = obj[fields[index]];
+			if (PropertyReflector.matchField(fields[index], fieldValue, null)) {
+				properties.push(fields[index]);
 			}
         }
-		        
+    
 		return properties;
 	}
 
@@ -135,21 +135,21 @@ export class PropertyReflector {
      * @returns a map, containing the names of the object's properties and their values.
      */
 	public static getProperties(obj: any): any {
-        let map: any = {};
+        const map: any = {};
 		
-		let fields: string[] = this.getAllFieldsOfObject(obj)
+		const fields: string[] = this.getAllFieldsOfObject(obj)
 		
 		for (let index = 0; index < fields.length; index++) {
-            let fieldValue = obj[fields[index]];
-        	try {
-	        	if (PropertyReflector.matchField(fields[index], fieldValue, null)) {
-	        		map[fields[index]] = fieldValue;
+            const fieldValue = obj[fields[index]];
+			try {
+				if (PropertyReflector.matchField(fields[index], fieldValue, null)) {
+					map[fields[index]] = fieldValue;
 				}
-        	} catch (ex) {
-        		// Ignore exception
-        	}
+			} catch (ex) {
+				// Ignore exception
+			}
         }
-		        
+       
 		return map;
 	}
 	
@@ -171,19 +171,19 @@ export class PropertyReflector {
 			throw new Error("Property name cannot be null");
 		}
 
-        let expectedName = name.toLowerCase();
-        let fields: string[] = this.getAllFieldsOfObject(obj)
+        const expectedName = name.toLowerCase();
+        const fields: string[] = this.getAllFieldsOfObject(obj)
 		
 		for (let index = 0; index < fields.length; index++) {
-            let fieldValue = obj[fields[index]];
-	    	try {        		
-	            if (PropertyReflector.matchField(fields[index], fieldValue, expectedName)) { 
-	        		obj[fields[index]] = value;
-	        		return;
-	            }
-	    	} catch (ex) {
-	    		// Ignore exception
-	    	}
+            const fieldValue = obj[fields[index]];
+			try {        		
+				if (PropertyReflector.matchField(fields[index], fieldValue, expectedName)) { 
+					obj[fields[index]] = value;
+					return;
+				}
+			} catch (ex) {
+				// Ignore exception
+			}
         }
 
         // If no existing properties found set it directly
@@ -204,8 +204,8 @@ export class PropertyReflector {
 	public static setProperties(obj: any, values: any): void {
 		if (values == null) return;
 		
-		for (let field in values) {
-            let fieldValue = values[field];
+		for (const field in values) {
+            const fieldValue = values[field];
 			PropertyReflector.setProperty(obj, field, fieldValue);
 		}
 	}

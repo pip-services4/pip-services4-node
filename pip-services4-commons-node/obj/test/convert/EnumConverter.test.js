@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 suite('EnumConverter', () => {
     // test('To Enum', () => {
     //     assert.equal(TypeCode.Boolean, EnumConverter.toEnum<TypeCode>(3));

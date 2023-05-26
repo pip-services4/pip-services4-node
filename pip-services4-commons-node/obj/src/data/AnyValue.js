@@ -368,8 +368,8 @@ class AnyValue {
         if (obj instanceof AnyValue) {
             obj = obj.value;
         }
-        let strThisValue = StringConverter_1.StringConverter.toString(this.value);
-        let strValue = StringConverter_1.StringConverter.toString(obj);
+        const strThisValue = StringConverter_1.StringConverter.toString(this.value);
+        const strValue = StringConverter_1.StringConverter.toString(obj);
         if (strThisValue == null && strValue == null)
             return true;
         if (strThisValue == null || strValue == null)
@@ -394,8 +394,8 @@ class AnyValue {
         if (obj instanceof AnyValue) {
             obj = obj.value;
         }
-        let typedThisValue = TypeConverter_1.TypeConverter.toType(type, this.value);
-        let typedValue = TypeConverter_1.TypeConverter.toType(type, obj);
+        const typedThisValue = TypeConverter_1.TypeConverter.toType(type, this.value);
+        const typedValue = TypeConverter_1.TypeConverter.toType(type, obj);
         if (typedThisValue == null && typedValue == null)
             return true;
         if (typedThisValue == null || typedValue == null)

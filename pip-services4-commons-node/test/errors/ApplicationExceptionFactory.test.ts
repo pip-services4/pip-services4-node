@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { StringValueMap } from '../../src/data/StringValueMap';
 import { ErrorCategory } from '../../src/errors/ErrorCategory';
@@ -7,7 +8,6 @@ import { ApplicationExceptionFactory } from '../../src/errors/ApplicationExcepti
 import { ApplicationException } from '../../src/errors/ApplicationException';
 import { UnknownException } from '../../src/errors/UnknownException';
 import { InternalException } from '../../src/errors/InternalException';
-import { InvalidStateException } from '../../src/errors/InvalidStateException';
 import { ConfigException } from '../../src/errors/ConfigException';
 import { ConnectionException } from '../../src/errors/ConnectionException';
 import { InvocationException } from '../../src/errors/InvocationException';
@@ -22,7 +22,7 @@ suite('ApplicationExceptionFactory', ()=> {
 
     let _descr: ErrorDescription;
 
-    let checkProperties = (ex: ApplicationException): void => {
+    const checkProperties = (ex: ApplicationException): void => {
         assert.isNotNull(ex);
 
         assert.equal(_descr.cause, ex.cause);
@@ -40,7 +40,7 @@ suite('ApplicationExceptionFactory', ()=> {
         _descr.cause = "cause";
         _descr.stack_trace = "stackTrace";
 
-        let map = new StringValueMap();
+        const map = new StringValueMap();
         map.put("key", "value");
 
         _descr.details = map;
@@ -49,7 +49,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Unknown', () => {
         _descr.category = ErrorCategory.Unknown;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -59,7 +59,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Internal', () => {
         _descr.category = ErrorCategory.Internal;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -69,7 +69,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Misconfiguration', () => {
         _descr.category = ErrorCategory.Misconfiguration;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -79,7 +79,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From No Response', () => {
         _descr.category = ErrorCategory.NoResponse;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -89,7 +89,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Failed Invocation', () => {
         _descr.category = ErrorCategory.FailedInvocation;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -99,7 +99,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From No File Access', () => {
         _descr.category = ErrorCategory.FileError;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -109,7 +109,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Bad Request', () => {
         _descr.category = ErrorCategory.BadRequest;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -119,7 +119,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From From Unauthorized', () => {
         _descr.category = ErrorCategory.Unauthorized;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -129,7 +129,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Conflict', () => {
         _descr.category = ErrorCategory.Conflict;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -139,7 +139,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Not Found', () => {
         _descr.category = ErrorCategory.NotFound;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -149,7 +149,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Unsupported', () => {
         _descr.category = ErrorCategory.Unsupported;
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 
@@ -159,7 +159,7 @@ suite('ApplicationExceptionFactory', ()=> {
     test('Create From Default', () => {
         _descr.category = "any_other";
 
-        let ex = ApplicationExceptionFactory.create(_descr);
+        const ex = ApplicationExceptionFactory.create(_descr);
 
         checkProperties(ex);
 

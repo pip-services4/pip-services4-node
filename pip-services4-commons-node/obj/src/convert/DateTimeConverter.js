@@ -27,7 +27,7 @@ class DateTimeConverter {
             return value;
         if (typeof value === "number")
             return new Date(value);
-        let result = Date.parse(value);
+        const result = Date.parse(value);
         return isNaN(result) ? null : new Date(result);
     }
     /**
@@ -51,7 +51,7 @@ class DateTimeConverter {
      * @see [[toNullableDateTime]]
      */
     static toDateTimeWithDefault(value, defaultValue = null) {
-        let result = DateTimeConverter.toNullableDateTime(value);
+        const result = DateTimeConverter.toNullableDateTime(value);
         return result != null ? result : defaultValue;
     }
 }

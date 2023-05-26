@@ -69,9 +69,9 @@ class StringValueMap {
      * @returns a list with all map keys.
      */
     getKeys() {
-        let keys = [];
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        const keys = [];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 keys.push(key);
             }
         }
@@ -102,9 +102,9 @@ class StringValueMap {
     append(map) {
         if (map == null)
             return;
-        for (let key in map) {
-            let value = map[key];
-            if (map.hasOwnProperty(key)) {
+        for (const key in map) {
+            const value = map[key];
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
                 this[key] = StringConverter_1.StringConverter.toNullableString(value);
             }
         }
@@ -113,9 +113,8 @@ class StringValueMap {
      * Clears this map by removing all its elements.
      */
     clear() {
-        for (let key in this) {
-            let value = this[key];
-            if (this.hasOwnProperty(key)) {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 delete this[key];
             }
         }
@@ -127,8 +126,8 @@ class StringValueMap {
      */
     length() {
         let count = 0;
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 count++;
             }
         }
@@ -143,10 +142,10 @@ class StringValueMap {
      */
     getAsObject(key = undefined) {
         if (key === undefined) {
-            let result = {};
-            for (let key in this) {
-                let value = this[key];
-                if (this.hasOwnProperty(key)) {
+            const result = {};
+            for (const key in this) {
+                const value = this[key];
+                if (Object.prototype.hasOwnProperty.call(this, key)) {
                     result[key] = value;
                 }
             }
@@ -170,7 +169,7 @@ class StringValueMap {
         if (value === undefined) {
             value = key;
             this.clear();
-            let values = MapConverter_1.MapConverter.toMap(value);
+            const values = MapConverter_1.MapConverter.toMap(value);
             this.append(values);
         }
         else {
@@ -186,7 +185,7 @@ class StringValueMap {
      * @see [[StringConverter.toNullableString]]
      */
     getAsNullableString(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter_1.StringConverter.toNullableString(value);
     }
     /**
@@ -210,7 +209,7 @@ class StringValueMap {
      * @see [[StringConverter.toStringWithDefault]]
      */
     getAsStringWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter_1.StringConverter.toStringWithDefault(value, defaultValue);
     }
     /**
@@ -222,7 +221,7 @@ class StringValueMap {
      * @see [[BooleanConverter.toNullableBoolean]]
      */
     getAsNullableBoolean(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter_1.BooleanConverter.toNullableBoolean(value);
     }
     /**
@@ -246,7 +245,7 @@ class StringValueMap {
      * @see [[BooleanConverter.toBooleanWithDefault]]
      */
     getAsBooleanWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter_1.BooleanConverter.toBooleanWithDefault(value, defaultValue);
     }
     /**
@@ -258,7 +257,7 @@ class StringValueMap {
      * @see [[IntegerConverter.toNullableInteger]]
      */
     getAsNullableInteger(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter_1.IntegerConverter.toNullableInteger(value);
     }
     /**
@@ -282,7 +281,7 @@ class StringValueMap {
      * @see [[IntegerConverter.toIntegerWithDefault]]
      */
     getAsIntegerWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter_1.IntegerConverter.toIntegerWithDefault(value, defaultValue);
     }
     /**
@@ -294,7 +293,7 @@ class StringValueMap {
      * @see [[LongConverter.toNullableLong]]
      */
     getAsNullableLong(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter_1.LongConverter.toNullableLong(value);
     }
     /**
@@ -318,7 +317,7 @@ class StringValueMap {
      * @see [[LongConverter.toLongWithDefault]]
      */
     getAsLongWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter_1.LongConverter.toLongWithDefault(value, defaultValue);
     }
     /**
@@ -330,7 +329,7 @@ class StringValueMap {
      * @see [[FloatConverter.toNullableFloat]]
      */
     getAsNullableFloat(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter_1.FloatConverter.toNullableFloat(value);
     }
     /**
@@ -354,7 +353,7 @@ class StringValueMap {
      * @see [[FloatConverter.toFloatWithDefault]]
      */
     getAsFloatWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter_1.FloatConverter.toFloatWithDefault(value, defaultValue);
     }
     /**
@@ -366,7 +365,7 @@ class StringValueMap {
      * @see [[DoubleConverter.toNullableDouble]]
      */
     getAsNullableDouble(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter_1.DoubleConverter.toNullableDouble(value);
     }
     /**
@@ -390,7 +389,7 @@ class StringValueMap {
      * @see [[DoubleConverter.toDoubleWithDefault]]
      */
     getAsDoubleWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter_1.DoubleConverter.toDoubleWithDefault(value, defaultValue);
     }
     /**
@@ -402,7 +401,7 @@ class StringValueMap {
      * @see [[DateTimeConverter.toNullableDateTime]]
      */
     getAsNullableDateTime(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter_1.DateTimeConverter.toNullableDateTime(value);
     }
     /**
@@ -426,7 +425,7 @@ class StringValueMap {
      * @see [[DateTimeConverter.toDateTimeWithDefault]]
      */
     getAsDateTimeWithDefault(key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter_1.DateTimeConverter.toDateTimeWithDefault(value, defaultValue);
     }
     /**
@@ -440,7 +439,7 @@ class StringValueMap {
      * @see [[TypeConverter.toNullableType]]
      */
     getAsNullableType(type, key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter_1.TypeConverter.toNullableType(type, value);
     }
     /**
@@ -468,7 +467,7 @@ class StringValueMap {
      * @see [[TypeConverter.toTypeWithDefault]]
      */
     getAsTypeWithDefault(type, key, defaultValue) {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter_1.TypeConverter.toTypeWithDefault(type, value, defaultValue);
     }
     /**
@@ -481,7 +480,7 @@ class StringValueMap {
      * @see [[AnyValue.constructor]]
      */
     getAsValue(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return new AnyValue_1.AnyValue(value);
     }
     /**
@@ -494,7 +493,7 @@ class StringValueMap {
      * @see [[AnyValueArray.fromValue]]
      */
     getAsNullableArray(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return value != null ? AnyValueArray_1.AnyValueArray.fromValue(value) : null;
     }
     /**
@@ -507,7 +506,7 @@ class StringValueMap {
      * @see [[AnyValueArray.fromValue]]
      */
     getAsArray(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return AnyValueArray_1.AnyValueArray.fromValue(value);
     }
     /**
@@ -521,7 +520,7 @@ class StringValueMap {
      * @see [[getAsNullableArray]]
      */
     getAsArrayWithDefault(key, defaultValue) {
-        let result = this.getAsNullableArray(key);
+        const result = this.getAsNullableArray(key);
         return result != null ? result : defaultValue;
     }
     /**
@@ -533,7 +532,7 @@ class StringValueMap {
      * @see [[fromValue]]
      */
     getAsNullableMap(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return value != null ? AnyValueMap_1.AnyValueMap.fromValue(value) : null;
     }
     /**
@@ -545,7 +544,7 @@ class StringValueMap {
      * @see [[fromValue]]
      */
     getAsMap(key) {
-        let value = this.get(key);
+        const value = this.get(key);
         return AnyValueMap_1.AnyValueMap.fromValue(value);
     }
     /**
@@ -558,7 +557,7 @@ class StringValueMap {
      * @see [[getAsNullableMap]]
      */
     getAsMapWithDefault(key, defaultValue) {
-        let result = this.getAsNullableMap(key);
+        const result = this.getAsNullableMap(key);
         return result != null ? result : defaultValue;
     }
     /**
@@ -571,9 +570,9 @@ class StringValueMap {
     toString() {
         let builder = '';
         // Todo: User encoder
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
-                let value = this[key];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const value = this[key];
                 if (builder.length > 0) {
                     builder += ';';
                 }
@@ -625,15 +624,15 @@ class StringValueMap {
      * @returns         a newly created StringValueMap.
      */
     static fromTuplesArray(tuples) {
-        let result = new StringValueMap();
+        const result = new StringValueMap();
         if (tuples == null || tuples.length == 0) {
             return result;
         }
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length)
                 break;
-            let name = StringConverter_1.StringConverter.toString(tuples[index]);
-            let value = StringConverter_1.StringConverter.toNullableString(tuples[index + 1]);
+            const name = StringConverter_1.StringConverter.toString(tuples[index]);
+            const value = StringConverter_1.StringConverter.toNullableString(tuples[index + 1]);
             result[name] = value;
         }
         return result;
@@ -645,19 +644,19 @@ class StringValueMap {
      * @returns         a newly created StringValueMap.
      */
     static fromString(line) {
-        let result = new StringValueMap();
+        const result = new StringValueMap();
         if (line == null || line.length == 0) {
             return result;
         }
         // Todo: User tokenizer / decoder
-        let tokens = line.split(";");
+        const tokens = line.split(";");
         for (let index = 0; index < tokens.length; index++) {
-            let token = tokens[index];
+            const token = tokens[index];
             if (token.length == 0)
                 continue;
-            let pos = token.indexOf('=');
-            let key = pos > 0 ? token.substring(0, pos).trim() : token.trim();
-            let value = pos > 0 ? token.substring(pos + 1).trim() : null;
+            const pos = token.indexOf('=');
+            const key = pos > 0 ? token.substring(0, pos).trim() : token.trim();
+            const value = pos > 0 ? token.substring(pos + 1).trim() : null;
             result.put(key, value);
         }
         return result;
@@ -670,7 +669,7 @@ class StringValueMap {
      * @returns     a newly created AnyValueMap.
      */
     static fromMaps(...maps) {
-        let result = new StringValueMap();
+        const result = new StringValueMap();
         if (maps != null && maps.length > 0) {
             for (let index = 0; index < maps.length; index++) {
                 result.append(maps[index]);

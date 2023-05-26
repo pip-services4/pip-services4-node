@@ -68,7 +68,7 @@ class ObjectReader {
             return PropertyReflector_1.PropertyReflector.hasProperty(obj, name);
         }
         else if (Array.isArray(obj)) {
-            let index = IntegerConverter_1.IntegerConverter.toNullableInteger(name);
+            const index = IntegerConverter_1.IntegerConverter.toNullableInteger(name);
             return index != null && index < obj.length;
         }
         else {
@@ -94,7 +94,7 @@ class ObjectReader {
             return PropertyReflector_1.PropertyReflector.getProperty(obj, name);
         }
         else if (Array.isArray(obj)) {
-            let index = IntegerConverter_1.IntegerConverter.toNullableInteger(name);
+            const index = IntegerConverter_1.IntegerConverter.toNullableInteger(name);
             return index != null && index < obj.length ? obj[index] : null;
         }
         else {
@@ -120,7 +120,7 @@ class ObjectReader {
             properties = PropertyReflector_1.PropertyReflector.getPropertyNames(obj);
         }
         else if (Array.isArray(obj)) {
-            let length = obj.length;
+            const length = obj.length;
             for (let index = 0; index < length; index++) {
                 properties.push(index.toString());
             }
@@ -150,7 +150,7 @@ class ObjectReader {
             map = PropertyReflector_1.PropertyReflector.getProperties(obj);
         }
         else if (Array.isArray(obj)) {
-            let length = obj.length;
+            const length = obj.length;
             for (let index = 0; index < length; index++) {
                 map[index.toString()] = obj[index];
             }

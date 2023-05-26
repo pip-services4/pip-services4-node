@@ -46,9 +46,9 @@ export class ApplicationException extends Error {
     /** Standard error category */
     public category: string;
     /** HTTP status code associated with this error type */
-    public status: number = 500;
+    public status = 500;
     /** A unique error code */
-    public code: string = 'UNKNOWN';
+    public code = 'UNKNOWN';
     /** A map with additional details that can be used to restore error description in other languages */
     public details: StringValueMap; 
     /** A unique transaction id to trace execution throug call chain */   
@@ -95,7 +95,7 @@ export class ApplicationException extends Error {
      * @param value an original error message.
      */ 
     public setCauseString(value: string): void {
-    	this.cause = value;
+        this.cause = value;
     }    
 
     /**
@@ -113,7 +113,7 @@ export class ApplicationException extends Error {
      * @param value a stack trace as a string
      */ 
     public setStackTraceString(value: string): void {
-    	this.stack_trace = value;
+        this.stack_trace = value;
     }
 
     /**

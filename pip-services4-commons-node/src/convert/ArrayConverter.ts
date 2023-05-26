@@ -28,8 +28,8 @@ export class ArrayConverter {
 		}
 		// Convert map
 		else if (typeof value === "object") {
-			let array = [];
-			for (let prop in value) {
+			const array = [];
+			for (const prop in value) {
 				array.push(value[prop]);
 			}
 			return array;
@@ -50,7 +50,7 @@ export class ArrayConverter {
      * @see [[toNullableArray]]
      */
 	public static toArray(value: any): any[] {
-		let result: any[] = ArrayConverter.toNullableArray(value);
+		const result: any[] = ArrayConverter.toNullableArray(value);
 		return result || [];
 	}
 
@@ -65,7 +65,7 @@ export class ArrayConverter {
      * @see [[toNullableArray]]
      */
 	public static toArrayWithDefault(value: any, defaultValue: any[]): any[] {
-		let result: any[] = ArrayConverter.toNullableArray(value);
+		const result: any[] = ArrayConverter.toNullableArray(value);
 		return result || defaultValue;
 	}
 

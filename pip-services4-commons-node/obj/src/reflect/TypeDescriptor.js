@@ -47,7 +47,7 @@ class TypeDescriptor {
      */
     equals(value) {
         if (typeof value === "object" && value.constructor.name === "TypeDescriptor") {
-            let otherType = value;
+            const otherType = value;
             if (this.getName() == null || otherType.getName() == null)
                 return false;
             if (this.getName() != otherType.getName())
@@ -87,7 +87,7 @@ class TypeDescriptor {
         if (value == null || value.length == 0) {
             return null;
         }
-        let tokens = value.split(",");
+        const tokens = value.split(",");
         if (tokens.length == 1) {
             return new TypeDescriptor(tokens[0].trim(), null);
         }

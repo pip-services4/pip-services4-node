@@ -44,7 +44,7 @@ export class AnyValueMap implements ICloneable {
      * @param value     (optional) values to initialize this map.
      */
     public constructor(values: any = null) { 
-    	this.append(values);
+        this.append(values);
     }
     
     /**
@@ -54,7 +54,7 @@ export class AnyValueMap implements ICloneable {
      * @returns       the value of the map element.
      */
     public get(key: string): any {
-    	return this[key] || null;
+        return this[key] || null;
     }
 
     /** 
@@ -63,10 +63,10 @@ export class AnyValueMap implements ICloneable {
      * @returns a list with all map keys. 
      */
 	public getKeys(): string[] {
-        let keys: string[] = [];
+        const keys: string[] = [];
 		
-		for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+		for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 keys.push(key);
             }
         }
@@ -99,11 +99,11 @@ export class AnyValueMap implements ICloneable {
      * @param map  a map with elements to be added.
      */
     public append(map: any): void {
-    	if (map == null) return;
-    	
-		for (let key in map) {
-            let value = map[key];
-            if (map.hasOwnProperty(key)) {
+        if (map == null) return;
+
+		for (const key in map) {
+            const value = map[key];
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
                 this[key] = value;
             }
 		}
@@ -113,12 +113,11 @@ export class AnyValueMap implements ICloneable {
      * Clears this map by removing all its elements.
      */
    public clear(): any {
-    	for (let key in this) {
-            let value = this[key];
-            if (this.hasOwnProperty(key)) {
-    		    delete this[key];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                delete this[key];
             }
-    	}
+        }
     }
 
     /** 
@@ -127,12 +126,12 @@ export class AnyValueMap implements ICloneable {
      * @returns the number of elements in this map.
      */
     public length(): number {
-        let count: number = 0;
-    	for (let key in this) {
-    		if (this.hasOwnProperty(key) && typeof this[key] !== "function") {
+        let count = 0;
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key) && typeof this[key] !== "function") {
                 count ++;
             }
-    	}        
+        }        
         return count;
     }
 
@@ -145,10 +144,10 @@ export class AnyValueMap implements ICloneable {
      */     
     public getAsObject(key: string = undefined): any {
         if (key === undefined) {
-            let result: any = {};
-            for (let key in this) {
-                let value = this[key];
-                if (this.hasOwnProperty(key)) {
+            const result: any = {};
+            for (const key in this) {
+                const value = this[key];
+                if (Object.prototype.hasOwnProperty.call(this, key)) {
                     result[key] = value;
                 }
             }
@@ -172,7 +171,7 @@ export class AnyValueMap implements ICloneable {
         if (value === undefined) {
             value = key
             this.clear();
-            let values = MapConverter.toMap(value);
+            const values = MapConverter.toMap(value);
             this.append(values);
         } else {
             this.put(key, value);
@@ -188,7 +187,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[StringConverter.toNullableString]]
      */
     public getAsNullableString(key: string): string {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter.toNullableString(value);
     }
 
@@ -214,7 +213,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[StringConverter.toStringWithDefault]]
      */
     public getAsStringWithDefault(key: string, defaultValue: string): string {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter.toStringWithDefault(value, defaultValue);
     }
 
@@ -227,7 +226,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[BooleanConverter.toNullableBoolean]]
      */
     public getAsNullableBoolean(key: string): boolean {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter.toNullableBoolean(value);
     }
 
@@ -253,7 +252,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[BooleanConverter.toBooleanWithDefault]]
      */
     public getAsBooleanWithDefault(key: string, defaultValue: boolean): boolean {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter.toBooleanWithDefault(value, defaultValue);
     }
     
@@ -266,7 +265,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[IntegerConverter.toNullableInteger]]
      */
     public getAsNullableInteger(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter.toNullableInteger(value);
     }
 
@@ -292,7 +291,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[IntegerConverter.toIntegerWithDefault]]
      */
     public getAsIntegerWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter.toIntegerWithDefault(value, defaultValue);
     }
 
@@ -305,7 +304,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[LongConverter.toNullableLong]]
      */
     public getAsNullableLong(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter.toNullableLong(value);
     }
 
@@ -331,7 +330,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[LongConverter.toLongWithDefault]]
      */
     public getAsLongWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter.toLongWithDefault(value, defaultValue);
     }
 
@@ -344,7 +343,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[FloatConverter.toNullableFloat]]
      */
     public getAsNullableFloat(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter.toNullableFloat(value);
     }
 
@@ -370,7 +369,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[FloatConverter.toFloatWithDefault]]
      */
     public getAsFloatWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter.toFloatWithDefault(value, defaultValue);
     }
 
@@ -383,7 +382,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[DoubleConverter.toNullableDouble]]
      */
     public getAsNullableDouble(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter.toNullableDouble(value);
     }
 
@@ -409,7 +408,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[DoubleConverter.toDoubleWithDefault]]
      */
     public getAsDoubleWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter.toDoubleWithDefault(value, defaultValue);
     }
 
@@ -422,7 +421,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[DateTimeConverter.toNullableDateTime]]
      */
     public getAsNullableDateTime(key: string): Date {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter.toNullableDateTime(value);
     }
 
@@ -448,7 +447,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[DateTimeConverter.toDateTimeWithDefault]]
      */
     public getAsDateTimeWithDefault(key: string, defaultValue: Date): Date {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter.toDateTimeWithDefault(value, defaultValue);
     }
     
@@ -463,7 +462,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[TypeConverter.toNullableType]]
      */
     public getAsNullableType<T>(type: TypeCode, key: string): T {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter.toNullableType<T>(type, value);
     }
 
@@ -493,7 +492,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[TypeConverter.toTypeWithDefault]]
      */
     public getAsTypeWithDefault<T>(type: TypeCode, key: string, defaultValue: T): T {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter.toTypeWithDefault(type, value, defaultValue);
     }
 
@@ -507,8 +506,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[AnyValue.constructor]]
      */
     public getAsValue(key: string): AnyValue {
-        let value = this.get(key);
-    	return new AnyValue(value);
+        const value = this.get(key);
+        return new AnyValue(value);
     }
 
     /** 
@@ -521,8 +520,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[AnyValueArray.fromValue]]
      */
     public getAsNullableArray(key: string): AnyValueArray {
-        let value = this.get(key);
-    	return value != null ? AnyValueArray.fromValue(value) : null;
+        const value = this.get(key);
+        return value != null ? AnyValueArray.fromValue(value) : null;
     }
     
     /** 
@@ -535,8 +534,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[AnyValueArray.fromValue]]
      */
     public getAsArray(key: string): AnyValueArray {
-        let value = this.get(key);
-    	return AnyValueArray.fromValue(value);
+        const value = this.get(key);
+        return AnyValueArray.fromValue(value);
     }
     
     /** 
@@ -550,8 +549,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[getAsNullableArray]]
      */
     public getAsArrayWithDefault(key: string, defaultValue: AnyValueArray): AnyValueArray {
-    	let result = this.getAsNullableArray(key);
-    	return result != null ? result : defaultValue;
+        const result = this.getAsNullableArray(key);
+        return result != null ? result : defaultValue;
     }
 
     /** 
@@ -563,8 +562,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[fromValue]]
      */
     public getAsNullableMap(key: string): AnyValueMap {
-        let value = this.get(key);
-    	return value != null ? AnyValueMap.fromValue(value) : null;
+        const value = this.get(key);
+        return value != null ? AnyValueMap.fromValue(value) : null;
     }
 
     /** 
@@ -576,8 +575,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[fromValue]]
      */
     public getAsMap(key: string): AnyValueMap {
-        let value = this.get(key);
-    	return AnyValueMap.fromValue(value);
+        const value = this.get(key);
+        return AnyValueMap.fromValue(value);
     }
     
     /** 
@@ -590,8 +589,8 @@ export class AnyValueMap implements ICloneable {
      * @see [[getAsNullableMap]]
      */
     public getAsMapWithDefault(key: string, defaultValue: AnyValueMap): AnyValueMap {
-        let result = this.getAsNullableMap(key);
-    	return result != null ? result: defaultValue;
+        const result = this.getAsNullableMap(key);
+        return result != null ? result: defaultValue;
     }
     
     /** 
@@ -605,9 +604,9 @@ export class AnyValueMap implements ICloneable {
 		let builder = '';
 
 		// Todo: User encoder
-		for (let key in this) {
-            if (this.hasOwnProperty(key)) {
-                let value = this[key];
+		for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const value = this[key];
 
                 if (builder.length > 0) {
                     builder += ';';
@@ -630,7 +629,7 @@ export class AnyValueMap implements ICloneable {
      * @returns a clone of this object.
      */
     public clone(): any {
-    	return new AnyValueMap(this);
+        return new AnyValueMap(this);
     }
 
     /**
@@ -642,7 +641,7 @@ export class AnyValueMap implements ICloneable {
      * @see [[setAsObject]]
      */
     public static fromValue(value: any): AnyValueMap {
-    	let result = new AnyValueMap();
+        const result = new AnyValueMap();
 		result.setAsObject(value);
 		return result;
 	}
@@ -667,22 +666,22 @@ export class AnyValueMap implements ICloneable {
      * @returns         a newly created AnyValueArray.
      */
     public static fromTuplesArray(tuples: any[]): AnyValueMap {
-    	let result = new AnyValueMap();
-    	
+        const result = new AnyValueMap();
+
         if (tuples == null || tuples.length == 0) {
-    		return result;
+            return result;
         }
-    	
+
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length) break;
 
-            let name = StringConverter.toString(tuples[index]);
-            let value = tuples[index + 1];
+            const name = StringConverter.toString(tuples[index]);
+            const value = tuples[index + 1];
 
             result.setAsObject(name, value);
         }
         
-    	return result;
+        return result;
     }
     
     /**
@@ -693,12 +692,12 @@ export class AnyValueMap implements ICloneable {
      * @returns     a newly created AnyValueMap.
      */
     public static fromMaps(...maps: any[]): AnyValueMap {
-    	let result = new AnyValueMap();
-    	if (maps != null && maps.length > 0) {
-	    	for (let index = 0; index < maps.length; index++) {
-	    		result.append(maps[index]);
+        const result = new AnyValueMap();
+        if (maps != null && maps.length > 0) {
+            for (let index = 0; index < maps.length; index++) {
+                result.append(maps[index]);
             }
-    	}
-    	return result;
+        }
+        return result;
     }
 }

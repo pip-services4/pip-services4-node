@@ -29,8 +29,8 @@ class ArrayConverter {
         }
         // Convert map
         else if (typeof value === "object") {
-            let array = [];
-            for (let prop in value) {
+            const array = [];
+            for (const prop in value) {
                 array.push(value[prop]);
             }
             return array;
@@ -50,7 +50,7 @@ class ArrayConverter {
      * @see [[toNullableArray]]
      */
     static toArray(value) {
-        let result = ArrayConverter.toNullableArray(value);
+        const result = ArrayConverter.toNullableArray(value);
         return result || [];
     }
     /**
@@ -64,7 +64,7 @@ class ArrayConverter {
      * @see [[toNullableArray]]
      */
     static toArrayWithDefault(value, defaultValue) {
-        let result = ArrayConverter.toNullableArray(value);
+        const result = ArrayConverter.toNullableArray(value);
         return result || defaultValue;
     }
     /**

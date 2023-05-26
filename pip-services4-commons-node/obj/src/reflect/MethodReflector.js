@@ -47,9 +47,9 @@ class MethodReflector {
         }
         name = name.toLowerCase();
         while (obj != null && Object.getPrototypeOf(obj) != null) {
-            let properties = Object.getOwnPropertyNames(obj);
-            for (let method of properties) {
-                let methodValue = obj[method];
+            const properties = Object.getOwnPropertyNames(obj);
+            for (const method of properties) {
+                const methodValue = obj[method];
                 if (MethodReflector.matchMethod(method, methodValue, name)) {
                     return true;
                 }
@@ -75,9 +75,9 @@ class MethodReflector {
         }
         name = name.toLowerCase();
         while (obj != null && Object.getPrototypeOf(obj) != null) {
-            let properties = Object.getOwnPropertyNames(obj);
-            for (let method of properties) {
-                let methodValue = obj[method];
+            const properties = Object.getOwnPropertyNames(obj);
+            for (const method of properties) {
+                const methodValue = obj[method];
                 try {
                     if (MethodReflector.matchMethod(method, methodValue, name)) {
                         return methodValue.apply(obj, args);
@@ -98,11 +98,11 @@ class MethodReflector {
      * @returns a list with method names.
      */
     static getMethodNames(obj) {
-        let methods = [];
+        const methods = [];
         while (obj != null && Object.getPrototypeOf(obj) != null) {
-            let properties = Object.getOwnPropertyNames(obj);
-            for (let method of properties) {
-                let methodValue = obj[method];
+            const properties = Object.getOwnPropertyNames(obj);
+            for (const method of properties) {
+                const methodValue = obj[method];
                 if (MethodReflector.matchMethod(method, methodValue, null)) {
                     methods.push(method);
                 }

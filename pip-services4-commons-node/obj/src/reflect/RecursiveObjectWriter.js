@@ -19,8 +19,8 @@ const RecursiveObjectReader_1 = require("./RecursiveObjectReader");
 class RecursiveObjectWriter {
     static createProperty(obj, names, nameIndex) {
         // If next field is index then create an array
-        let subField = names.length > nameIndex + 1 ? names[nameIndex + 1] : null;
-        let subFieldIndex = IntegerConverter_1.IntegerConverter.toNullableInteger(subField);
+        const subField = names.length > nameIndex + 1 ? names[nameIndex + 1] : null;
+        const subFieldIndex = IntegerConverter_1.IntegerConverter.toNullableInteger(subField);
         if (subFieldIndex != null) {
             return [];
         }
@@ -62,7 +62,7 @@ class RecursiveObjectWriter {
     static setProperty(obj, name, value) {
         if (obj == null || name == null)
             return;
-        let names = name.split(".");
+        const names = name.split(".");
         if (names == null || names.length == 0) {
             return;
         }
@@ -86,8 +86,8 @@ class RecursiveObjectWriter {
     static setProperties(obj, values) {
         if (values == null)
             return;
-        for (let key in values) {
-            let value = values[key];
+        for (const key in values) {
+            const value = values[key];
             RecursiveObjectWriter.setProperty(obj, key, value);
         }
     }
@@ -102,7 +102,7 @@ class RecursiveObjectWriter {
     static copyProperties(dest, src) {
         if (dest == null || src == null)
             return;
-        let values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(src);
+        const values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(src);
         RecursiveObjectWriter.setProperties(dest, values);
     }
 }

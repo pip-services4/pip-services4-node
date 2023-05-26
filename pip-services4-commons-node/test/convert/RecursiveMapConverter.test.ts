@@ -1,11 +1,12 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { RecursiveMapConverter } from '../../src/convert/RecursiveMapConverter';
 
 suite('RecursiveMapConverter', ()=> {
 
     test('ToNullableMap leave as is Null', () => {
-		  assert.isNull(RecursiveMapConverter.toNullableMap(null));
+      assert.isNull(RecursiveMapConverter.toNullableMap(null));
     });
 
     test('ToNullableMap leave as is primitive types', () => {
@@ -14,12 +15,12 @@ suite('RecursiveMapConverter', ()=> {
     });
 
     test('Array of Map to Map', () => {
-        let array = [{field1: 1, field2: 2}, [ 7, 8]];
-        let map = RecursiveMapConverter.toNullableMap(array);
+        const array = [{field1: 1, field2: 2}, [ 7, 8]];
+        const map = RecursiveMapConverter.toNullableMap(array);
         assert.isNotNull(map);
 
-        let map0 = map["0"];
-        let map1 = map["1"];
+        const map0 = map["0"];
+        const map1 = map["1"];
 
         assert.isNotNull(map0);
         assert.isNotNull(map1);

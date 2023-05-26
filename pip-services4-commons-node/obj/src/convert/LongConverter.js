@@ -31,7 +31,7 @@ class LongConverter {
             return value.getTime();
         if (typeof value === "boolean")
             return value ? 1 : 0;
-        let result = parseFloat(value);
+        const result = parseFloat(value);
         return isNaN(result) ? null : Math.round(result);
     }
     /**
@@ -55,7 +55,7 @@ class LongConverter {
      * @see [[toNullableLong]]
      */
     static toLongWithDefault(value, defaultValue) {
-        let result = LongConverter.toNullableLong(value);
+        const result = LongConverter.toNullableLong(value);
         return result != null ? result : defaultValue;
     }
 }

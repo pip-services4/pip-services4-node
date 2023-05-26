@@ -1,23 +1,23 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { ErrorCategory } from '../../src/errors/ErrorCategory';
-import { ErrorDescription } from '../../src/errors/ErrorDescription';
 import { ErrorDescriptionFactory } from '../../src/errors/ErrorDescriptionFactory';
 import { ApplicationException } from '../../src/errors/ApplicationException';
 
 suite('ErrorDescriptionFactory', ()=> {
 
     test('Create From ApplicationException', () => {
-        let key = "key";
-        let details = "details";
+        const key = "key";
+        const details = "details";
 
-        let ex = new ApplicationException("category", "trace_id", "code", "message");
+        const ex = new ApplicationException("category", "trace_id", "code", "message");
         ex.status  = 777;
         ex.cause = "cause";
         ex.stack_trace = "stackTrace";
         ex.withDetails(key, details);
 
-        let descr = ErrorDescriptionFactory.create(ex);
+        const descr = ErrorDescriptionFactory.create(ex);
 
         assert.isNotNull(descr);
         assert.equal(ex.category, descr.category);
@@ -31,9 +31,9 @@ suite('ErrorDescriptionFactory', ()=> {
     });
 
     test('Create From Error', () => {
-        let ex = new Error("message");
+        const ex = new Error("message");
 
-        let descr = ErrorDescriptionFactory.create(ex);
+        const descr = ErrorDescriptionFactory.create(ex);
 
         assert.isNotNull(descr);
         assert.equal(ErrorCategory.Unknown, descr.category);

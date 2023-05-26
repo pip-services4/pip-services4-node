@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TypeCode } from '../../src/convert/TypeCode';
 import { TypeMatcher } from '../../src/reflect/TypeMatcher';
@@ -35,7 +36,7 @@ suite('TypeMatcher', ()=> {
    });
 
    test('Match Map', () => {
-        let map = {};
+        const map = {};
 		assert.isTrue(TypeMatcher.matchValueTypeByName("map", map));
 		assert.isTrue(TypeMatcher.matchValueTypeByName("dict", map));
 		assert.isTrue(TypeMatcher.matchValueTypeByName("Dictionary", map));
@@ -43,7 +44,7 @@ suite('TypeMatcher', ()=> {
    });
 
    test('Match Array', () => {
-        let array: number[] = [];
+        const array: number[] = [];
 		assert.isTrue(TypeMatcher.matchValueTypeByName("list", array));
 		assert.isTrue(TypeMatcher.matchValueTypeByName("array", array));
 		assert.isTrue(TypeMatcher.matchValueTypeByName("object[]", array));

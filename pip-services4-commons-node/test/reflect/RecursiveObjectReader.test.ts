@@ -1,12 +1,12 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
-import { TestClass } from './TestClass';
 import { RecursiveObjectReader } from '../../src/reflect/RecursiveObjectReader';
 
 suite('RecursiveObjectReader', ()=> {
 
    test('Has Property', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -56,7 +56,7 @@ suite('RecursiveObjectReader', ()=> {
    });
 
    test('Get Property', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -106,7 +106,7 @@ suite('RecursiveObjectReader', ()=> {
    });
 
    test('Get Property Names', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -115,7 +115,7 @@ suite('RecursiveObjectReader', ()=> {
             "value3": [ 444, { "value311": 555 } ] 
         };
 
-        let names = RecursiveObjectReader.getPropertyNames(obj);
+        const names = RecursiveObjectReader.getPropertyNames(obj);
         assert.equal(5, names.length);
         assert.isTrue(names.indexOf("value1") >= 0);
         assert.isTrue(names.indexOf("value2.value21") >= 0);
@@ -125,7 +125,7 @@ suite('RecursiveObjectReader', ()=> {
    });
 
    test('Get Properties', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -134,7 +134,7 @@ suite('RecursiveObjectReader', ()=> {
             "value3": [ 444, { "value311": 555 } ] 
         };
 
-        let values = RecursiveObjectReader.getProperties(obj);
+        const values = RecursiveObjectReader.getProperties(obj);
         //assert.equal(5, values.length);
         assert.equal(123, values["value1"]);
         assert.equal(111, values["value2.value21"]);

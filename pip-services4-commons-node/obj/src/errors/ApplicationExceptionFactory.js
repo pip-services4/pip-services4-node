@@ -34,10 +34,10 @@ class ApplicationExceptionFactory {
             throw new Error("Description cannot be null");
         }
         let error = null;
-        let category = description.category;
-        let code = description.code;
-        let message = description.message;
-        let traceId = description.trace_id;
+        const category = description.category;
+        const code = description.code;
+        const message = description.message;
+        const traceId = description.trace_id;
         // Create well-known exception type based on error category
         if (ErrorCategory_1.ErrorCategory.Unknown == category)
             error = new UnknownException_1.UnknownException(traceId, code, message);

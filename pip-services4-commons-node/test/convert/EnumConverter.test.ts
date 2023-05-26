@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 ///import { EnumConverter } from '../../src/convert/EnumConverter';
 import { TypeCode} from '../../src/convert/TypeCode';

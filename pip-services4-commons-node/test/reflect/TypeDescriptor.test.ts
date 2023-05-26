@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TypeDescriptor } from '../../src/reflect/TypeDescriptor';
 
@@ -25,8 +26,8 @@ suite('TypeDescriptor', ()=> {
    });
 
    test('Equals', () => {
-		let descriptor1 = TypeDescriptor.fromString("xxx,yyy");
-		let descriptor2 = TypeDescriptor.fromString("xxx,yyy");
+		const descriptor1 = TypeDescriptor.fromString("xxx,yyy");
+		const descriptor2 = TypeDescriptor.fromString("xxx,yyy");
 		assert.isTrue(descriptor1.equals(descriptor2));
 	});
 

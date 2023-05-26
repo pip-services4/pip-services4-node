@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const DateTimeConverter_1 = require("../../src/convert/DateTimeConverter");
 suite('DateTimeConverter', () => {
     // Todo: Add more tests with time and conversion of ISO datetime

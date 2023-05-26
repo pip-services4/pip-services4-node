@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const RecursiveObjectReader_1 = require("../../src/reflect/RecursiveObjectReader");
 const RecursiveObjectWriter_1 = require("../../src/reflect/RecursiveObjectWriter");
 suite('RecursiveObjectWriter', () => {
     test('Set Property', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,
@@ -19,7 +20,7 @@ suite('RecursiveObjectWriter', () => {
         RecursiveObjectWriter_1.RecursiveObjectWriter.setProperty(obj, "value3.1.value312", "CCC");
         RecursiveObjectWriter_1.RecursiveObjectWriter.setProperty(obj, "value3.3", "DDD");
         RecursiveObjectWriter_1.RecursiveObjectWriter.setProperty(obj, "value4.1", "EEE");
-        let values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(obj);
+        const values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(obj);
         //assert.equal(8, values.length);
         assert.equal("AAA", values["value1"]);
         assert.equal("BBB", values["value2"]);
@@ -32,7 +33,7 @@ suite('RecursiveObjectWriter', () => {
         assert.equal("EEE", values["value4.1"]);
     });
     test('Set Properties', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,

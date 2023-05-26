@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const RecursiveObjectReader_1 = require("../../src/reflect/RecursiveObjectReader");
 suite('RecursiveObjectReader', () => {
     test('Has Property', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,
@@ -40,7 +41,7 @@ suite('RecursiveObjectReader', () => {
         assert.isFalse(has);
     });
     test('Get Property', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,
@@ -76,7 +77,7 @@ suite('RecursiveObjectReader', () => {
         assert.isNull(value);
     });
     test('Get Property Names', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,
@@ -84,7 +85,7 @@ suite('RecursiveObjectReader', () => {
             },
             "value3": [444, { "value311": 555 }]
         };
-        let names = RecursiveObjectReader_1.RecursiveObjectReader.getPropertyNames(obj);
+        const names = RecursiveObjectReader_1.RecursiveObjectReader.getPropertyNames(obj);
         assert.equal(5, names.length);
         assert.isTrue(names.indexOf("value1") >= 0);
         assert.isTrue(names.indexOf("value2.value21") >= 0);
@@ -93,7 +94,7 @@ suite('RecursiveObjectReader', () => {
         assert.isTrue(names.indexOf("value3.1.value311") >= 0);
     });
     test('Get Properties', () => {
-        let obj = {
+        const obj = {
             "value1": 123,
             "value2": {
                 "value21": 111,
@@ -101,7 +102,7 @@ suite('RecursiveObjectReader', () => {
             },
             "value3": [444, { "value311": 555 }]
         };
-        let values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(obj);
+        const values = RecursiveObjectReader_1.RecursiveObjectReader.getProperties(obj);
         //assert.equal(5, values.length);
         assert.equal(123, values["value1"]);
         assert.equal(111, values["value2.value21"]);

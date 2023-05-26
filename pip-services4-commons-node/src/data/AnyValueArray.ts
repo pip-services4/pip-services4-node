@@ -88,11 +88,11 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @param elements  a list of elements to be added.
      */
     public append(elements: any[]): void {
-    	if (elements != null) {
+        if (elements != null) {
             for (let index = 0; index < elements.length; index++) {          	
-            	this.push(elements[index]);
+                this.push(elements[index]);
             }
-    	}
+        }
     }
 
     /**
@@ -111,7 +111,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      */
     public getAsObject(index: number = undefined): any {
         if (index === undefined) {
-            let result: any[] = [];
+            const result: any[] = [];
             for (index = 0; index < this.length; index++) {
                 result.push(this[index]);
             }
@@ -135,7 +135,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
         if (value === undefined) {
             value = index //originally was not present - added by Mark Makarychev.
             this.clear();
-            let elements = ArrayConverter.toArray(value);
+            const elements = ArrayConverter.toArray(value);
             this.append(elements);
         } else {
             this[index] = value;
@@ -151,7 +151,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[StringConverter.toNullableString]]
      */
     public getAsNullableString(index: number): string {
-        let value = this[index];
+        const value = this[index];
         return StringConverter.toNullableString(value);
     }
 
@@ -177,7 +177,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[StringConverter.toStringWithDefault]]
      */
     public getAsStringWithDefault(index: number, defaultValue: string): string {
-        let value = this[index];
+        const value = this[index];
         return StringConverter.toStringWithDefault(value, defaultValue);
     }
 
@@ -190,7 +190,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[BooleanConverter.toNullableBoolean]]
      */
     public getAsNullableBoolean(index: number): boolean {
-        let value = this[index];
+        const value = this[index];
         return BooleanConverter.toNullableBoolean(value);
     }
 
@@ -216,7 +216,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[BooleanConverter.toBooleanWithDefault]]
      */
     public getAsBooleanWithDefault(index: number, defaultValue: boolean): boolean {
-        let value = this[index];
+        const value = this[index];
         return BooleanConverter.toBooleanWithDefault(value, defaultValue);
     }
 
@@ -229,7 +229,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[IntegerConverter.toNullableInteger]]
      */
     public getAsNullableInteger(index: number): number {
-        let value = this[index];
+        const value = this[index];
         return IntegerConverter.toNullableInteger(value);
     }
 
@@ -255,7 +255,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[IntegerConverter.toIntegerWithDefault]]
      */
     public getAsIntegerWithDefault(index: number, defaultValue: number): number {
-        let value = this[index];
+        const value = this[index];
         return IntegerConverter.toIntegerWithDefault(value, defaultValue);
     }
 
@@ -268,7 +268,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[LongConverter.toNullableLong]]
      */
     public getAsNullableLong(index: number): number {
-        let value = this[index];
+        const value = this[index];
         return LongConverter.toNullableLong(value);
     }
 
@@ -294,7 +294,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[LongConverter.toLongWithDefault]]
      */
     public getAsLongWithDefault(index: number, defaultValue: number): number {
-        let value = this[index];
+        const value = this[index];
         return LongConverter.toLongWithDefault(value, defaultValue);
     }
 
@@ -307,7 +307,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[FloatConverter.toNullableFloat]]
      */
     public getAsNullableFloat(index: number): number {
-        let value = this[index];
+        const value = this[index];
         return FloatConverter.toNullableFloat(value);
     }
 
@@ -333,7 +333,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[FloatConverter.toFloatWithDefault]]
      */
     public getAsFloatWithDefault(index: number, defaultValue: number): number {
-        let value = this[index];
+        const value = this[index];
         return FloatConverter.toFloatWithDefault(value, defaultValue);
     }
 
@@ -346,7 +346,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[DoubleConverter.toNullableDouble]]
      */
     public getAsNullableDouble(index: number): number {
-        let value = this[index];
+        const value = this[index];
         return DoubleConverter.toNullableDouble(value);
     }
 
@@ -372,7 +372,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[DoubleConverter.toDoubleWithDefault]]
      */
     public getAsDoubleWithDefault(index: number, defaultValue: number): number {
-        let value = this[index];
+        const value = this[index];
         return DoubleConverter.toDoubleWithDefault(value, defaultValue);
     }
 
@@ -385,7 +385,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[DateTimeConverter.toNullableDateTime]]
      */
     public getAsNullableDateTime(index: number): Date {
-        let value = this[index];
+        const value = this[index];
         return DateTimeConverter.toNullableDateTime(value);
     }
 
@@ -411,7 +411,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[DateTimeConverter.toDateTimeWithDefault]]
      */
     public getAsDateTimeWithDefault(index: number, defaultValue: Date): Date {
-        let value = this[index];
+        const value = this[index];
         return DateTimeConverter.toDateTimeWithDefault(value, defaultValue);
     }
 
@@ -426,7 +426,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[TypeConverter.toNullableType]]
      */
     public getAsNullableType<T>(type: TypeCode, index: number): T {
-        let value = this[index];
+        const value = this[index];
         return TypeConverter.toNullableType<T>(type, value);
     }
 
@@ -456,7 +456,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[TypeConverter.toTypeWithDefault]]
      */
     public getAsTypeWithDefault<T>(type: TypeCode, index: number, defaultValue: T): T {
-        let value = this[index];
+        const value = this[index];
         return TypeConverter.toTypeWithDefault(type, value, defaultValue);
     }
 
@@ -470,8 +470,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[AnyValue.constructor]]
      */
     public getAsValue(index: number): AnyValue {
-        let value = this[index];
-    	return new AnyValue(value);
+        const value = this[index];
+        return new AnyValue(value);
     }
 
     /** 
@@ -483,8 +483,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[fromValue]]
      */
     public getAsNullableArray(index: number): AnyValueArray {
-        let value = this[index];
-    	return value != null ? AnyValueArray.fromValue(value) : null;
+        const value = this[index];
+        return value != null ? AnyValueArray.fromValue(value) : null;
     }
 
     /** 
@@ -496,8 +496,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[fromValue]]
      */
     public getAsArray(index: number): AnyValueArray {
-        let value = this[index];
-    	return AnyValueArray.fromValue(value);
+        const value = this[index];
+        return AnyValueArray.fromValue(value);
     }
     
     /** 
@@ -510,8 +510,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[getAsNullableArray]]
      */
     public getAsArrayWithDefault(index: number, defaultValue: AnyValueArray): AnyValueArray {
-    	let result = this.getAsNullableArray(index);
-    	return result != null ? result : defaultValue;
+        const result = this.getAsNullableArray(index);
+        return result != null ? result : defaultValue;
     }
 
     /** 
@@ -524,8 +524,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[AnyValueMap.fromValue]]
      */
     public getAsNullableMap(index: number): AnyValueMap {
-        let value = this[index];
-    	return value != null ? AnyValueMap.fromValue(value) : null;
+        const value = this[index];
+        return value != null ? AnyValueMap.fromValue(value) : null;
     }
 
     /** 
@@ -538,8 +538,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[AnyValueMap.fromValue]]
      */
     public getAsMap(index: number): AnyValueMap {
-        let value = this[index];
-    	return AnyValueMap.fromValue(value);
+        const value = this[index];
+        return AnyValueMap.fromValue(value);
     }
 
     /** 
@@ -552,8 +552,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[getAsNullableMap]]
      */
     public getAsMapWithDefault(index: number, defaultValue: AnyValueMap): AnyValueMap {
-        let result = this.getAsNullableMap(index);
-    	return result != null ? AnyValueMap.fromValue(result): defaultValue;
+        const result = this.getAsNullableMap(index);
+        return result != null ? AnyValueMap.fromValue(result): defaultValue;
     }
 
     /**
@@ -565,13 +565,13 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      */
     public contains(value: any): boolean {
         for (let index = 0; index < this.length; index++) {
-            let element = this[index];
+            const element = this[index];
             
             if (value == null && element == null) {
-            	return true;
+                return true;
             }
             if (value == null || element == null) {
-            	continue;
+                continue;
             }
             if (value == element) {
                 return true;
@@ -593,19 +593,19 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[TypeConverter.toNullableType]]
      */
     public containsAsType<T>(typeCode: TypeCode, value: any): boolean {
-        let typedValue = TypeConverter.toType<T>(typeCode, value);
+        const typedValue = TypeConverter.toType<T>(typeCode, value);
 
         for (let index = 0; index < this.length; index++) {
-            let thisTypedValue = TypeConverter.toNullableType(typeCode, this[index]);
+            const thisTypedValue = TypeConverter.toNullableType(typeCode, this[index]);
 
             if (typedValue == null && thisTypedValue == null) {
                 return true;
             }
             if (typedValue == null || thisTypedValue == null) {
-            	continue;
+                continue;
             }
             if (typedValue == thisTypedValue) {
-            	return true;
+                return true;
             }
         }
 
@@ -618,7 +618,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @returns a clone of this object.
      */
     public clone(): any {
-    	return new AnyValueArray(this);
+        return new AnyValueArray(this);
     }
     
     /** 
@@ -648,7 +648,7 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @returns         a newly created AnyValueArray.
      */
     public static fromValues(...values: any[]): AnyValueArray {
-    	return new AnyValueArray(values);
+        return new AnyValueArray(values);
     }
     
     /**
@@ -660,8 +660,8 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @see [[ArrayConverter.toNullableArray]]
      */
     public static fromValue(value: any): AnyValueArray {
-    	let values = ArrayConverter.toNullableArray(value);
-    	return new AnyValueArray(values);
+        const values = ArrayConverter.toNullableArray(value);
+        return new AnyValueArray(values);
     }
     
     /**
@@ -673,18 +673,18 @@ export class AnyValueArray extends Array<any> implements ICloneable {
      * @param removeDuplicates  (optional) true to remove duplicated elements
      * @returns                 a newly created AnyValueArray.
      */
-    public static fromString(values: string, separator: string, removeDuplicates: boolean = false): AnyValueArray {
-    	let result = new AnyValueArray();
+    public static fromString(values: string, separator: string, removeDuplicates = false): AnyValueArray {
+        const result = new AnyValueArray();
         
-    	if (values == null || values.length == 0) {
-        	return result;
+        if (values == null || values.length == 0) {
+            return result;
         }
         
-        let items = values.split(separator, -1);
+        const items = values.split(separator, -1);
         for (let index = 0; index < items.length; index++) {
-            let item = items[index];
-        	if ((item != null && item.length > 0) || removeDuplicates == false) {
-        		result.push(item != null ? new AnyValue(item) : null);
+            const item = items[index];
+            if ((item != null && item.length > 0) || removeDuplicates == false) {
+                result.push(item != null ? new AnyValue(item) : null);
             }
         }
         

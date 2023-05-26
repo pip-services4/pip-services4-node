@@ -1,16 +1,17 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TypeReflector } from '../../src/reflect/TypeReflector';
 
 suite('TypeReflector', ()=> {
 
    test('Get Type', () => {
-		let type = TypeReflector.getType("TestClass", __dirname + "/TestClass");
+		const type = TypeReflector.getType("TestClass", __dirname + "/TestClass");
 		assert.isNotNull(type);
    });
 
    test('Create Instance', () => {
-		let value = TypeReflector.createInstance("TestClass", __dirname + "/TestClass", 123);
+		const value = TypeReflector.createInstance("TestClass", __dirname + "/TestClass", 123);
 		assert.isNotNull(value);
    });
 

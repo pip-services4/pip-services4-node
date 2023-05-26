@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const TypeCode_1 = require("../../src/convert/TypeCode");
 const TypeConverter_1 = require("../../src/convert/TypeConverter");
 const DateTimeConverter_1 = require("../../src/convert/DateTimeConverter");

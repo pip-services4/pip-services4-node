@@ -44,8 +44,8 @@ export class AnyValue implements ICloneable {
      * @param value     (optional) value to initialize this object.
      */
     public constructor(value: any = null) {
-    	if (value instanceof AnyValue) {
-    		this.value = (<AnyValue>value).value;
+        if (value instanceof AnyValue) {
+            this.value = (<AnyValue>value).value;
         } else {
 			this.value = value;
         }
@@ -59,7 +59,7 @@ export class AnyValue implements ICloneable {
      * @see [[TypeConverter.toTypeCode]]
      */
     public getTypeCode(): TypeCode {
-    	return TypeConverter.toTypeCode(this.value);
+        return TypeConverter.toTypeCode(this.value);
     }
     
     /** 
@@ -370,7 +370,7 @@ export class AnyValue implements ICloneable {
      * @see [[AnyValueArray.fromValue]]
      */
     public getAsArray(): AnyValueArray {
-    	return AnyValueArray.fromValue(this.value);
+        return AnyValueArray.fromValue(this.value);
     }
 
     /** 
@@ -381,7 +381,7 @@ export class AnyValue implements ICloneable {
      * @see [[AnyValueMap.fromValue]]
      */
     public getAsMap(): AnyValueMap {
-    	return AnyValueMap.fromValue(this.value);
+        return AnyValueMap.fromValue(this.value);
     }
 
     /**
@@ -397,11 +397,11 @@ export class AnyValue implements ICloneable {
         if (obj == null || this.value == null) return false;
 
         if (obj instanceof AnyValue) {
-        	obj = (<AnyValue>obj).value;
+            obj = (<AnyValue>obj).value;
         }
 
-        let strThisValue = StringConverter.toString(this.value);
-        let strValue = StringConverter.toString(obj);
+        const strThisValue = StringConverter.toString(this.value);
+        const strValue = StringConverter.toString(obj);
         
         if (strThisValue == null && strValue == null) return true;
         if (strThisValue == null || strValue == null) return false;        
@@ -423,11 +423,11 @@ export class AnyValue implements ICloneable {
         if (obj == null || this.value == null) return false;
 
         if (obj instanceof AnyValue) {
-        	obj = (<AnyValue>obj).value;
+            obj = (<AnyValue>obj).value;
         }
 
-        let typedThisValue = TypeConverter.toType<T>(type, this.value);
-        let typedValue = TypeConverter.toType<T>(type, obj);
+        const typedThisValue = TypeConverter.toType<T>(type, this.value);
+        const typedValue = TypeConverter.toType<T>(type, obj);
         
         if (typedThisValue == null && typedValue == null) return true;
         if (typedThisValue == null || typedValue == null) return false;        
@@ -440,7 +440,7 @@ export class AnyValue implements ICloneable {
      * @returns a clone of this object.
      */
     public clone(): any {
-    	return new AnyValue(this.value);
+        return new AnyValue(this.value);
     }
     
     /** 

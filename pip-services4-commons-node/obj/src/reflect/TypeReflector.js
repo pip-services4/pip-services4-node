@@ -45,6 +45,7 @@ class TypeReflector {
                 absPath = path.resolve(absPath);
             }
             // Load module
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             let type = require(absPath);
             if (type == null)
                 return null;
@@ -102,7 +103,7 @@ class TypeReflector {
      * @see [[createInstanceByType]]
      */
     static createInstance(name, library, ...args) {
-        let type = TypeReflector.getType(name, library);
+        const type = TypeReflector.getType(name, library);
         if (type == null) {
             throw new NotFoundException_1.NotFoundException(null, "TYPE_NOT_FOUND", "Type " + name + "," + library + " was not found").withDetails("type", name).withDetails("library", library);
         }
@@ -137,7 +138,7 @@ class TypeReflector {
      * @see [[TypeCode]]
      */
     static isPrimitive(value) {
-        let typeCode = TypeConverter_1.TypeConverter.toTypeCode(value);
+        const typeCode = TypeConverter_1.TypeConverter.toTypeCode(value);
         return typeCode == TypeCode_1.TypeCode.String || typeCode == TypeCode_1.TypeCode.Enum
             || typeCode == TypeCode_1.TypeCode.Boolean || typeCode == TypeCode_1.TypeCode.Integer
             || typeCode == TypeCode_1.TypeCode.Long || typeCode == TypeCode_1.TypeCode.Float

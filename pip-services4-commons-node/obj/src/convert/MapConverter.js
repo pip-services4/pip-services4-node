@@ -25,7 +25,7 @@ class MapConverter {
             return null;
         }
         else if (Array.isArray(value)) {
-            let map = {};
+            const map = {};
             for (let i = 0; i < value.length; i++) {
                 map[i.toString()] = value[i];
             }

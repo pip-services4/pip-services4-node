@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TypeCode } from '../../src/convert/TypeCode';
 import { TypeConverter } from '../../src/convert/TypeConverter';

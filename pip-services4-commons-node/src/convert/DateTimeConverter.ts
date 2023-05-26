@@ -24,7 +24,7 @@ export class DateTimeConverter {
         if (value instanceof Date) return value;
         if (typeof value === "number") return new Date(value);
 
-        let result = Date.parse(value);
+        const result = Date.parse(value);
         return isNaN(result) ? null : new Date(result);
     }
 
@@ -50,7 +50,7 @@ export class DateTimeConverter {
      * @see [[toNullableDateTime]]
      */
     public static toDateTimeWithDefault(value: any, defaultValue: Date = null): Date {
-        let result = DateTimeConverter.toNullableDateTime(value);
+        const result = DateTimeConverter.toNullableDateTime(value);
         return result != null ? result : defaultValue;
     }
 

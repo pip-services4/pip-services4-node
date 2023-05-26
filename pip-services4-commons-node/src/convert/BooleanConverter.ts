@@ -58,8 +58,8 @@ export class BooleanConverter {
      * 
      * @see [[toNullableBoolean]]
      */
-    public static toBooleanWithDefault(value: any, defaultValue: boolean = false): boolean {
-        let result = BooleanConverter.toNullableBoolean(value);
+    public static toBooleanWithDefault(value: any, defaultValue = false): boolean {
+        const result = BooleanConverter.toNullableBoolean(value);
         return result != null ? result : defaultValue;
     }
 

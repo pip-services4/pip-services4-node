@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { ArrayConverter } from '../../src/convert/ArrayConverter';
 

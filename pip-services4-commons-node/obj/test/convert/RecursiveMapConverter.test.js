@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const RecursiveMapConverter_1 = require("../../src/convert/RecursiveMapConverter");
 suite('RecursiveMapConverter', () => {
     test('ToNullableMap leave as is Null', () => {
@@ -11,11 +12,11 @@ suite('RecursiveMapConverter', () => {
         assert.equal("ABC", RecursiveMapConverter_1.RecursiveMapConverter.toNullableMap("ABC"));
     });
     test('Array of Map to Map', () => {
-        let array = [{ field1: 1, field2: 2 }, [7, 8]];
-        let map = RecursiveMapConverter_1.RecursiveMapConverter.toNullableMap(array);
+        const array = [{ field1: 1, field2: 2 }, [7, 8]];
+        const map = RecursiveMapConverter_1.RecursiveMapConverter.toNullableMap(array);
         assert.isNotNull(map);
-        let map0 = map["0"];
-        let map1 = map["1"];
+        const map0 = map["0"];
+        const map1 = map["1"];
         assert.isNotNull(map0);
         assert.isNotNull(map1);
         assert.equal(map0.field1, 1);

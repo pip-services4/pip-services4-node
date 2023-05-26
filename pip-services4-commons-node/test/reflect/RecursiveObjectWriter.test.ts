@@ -1,13 +1,13 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
-import { TestClass } from './TestClass';
 import { RecursiveObjectReader } from '../../src/reflect/RecursiveObjectReader';
 import { RecursiveObjectWriter } from '../../src/reflect/RecursiveObjectWriter';
 
 suite('RecursiveObjectWriter', ()=> {
 
    test('Set Property', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -23,7 +23,7 @@ suite('RecursiveObjectWriter', ()=> {
         RecursiveObjectWriter.setProperty(obj, "value3.3", "DDD");
         RecursiveObjectWriter.setProperty(obj, "value4.1", "EEE");
         
-        let values = RecursiveObjectReader.getProperties(obj);
+        const values = RecursiveObjectReader.getProperties(obj);
         //assert.equal(8, values.length);
         assert.equal("AAA", values["value1"]);
         assert.equal("BBB", values["value2"]);
@@ -37,7 +37,7 @@ suite('RecursiveObjectWriter', ()=> {
    });
 
    test('Set Properties', () => {       
-        let obj = { 
+        const obj = { 
             "value1": 123, 
             "value2": { 
                 "value21": 111, 
@@ -47,12 +47,12 @@ suite('RecursiveObjectWriter', ()=> {
         };
 
         let values = {
-    		//"", null,
-    		"value1": "AAA",
-    		"value2": "BBB",
-    		"value3.1.value312": "CCC",
-    		"value3.3": "DDD",
-    		"value4.1": "EEE"
+            //"", null,
+            "value1": "AAA",
+            "value2": "BBB",
+            "value3.1.value312": "CCC",
+            "value3.3": "DDD",
+            "value4.1": "EEE"
         };
         RecursiveObjectWriter.setProperties(obj, values);
         

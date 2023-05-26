@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const ErrorCategory_1 = require("../../src/errors/ErrorCategory");
 const ErrorDescriptionFactory_1 = require("../../src/errors/ErrorDescriptionFactory");
 const ApplicationException_1 = require("../../src/errors/ApplicationException");
 suite('ErrorDescriptionFactory', () => {
     test('Create From ApplicationException', () => {
-        let key = "key";
-        let details = "details";
-        let ex = new ApplicationException_1.ApplicationException("category", "trace_id", "code", "message");
+        const key = "key";
+        const details = "details";
+        const ex = new ApplicationException_1.ApplicationException("category", "trace_id", "code", "message");
         ex.status = 777;
         ex.cause = "cause";
         ex.stack_trace = "stackTrace";
         ex.withDetails(key, details);
-        let descr = ErrorDescriptionFactory_1.ErrorDescriptionFactory.create(ex);
+        const descr = ErrorDescriptionFactory_1.ErrorDescriptionFactory.create(ex);
         assert.isNotNull(descr);
         assert.equal(ex.category, descr.category);
         assert.equal(ex.trace_id, descr.trace_id);
@@ -25,8 +26,8 @@ suite('ErrorDescriptionFactory', () => {
         assert.equal(ex.details, descr.details);
     });
     test('Create From Error', () => {
-        let ex = new Error("message");
-        let descr = ErrorDescriptionFactory_1.ErrorDescriptionFactory.create(ex);
+        const ex = new Error("message");
+        const descr = ErrorDescriptionFactory_1.ErrorDescriptionFactory.create(ex);
         assert.isNotNull(descr);
         assert.equal(ErrorCategory_1.ErrorCategory.Unknown, descr.category);
         assert.equal("UNKNOWN", descr.code);

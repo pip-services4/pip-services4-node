@@ -51,7 +51,7 @@ export class TypeDescriptor {
 	 */
 	public equals(value: any): boolean {
 		if (typeof value === "object" && value.constructor.name === "TypeDescriptor") {
-			let otherType = <TypeDescriptor>value;
+			const otherType = <TypeDescriptor>value;
 			if (this.getName() == null || otherType.getName() == null)
 				return false;
 			if (this.getName() != otherType.getName())
@@ -95,7 +95,7 @@ export class TypeDescriptor {
 			return null;
 		}
 				
-		let tokens = value.split(",");
+		const tokens = value.split(",");
 		if (tokens.length == 1) {
 			return new TypeDescriptor(tokens[0].trim(), null);
 		} else if (tokens.length == 2) {

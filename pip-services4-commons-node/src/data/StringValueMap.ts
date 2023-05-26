@@ -52,7 +52,7 @@ export class StringValueMap {
      */
     public constructor(map: any = null) {
         if (map != null) {
-    	    this.append(map);
+            this.append(map);
         }
     }
     
@@ -72,10 +72,10 @@ export class StringValueMap {
      * @returns a list with all map keys. 
      */
 	public getKeys(): string[] {
-        let keys: string[] = [];
+        const keys: string[] = [];
 		
-		for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+		for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 keys.push(key);
             }
         }
@@ -108,11 +108,11 @@ export class StringValueMap {
      * @param map  a map with elements to be added.
      */
     public append(map: any): void {
-    	if (map == null) return;
-    	
-		for (let key in map) {
-            let value = map[key];
-            if (map.hasOwnProperty(key)) {
+        if (map == null) return;
+
+		for (const key in map) {
+            const value = map[key];
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
                 this[key] = StringConverter.toNullableString(value);
             }
 		}
@@ -122,12 +122,11 @@ export class StringValueMap {
      * Clears this map by removing all its elements.
      */
     public clear(): any {
-    	for (let key in this) {
-            let value = this[key];
-            if (this.hasOwnProperty(key)) {
-    		    delete this[key];
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                delete this[key];
             }
-    	}
+        }
     }
 
     /** 
@@ -136,9 +135,9 @@ export class StringValueMap {
      * @returns the number of elements in this map.
      */
     public length(): number {
-        let count: number = 0;
-        for (let key in this) {
-            if (this.hasOwnProperty(key)) {
+        let count = 0;
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
                 count ++;
             }
         }        
@@ -154,10 +153,10 @@ export class StringValueMap {
      */     
     public getAsObject(key: string = undefined): any {
         if (key === undefined) {
-            let result: any = {};
-            for (let key in this) {
-                let value = this[key];
-                if (this.hasOwnProperty(key)) {
+            const result: any = {};
+            for (const key in this) {
+                const value = this[key];
+                if (Object.prototype.hasOwnProperty.call(this, key)) {
                     result[key] = value;
                 }
             }
@@ -181,7 +180,7 @@ export class StringValueMap {
         if (value === undefined) {
             value = key
             this.clear();
-            let values = MapConverter.toMap(value);
+            const values = MapConverter.toMap(value);
             this.append(values);
         } else {
             this.put(key, value);
@@ -197,7 +196,7 @@ export class StringValueMap {
      * @see [[StringConverter.toNullableString]]
      */
     public getAsNullableString(key: string): string {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter.toNullableString(value);
     }
 
@@ -223,7 +222,7 @@ export class StringValueMap {
      * @see [[StringConverter.toStringWithDefault]]
      */
     public getAsStringWithDefault(key: string, defaultValue: string): string {
-        let value = this.get(key);
+        const value = this.get(key);
         return StringConverter.toStringWithDefault(value, defaultValue);
     }
     
@@ -236,7 +235,7 @@ export class StringValueMap {
      * @see [[BooleanConverter.toNullableBoolean]]
      */
     public getAsNullableBoolean(key: string): boolean {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter.toNullableBoolean(value);
     }
 
@@ -262,7 +261,7 @@ export class StringValueMap {
      * @see [[BooleanConverter.toBooleanWithDefault]]
      */
     public getAsBooleanWithDefault(key: string, defaultValue: boolean): boolean {
-        let value = this.get(key);
+        const value = this.get(key);
         return BooleanConverter.toBooleanWithDefault(value, defaultValue);
     }
 
@@ -275,7 +274,7 @@ export class StringValueMap {
      * @see [[IntegerConverter.toNullableInteger]]
      */
     public getAsNullableInteger(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter.toNullableInteger(value);
     }
 
@@ -301,7 +300,7 @@ export class StringValueMap {
      * @see [[IntegerConverter.toIntegerWithDefault]]
      */
     public getAsIntegerWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return IntegerConverter.toIntegerWithDefault(value, defaultValue);
     }
 
@@ -314,7 +313,7 @@ export class StringValueMap {
      * @see [[LongConverter.toNullableLong]]
      */
     public getAsNullableLong(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter.toNullableLong(value);
     }
 
@@ -340,7 +339,7 @@ export class StringValueMap {
      * @see [[LongConverter.toLongWithDefault]]
      */
     public getAsLongWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return LongConverter.toLongWithDefault(value, defaultValue);
     }
 
@@ -353,7 +352,7 @@ export class StringValueMap {
      * @see [[FloatConverter.toNullableFloat]]
      */
     public getAsNullableFloat(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter.toNullableFloat(value);
     }
 
@@ -379,7 +378,7 @@ export class StringValueMap {
      * @see [[FloatConverter.toFloatWithDefault]]
      */
     public getAsFloatWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return FloatConverter.toFloatWithDefault(value, defaultValue);
     }
 
@@ -392,7 +391,7 @@ export class StringValueMap {
      * @see [[DoubleConverter.toNullableDouble]]
      */
     public getAsNullableDouble(key: string): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter.toNullableDouble(value);
     }
 
@@ -418,7 +417,7 @@ export class StringValueMap {
      * @see [[DoubleConverter.toDoubleWithDefault]]
      */
     public getAsDoubleWithDefault(key: string, defaultValue: number): number {
-        let value = this.get(key);
+        const value = this.get(key);
         return DoubleConverter.toDoubleWithDefault(value, defaultValue);
     }
 
@@ -431,7 +430,7 @@ export class StringValueMap {
      * @see [[DateTimeConverter.toNullableDateTime]]
      */
     public getAsNullableDateTime(key: string): Date {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter.toNullableDateTime(value);
     }
 
@@ -457,7 +456,7 @@ export class StringValueMap {
      * @see [[DateTimeConverter.toDateTimeWithDefault]]
      */
     public getAsDateTimeWithDefault(key: string, defaultValue: Date): Date {
-        let value = this.get(key);
+        const value = this.get(key);
         return DateTimeConverter.toDateTimeWithDefault(value, defaultValue);
     }
     
@@ -472,7 +471,7 @@ export class StringValueMap {
      * @see [[TypeConverter.toNullableType]]
      */
     public getAsNullableType<T>(type: TypeCode, key: string): T {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter.toNullableType<T>(type, value);
     }
 
@@ -502,7 +501,7 @@ export class StringValueMap {
      * @see [[TypeConverter.toTypeWithDefault]]
      */
     public getAsTypeWithDefault<T>(type: TypeCode, key: string, defaultValue: T): T {
-        let value = this.get(key);
+        const value = this.get(key);
         return TypeConverter.toTypeWithDefault(type, value, defaultValue);
     }
 
@@ -516,8 +515,8 @@ export class StringValueMap {
      * @see [[AnyValue.constructor]]
      */
     public getAsValue(key: string): AnyValue {
-        let value = this.get(key);
-    	return new AnyValue(value);
+        const value = this.get(key);
+        return new AnyValue(value);
     }
 
     /** 
@@ -530,8 +529,8 @@ export class StringValueMap {
      * @see [[AnyValueArray.fromValue]]
      */
     public getAsNullableArray(key: string): AnyValueArray {
-        let value = this.get(key);
-    	return value != null ? AnyValueArray.fromValue(value) : null;
+        const value = this.get(key);
+        return value != null ? AnyValueArray.fromValue(value) : null;
     }
 
     /** 
@@ -544,8 +543,8 @@ export class StringValueMap {
      * @see [[AnyValueArray.fromValue]]
      */
     public getAsArray(key: string): AnyValueArray {
-        let value = this.get(key);
-    	return AnyValueArray.fromValue(value);
+        const value = this.get(key);
+        return AnyValueArray.fromValue(value);
     }
     
     /** 
@@ -559,8 +558,8 @@ export class StringValueMap {
      * @see [[getAsNullableArray]]
      */
     public getAsArrayWithDefault(key: string, defaultValue: AnyValueArray): AnyValueArray {
-    	let result = this.getAsNullableArray(key);
-    	return result != null ? result : defaultValue;
+        const result = this.getAsNullableArray(key);
+        return result != null ? result : defaultValue;
     }
 
     /** 
@@ -572,8 +571,8 @@ export class StringValueMap {
      * @see [[fromValue]]
      */
     public getAsNullableMap(key: string): AnyValueMap {
-        let value = this.get(key);
-    	return value != null ? AnyValueMap.fromValue(value) : null;
+        const value = this.get(key);
+        return value != null ? AnyValueMap.fromValue(value) : null;
     }
 
     /** 
@@ -585,8 +584,8 @@ export class StringValueMap {
      * @see [[fromValue]]
      */
     public getAsMap(key: string): AnyValueMap {
-        let value = this.get(key);
-    	return AnyValueMap.fromValue(value);
+        const value = this.get(key);
+        return AnyValueMap.fromValue(value);
     }
 
     /** 
@@ -599,8 +598,8 @@ export class StringValueMap {
      * @see [[getAsNullableMap]]
      */
     public getAsMapWithDefault(key: string, defaultValue: AnyValueMap): AnyValueMap {
-        let result = this.getAsNullableMap(key);
-    	return result != null ? result: defaultValue;
+        const result = this.getAsNullableMap(key);
+        return result != null ? result: defaultValue;
     }
     
     /** 
@@ -614,9 +613,9 @@ export class StringValueMap {
 		let builder = '';
 
 		// Todo: User encoder
-		for (let key in this) {
-            if (this.hasOwnProperty(key)) {
-                let value = this[key];
+		for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const value = this[key];
 
                 if (builder.length > 0) {
                     builder += ';';
@@ -639,7 +638,7 @@ export class StringValueMap {
      * @returns a clone of this object.
      */
     public clone(): any {
-    	return new StringValueMap(this);
+        return new StringValueMap(this);
     }   
 
     /**
@@ -674,21 +673,21 @@ export class StringValueMap {
      * @returns         a newly created StringValueMap.
      */
     public static fromTuplesArray(tuples: any[]): StringValueMap {
-    	let result = new StringValueMap();
-    	if (tuples == null || tuples.length == 0) {
-    		return result;
+        const result = new StringValueMap();
+        if (tuples == null || tuples.length == 0) {
+            return result;
         }
-    	
+
         for (let index = 0; index < tuples.length; index += 2) {
             if (index + 1 >= tuples.length) break;
 
-            let name = StringConverter.toString(tuples[index]);
-            let value = StringConverter.toNullableString(tuples[index + 1]);
+            const name = StringConverter.toString(tuples[index]);
+            const value = StringConverter.toNullableString(tuples[index + 1]);
 
             result[name] = value;
         }
         
-    	return result;
+        return result;
     }
 
     /** 
@@ -698,20 +697,20 @@ export class StringValueMap {
      * @returns         a newly created StringValueMap.
      */
     public static fromString(line: string): StringValueMap {
-    	let result = new StringValueMap();
+        const result = new StringValueMap();
 		if (line == null || line.length == 0) {
 			return result;
         }
 		
 		// Todo: User tokenizer / decoder
-		let tokens = line.split(";");
+		const tokens = line.split(";");
 		
 		for (let index = 0; index < tokens.length; index++) {
-            let token = tokens[index];
+            const token = tokens[index];
 			if (token.length == 0) continue;
-			let pos = token.indexOf('=');
-			let key = pos > 0 ? token.substring(0, pos).trim() : token.trim();
-			let value = pos > 0 ? token.substring(pos + 1).trim() : null;
+			const pos = token.indexOf('=');
+			const key = pos > 0 ? token.substring(0, pos).trim() : token.trim();
+			const value = pos > 0 ? token.substring(pos + 1).trim() : null;
             result.put(key, value);
 		}
 		
@@ -726,12 +725,12 @@ export class StringValueMap {
      * @returns     a newly created AnyValueMap.
      */
     public static fromMaps(...maps: any[]): StringValueMap {
-    	let result = new StringValueMap();
-    	if (maps != null && maps.length > 0) {
-	    	for (let index = 0; index < maps.length; index++) {
-	    		result.append(maps[index]);
+        const result = new StringValueMap();
+        if (maps != null && maps.length > 0) {
+            for (let index = 0; index < maps.length; index++) {
+                result.append(maps[index]);
             }
-    	}
-    	return result;
+        }
+        return result;
     }
 }

@@ -31,7 +31,7 @@ class DoubleConverter {
             return value.getTime();
         if (typeof value === "boolean")
             return value ? 1 : 0;
-        let result = parseFloat(value);
+        const result = parseFloat(value);
         return isNaN(result) ? null : result;
     }
     /**
@@ -55,7 +55,7 @@ class DoubleConverter {
      * @see [[toNullableDouble]]
      */
     static toDoubleWithDefault(value, defaultValue = 0) {
-        let result = DoubleConverter.toNullableDouble(value);
+        const result = DoubleConverter.toNullableDouble(value);
         return result != null ? result : defaultValue;
     }
 }

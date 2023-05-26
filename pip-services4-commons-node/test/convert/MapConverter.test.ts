@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { MapConverter } from '../../src/convert/MapConverter';
 
@@ -8,13 +9,13 @@ suite('MapConverter', ()=> {
 		assert.isNull(MapConverter.toNullableMap(null));
 		assert.isNull(MapConverter.toNullableMap(5));
 		
-		let array = [1, 2];
+		const array = [1, 2];
         let map = MapConverter.toNullableMap(array);
         assert.isDefined(map);
         assert.equal(1, map["0"]);
         assert.equal(2, map["1"]);
         
-        let obj = { field1: "abc", field2: 123 };
+        const obj = { field1: "abc", field2: 123 };
         map = MapConverter.toNullableMap(obj);
         assert.isDefined(map);
         assert.equal("abc", map.field1);

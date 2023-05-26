@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TestClass } from './TestClass';
 import { ObjectWriter } from '../../src/reflect/ObjectWriter';
@@ -6,14 +7,14 @@ import { ObjectWriter } from '../../src/reflect/ObjectWriter';
 suite('ObjectWriter', ()=> {
 
    test('Set Object Property', () => {       
-		let obj = new TestClass();
+		const obj = new TestClass();
 
 		ObjectWriter.setProperty(obj, "privateField", "XYZ");
 		
 		ObjectWriter.setProperty(obj, "publicField", "AAAA");
 		assert.equal("AAAA", obj.publicField);
 		
-        let now = new Date();
+        const now = new Date();
 		ObjectWriter.setProperty(obj, "publicProp", now);
         assert.equal(now, obj.publicProp);
 
@@ -22,7 +23,7 @@ suite('ObjectWriter', ()=> {
    });
 
    test('Set Map Property', () => {       
-		let map = {
+		const map = {
 			"key1": 123,
 			"key2": "ABC"
         };
@@ -38,7 +39,7 @@ suite('ObjectWriter', ()=> {
    });
 
    test('Set Array Property', () => {       
-        let list = [123, "ABC"];
+        const list = [123, "ABC"];
 
 		ObjectWriter.setProperty(list, "3", "AAAA");
 		assert.equal(4, list.length);
@@ -50,7 +51,7 @@ suite('ObjectWriter', ()=> {
 		ObjectWriter.setProperty(list, "1", "BBBB");
         assert.equal("BBBB", list[1]);
 
-        let array = [ 123, "ABC" ];
+        const array = [ 123, "ABC" ];
 		
 		ObjectWriter.setProperty(array, "3", "AAAA");
 		assert.equal(4, array.length);

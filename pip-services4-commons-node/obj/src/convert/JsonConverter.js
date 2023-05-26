@@ -24,7 +24,7 @@ class JsonConverter {
     static fromJson(type, value) {
         if (value == null)
             return null;
-        let temp = JSON.parse(value);
+        const temp = JSON.parse(value);
         return TypeConverter_1.TypeConverter.toType(type, temp);
     }
     /**
@@ -50,7 +50,7 @@ class JsonConverter {
         if (value == null)
             return null;
         try {
-            let map = JSON.parse(value);
+            const map = JSON.parse(value);
             return MapConverter_1.MapConverter.toNullableMap(map);
         }
         catch (Exception) {
@@ -66,7 +66,7 @@ class JsonConverter {
      * @see [[toNullableMap]]
      */
     static toMap(value) {
-        let result = JsonConverter.toNullableMap(value);
+        const result = JsonConverter.toNullableMap(value);
         return result != null ? result : {};
     }
     /**
@@ -79,7 +79,7 @@ class JsonConverter {
      * @see [[toNullableMap]]
      */
     static toMapWithDefault(value, defaultValue) {
-        let result = JsonConverter.toNullableMap(value);
+        const result = JsonConverter.toNullableMap(value);
         return result != null ? result : defaultValue;
     }
 }

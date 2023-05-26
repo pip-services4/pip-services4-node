@@ -23,10 +23,10 @@ export class ErrorDescriptionFactory {
 	 * @returns a serializeable ErrorDescription object that describes the error.
 	 */
 	public static create(error: any): ErrorDescription {        
-        let description = new ErrorDescription();
+        const description = new ErrorDescription();
 
         if (error instanceof ApplicationException) {
-            let ex = <ApplicationException>error;
+            const ex = <ApplicationException>error;
             description.category = ex.category;
             description.status = ex.status;
             description.code  = ex.code;

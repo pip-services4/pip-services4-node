@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const TypeDescriptor_1 = require("../../src/reflect/TypeDescriptor");
 suite('TypeDescriptor', () => {
     test('From String', () => {
@@ -21,8 +22,8 @@ suite('TypeDescriptor', () => {
         }
     });
     test('Equals', () => {
-        let descriptor1 = TypeDescriptor_1.TypeDescriptor.fromString("xxx,yyy");
-        let descriptor2 = TypeDescriptor_1.TypeDescriptor.fromString("xxx,yyy");
+        const descriptor1 = TypeDescriptor_1.TypeDescriptor.fromString("xxx,yyy");
+        const descriptor2 = TypeDescriptor_1.TypeDescriptor.fromString("xxx,yyy");
         assert.isTrue(descriptor1.equals(descriptor2));
     });
 });

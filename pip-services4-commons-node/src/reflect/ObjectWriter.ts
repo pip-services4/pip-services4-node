@@ -56,7 +56,7 @@ export class ObjectWriter {
         if (typeof obj === "object" && !(obj instanceof Date)) {
             PropertyReflector.setProperty(obj, name, value);
         } else if (Array.isArray(obj)) {
-            let index = IntegerConverter.toNullableInteger(name);
+            const index = IntegerConverter.toNullableInteger(name);
             if (index >= 0) {
                 while (index < obj.length - 1) {
                     obj.push(null);
@@ -84,8 +84,8 @@ export class ObjectWriter {
 	public static setProperties(obj: any, values: any): void {
 		if (values == null) return;
 		
-		for (let key in values) {
-            let value = values[key];
+		for (const key in values) {
+            const value = values[key];
 			ObjectWriter.setProperty(obj, key, value);
 		}
 	}

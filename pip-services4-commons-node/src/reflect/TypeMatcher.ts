@@ -29,7 +29,7 @@ export class TypeMatcher {
             return true;
         }
         if (actualValue == null) {
-        	throw new Error("Actual value cannot be null");
+            throw new Error("Actual value cannot be null");
         }
 
         return TypeMatcher.matchType(expectedType, TypeConverter.toTypeCode(actualValue));
@@ -52,7 +52,7 @@ export class TypeMatcher {
             return true;
         }
         if (actualType == null) {
-        	throw new Error("Actual type cannot be null");
+            throw new Error("Actual type cannot be null");
         }
 
         if (Number.isInteger(expectedType)) {
@@ -93,10 +93,10 @@ export class TypeMatcher {
      */
     public static matchValueTypeByName(expectedType: string, actualValue: any): boolean {
         if (expectedType == null) {
-        	return true;
+            return true;
         }
         if (actualValue == null) {
-        	throw new Error("Actual value cannot be null");
+            throw new Error("Actual value cannot be null");
         }
 
         return TypeMatcher.matchTypeByName(expectedType, TypeConverter.toTypeCode(actualValue));
@@ -112,10 +112,10 @@ export class TypeMatcher {
      */
     public static matchTypeByName(expectedType: string, actualType: TypeCode, actualValue: any = null): boolean {
         if (expectedType == null) {
-        	return true;
+            return true;
         }
         if (actualType == null) {
-        	throw new Error("Actual type cannot be null");
+            throw new Error("Actual type cannot be null");
         }
         
         expectedType = expectedType.toLowerCase();
@@ -161,7 +161,7 @@ export class TypeMatcher {
         } else if (expectedType == "array" || expectedType == "list") {
             return actualType == TypeCode.Array;
         } else if (expectedType.endsWith("[]")) {
-        	// Todo: Check subtype
+            // Todo: Check subtype
             return actualType == TypeCode.Array;
         } else
             return false;

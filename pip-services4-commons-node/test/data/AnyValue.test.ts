@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TypeCode } from '../../src/convert/TypeCode';
 import { AnyValue } from '../../src/data/AnyValue';
@@ -6,7 +7,7 @@ import { AnyValue } from '../../src/data/AnyValue';
 suite('AnyValue', ()=> {
     
     test('Get and Set', () => {
-        let value = new AnyValue();
+        const value = new AnyValue();
         assert.isNull(value.getAsObject());
 
         value.setAsObject(1);
@@ -16,7 +17,7 @@ suite('AnyValue', ()=> {
     });    
 
     test('Equal', () => {
-        let value = new AnyValue(1);
+        const value = new AnyValue(1);
 
         assert.isTrue(value.equals(1));
         assert.isTrue(value.equals(1.0));

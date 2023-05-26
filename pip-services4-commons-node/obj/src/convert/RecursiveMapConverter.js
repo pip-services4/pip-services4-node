@@ -20,8 +20,8 @@ class RecursiveMapConverter {
     static objectToMap(value) {
         if (value == null)
             return null;
-        let result = {};
-        let props = Object.keys(value);
+        const result = {};
+        const props = Object.keys(value);
         for (let i = 0; i < props.length; i++) {
             let propValue = value[props[i]];
             propValue = RecursiveMapConverter.valueToMap(propValue);
@@ -35,7 +35,7 @@ class RecursiveMapConverter {
         // Skip expected non-primitive values
         if (typeof value === "string")
             return value;
-        let valueType = TypeConverter_1.TypeConverter.toTypeCode(value);
+        const valueType = TypeConverter_1.TypeConverter.toTypeCode(value);
         // Skip primitive values
         if (TypeReflector_1.TypeReflector.isPrimitive(valueType))
             return value;
@@ -49,14 +49,14 @@ class RecursiveMapConverter {
         return RecursiveMapConverter.objectToMap(value);
     }
     static mapToMap(value) {
-        let result = {};
-        let keys = Object.keys(value);
+        const result = {};
+        const keys = Object.keys(value);
         for (let i = 0; i < keys.length; i++) {
             result[keys[i]] = RecursiveMapConverter.valueToMap(value[keys[i]]);
         }
     }
     static arrayToMap(value) {
-        let result = [];
+        const result = [];
         for (let i = 0; i < value.length; i++) {
             result[i] = RecursiveMapConverter.valueToMap(value[i]);
         }

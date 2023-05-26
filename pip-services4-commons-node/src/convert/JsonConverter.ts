@@ -24,7 +24,7 @@ export class JsonConverter {
 	 */
 	public static fromJson<T>(type: TypeCode, value: string): T {
 		if (value == null) return null;
-		let temp = JSON.parse(value)
+		const temp = JSON.parse(value)
 		return TypeConverter.toType<T>(type, temp);
 	}
 
@@ -51,7 +51,7 @@ export class JsonConverter {
 		if (value == null) return null;
 
 		try {
-			let map = JSON.parse(value)
+			const map = JSON.parse(value)
 			return MapConverter.toNullableMap(map);
 		} catch (Exception) {
 			return null;
@@ -67,7 +67,7 @@ export class JsonConverter {
 	 * @see [[toNullableMap]]
 	 */
 	public static toMap(value: string): any {
-		let result = JsonConverter.toNullableMap(value);
+		const result = JsonConverter.toNullableMap(value);
 		return result != null ? result : {};
 	}
 
@@ -81,7 +81,7 @@ export class JsonConverter {
      * @see [[toNullableMap]]
      */
 	public static toMapWithDefault(value: string, defaultValue: any): any {
-		let result = JsonConverter.toNullableMap(value);
+		const result = JsonConverter.toNullableMap(value);
 		return result != null ? result : defaultValue;
 	}
 

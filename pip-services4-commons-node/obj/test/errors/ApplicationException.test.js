@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require('chai').assert;
+const chai = require("chai");
+const assert = chai.assert;
 const ApplicationException_1 = require("../../src/errors/ApplicationException");
 suite('ApplicationException', () => {
     let _appEx;
@@ -24,33 +25,33 @@ suite('ApplicationException', () => {
         assert.equal(Message, _appEx.message);
     });
     test('With Code', () => {
-        let newCode = "newCode";
-        let appEx = _appEx.withCode(newCode);
+        const newCode = "newCode";
+        const appEx = _appEx.withCode(newCode);
         assert.equal(_appEx, appEx);
         assert.equal(newCode, appEx.code);
     });
     test('With TraceId', () => {
-        let newTraceId = "newTraceId";
-        let appEx = _appEx.withTraceId(newTraceId);
+        const newTraceId = "newTraceId";
+        const appEx = _appEx.withTraceId(newTraceId);
         assert.equal(_appEx, appEx);
         assert.equal(newTraceId, appEx.trace_id);
     });
     test('With Status', () => {
-        let newStatus = 777;
-        let appEx = _appEx.withStatus(newStatus);
+        const newStatus = 777;
+        const appEx = _appEx.withStatus(newStatus);
         assert.equal(_appEx, appEx);
         assert.equal(newStatus, appEx.status);
     });
     test('With Details', () => {
-        let key = "key";
-        let obj = {};
-        let appEx = _appEx.withDetails(key, obj);
-        let newObj = appEx.details.getAsObject(key);
+        const key = "key";
+        const obj = {};
+        const appEx = _appEx.withDetails(key, obj);
+        const newObj = appEx.details.getAsObject(key);
         assert.equal(_appEx, appEx);
     });
     test('With Stack Trace', () => {
-        let newTrace = "newTrace";
-        let appEx = _appEx.withStackTrace(newTrace);
+        const newTrace = "newTrace";
+        const appEx = _appEx.withStackTrace(newTrace);
         assert.equal(_appEx, appEx);
         assert.equal(newTrace, appEx.stack_trace);
     });

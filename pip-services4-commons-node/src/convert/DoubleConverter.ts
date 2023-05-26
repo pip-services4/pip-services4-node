@@ -27,7 +27,7 @@ export class DoubleConverter {
         if (value instanceof Date) return value.getTime();
         if (typeof value === "boolean") return value ? 1 : 0;
 
-        let result = parseFloat(value);
+        const result = parseFloat(value);
         return isNaN(result) ? null : result;
     }
 
@@ -52,8 +52,8 @@ export class DoubleConverter {
      * 
      * @see [[toNullableDouble]]
      */
-    public static toDoubleWithDefault(value: any, defaultValue: number = 0): number {
-        let result = DoubleConverter.toNullableDouble(value);
+    public static toDoubleWithDefault(value: any, defaultValue = 0): number {
+        const result = DoubleConverter.toNullableDouble(value);
         return result != null ? result : defaultValue;
     }
 

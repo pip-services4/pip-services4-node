@@ -24,9 +24,9 @@ class ErrorDescriptionFactory {
      * @returns a serializeable ErrorDescription object that describes the error.
      */
     static create(error) {
-        let description = new ErrorDescription_1.ErrorDescription();
+        const description = new ErrorDescription_1.ErrorDescription();
         if (error instanceof ApplicationException_1.ApplicationException) {
-            let ex = error;
+            const ex = error;
             description.category = ex.category;
             description.status = ex.status;
             description.code = ex.code;

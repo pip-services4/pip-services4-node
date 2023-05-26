@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai = require('chai');
+const assert = chai.assert;
 
 import { TestClass } from './TestClass';
 import { ObjectReader } from '../../src/reflect/ObjectReader';
@@ -6,7 +7,7 @@ import { ObjectReader } from '../../src/reflect/ObjectReader';
 suite('ObjectReader', ()=> {
 
    test('Get Object Property', () => {       
-		let obj = new TestClass();
+		const obj = new TestClass();
 
 		let value = ObjectReader.getProperty(obj, "privateField");
 		//assert.isNull(value);
@@ -19,7 +20,7 @@ suite('ObjectReader', ()=> {
    });
 
    test('Get Map Property', () => {       
-		let map = {
+		const map = {
 			"key1": 123,
 			"key2": "ABC"
         };
@@ -35,7 +36,7 @@ suite('ObjectReader', ()=> {
    });
 
    test('Get Array Property', () => {       
-        let list: any[] = [ 123, "ABC" ];
+        const list: any[] = [ 123, "ABC" ];
 
 		let value = ObjectReader.getProperty(list, "3");
 		assert.isNull(value);
@@ -48,36 +49,36 @@ suite('ObjectReader', ()=> {
    });
 
    test('Get Object Properties', () => {       
-		let obj = new TestClass();
-		let names = ObjectReader.getPropertyNames(obj);
-	    //assert.equal(2, names.length);
+		const obj = new TestClass();
+		const names = ObjectReader.getPropertyNames(obj);
+		//assert.equal(2, names.length);
 		assert.isTrue(names.indexOf("publicField") >= 0);
 		assert.isTrue(names.indexOf("publicProp") >= 0);
 		
-		let map = ObjectReader.getProperties(obj);
+		const map = ObjectReader.getProperties(obj);
 		//assert.equals(2, map.length);
         assert.equal("ABC", map["publicField"]);
 		assert.isNotNull(map["publicProp"]);
    });
 
    test('Get Map Properties', () => {       
-		let map = {
+		const map = {
 			"key1": 123,
 			"key2": "ABC"
         };
-		let names = ObjectReader.getPropertyNames(map);
+		const names = ObjectReader.getPropertyNames(map);
 		assert.equal(2, names.length);
 		assert.isTrue(names.indexOf("key1") >= 0);
 		assert.isTrue(names.indexOf("key2") >= 0);
 		
-		let values = ObjectReader.getProperties(map);
+		const values = ObjectReader.getProperties(map);
 		//assert.equal(2, values.lemgth);
 		assert.equal(123, values["key1"]);
         assert.equal("ABC", values["key2"]);
    });
 
    test('Get Map Properties', () => {       
-        let list = [ 123, "ABC" ];
+        const list = [ 123, "ABC" ];
 		
 		let names = ObjectReader.getPropertyNames(list);
 		assert.equal(2, names.length);
@@ -89,7 +90,7 @@ suite('ObjectReader', ()=> {
         assert.equal(123, values["0"]);
         assert.equal("ABC", values["1"]);
 		
-        let array: any[] = [ 123, "ABC" ];
+        const array: any[] = [ 123, "ABC" ];
 
 		names = ObjectReader.getPropertyNames(array);
 		assert.equal(2, names.length);

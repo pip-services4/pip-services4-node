@@ -57,7 +57,7 @@ class BooleanConverter {
      * @see [[toNullableBoolean]]
      */
     static toBooleanWithDefault(value, defaultValue = false) {
-        let result = BooleanConverter.toNullableBoolean(value);
+        const result = BooleanConverter.toNullableBoolean(value);
         return result != null ? result : defaultValue;
     }
 }

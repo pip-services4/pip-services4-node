@@ -101,7 +101,7 @@ class AnyValueArray extends Array {
      */
     getAsObject(index = undefined) {
         if (index === undefined) {
-            let result = [];
+            const result = [];
             for (index = 0; index < this.length; index++) {
                 result.push(this[index]);
             }
@@ -125,7 +125,7 @@ class AnyValueArray extends Array {
         if (value === undefined) {
             value = index; //originally was not present - added by Mark Makarychev.
             this.clear();
-            let elements = ArrayConverter_1.ArrayConverter.toArray(value);
+            const elements = ArrayConverter_1.ArrayConverter.toArray(value);
             this.append(elements);
         }
         else {
@@ -141,7 +141,7 @@ class AnyValueArray extends Array {
      * @see [[StringConverter.toNullableString]]
      */
     getAsNullableString(index) {
-        let value = this[index];
+        const value = this[index];
         return StringConverter_1.StringConverter.toNullableString(value);
     }
     /**
@@ -165,7 +165,7 @@ class AnyValueArray extends Array {
      * @see [[StringConverter.toStringWithDefault]]
      */
     getAsStringWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return StringConverter_1.StringConverter.toStringWithDefault(value, defaultValue);
     }
     /**
@@ -177,7 +177,7 @@ class AnyValueArray extends Array {
      * @see [[BooleanConverter.toNullableBoolean]]
      */
     getAsNullableBoolean(index) {
-        let value = this[index];
+        const value = this[index];
         return BooleanConverter_1.BooleanConverter.toNullableBoolean(value);
     }
     /**
@@ -201,7 +201,7 @@ class AnyValueArray extends Array {
      * @see [[BooleanConverter.toBooleanWithDefault]]
      */
     getAsBooleanWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return BooleanConverter_1.BooleanConverter.toBooleanWithDefault(value, defaultValue);
     }
     /**
@@ -213,7 +213,7 @@ class AnyValueArray extends Array {
      * @see [[IntegerConverter.toNullableInteger]]
      */
     getAsNullableInteger(index) {
-        let value = this[index];
+        const value = this[index];
         return IntegerConverter_1.IntegerConverter.toNullableInteger(value);
     }
     /**
@@ -237,7 +237,7 @@ class AnyValueArray extends Array {
      * @see [[IntegerConverter.toIntegerWithDefault]]
      */
     getAsIntegerWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return IntegerConverter_1.IntegerConverter.toIntegerWithDefault(value, defaultValue);
     }
     /**
@@ -249,7 +249,7 @@ class AnyValueArray extends Array {
      * @see [[LongConverter.toNullableLong]]
      */
     getAsNullableLong(index) {
-        let value = this[index];
+        const value = this[index];
         return LongConverter_1.LongConverter.toNullableLong(value);
     }
     /**
@@ -273,7 +273,7 @@ class AnyValueArray extends Array {
      * @see [[LongConverter.toLongWithDefault]]
      */
     getAsLongWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return LongConverter_1.LongConverter.toLongWithDefault(value, defaultValue);
     }
     /**
@@ -285,7 +285,7 @@ class AnyValueArray extends Array {
      * @see [[FloatConverter.toNullableFloat]]
      */
     getAsNullableFloat(index) {
-        let value = this[index];
+        const value = this[index];
         return FloatConverter_1.FloatConverter.toNullableFloat(value);
     }
     /**
@@ -309,7 +309,7 @@ class AnyValueArray extends Array {
      * @see [[FloatConverter.toFloatWithDefault]]
      */
     getAsFloatWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return FloatConverter_1.FloatConverter.toFloatWithDefault(value, defaultValue);
     }
     /**
@@ -321,7 +321,7 @@ class AnyValueArray extends Array {
      * @see [[DoubleConverter.toNullableDouble]]
      */
     getAsNullableDouble(index) {
-        let value = this[index];
+        const value = this[index];
         return DoubleConverter_1.DoubleConverter.toNullableDouble(value);
     }
     /**
@@ -345,7 +345,7 @@ class AnyValueArray extends Array {
      * @see [[DoubleConverter.toDoubleWithDefault]]
      */
     getAsDoubleWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return DoubleConverter_1.DoubleConverter.toDoubleWithDefault(value, defaultValue);
     }
     /**
@@ -357,7 +357,7 @@ class AnyValueArray extends Array {
      * @see [[DateTimeConverter.toNullableDateTime]]
      */
     getAsNullableDateTime(index) {
-        let value = this[index];
+        const value = this[index];
         return DateTimeConverter_1.DateTimeConverter.toNullableDateTime(value);
     }
     /**
@@ -381,7 +381,7 @@ class AnyValueArray extends Array {
      * @see [[DateTimeConverter.toDateTimeWithDefault]]
      */
     getAsDateTimeWithDefault(index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return DateTimeConverter_1.DateTimeConverter.toDateTimeWithDefault(value, defaultValue);
     }
     /**
@@ -395,7 +395,7 @@ class AnyValueArray extends Array {
      * @see [[TypeConverter.toNullableType]]
      */
     getAsNullableType(type, index) {
-        let value = this[index];
+        const value = this[index];
         return TypeConverter_1.TypeConverter.toNullableType(type, value);
     }
     /**
@@ -423,7 +423,7 @@ class AnyValueArray extends Array {
      * @see [[TypeConverter.toTypeWithDefault]]
      */
     getAsTypeWithDefault(type, index, defaultValue) {
-        let value = this[index];
+        const value = this[index];
         return TypeConverter_1.TypeConverter.toTypeWithDefault(type, value, defaultValue);
     }
     /**
@@ -436,7 +436,7 @@ class AnyValueArray extends Array {
      * @see [[AnyValue.constructor]]
      */
     getAsValue(index) {
-        let value = this[index];
+        const value = this[index];
         return new AnyValue_1.AnyValue(value);
     }
     /**
@@ -448,7 +448,7 @@ class AnyValueArray extends Array {
      * @see [[fromValue]]
      */
     getAsNullableArray(index) {
-        let value = this[index];
+        const value = this[index];
         return value != null ? AnyValueArray.fromValue(value) : null;
     }
     /**
@@ -460,7 +460,7 @@ class AnyValueArray extends Array {
      * @see [[fromValue]]
      */
     getAsArray(index) {
-        let value = this[index];
+        const value = this[index];
         return AnyValueArray.fromValue(value);
     }
     /**
@@ -473,7 +473,7 @@ class AnyValueArray extends Array {
      * @see [[getAsNullableArray]]
      */
     getAsArrayWithDefault(index, defaultValue) {
-        let result = this.getAsNullableArray(index);
+        const result = this.getAsNullableArray(index);
         return result != null ? result : defaultValue;
     }
     /**
@@ -486,7 +486,7 @@ class AnyValueArray extends Array {
      * @see [[AnyValueMap.fromValue]]
      */
     getAsNullableMap(index) {
-        let value = this[index];
+        const value = this[index];
         return value != null ? AnyValueMap_1.AnyValueMap.fromValue(value) : null;
     }
     /**
@@ -499,7 +499,7 @@ class AnyValueArray extends Array {
      * @see [[AnyValueMap.fromValue]]
      */
     getAsMap(index) {
-        let value = this[index];
+        const value = this[index];
         return AnyValueMap_1.AnyValueMap.fromValue(value);
     }
     /**
@@ -512,7 +512,7 @@ class AnyValueArray extends Array {
      * @see [[getAsNullableMap]]
      */
     getAsMapWithDefault(index, defaultValue) {
-        let result = this.getAsNullableMap(index);
+        const result = this.getAsNullableMap(index);
         return result != null ? AnyValueMap_1.AnyValueMap.fromValue(result) : defaultValue;
     }
     /**
@@ -524,7 +524,7 @@ class AnyValueArray extends Array {
      */
     contains(value) {
         for (let index = 0; index < this.length; index++) {
-            let element = this[index];
+            const element = this[index];
             if (value == null && element == null) {
                 return true;
             }
@@ -549,9 +549,9 @@ class AnyValueArray extends Array {
      * @see [[TypeConverter.toNullableType]]
      */
     containsAsType(typeCode, value) {
-        let typedValue = TypeConverter_1.TypeConverter.toType(typeCode, value);
+        const typedValue = TypeConverter_1.TypeConverter.toType(typeCode, value);
         for (let index = 0; index < this.length; index++) {
-            let thisTypedValue = TypeConverter_1.TypeConverter.toNullableType(typeCode, this[index]);
+            const thisTypedValue = TypeConverter_1.TypeConverter.toNullableType(typeCode, this[index]);
             if (typedValue == null && thisTypedValue == null) {
                 return true;
             }
@@ -609,7 +609,7 @@ class AnyValueArray extends Array {
      * @see [[ArrayConverter.toNullableArray]]
      */
     static fromValue(value) {
-        let values = ArrayConverter_1.ArrayConverter.toNullableArray(value);
+        const values = ArrayConverter_1.ArrayConverter.toNullableArray(value);
         return new AnyValueArray(values);
     }
     /**
@@ -622,13 +622,13 @@ class AnyValueArray extends Array {
      * @returns                 a newly created AnyValueArray.
      */
     static fromString(values, separator, removeDuplicates = false) {
-        let result = new AnyValueArray();
+        const result = new AnyValueArray();
         if (values == null || values.length == 0) {
             return result;
         }
-        let items = values.split(separator, -1);
+        const items = values.split(separator, -1);
         for (let index = 0; index < items.length; index++) {
-            let item = items[index];
+            const item = items[index];
             if ((item != null && item.length > 0) || removeDuplicates == false) {
                 result.push(item != null ? new AnyValue_1.AnyValue(item) : null);
             }

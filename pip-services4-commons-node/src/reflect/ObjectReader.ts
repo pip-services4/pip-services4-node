@@ -45,7 +45,7 @@ export class ObjectReader {
      * @returns an actual (unwrapped) object value. 
      */
     public static getValue(obj: any): any {
-    	// Todo: just a blank implementation for compatibility
+        // Todo: just a blank implementation for compatibility
         return obj;
     }
 
@@ -62,11 +62,11 @@ export class ObjectReader {
      */
 	public static hasProperty(obj: any, name: string): boolean {
         if (obj == null || name == null) {
-        	return false;
+            return false;
         } else if (typeof obj === "object" && !(obj instanceof Date)) {
             return PropertyReflector.hasProperty(obj, name);
         } else if (Array.isArray(obj)) {
-            let index = IntegerConverter.toNullableInteger(name);
+            const index = IntegerConverter.toNullableInteger(name);
             return index != null && index < obj.length;
         } else {
             return false;
@@ -86,11 +86,11 @@ export class ObjectReader {
      */
 	public static getProperty(obj: any, name: string): any {
         if (obj == null || name == null) {
-        	return null;
+            return null;
         } else if (typeof obj === "object" && !(obj instanceof Date)) {
             return PropertyReflector.getProperty(obj, name);
         } else if (Array.isArray(obj)) {
-            let index = IntegerConverter.toNullableInteger(name);
+            const index = IntegerConverter.toNullableInteger(name);
             return index != null && index < obj.length ? obj[index] : null;
         } else {
             return null;
@@ -111,13 +111,13 @@ export class ObjectReader {
         let properties: string[] = [];
         
         if (obj == null) {
-        	// Do nothing
+            // Do nothing
         } else if (typeof obj === "object" && !(obj instanceof Date)) {
             properties = PropertyReflector.getPropertyNames(obj);
         } else if (Array.isArray(obj)) {
-			let length = obj.length;
+			const length = obj.length;
             for (let index = 0; index < length; index++) {
-            	properties.push(index.toString());
+                properties.push(index.toString());
             }
         } else {
             // Do nothing
@@ -141,11 +141,11 @@ export class ObjectReader {
         let map: any = {};
         
         if (obj == null) {
-        	// Do nothing
+            // Do nothing
         } else if (typeof obj === "object" && !(obj instanceof Date)) {
             map = PropertyReflector.getProperties(obj);
         } else if (Array.isArray(obj)) {
-			let length = obj.length;
+			const length = obj.length;
             for (let index = 0; index < length; index++) {
                 map[index.toString()] = obj[index];
             }

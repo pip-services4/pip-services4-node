@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 export class TestClass {
-	private privateField: number = 123;
-	public publicField: string = "ABC";
+	private privateField = 123;
+	public publicField = "ABC";
     private _publicProp: Date = new Date();
 	
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public TestClass(arg1: number = null) {}
 	
 	protected get privateProp(): number { return 543; }
