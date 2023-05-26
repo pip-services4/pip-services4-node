@@ -1,14 +1,14 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
-import { DummyController } from '../DummyController';
-import { DummyCommandableHttpService } from '../services/DummyCommandableHttpService';
+import { DummyService } from '../sample/DummyService';
+import { DummyCommandableHttpController } from '../controllers/DummyCommandableHttpController';
 import { DummyCommandableHttpClient } from './DummyCommandableHttpClient';
 import { DummyClientFixture } from './DummyClientFixture';
 
 suite('DummyCommandableHttpClient', ()=> {
-    let service: DummyCommandableHttpService;
+    let controller: DummyCommandableHttpController;
     let client: DummyCommandableHttpClient;
     let fixture: DummyClientFixture;
 
@@ -19,22 +19,22 @@ suite('DummyCommandableHttpClient', ()=> {
     );
     
     suiteSetup(async () => {
-        let ctrl = new DummyController();
+        let service = new DummyService();
 
-        service = new DummyCommandableHttpService();
-        service.configure(restConfig);
+        controller = new DummyCommandableHttpController();
+        controller.configure(restConfig);
 
         let references: References = References.fromTuples(
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl,
-            new Descriptor('pip-services-dummies', 'service', 'http', 'default', '1.0'), service
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), service,
+            new Descriptor('pip-services-dummies', 'controller', 'http', 'default', '1.0'), controller
         );
-        service.setReferences(references);
+        controller.setReferences(references);
 
-        await service.open(null);
+        await controller.open(null);
     });
     
     suiteTeardown(async () => {
-        await service.close(null);
+        await controller.close(null);
     });
 
     setup(async () => {

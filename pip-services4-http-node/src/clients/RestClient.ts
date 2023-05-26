@@ -1,19 +1,20 @@
 /** @module clients */
 
-import { IOpenable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
+import { IContext } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
+import { CompositeCounters } from 'pip-services4-observability-node';
+import { CompositeTracer } from 'pip-services4-observability-node';
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { UnknownException } from 'pip-services4-commons-node';
+import { HttpConnectionResolver } from 'pip-services4-config-node';
 
-import { HttpConnectionResolver } from '../connect/HttpConnectionResolver';
-import { InstrumentTiming } from '../services';
+import { InstrumentTiming } from '../controllers';
 
 /**
  * Abstract client that calls remove endpoints using HTTP/REST protocol.
@@ -40,8 +41,8 @@ import { InstrumentTiming } from '../services';
  * - <code>\*:traces:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/trace.itracer.html ITracer]] components to record traces
  * - <code>\*:discovery:\*:\*:1.0</code>      (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
  * 
- * @see [[RestService]]
- * @see [[CommandableHttpService]]
+ * @see [[RestController]]
+ * @see [[CommandableHttpController]]
  * 
  * ### Example ###
  * 
@@ -245,7 +246,9 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             this._client = null;
 
             throw new ConnectionException(
-                context, "CANNOT_CONNECT", "Connection to REST service failed"
+                context != null ? context.getTraceId() : null,
+                "CANNOT_CONNECT",
+                "Connection to REST service failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }
@@ -270,7 +273,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
     }
 
     /**
-     * Adds a correlation id (trace_id) to invocation parameter map.
+     * Adds a trace id (trace_id) to invocation parameter map.
      * 
      * @param params            invocation parameters.
      * @param context     (optional) a correlation id to be added.
@@ -278,12 +281,13 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      */
     protected addTraceId(params: any, context: IContext): any {
         // Automatically generate short ids for now
-        if (context == null)
+        if (context == null) {
             //context = IdGenerator.nextShort();
             return params;
+        }
 
         params = params || {};
-        params.trace_id = context;
+        params.trace_id = context.getTraceId();
         return params;
     }
 
@@ -351,12 +355,12 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
      * 
      * @param method            HTTP method: "get", "head", "post", "put", "delete"
      * @param route             a command route. Base route will be added to this route
-     * @param context     (optional) a context to trace execution through call chain.
+     * @param context           (optional) a context to trace execution through call chain.
      * @param params            (optional) query parameters.
      * @param data              (optional) body object.
      * @returns                 a result object.
      */
-    protected async call<T>(method: string, route: string, context?: string, params: any = {}, data?: any): Promise<T> {
+    protected async call<T>(method: string, route: string, context?: IContext, params: any = {}, data?: any): Promise<T> {
         method = method.toLowerCase();
 
         route = this.createRequestRoute(route);
@@ -365,7 +369,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             params = this.addTraceId(params, context)
         }
         if (this._contextLocation == "headers" || this._contextLocation == "both") {
-            this._headers['trace_id'] = context;
+            this._headers['trace_id'] = context != null ? context.getTraceId() : null;
         }
 
         if (params != null && Object.keys(params).length > 0) {
@@ -395,7 +399,9 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             else if (method == 'delete') this._client.del(route, action);
             else {
                 let err = new UnknownException(
-                    context, 'UNSUPPORTED_METHOD', 'Method is not supported by REST client'
+                    context != null ? context.getTraceId() : null,
+                    'UNSUPPORTED_METHOD',
+                    'Method is not supported by REST client'
                 ).withDetails('verb', method);
                 reject(err);
             }

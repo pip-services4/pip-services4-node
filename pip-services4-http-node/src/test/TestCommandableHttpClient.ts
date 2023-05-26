@@ -1,4 +1,6 @@
 /** @module test */
+import { IContext } from 'pip-services4-components-node';
+
 import { CommandableHttpClient } from "../clients/CommandableHttpClient";
 
 export class TestCommandableHttpClient extends CommandableHttpClient {

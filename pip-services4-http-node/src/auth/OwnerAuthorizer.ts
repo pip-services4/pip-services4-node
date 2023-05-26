@@ -1,6 +1,6 @@
 /** @module auth */
 import { UnauthorizedException } from 'pip-services4-commons-node';
-import { HttpResponseSender } from '../services/HttpResponseSender';
+import { HttpResponseSender } from '../controllers/HttpResponseSender';
 
 export class OwnerAuthorizer {
 
@@ -10,7 +10,8 @@ export class OwnerAuthorizer {
                 HttpResponseSender.sendError(
                     req, res,
                     new UnauthorizedException(
-                        null, 'NOT_SIGNED',
+                        null,
+                        'NOT_SIGNED',
                         'User must be signed in to perform this operation'
                     ).withStatus(401)
                 );
@@ -20,7 +21,8 @@ export class OwnerAuthorizer {
                     HttpResponseSender.sendError(
                         req, res,
                         new UnauthorizedException(
-                            null, 'FORBIDDEN',
+                            null,
+                            'FORBIDDEN',
                             'Only data owner can perform this operation'
                         ).withStatus(403)
                     );
@@ -37,7 +39,8 @@ export class OwnerAuthorizer {
                 HttpResponseSender.sendError(
                     req, res,
                     new UnauthorizedException(
-                        null, 'NOT_SIGNED',
+                        null,
+                        'NOT_SIGNED',
                         'User must be signed in to perform this operation'
                     ).withStatus(401)
                 );
@@ -50,7 +53,8 @@ export class OwnerAuthorizer {
                     HttpResponseSender.sendError(
                         req, res,
                         new UnauthorizedException(
-                            null, 'FORBIDDEN',
+                            null,
+                            'FORBIDDEN',
                             'Only data owner can perform this operation'
                         ).withStatus(403)
                     );

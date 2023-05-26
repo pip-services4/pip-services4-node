@@ -1,10 +1,11 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { DataPage } from 'pip-services4-data-node';
 
 import { RestClient } from '../../src/clients/RestClient';
 import { IDummyClient } from './IDummyClient';
-import { Dummy } from '../Dummy';
+import { Dummy } from '../sample/Dummy';
 
 export class DummyRestClient extends RestClient implements IDummyClient {
         

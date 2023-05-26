@@ -1,4 +1,6 @@
 /** @module clients */
+import { IContext } from 'pip-services4-components-node';
+
 import { RestClient } from './RestClient';
 
 /**

@@ -1,7 +1,8 @@
 const assert = require('chai').assert;
 
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
+import { Context } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
 
 import { IDummyClient } from './IDummyClient';
 
@@ -58,7 +59,7 @@ export class DummyClientFixture {
         assert.isNull(dummy || null);
 
         // Check correlation id
-        let result = await this._client.checkTraceId("test_cor_id");
+        let result = await this._client.checkTraceId(Context.fromTraceId("test_cor_id"));
         assert.isNotNull(result);
         assert.equal("test_cor_id", result);
     }

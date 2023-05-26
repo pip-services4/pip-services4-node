@@ -1,14 +1,14 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
-import { DummyController } from '../DummyController';
-import { DummyRestService } from '../services/DummyRestService';
+import { DummyService } from '../sample/DummyService';
+import { DummyRestController } from '../controllers/DummyRestController';
 import { DummyRestClient } from './DummyRestClient';
 import { DummyClientFixture } from './DummyClientFixture';
 
 suite('DummyRestClient', ()=> {
-    let service: DummyRestService;
+    let controller: DummyRestController;
     let client: DummyRestClient;
     let fixture: DummyClientFixture;
 
@@ -20,22 +20,22 @@ suite('DummyRestClient', ()=> {
     );
     
     suiteSetup(async () => {
-        let ctrl = new DummyController();
+        let service = new DummyService();
 
-        service = new DummyRestService();
-        service.configure(restConfig);
+        controller = new DummyRestController();
+        controller.configure(restConfig);
 
         let references: References = References.fromTuples(
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl,
-            new Descriptor('pip-services-dummies', 'service', 'rest', 'default', '1.0'), service
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), service,
+            new Descriptor('pip-services-dummies', 'controller', 'rest', 'default', '1.0'), controller
         );
-        service.setReferences(references);
+        controller.setReferences(references);
 
-        await service.open(null);
+        await controller.open(null);
     });
     
     suiteTeardown(async () => {
-        await service.close(null);
+        await controller.close(null);
     });
 
     setup(async () => {
