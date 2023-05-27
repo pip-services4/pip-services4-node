@@ -1,1 +1,0 @@
-export { SwaggerService } from './SwaggerService';

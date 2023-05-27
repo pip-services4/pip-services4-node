@@ -1,19 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SwaggerService = void 0;
 const fs = require('fs');
 const path = require('path');
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
-class SwaggerService extends pip_services3_rpc_node_1.RestService {
-    constructor() {
+
+import { ISwaggerController } from 'pip-services4-http-node';
+import { RestController } from 'pip-services4-http-node';
+
+export class SwaggerController extends RestService implements ISwaggerController {
+    private _routes: any = {};
+
+    public constructor() {
         super();
-        this._routes = {};
         this._baseRoute = 'swagger';
     }
-    calculateFilePath(fileName) {
+
+    private calculateFilePath(fileName: string): string {
         return __dirname + '/../../../src/swagger-ui/' + fileName;
     }
-    calculateContentType(fileName) {
+
+    private calculateContentType(fileName: string): string {
         let ext = path.extname(fileName);
         switch (ext) {
             case '.html':
@@ -28,28 +31,35 @@ class SwaggerService extends pip_services3_rpc_node_1.RestService {
                 return 'text/plain';
         }
     }
-    checkFileExist(fileName) {
+
+    private checkFileExist(fileName: string): boolean {
         let path = this.calculateFilePath(fileName);
         return fs.existsSync(path);
     }
-    loadFileContent(fileName) {
+
+    private loadFileContent(fileName: string): string {
         let path = this.calculateFilePath(fileName);
         return fs.readFileSync(path, 'utf-8');
     }
-    getSwaggerFile(req, res) {
+
+    private getSwaggerFile(req: any, res: any): void {
         let fileName = req.params.file_name.toLowerCase();
+
         if (!this.checkFileExist(fileName)) {
             res.status(404);
             return;
         }
+
         res.header('Content-Type', this.calculateContentType(fileName));
         let content = this.loadFileContent(fileName);
         res.sendRaw(content);
     }
-    getIndex(req, res) {
+
+    private getIndex(req: any, res: any): void {
         let content = this.loadFileContent('index.html');
+
         // Inject urls
-        let urls = [];
+        let urls: any[] = [];
         for (let prop in this._routes) {
             let url = {
                 name: prop,
@@ -58,16 +68,19 @@ class SwaggerService extends pip_services3_rpc_node_1.RestService {
             urls.push(url);
         }
         content = content.replace('[/*urls*/]', JSON.stringify(urls));
+
+        
         res.header('Content-Type', 'text/html');
         res.sendRaw(content);
     }
-    redirectToIndex(req, res) {
+
+    private redirectToIndex(req: any, res: any): void {
         let url = req.url;
-        if (!url.endsWith('/'))
-            url = url + '/';
-        res.redirect(301, url + 'index.html', () => { });
+        if (!url.endsWith('/')) url = url + '/';
+        res.redirect(301, url + 'index.html', () => {});
     }
-    composeSwaggerRoute(baseRoute, route) {
+
+    private composeSwaggerRoute(baseRoute: string, route: string): string {
         if (baseRoute != null && baseRoute != "") {
             if (route == null || route == "")
                 route = "/";
@@ -77,9 +90,11 @@ class SwaggerService extends pip_services3_rpc_node_1.RestService {
                 baseRoute = "/" + baseRoute;
             route = baseRoute + route;
         }
+
         return route;
     }
-    registerOpenApiSpec(baseRoute, swaggerRoute) {
+
+    public registerOpenApiSpec(baseRoute: string, swaggerRoute?: string): void {
         if (swaggerRoute == null)
             super.registerOpenApiSpec(baseRoute);
         else {
@@ -88,16 +103,26 @@ class SwaggerService extends pip_services3_rpc_node_1.RestService {
             this._routes[baseRoute] = route;
         }
     }
-    register() {
+
+    public register() {
         // A hack to redirect default base route
         let baseRoute = this._baseRoute;
         this._baseRoute = null;
-        this.registerRoute('get', baseRoute, null, this.redirectToIndex);
+        this.registerRoute(
+            'get', baseRoute, null, this.redirectToIndex
+        );
         this._baseRoute = baseRoute;
-        this.registerRoute('get', '/', null, this.redirectToIndex);
-        this.registerRoute('get', '/index.html', null, this.getIndex);
-        this.registerRoute('get', '/:file_name', null, this.getSwaggerFile);
+
+        this.registerRoute(
+            'get', '/', null, this.redirectToIndex
+        );
+
+        this.registerRoute(
+            'get', '/index.html', null, this.getIndex
+        );
+
+        this.registerRoute(
+            'get', '/:file_name', null, this.getSwaggerFile
+        );
     }
 }
-exports.SwaggerService = SwaggerService;
-//# sourceMappingURL=SwaggerService.js.map

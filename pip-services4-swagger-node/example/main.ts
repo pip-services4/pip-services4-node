@@ -1,44 +1,44 @@
 const readline = require('readline');
 const process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { Referencer } from 'pip-services4-commons-node';
-import { Opener } from 'pip-services4-commons-node';
-import { Closer } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { Referencer } from 'pip-services4-components-node';
+import { Opener } from 'pip-services4-components-node';
+import { Closer } from 'pip-services4-components-node';
 
-import { ConsoleLogger } from 'pip-services4-components-node';
-import { LogCounters } from 'pip-services4-components-node';
+import { ConsoleLogger } from 'pip-services4-observability-node';
+import { LogCounters } from 'pip-services4-observability-node';
 
-import { HttpEndpoint } from 'pip-services4-rpc-node';
-import { StatusRestService } from 'pip-services4-rpc-node';
-import { HeartbeatRestService } from 'pip-services4-rpc-node';
+import { HttpEndpoint } from 'pip-services4-http-node';
+import { StatusRestController } from 'pip-services4-http-node';
+import { HeartbeatRestController } from 'pip-services4-http-node';
 
-import { SwaggerService } from '../src/services/SwaggerService';
-import { DummyController } from './logic/DummyController';
-import { DummyRestService } from './services/DummyRestService';
-import { DummyCommandableHttpService } from './services/DummyCommandableHttpService';
+import { SwaggerController } from '../src/controllers/SwaggerController';
+import { DummyService} from './services/DummyService';
+import { DummyRestController } from './controllers/DummyRestController';
+import { DummyCommandableHttpController } from './controllers/DummyCommandableHttpController';
 
 let main = async () => {
     // Create components
     let logger = new ConsoleLogger();
-    let controller = new DummyController();
+    let service = new DummyService();
     let httpEndpoint = new HttpEndpoint();
-    let restService = new DummyRestService();
-    let httpService = new DummyCommandableHttpService();
-    let statusService = new StatusRestService();
-    let heartbeatService = new HeartbeatRestService();
-    let swaggerService = new SwaggerService();
+    let restController = new DummyRestController();
+    let httpController = new DummyCommandableHttpController();
+    let statusController = new StatusRestController();
+    let heartbeatController = new HeartbeatRestController();
+    let swaggerController = new SwaggerController();
 
     let components = [
-        controller,
+        service,
         httpEndpoint,
-        restService,
-        httpService,
-        statusService,
-        heartbeatService,
-        swaggerService
+        restController,
+        httpController,
+        statusController,
+        heartbeatController,
+        swaggerController
     ];
 
     // Configure components
@@ -52,11 +52,11 @@ let main = async () => {
         'connection.port', 8080
     ));
 
-    restService.configure(ConfigParams.fromTuples(
+    restController.configure(ConfigParams.fromTuples(
         'swagger.enable', true
     )); 
 
-    httpService.configure(ConfigParams.fromTuples(
+    httpController.configure(ConfigParams.fromTuples(
         'base_route', 'dummies2',
         'swagger.enable', true
     )); 
@@ -67,12 +67,12 @@ let main = async () => {
             new Descriptor('pip-services', 'logger', 'console', 'default', '1.0'), logger,
             new Descriptor('pip-services', 'counters', 'log', 'default', '1.0'), new LogCounters(),
             new Descriptor('pip-services', 'endpoint', 'http', 'default', '1.0'), httpEndpoint,
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), controller,
-            new Descriptor('pip-services-dummies', 'service', 'rest', 'default', '1.0'), restService,
-            new Descriptor('pip-services-dummies', 'service', 'commandable-http', 'default', '1.0'), httpService,
-            new Descriptor('pip-services', 'status-service', 'rest', 'default', '1.0'), statusService,
-            new Descriptor('pip-services', 'heartbeat-service', 'rest', 'default', '1.0'), heartbeatService,
-            new Descriptor('pip-services', 'swagger-service', 'http', 'default', '1.0'), swaggerService
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), service,
+            new Descriptor('pip-services-dummies', 'controller', 'rest', 'default', '1.0'), restController,
+            new Descriptor('pip-services-dummies', 'controller', 'commandable-http', 'default', '1.0'), httpController,
+            new Descriptor('pip-services', 'status-controller', 'rest', 'default', '1.0'), statusController,
+            new Descriptor('pip-services', 'heartbeat-controller', 'rest', 'default', '1.0'), heartbeatController,
+            new Descriptor('pip-services', 'swagger-controller', 'http', 'default', '1.0'), swaggerController
         );
 
         Referencer.setReferences(references, components);

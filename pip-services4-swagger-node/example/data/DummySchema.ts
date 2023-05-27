@@ -1,5 +1,5 @@
 import { TypeCode } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
+import { ObjectSchema } from 'pip-services4-data-node';
 
 export class DummySchema extends ObjectSchema {
 

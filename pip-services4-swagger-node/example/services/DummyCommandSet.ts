@@ -10,13 +10,13 @@ import { FilterParamsSchema } from 'pip-services4-commons-node';
 import { PagingParamsSchema } from 'pip-services4-commons-node';
 
 import { Dummy } from '../data/Dummy';
-import { IDummyController } from './IDummyController';
+import { IDummyService } from './IDummyService';
 import { DummySchema } from '../data/DummySchema';
 
 export class DummyCommandSet extends CommandSet {
-    private _controller: IDummyController;
+    private _controller: IDummyService;
 
-	constructor(controller: IDummyController) {
+	constructor(controller: IDummyService) {
 		super();
 
 		this._controller = controller;

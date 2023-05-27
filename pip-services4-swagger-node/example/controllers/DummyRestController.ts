@@ -1,21 +1,21 @@
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { ObjectSchema } from 'pip-services4-data-node';
 import { TypeCode } from 'pip-services4-commons-node';
-import { RestService } from 'pip-services4-rpc-node';
+import { RestController } from 'pip-services4-http-node';
 
 import { DummySchema } from '../data/DummySchema';
-import { IDummyController } from '../logic/IDummyController';
+import { IDummyService } from '../services/IDummyService';
 
-export class DummyRestService extends RestService {
-    private _controller: IDummyController;
+export class DummyRestController extends RestController {
+    private _service: IDummyService;
 
     public constructor() {
         super();
-        this._dependencyResolver.put('controller', new Descriptor("pip-services-dummies", "controller", "default", "*", "*"));
+        this._dependencyResolver.put('service', new Descriptor("pip-services-dummies", "service", "default", "*", "*"));
     }
 
     public configure(config: ConfigParams): void {
@@ -24,12 +24,12 @@ export class DummyRestService extends RestService {
 
 	public setReferences(references: IReferences): void {
 		super.setReferences(references);
-        this._controller = this._dependencyResolver.getOneRequired<IDummyController>('controller');
+        this._service = this._dependencyResolver.getOneRequired<IDummyService>('service');
     }
     
     private async getPageByFilter(req: any, res: any) {
         try {
-            let result = await this._controller.getPageByFilter(
+            let result = await this._service.getPageByFilter(
                 req.params.trace_id,
                 new FilterParams(req.params),
                 new PagingParams(req.params),
@@ -42,7 +42,7 @@ export class DummyRestService extends RestService {
 
     private async getOneById(req, res) {
         try {
-            let result = await this._controller.getOneById(
+            let result = await this._service.getOneById(
                 req.params.trace_id,
                 req.params.dummy_id
             );
@@ -54,7 +54,7 @@ export class DummyRestService extends RestService {
 
     private async create(req, res) {
         try {
-            let result = await this._controller.create(
+            let result = await this._service.create(
                 req.params.trace_id,
                 req.body
             );
@@ -66,7 +66,7 @@ export class DummyRestService extends RestService {
 
     private async update(req, res) {
         try {
-            let result = await this._controller.update(
+            let result = await this._service.update(
                 req.params.trace_id,
                 req.body
             );
@@ -78,7 +78,7 @@ export class DummyRestService extends RestService {
 
     private async deleteById(req, res) {
         try {
-            let result  = await this._controller.deleteById(
+            let result  = await this._service.deleteById(
                 req.params.trace_id,
                 req.params.dummy_id
             );
@@ -127,6 +127,6 @@ export class DummyRestService extends RestService {
         );
         
         this._swaggerRoute = '/dummies/swagger';
-        this.registerOpenApiSpecFromFile(__dirname + '/../../../example/services/dummy.yml');
+        this.registerOpenApiSpecFromFile(__dirname + '/../../../example/controllers/dummy.yml');
     }
 }

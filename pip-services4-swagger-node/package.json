@@ -1,8 +1,8 @@
 {
     "name": "pip-services4-swagger-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
-    "description": "Portable abstractions and patterns for Pip.Services in Node.js / ES2017",
+    "description": "Swagger UI for HTTP/REST Communication Components in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",
@@ -34,9 +34,11 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^1.0.0",
-        "pip-services4-components-node": "^1.0.0",
-        "pip-services4-rpc-node": "^1.0.0"
+        "pip-services4-commons-node": "^0.0.1",
+        "pip-services4-components-node": "^0.0.1",
+        "pip-services4-data-node": "^0.0.1",
+        "pip-services4-rpc-node": "^0.0.1",
+        "pip-services4-http-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

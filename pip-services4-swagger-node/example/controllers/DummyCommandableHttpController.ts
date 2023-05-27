@@ -1,10 +1,10 @@
 import { Descriptor } from 'pip-services4-commons-node';
-import { CommandableHttpService } from 'pip-services4-rpc-node';
+import { CommandableHttpService } from 'pip-services4-http-node';
 
-export class DummyCommandableHttpService extends CommandableHttpService {
+export class DummyCommandableHttpController extends CommandableHttpController {
     public constructor() {
         super('dummies2');
-        this._dependencyResolver.put('controller', new Descriptor('pip-services-dummies', 'controller', 'default', '*', '*'));
+        this._dependencyResolver.put('service', new Descriptor('pip-services-dummies', 'service', 'default', '*', '*'));
     }
 
     public register(): void {

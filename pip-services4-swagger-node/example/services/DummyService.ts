@@ -1,15 +1,16 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
-import { ICommandable } from 'pip-services4-commons-node';
-import { CommandSet } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { DataPage } from 'pip-services4-data-node';
+import { IdGenerator } from 'pip-services4-data-node';
+import { ICommandable } from 'pip-services4-rpc-node';
+import { CommandSet } from 'pip-services4-rpc-node';
 
-import { IDummyController } from './IDummyController';
+import { IDummyService } from './IDummyService';
 import { DummyCommandSet } from './DummyCommandSet';
 import { Dummy } from '../data/Dummy';
 
-export class DummyController implements IDummyController, ICommandable {
+export class DummyService implements IDummyService, ICommandable {
 	private _commandSet: DummyCommandSet;
     private readonly _entities: Dummy[] = [];
 
