@@ -1,14 +1,14 @@
 /** @module clients */
-import { IOpenable} from 'pip-services4-commons-node';
+import { IContext} from 'pip-services4-components-node';
+import { IOpenable} from 'pip-services4-components-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IdGenerator } from 'pip-services4-data-node';
 import { UnknownException } from 'pip-services4-commons-node';
-import { InvocationException } from 'pip-services4-commons-node';
 import { DependencyResolver } from 'pip-services4-commons-node';
 import { CompositeLogger } from 'pip-services4-components-node';
 import { CompositeTracer } from 'pip-services4-components-node';
@@ -17,7 +17,6 @@ import { InstrumentTiming } from "pip-services4-rpc-node";
 
 import { GcpConnectionParams } from '../connect/GcpConnectionParams';
 import { GcpConnectionResolver } from '../connect/GcpConnectionResolver';
-
 
 /**
  * Abstract client that calls Google Functions.
@@ -39,14 +38,14 @@ import { GcpConnectionResolver } from '../connect/GcpConnectionResolver';
  *      - connect_timeout:       connection timeout in milliseconds (default: 10 sec)
  *      - timeout:               invocation timeout in milliseconds (default: 10 sec)
  * - credentials:   
- *     - account: the service account name 
+ *     - account: the controller account name 
  *     - auth_token:    Google-generated ID token or null if using custom auth (IAM)
  *  
  * ### References ###
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * - <code>\*:credential-store:\*:\*:1.0</code>  (optional) Credential stores to resolve credentials
  * 
  * @see [[CloudFunction]]
@@ -103,7 +102,7 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
      */
     protected _timeout: number = 10000;
     /**
-     * The remote service uri which is calculated on open.
+     * The remote controller uri which is calculated on open.
      */
     protected _uri: string;
 
@@ -220,7 +219,9 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
             this._client = null;
 
             throw new ConnectionException(
-                context, "CANNOT_CONNECT", "Connection to Google function service failed"
+                context != null ? context.getTraceId() : null,
+                "CANNOT_CONNECT",
+                "Connection to Google function controller failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }
@@ -237,9 +238,9 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(context, "Closed Google function service at %s", this._uri);
+                this._logger.debug(context, "Closed Google function controller at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(context, "Failed while closing Google function service: %s", ex);
+                this._logger.warn(context, "Failed while closing Google function controller: %s", ex);
             }
 
             this._client = null;
@@ -257,7 +258,11 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
      */
     protected async invoke<T>(cmd: string, context: IContext, args: any): Promise<T> {
         if (cmd == null) {
-            throw new UnknownException(context, 'NO_COMMAND', 'Cmd parameter is missing');
+            throw new UnknownException(
+                context != null ? context.getTraceId() : null,
+                'NO_COMMAND',
+                'Cmd parameter is missing'
+            );
         }
 
         args = Object.assign({}, args);

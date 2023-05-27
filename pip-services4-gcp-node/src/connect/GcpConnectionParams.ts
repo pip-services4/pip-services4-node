@@ -1,9 +1,10 @@
 /** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
+import { CredentialParams } from 'pip-services4-config-node';
+import { ConnectionParams } from 'pip-services4-config-node';
 
 /**
  * Contains connection parameters to authenticate against Google
@@ -22,7 +23,7 @@ import { ConnectionParams } from 'pip-services4-components-node';
  *      - org_id:        organization name
  * 
  * - credentials:   
- *     - account: the service account name 
+ *     - account: the controller account name 
  *     - auth_token:    Google-generated ID token or null if using custom auth (IAM)
  *
  * In addition to standard parameters [[https://pip-services4-node.github.io/pip-services4-components-node/classes/auth.credentialparams.html CredentialParams]] may contain any number of custom parameters
@@ -59,25 +60,25 @@ export class GcpConnectionParams extends ConfigParams {
     }
 
     /**
-     * Gets the Google Platform service connection protocol.
+     * Gets the Google Platform controller connection protocol.
      *
-     * @returns {string} the Google service connection protocol.
+     * @returns {string} the Google controller connection protocol.
      */
     public getProtocol(): string {
         return super.getAsNullableString("protocol");
     }
 
     /**
-     * Sets the Google Platform service connection protocol.
+     * Sets the Google Platform controller connection protocol.
      *
-     * @param value a new Google service connection protocol.
+     * @param value a new Google controller connection protocol.
      */
     public setProtocol(value: string) {
         super.put("protocol", value);
     }
 
     /**
-     * Gets the Google Platform service uri.
+     * Gets the Google Platform controller uri.
      *
      * @returns {string} the Google sevice uri.
      */
@@ -86,9 +87,9 @@ export class GcpConnectionParams extends ConfigParams {
     }
 
     /**
-     * Sets the Google Platform service uri.
+     * Sets the Google Platform controller uri.
      *
-     * @param value a new Google service uri.
+     * @param value a new Google controller uri.
      */
     public setUri(value: string) {
         super.put("uri", value);
@@ -168,7 +169,7 @@ export class GcpConnectionParams extends ConfigParams {
     }
 
     /**
-     * Gets the service account name 
+     * Gets the controller account name 
      *
      * @returns {string} the account name.
      */
@@ -177,7 +178,7 @@ export class GcpConnectionParams extends ConfigParams {
     }
 
     /**
-     * Sets the service account name 
+     * Sets the controller account name 
      *
      * @param value a new account name.
      */
@@ -229,7 +230,7 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (uri == null && (projectId == null ||  region == null || functionName == null || protocol == null)) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION_URI",
                 "No uri, project_id, region and function is configured in Google function uri"
             );
@@ -237,8 +238,10 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
-                .withDetails("protocol", protocol);
+                context != null ? context.getTraceId() : null,
+                "WRONG_PROTOCOL",
+                "Protocol is not supported by REST connection"
+            ).withDetails("protocol", protocol);
         }
     }
 

@@ -3,6 +3,7 @@ const restify = require('restify');
 const waitPort = require('wait-port');
 
 import { exec } from 'child_process';
+import { Dummy } from '../sample/Dummy';
 
 
 export class DummyCloudFunctionFixture {
@@ -26,11 +27,11 @@ export class DummyCloudFunctionFixture {
 
     public async startCloudControllerLocally(): Promise<any> {
         let ff = exec(
-            `npx functions-framework --target=${this.functionName} --signature-type=http --port=${this.port} --source=test/containers`
+            `npx functions-framework --target=${this.functionName} --signature-type=http --port=${this.port} --source=test/controllers`
         );
         await waitPort({ host: 'localhost', port: this.port });
         this.process = ff;
-
+        
         await new Promise<void>((resolve, reject) => {
             setTimeout(resolve, 500);
         });
@@ -54,7 +55,6 @@ export class DummyCloudFunctionFixture {
                 (err, req, res, entity) => {
                     if (err != null) {
                         resolve(err);
-                        return;
                     }
                     resolve(Object.keys(entity).length > 0 ? entity : null);
                 });
@@ -64,12 +64,12 @@ export class DummyCloudFunctionFixture {
     }
 
     public async testCrudOperations(): Promise<void> {
-        let DUMMY1 = { id: null, key: "Key 1", content: "Content 1" };
-        let DUMMY2 = { id: null, key: "Key 2", content: "Content 2" };
+        let DUMMY1: Dummy = { id: null, key: "Key 1", content: "Content 1" };
+        let DUMMY2: Dummy = { id: null, key: "Key 2", content: "Content 2" };
 
         // Create one dummy
         let dummy1 = await this.httpInvoke({
-            cmd: 'create_dummy',
+            cmd: 'dummies.create_dummy',
             dummy: DUMMY1
         })
         assert.isObject(dummy1);
@@ -78,7 +78,7 @@ export class DummyCloudFunctionFixture {
 
         // Create another dummy
         let dummy2 = await this.httpInvoke({
-            cmd: 'create_dummy',
+            cmd: 'dummies.create_dummy',
             dummy: DUMMY2
         });
         assert.isObject(dummy2);
@@ -88,7 +88,7 @@ export class DummyCloudFunctionFixture {
         // Update the dummy
         dummy1.content = 'Updated Content 1'
         const updatedDummy1 = await this.httpInvoke({
-            cmd: 'update_dummy',
+            cmd: 'dummies.update_dummy',
             dummy: dummy1
 
         });
@@ -100,7 +100,7 @@ export class DummyCloudFunctionFixture {
 
         // Delete dummy
         let deleted = await this.httpInvoke({
-            cmd: 'delete_dummy',
+            cmd: 'dummies.delete_dummy',
             dummy_id: dummy1.id
         });
 
@@ -110,15 +110,14 @@ export class DummyCloudFunctionFixture {
         assert.equal(deleted.key, dummy1.key);
 
         let dummy = await this.httpInvoke({
-            cmd: 'get_dummy_by_id',
+            cmd: 'dummies.get_dummy_by_id',
             dummy_id: dummy1.id
         });
         assert.isNull(dummy || null);
 
-
         // Failed validation
         let err = await this.httpInvoke({
-            cmd: 'create_dummy',
+            cmd: 'dummies.create_dummy',
             dummy: null
         })
 

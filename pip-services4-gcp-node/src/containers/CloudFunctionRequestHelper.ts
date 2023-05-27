@@ -1,5 +1,5 @@
 /** @module containers */
-import { Parameters } from 'pip-services4-commons-node';
+import { Parameters } from 'pip-services4-components-node';
 
 
 /**
@@ -12,15 +12,15 @@ export class CloudFunctionRequestHelper {
      * @return returns context from request
      */
     public static getTraceId(req: any): string {
-        let context: IContext = req.trace_id || "";
+        let context: string = req.trace_id || req.correlation_id || "";
         try {
             if ((context == null || context == "") && req.hasOwnProperty('body')) {
-                context = req.body.trace_id;
+                context = req.body.trace_id || req.body.correlation_id;
                 if (context == null || context == "") {
-                    context = req.query.trace_id;
+                    context = req.query.trace_id || req.query.correlation_id;
                 }
             }
-        } catch (e) {
+        } catch (ex) {
             // Ignore the error
         }
         return context
@@ -40,7 +40,7 @@ export class CloudFunctionRequestHelper {
                     cmd = req.query.cmd;
                 }
             }
-        } catch (e) {
+        } catch (ex) {
             // Ignore the error
         }
         return cmd
@@ -57,7 +57,7 @@ export class CloudFunctionRequestHelper {
             if (req.hasOwnProperty('body')) {
                 body = req.body;
             }
-        } catch (e) {
+        } catch (ex) {
             // Ignore the error
         }
         return Parameters.fromValue(body)

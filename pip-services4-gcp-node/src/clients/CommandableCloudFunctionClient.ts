@@ -1,10 +1,12 @@
 /** @module clients */
+import { IContext } from 'pip-services4-components-node';
+
 import { CloudFunctionClient } from './CloudFunctionClient';
 
 /**
  * Abstract client that calls commandable Google Cloud Functions.
  * 
- * Commandable services are generated automatically for [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/commands.icommandable.html ICommandable objects]].
+ * Commandable controllers are generated automatically for [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/commands.icommandable.html ICommandable objects]].
  * Each command is exposed as action determined by "cmd" parameter.
  *
  * ### Configuration parameters ###
@@ -21,14 +23,14 @@ import { CloudFunctionClient } from './CloudFunctionClient';
  *      - connect_timeout:       connection timeout in milliseconds (default: 10 sec)
  *      - timeout:               invocation timeout in milliseconds (default: 10 sec)
  * - credentials:   
- *     - account: the service account name 
+ *     - account: the controller account name 
  *     - auth_token:    Google-generated ID token or null if using custom auth (IAM)
  *  
  * ### References ###
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * - <code>\*:credential-store:\*:\*:1.0</code>  (optional) Credential stores to resolve credentials
  * 
  * @see [[CloudFunction]]
@@ -63,7 +65,7 @@ export class CommandableCloudFunctionClient extends CloudFunctionClient {
     /**
      * Creates a new instance of this client.
      * 
-     * @param name a service name.
+     * @param name a controller name.
      */
     public constructor(name: string) {
         super();

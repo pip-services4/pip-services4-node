@@ -1,4 +1,4 @@
-name: Pip.Services GCP Node Delivery
+name: Pip.Controllers GCP Node Delivery
 
 # Configure trigger rules
 on: 

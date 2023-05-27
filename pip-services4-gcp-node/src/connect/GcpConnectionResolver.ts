@@ -1,11 +1,13 @@
 /** @module connect */
 const url = require('url');
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
+
+import { IContext } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { ConnectionResolver } from 'pip-services4-config-node';
+import { CredentialResolver } from 'pip-services4-config-node';
 
 import { GcpConnectionParams } from './GcpConnectionParams';
 
@@ -24,14 +26,14 @@ import { GcpConnectionParams } from './GcpConnectionParams';
  *      - org_id:        organization name
  * 
  * - credentials:   
- *     - account: the service account name 
+ *     - account: the controller account name 
  *     - auth_token:    Google-generated ID token or null if using custom auth (IAM)
  * 
  * ### References ###
  * 
  * - <code>\*:credential-store:\*:\*:1.0</code>  (optional) Credential stores to resolve credentials
  * 
- * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/connect.connectionparams.html ConnectionParams]] (in the Pip.Services components package)
+ * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/connect.connectionparams.html ConnectionParams]] (in the Pip.Controllers components package)
  * 
  * ### Example ###
  * 
@@ -88,7 +90,7 @@ export class GcpConnectionResolver implements IConfigurable, IReferenceable {
      *
      * @return {GcpConnectionParams} 	GcpConnectionParams value or error.
      * 
-     * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
+     * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Controllers components package)
      */
     public async resolve(context: IContext): Promise<GcpConnectionParams> {
         let connection = new GcpConnectionParams();

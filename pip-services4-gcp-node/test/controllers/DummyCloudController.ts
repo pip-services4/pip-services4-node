@@ -1,6 +1,6 @@
 import { Descriptor } from 'pip-services4-components-node';
-import { FilterParams } from 'pip-services4-data-node';
-import { PagingParams} from 'pip-services4-data-node';
+import { FilterParams } from 'pip-services4-components-node';
+import { PagingParams} from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { ObjectSchema } from 'pip-services4-data-node';
 import { TypeCode } from 'pip-services4-commons-node';
@@ -8,18 +8,19 @@ import { FilterParamsSchema } from 'pip-services4-data-node';
 import { PagingParamsSchema } from 'pip-services4-data-node';
 import { HttpResponseSender } from 'pip-services4-rpc-node';
 
-import { CloudFunction } from '../../src/containers/CloudFunction';
+import { CloudFunctionController } from '../../src/controllers/CloudFunctionController';
 import { IDummyService } from '../sample/IDummyService';
-import { DummyFactory } from '../sample/DummyFactory';
 import { DummySchema } from '../sample/DummySchema';
 
-export class DummyCloudFunction extends CloudFunction {
+export class DummyCloudController extends CloudFunctionController {
     private _service: IDummyService;
+    private _headers = {
+        'Content-Type': 'application/json'
+    };
 
     public constructor() {
-        super("dummy", "Dummy GCP function");
+        super("dummies");
         this._dependencyResolver.put('service', new Descriptor('pip-services-dummies', 'service', 'default', '*', '*'));
-        this._factories.add(new DummyFactory());
     }
 
     public setReferences(references: IReferences): void {
@@ -27,59 +28,64 @@ export class DummyCloudFunction extends CloudFunction {
         this._service = this._dependencyResolver.getOneRequired<IDummyService>('service');
     }
 
-    private async getPageByFilter(req: any, res: any): Promise<void> {
+    private async getPageByFilter(req: any, res: any): Promise<any> {
         let params = req.body;
-        let page = this._service.getPageByFilter(
+        const page = await this._service.getPageByFilter(
             params.trace_id,
             new FilterParams(params.filter),
             new PagingParams(params.paging)
         );
-
+        
+        res.set(this._headers);
         HttpResponseSender.sendResult(req, res, page)
     }
 
-    private async getOneById(req: any, res: any): Promise<void> {
+    private async getOneById(req: any, res: any): Promise<any> {
         let params = req.body;
-
-        let dummy = await this._service.getOneById(
+        const dummy = await this._service.getOneById(
             params.trace_id,
             params.dummy_id
         );
 
+        res.set(this._headers);
         if (dummy != null) {
             HttpResponseSender.sendResult(req, res, dummy);
         } else {
             HttpResponseSender.sendEmptyResult(req, res);
         }
+        
     }
 
-    private async create(req: any, res: any): Promise<void> {
+    private async create(req: any, res: any): Promise<any> {
         let params = req.body;
-        let dummy = await this._service.create(
+        const dummy = await this._service.create(
             params.trace_id,
             params.dummy
         );
 
-        HttpResponseSender.sendCreatedResult(req, res, dummy)
+        res.set(this._headers);
+        HttpResponseSender.sendCreatedResult(req, res, dummy);
     }
 
-    private async update(req: any, res: any): Promise<void> {
+    private async update(req: any, res: any): Promise<any> {
         let params = req.body;
-        let dummy = await this._service.update(
+        const dummy = await this._service.update(
             params.trace_id,
             params.dummy,
         );
 
+        res.set(this._headers);
         HttpResponseSender.sendResult(req, res, dummy)
     }
 
-    private async deleteById(req: any, res: any): Promise<void> {
+    private async deleteById(req: any, res: any): Promise<any> {
         let params = req.body;
-        let dummy = await this._service.deleteById(
+        const dummy = await this._service.deleteById(
             params.trace_id,
             params.dummy_id,
         );
 
+        res.set(this._headers);
         HttpResponseSender.sendDeletedResult(req, res, dummy)
     }
 

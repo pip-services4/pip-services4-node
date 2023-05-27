@@ -2,9 +2,9 @@
     "name":  "pip-services4-gcp-node",
     "type": "module",
     "language": "node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "build": 0,
-    "registry": "pipservices",
+    "registry": "pipcontrollers",
     "artifacts": [
         {
             "name":  "<name>",

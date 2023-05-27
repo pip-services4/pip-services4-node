@@ -3,10 +3,10 @@ const waitPort = require('wait-port');
 
 import { exec } from 'child_process';
 
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
 
-import { IDummyClient } from '../IDummyClient';
+import { IDummyClient } from '../sample/IDummyClient';
 
 export class DummyClientFixture {
     private port: number;
@@ -22,9 +22,9 @@ export class DummyClientFixture {
         this.functionName = functionName;
     }
 
-    public async startCloudServiceLocally(): Promise<any> {
+    public async startCloudControllerLocally(): Promise<any> {
         let ff = exec(
-            `npx functions-framework --target=${this.functionName} --signature-type=http --port=${this.port} --source=test/services`
+            `npx functions-framework --target=${this.functionName} --signature-type=http --port=${this.port} --source=test/controllers`
         );
         await waitPort({ host: 'localhost', port: this.port });
         this.process = ff;
@@ -34,7 +34,7 @@ export class DummyClientFixture {
         });
     }
 
-    public async stopCloudServiceLocally(): Promise<any> {
+    public async stopCloudControllerLocally(): Promise<any> {
         this.process.kill();
         this.process = null;
 

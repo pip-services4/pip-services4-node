@@ -2,21 +2,23 @@
 /** @hidden */ 
 const process = require('process');
 
+import { IContext } from 'pip-services4-components-node';
 import { BadRequestException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Schema } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-componnets-node';
+import { DependencyResolver } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { Schema } from 'pip-services4-data-node';
 import { UnknownException } from 'pip-services4-commons-node';
 import { Container } from 'pip-services4-container-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { ConsoleLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { HttpResponseSender, InstrumentTiming } from 'pip-services4-rpc-node';
+import { CompositeCounters } from 'pip-services4-observability-node';
+import { ConsoleLogger } from 'pip-services4-observability-node';
+import { CompositeTracer } from 'pip-services4-observability-node';
+import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 
 import { CloudFunctionRequestHelper } from './CloudFunctionRequestHelper';
-import { ICloudFunctionService } from '../services/ICloudFunctionService';
+import { ICloudFunctionController } from '../controllers/ICloudFunctionController';
 
 import { Request, Response } from 'express';
 
@@ -34,8 +36,8 @@ import { Request, Response } from 'express';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:cloudfunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-gcp-node/interfaces/services.iCloudFunctionservice.html ICloudFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-cloudfunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-gcp-node/interfaces/services.iCloudFunctionservice.html ICloudFunctionService]] services to handle action requests
+ * - <code>\*:controller:cloudfunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-gcp-node/interfaces/controllers.iCloudFunctioncontroller.html ICloudFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-cloudfunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-gcp-node/interfaces/controllers.iCloudFunctioncontroller.html ICloudFunctionController]] controllers to handle action requests
  *
  *
  * ### Example ###
@@ -106,7 +108,7 @@ export abstract class CloudFunction extends Container {
     }
 
     private captureExit(context: IContext): void {
-        this._logger.info(context, "Press Control-C to stop the microservice...");
+        this._logger.info(context, "Press Control-C to stop the microcontroller...");
 
         // Activate graceful exit
         process.on('SIGINT', () => {
@@ -142,7 +144,7 @@ export abstract class CloudFunction extends Container {
          if (this.isOpen()) return;
 
          await super.open(context);
-         this.registerServices();
+         this.registerControllers();
      }
 
 
@@ -150,7 +152,7 @@ export abstract class CloudFunction extends Container {
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      * 
-     * Note: This method has been deprecated. Use CloudFunctionService instead.
+     * Note: This method has been deprecated. Use CloudFunctionController instead.
      * 
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -187,29 +189,29 @@ export abstract class CloudFunction extends Container {
     /**
      * Registers all actions in this Google Function.
      *
-     * Note: Overloading of this method has been deprecated. Use CloudFunctionService instead.
+     * Note: Overloading of this method has been deprecated. Use CloudFunctionController instead.
      */
     protected register(): void {}
 
     /**
-     * Registers all Google Function services in the container.
+     * Registers all Google Function controllers in the container.
      */
-    protected registerServices(): void {
-        // Extract regular and commandable Google Function services from references
-        let services = this._references.getOptional<ICloudFunctionService>(
-            new Descriptor("*", "service", "cloudfunc", "*", "*")
+    protected registerControllers(): void {
+        // Extract regular and commandable Google Function controllers from references
+        let controllers = this._references.getOptional<ICloudFunctionController>(
+            new Descriptor("*", "controller", "cloudfunc", "*", "*")
         );
-        let cmdServices = this._references.getOptional<ICloudFunctionService>(
-            new Descriptor("*", "service", "commandable-cloudfunc", "*", "*")
+        let cmdControllers = this._references.getOptional<ICloudFunctionController>(
+            new Descriptor("*", "controller", "commandable-cloudfunc", "*", "*")
         );
-        services.push(...cmdServices);
+        controllers.push(...cmdControllers);
 
-        // Register actions defined in those services
-        for (let service of services) {
-            // Check if the service implements required interface
-            if (typeof service.getActions !== "function") continue;
+        // Register actions defined in those controllers
+        for (let controller of controllers) {
+            // Check if the controller implements required interface
+            if (typeof controller.getActions !== "function") continue;
 
-            let actions = service.getActions();
+            let actions = controller.getActions();
             for (let action of actions) {
                 this.registerAction(action.cmd, action.schema, action.action);
             }
@@ -219,7 +221,7 @@ export abstract class CloudFunction extends Container {
     /**
      * Registers an action in this Google Function.
      * 
-     * Note: This method has been deprecated. Use CloudFunctionService instead.
+     * Note: This method has been deprecated. Use CloudFunctionController instead.
      * 
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.
@@ -293,11 +295,11 @@ export abstract class CloudFunction extends Container {
      */
     protected async execute(req: Request, res: Response): Promise<any> {
         let cmd: string = this.getCommand(req);
-        let context = this.getTraceId(req);
+        let traceId = this.getTraceId(req);
         if (cmd == null) {
             HttpResponseSender.sendError(req, res,
                 new BadRequestException(
-                    context,
+                    traceId,
                     'NO_COMMAND',
                     'Cmd parameter is missing'
                 )
@@ -309,7 +311,7 @@ export abstract class CloudFunction extends Container {
         if (action == null) {
             HttpResponseSender.sendError(req, res, 
                 new BadRequestException(
-                    context,
+                    traceId,
                     'NO_ACTION',
                     'Action ' + cmd + ' was not found'
                 ).withDetails('command', cmd)
