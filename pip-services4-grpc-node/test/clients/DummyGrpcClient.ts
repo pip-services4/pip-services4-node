@@ -4,7 +4,7 @@ import { DataPage } from 'pip-services4-commons-node';
 
 import { GrpcClient } from '../../src/clients/GrpcClient';
 import { IDummyClient } from './IDummyClient';
-import { Dummy } from '../Dummy';
+import { Dummy } from '../sample/Dummy';
 
 export class DummyGrpcClient extends GrpcClient implements IDummyClient {
         

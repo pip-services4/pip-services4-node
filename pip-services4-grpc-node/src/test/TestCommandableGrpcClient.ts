@@ -1,4 +1,6 @@
 /** @module test */
+import { IContext } from 'pip-services4-components-node';
+
 import { CommandableGrpcClient } from "../clients/CommandableGrpcClient";
 
 export class TestCommandableGrpcClient extends CommandableGrpcClient {

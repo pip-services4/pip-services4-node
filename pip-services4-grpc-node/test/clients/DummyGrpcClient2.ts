@@ -2,13 +2,14 @@ let _ = require('lodash');
 let services = require('../../../test/protos/dummies_grpc_pb');
 let messages = require('../../../test/protos/dummies_pb');
 
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { DataPage } from 'pip-services4-data-node';
 
 import { GrpcClient } from '../../src/clients/GrpcClient';
 import { IDummyClient } from './IDummyClient';
-import { Dummy } from '../Dummy';
+import { Dummy } from '../sample/Dummy';
 
 export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         

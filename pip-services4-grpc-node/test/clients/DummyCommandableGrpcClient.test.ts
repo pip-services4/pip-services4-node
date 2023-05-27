@@ -3,7 +3,7 @@ import { ConfigParams } from 'pip-services4-commons-node';
 import { References } from 'pip-services4-commons-node';
 
 import { DummyController } from '../DummyController';
-import { DummyCommandableGrpcService } from '../services/DummyCommandableGrpcService';
+import { DummyCommandableGrpcController } from '../controllers/DummyCommandableGrpcController';
 import { DummyCommandableGrpcClient } from './DummyCommandableGrpcClient';
 import { DummyClientFixture } from './DummyClientFixture';
 
@@ -14,14 +14,14 @@ let grpcConfig = ConfigParams.fromTuples(
 );
 
 suite('DummyCommandableGrpcClient', ()=> {
-    let service: DummyCommandableGrpcService;
+    let service: DummyCommandableGrpcController;
     let client: DummyCommandableGrpcClient;
     let fixture: DummyClientFixture;
 
     suiteSetup(async () => {
         let ctrl = new DummyController();
 
-        service = new DummyCommandableGrpcService();
+        service = new DummyCommandableGrpcController();
         service.configure(grpcConfig);
 
         let references: References = References.fromTuples(

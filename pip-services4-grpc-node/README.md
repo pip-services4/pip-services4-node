@@ -1,4 +1,4 @@
-# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> GRPC components for Pip.Services in Node.js / ES2017
+# <img src="https://uploads-ssl.webflow.com/5ea5d3315186cf5ec60c3ee4/5edf1c94ce4c859f2b188094_logo.svg" alt="Pip.Services Logo" width="200"> <br/> GRPC Communication Components in Node.js / ES2017
 
 This module is a part of the [Pip.Services](http://pipservices.org) polyglot microservices toolkit.
 
@@ -6,9 +6,9 @@ The grpc module is used to organize synchronous data exchange using calls throug
 
 The module contains the following packages:
 
-- **Build** - factories for creating gRPC services
+- **Build** - factories for creating gRPC controllers
 - **Clients** - basic client components that use the gRPC protocol and Commandable pattern through gRPC
-- **Services** - basic service implementations for connecting via the gRPC protocol and using the Commandable pattern via gRPC
+- **Controllers** - basic controller implementations for connecting via the gRPC protocol and using the Commandable pattern via gRPC
 
 <a name="links"></a> Quick links:
 
@@ -29,7 +29,7 @@ npm install pip-services4-grpc-node --save
 ## Develop
 
 For development you shall install the following prerequisites:
-* Node.js 8+
+* Node.js 14+
 * Visual Studio Code or another IDE of your choice
 * Docker
 * Typescript
@@ -65,6 +65,7 @@ Before committing changes run dockerized build and test as:
 
 The Node.js version of Pip.Services is created and maintained by:
 - **Sergey Seroukhov**
+- **Danil Prisyazhniy**
 
 The documentation is written by:
 - **Mark Makarychev**

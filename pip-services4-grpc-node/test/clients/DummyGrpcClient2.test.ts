@@ -1,9 +1,10 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { Descriptor } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { References } from 'pip-services4-components-node';
 
-import { DummyController } from '../DummyController';
-import { DummyGrpcService2 } from '../services/DummyGrpcService2';
+import { DummyService } from '../sample/DummyService';
+import { DummyGrpcController2 } from '../controllers/DummyGrpcController2';
 import { DummyGrpcClient2 } from './DummyGrpcClient2';
 import { DummyClientFixture } from './DummyClientFixture';
 
@@ -14,27 +15,27 @@ var grpcConfig = ConfigParams.fromTuples(
 );
 
 suite('DummyGrpcClient', ()=> {
-    let service: DummyGrpcService2;
+    let controller: DummyGrpcController2;
     let client: DummyGrpcClient2;
     let fixture: DummyClientFixture;
 
     suiteSetup(async () => {
-        let ctrl = new DummyController();
+        let ctrl = new DummyService();
 
-        service = new DummyGrpcService2();
-        service.configure(grpcConfig);
+        controller = new DummyGrpcController2();
+        controller.configure(grpcConfig);
 
         let references: References = References.fromTuples(
             new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl,
-            new Descriptor('pip-services-dummies', 'service', 'grpc', 'default', '1.0'), service
+            new Descriptor('pip-services-dummies', 'service', 'grpc', 'default', '1.0'), controller
         );
-        service.setReferences(references);
+        controller.setReferences(references);
 
-        await service.open(null);
+        await controller.open(null);
     });
     
     suiteTeardown(async () => {
-        await service.close(null);
+        await controller.close(null);
     });
 
     setup(async () => {
