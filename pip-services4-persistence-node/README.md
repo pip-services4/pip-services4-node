@@ -27,7 +27,7 @@ npm install pip-services4-persistence-node --save
 As an example, lets implement persistence for the following data object.
 
 ```typescript
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 
 export class MyObject implements IIdentifiable {
   public id: string;

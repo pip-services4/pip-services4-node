@@ -1,4 +1,5 @@
 /** @module core */
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Interface for data processing components that can create, update and delete data items.

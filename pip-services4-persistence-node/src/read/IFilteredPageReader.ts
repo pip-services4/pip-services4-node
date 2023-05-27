@@ -1,8 +1,9 @@
 /** @module core */
-import { DataPage } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { SortParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { DataPage } from 'pip-services4-data-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { SortParams } from 'pip-services4-data-node';
 
 /**
  * Interface for data processing components that can retrieve a page of data items by a filter.

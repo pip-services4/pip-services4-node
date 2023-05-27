@@ -1,8 +1,8 @@
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { JsonFilePersister } from '../../src/persistence/JsonFilePersister';
 import { DummyMemoryPersistence } from './DummyMemoryPersistence';
-import { Dummy } from '../Dummy';
+import { Dummy } from '../sample/Dummy';
 
 export class DummyFilePersistence extends DummyMemoryPersistence {
 	protected _persister: JsonFilePersister<Dummy>;

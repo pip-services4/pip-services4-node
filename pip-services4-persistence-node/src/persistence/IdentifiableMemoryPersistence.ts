@@ -1,15 +1,16 @@
 /** @module persistence */
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 import { AnyValueMap } from 'pip-services4-commons-node';
 import { ObjectWriter } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+import { IdGenerator } from 'pip-services4-data-node';
 
 import { MemoryPersistence } from './MemoryPersistence';
-import { IWriter } from '../IWriter';
-import { IGetter } from '../IGetter';
-import { ISetter } from '../ISetter';
-import { ILoader } from '../ILoader';
-import { ISaver } from '../ISaver';
+import { IWriter } from '../write/IWriter';
+import { IGetter } from '../read/IGetter';
+import { ISetter } from '../write/ISetter';
+import { ILoader } from '../read/ILoader';
+import { ISaver } from '../write/ISaver';
 
 /**
  * Abstract persistence component that stores data in memory

@@ -1,9 +1,10 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { DataPage } from 'pip-services4-data-node';
 
 import { IdentifiableMemoryPersistence } from '../../src/persistence/IdentifiableMemoryPersistence';
-import { Dummy } from '../Dummy';
+import { Dummy } from '../sample/Dummy';
 import { IDummyPersistence } from './IDummyPersistence';
 
 export class DummyMemoryPersistence

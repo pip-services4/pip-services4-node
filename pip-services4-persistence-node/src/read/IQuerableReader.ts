@@ -1,5 +1,6 @@
 /** @module core */
-import { SortParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { SortParams } from 'pip-services4-data-node';
 
 /**
  * Interface for data processing components that can query a list of data items.

@@ -1,4 +1,5 @@
 /** @module core */
+import { IContext } from 'pip-services4-components-node';
 import { AnyValueMap } from 'pip-services4-commons-node';
 
 /**

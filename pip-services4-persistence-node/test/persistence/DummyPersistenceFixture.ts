@@ -1,8 +1,9 @@
 const assert = require('chai').assert;
 
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { RandomString } from 'pip-services4-commons-node';
-import { Dummy } from '../Dummy';
+import { RandomString } from 'pip-services4-data-node';
+
+import { Dummy } from '../sample/Dummy';
 import { IDummyPersistence } from './IDummyPersistence';
 
 export class DummyPersistenceFixture {

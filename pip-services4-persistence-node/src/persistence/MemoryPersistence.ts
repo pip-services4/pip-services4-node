@@ -1,16 +1,17 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+import { IContext } from 'pip-services4-components-node';
+import { IReferenceable } from 'pip-services4-components-node';
+import { IReferences } from 'pip-services4-components-node';
+import { IOpenable } from 'pip-services4-components-node';
+import { ICleanable } from 'pip-services4-components-node';
+import { PagingParams } from 'pip-services4-data-node';
+import { DataPage } from 'pip-services4-data-node';
+import { ConfigParams } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
-import { ILoader } from '../ILoader';
-import { ISaver } from '../ISaver';
+import { ILoader } from '../read/ILoader';
+import { ISaver } from '../write/ISaver';
 
 /**
  * Abstract persistence component that stores data in memory.

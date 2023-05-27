@@ -1,6 +1,7 @@
 /** @module core */
-import { FilterParams } from 'pip-services4-commons-node';
-import { SortParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams } from 'pip-services4-data-node';
+import { SortParams } from 'pip-services4-data-node';
 
 /**
  * Interface for data processing components that can retrieve a list of data items by filter.

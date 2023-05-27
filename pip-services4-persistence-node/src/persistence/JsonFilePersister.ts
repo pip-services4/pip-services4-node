@@ -2,15 +2,16 @@
 /** @hidden */
 const fs = require('fs');
 
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { IConfigurable } from 'pip-services4-components-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { ConfigException } from 'pip-services4-commons-node';
 import { FileException } from 'pip-services4-commons-node';
 import { JsonConverter } from 'pip-services4-commons-node';
 import { ArrayConverter } from 'pip-services4-commons-node';
 
-import { ILoader } from '../ILoader';
-import { ISaver } from '../ISaver';
+import { ILoader } from '../read/ILoader';
+import { ISaver } from '../write/ISaver';
 
 /**
  * Persistence component that loads and saves data from/to flat file.
@@ -78,7 +79,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
     public async load(context: IContext): Promise<T[]> {
         if (this._path == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PATH",
                 "Data file path is not set"
             );
@@ -95,7 +96,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
             return arr;
         } catch (ex) {
             throw new FileException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "READ_FAILED",
                 "Failed to read data file: " + this._path
             ).withCause(ex);
@@ -114,7 +115,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
             fs.writeFileSync(this._path, json);
         } catch (ex) {
             throw new FileException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "WRITE_FAILED",
                 "Failed to write data file: " + this._path
             ).withCause(ex);

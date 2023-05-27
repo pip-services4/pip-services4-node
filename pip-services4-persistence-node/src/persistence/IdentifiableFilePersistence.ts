@@ -1,6 +1,6 @@
 /** @module persistence */
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
+import { ConfigParams } from 'pip-services4-components-node';
 
 import { IdentifiableMemoryPersistence } from './IdentifiableMemoryPersistence';
 import { JsonFilePersister } from './JsonFilePersister'
