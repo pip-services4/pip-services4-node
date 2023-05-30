@@ -411,5 +411,5 @@ class RestController {
     }
 }
 exports.RestController = RestController;
-RestController._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("base_route", "", "dependencies.endpoint", "*:endpoint:http:*:1.0", "dependencies.swagger", "*:swagger-service:*:*:1.0");
+RestController._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("base_route", "", "dependencies.endpoint", "*:endpoint:http:*:1.0", "dependencies.swagger", "*:swagger-controller:*:*:1.0");
 //# sourceMappingURL=RestController.js.map

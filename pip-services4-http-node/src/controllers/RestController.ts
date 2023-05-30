@@ -99,7 +99,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
     private static readonly _defaultConfig: ConfigParams = ConfigParams.fromTuples(
         "base_route", "",
         "dependencies.endpoint", "*:endpoint:http:*:1.0",
-        "dependencies.swagger", "*:swagger-service:*:*:1.0"
+        "dependencies.swagger", "*:swagger-controller:*:*:1.0"
     );
 
     protected _config: ConfigParams;
