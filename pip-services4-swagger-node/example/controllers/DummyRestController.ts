@@ -29,7 +29,7 @@ export class DummyRestController extends RestController {
     
     private async getPageByFilter(req: any, res: any) {
         try {
-            let result = await this._service.getPageByFilter(
+            const result = await this._service.getPageByFilter(
                 req.params.trace_id,
                 new FilterParams(req.params),
                 new PagingParams(req.params),
@@ -42,7 +42,7 @@ export class DummyRestController extends RestController {
 
     private async getOneById(req, res) {
         try {
-            let result = await this._service.getOneById(
+            const result = await this._service.getOneById(
                 req.params.trace_id,
                 req.params.dummy_id
             );
@@ -54,7 +54,7 @@ export class DummyRestController extends RestController {
 
     private async create(req, res) {
         try {
-            let result = await this._service.create(
+            const result = await this._service.create(
                 req.params.trace_id,
                 req.body
             );
@@ -66,7 +66,7 @@ export class DummyRestController extends RestController {
 
     private async update(req, res) {
         try {
-            let result = await this._service.update(
+            const result = await this._service.update(
                 req.params.trace_id,
                 req.body
             );
@@ -78,7 +78,7 @@ export class DummyRestController extends RestController {
 
     private async deleteById(req, res) {
         try {
-            let result  = await this._service.deleteById(
+            const result  = await this._service.deleteById(
                 req.params.trace_id,
                 req.params.dummy_id
             );

@@ -1,5 +1,5 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { CommandableHttpService } from 'pip-services4-http-node';
+import { Descriptor } from "pip-services4-components-node";
+import { CommandableHttpController } from "pip-services4-http-node";
 
 export class DummyCommandableHttpController extends CommandableHttpController {
     public constructor() {

@@ -24,15 +24,15 @@ export class DummyService implements IDummyService, ICommandable {
 		paging: PagingParams): Promise<DataPage<Dummy>> {
 		
 		filter = filter != null ? filter : new FilterParams();
-		let key: string = filter.getAsNullableString("key");
+		const key: string = filter.getAsNullableString("key");
 		
 		paging = paging != null ? paging : new PagingParams();
 		let skip: number = paging.getSkip(0);
 		let take: number = paging.getTake(100);
 		
-		let result: Dummy[] = [];
-		for (var i = 0; i < this._entities.length; i++) {
-            let entity: Dummy = this._entities[i];
+		const result: Dummy[] = [];
+		for (let i = 0; i < this._entities.length; i++) {
+            const entity: Dummy = this._entities[i];
 			if (key != null && key != entity.key)
 				continue;
 				
@@ -50,7 +50,7 @@ export class DummyService implements IDummyService, ICommandable {
 
 	public async getOneById(context: IContext, id: string): Promise<Dummy> {
 		for (let index = 0; index < this._entities.length; index++) {
-            let entity: Dummy = this._entities[index];
+            const entity: Dummy = this._entities[index];
 			if (id == entity.id) {
 				return entity;
 			}
@@ -68,7 +68,7 @@ export class DummyService implements IDummyService, ICommandable {
 
 	public async update(context: IContext, newEntity: Dummy): Promise<Dummy> {
 		for (let index = 0; index < this._entities.length; index++) {
-			let entity: Dummy = this._entities[index];
+			const entity: Dummy = this._entities[index];
 			if (entity.id == newEntity.id) {
 				this._entities[index] = newEntity;
 				return newEntity;
@@ -79,7 +79,7 @@ export class DummyService implements IDummyService, ICommandable {
 
 	public async deleteById(context: IContext, id: string): Promise<Dummy> {
 		for (let index = 0; index < this._entities.length; index++) {
-			let entity: Dummy = this._entities[index];
+			const entity: Dummy = this._entities[index];
 			if (entity.id == id) {
 				this._entities.splice(index, 1);
 				return entity;

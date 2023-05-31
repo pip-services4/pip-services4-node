@@ -1,5 +1,5 @@
-const readline = require('readline');
-const process = require('process');
+import readline = require('readline');
+import process = require('process');
 
 import { ConfigParams } from 'pip-services4-components-node';
 import { References } from 'pip-services4-components-node';
@@ -20,18 +20,18 @@ import { DummyService} from './services/DummyService';
 import { DummyRestController } from './controllers/DummyRestController';
 import { DummyCommandableHttpController } from './controllers/DummyCommandableHttpController';
 
-let main = async () => {
+const main = async () => {
     // Create components
-    let logger = new ConsoleLogger();
-    let service = new DummyService();
-    let httpEndpoint = new HttpEndpoint();
-    let restController = new DummyRestController();
-    let httpController = new DummyCommandableHttpController();
-    let statusController = new StatusRestController();
-    let heartbeatController = new HeartbeatRestController();
-    let swaggerController = new SwaggerController();
+    const logger = new ConsoleLogger();
+    const service = new DummyService();
+    const httpEndpoint = new HttpEndpoint();
+    const restController = new DummyRestController();
+    const httpController = new DummyCommandableHttpController();
+    const statusController = new StatusRestController();
+    const heartbeatController = new HeartbeatRestController();
+    const swaggerController = new SwaggerController();
 
-    let components = [
+    const components = [
         service,
         httpEndpoint,
         restController,
@@ -63,7 +63,7 @@ let main = async () => {
 
     try {
         // Set references
-        let references = References.fromTuples(
+        const references = References.fromTuples(
             new Descriptor('pip-services', 'logger', 'console', 'default', '1.0'), logger,
             new Descriptor('pip-services', 'counters', 'log', 'default', '1.0'), new LogCounters(),
             new Descriptor('pip-services', 'endpoint', 'http', 'default', '1.0'), httpEndpoint,
@@ -86,6 +86,7 @@ let main = async () => {
             output: process.stdout
         });
             
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         await new Promise((resolve, reject) => {
             file.question('Press Ctrl-C twice to stop the microservice...', resolve);
         });                  

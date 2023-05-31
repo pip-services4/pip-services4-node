@@ -1,13 +1,8 @@
-import { CommandSet } from 'pip-services4-commons-node';
-import { ICommand } from 'pip-services4-commons-node';
-import { Command } from 'pip-services4-commons-node';
-import { Parameters } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
 import { TypeCode } from 'pip-services4-commons-node';
-import { FilterParamsSchema } from 'pip-services4-commons-node';
-import { PagingParamsSchema } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { ObjectSchema, FilterParamsSchema, PagingParamsSchema, FilterParams, PagingParams } from 'pip-services4-data-node';
+import { Parameters } from 'pip-services4-components-node';
+import { CommandSet, ICommand, Command } from 'pip-services4-rpc-node';
 
 import { Dummy } from '../data/Dummy';
 import { IDummyService } from './IDummyService';
@@ -35,8 +30,8 @@ export class DummyCommandSet extends CommandSet {
                 .withOptionalProperty("filter", new FilterParamsSchema())
                 .withOptionalProperty("paging", new PagingParamsSchema()),
 			async (context: IContext, args: Parameters) => {
-				let filter = FilterParams.fromValue(args.get("filter"));
-				let paging = PagingParams.fromValue(args.get("paging"));
+				const filter = FilterParams.fromValue(args.get("filter"));
+				const paging = PagingParams.fromValue(args.get("paging"));
 				return await this._controller.getPageByFilter(context, filter, paging);
 			}
 		);
@@ -48,7 +43,7 @@ export class DummyCommandSet extends CommandSet {
             new ObjectSchema(true)
                 .withRequiredProperty("dummy_id", TypeCode.String),
 			async (context: IContext, args: Parameters) => {
-				let id = args.getAsString("dummy_id");
+				const id = args.getAsString("dummy_id");
 				return await this._controller.getOneById(context, id);
 			}
 		);
@@ -60,7 +55,7 @@ export class DummyCommandSet extends CommandSet {
             new ObjectSchema(true)
                 .withRequiredProperty("dummy", new DummySchema()),
 			async (context: IContext, args: Parameters) => {
-				let entity: Dummy = args.get("dummy");
+				const entity: Dummy = args.get("dummy");
 				return await this._controller.create(context, entity);
 			}
 		);
@@ -72,7 +67,7 @@ export class DummyCommandSet extends CommandSet {
             new ObjectSchema(true)
                 .withRequiredProperty("dummy", new DummySchema()),
 			async (context: IContext, args: Parameters) => {
-				let entity: Dummy = args.get("dummy");
+				const entity: Dummy = args.get("dummy");
 				return await this._controller.update(context, entity);
 			}
 		);
@@ -84,7 +79,7 @@ export class DummyCommandSet extends CommandSet {
             new ObjectSchema(true)
                 .withRequiredProperty("dummy_id", TypeCode.String),
 			async (context: IContext, args: Parameters) => {
-				let id = args.getAsString("dummy_id");
+				const id = args.getAsString("dummy_id");
 				return await this._controller.deleteById(context, id);
 			}
 		);
