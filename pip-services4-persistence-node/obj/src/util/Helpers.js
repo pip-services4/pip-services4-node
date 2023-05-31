@@ -1,20 +1,20 @@
+"use strict";
 /** @module util */
-
-import { LineRange } from "./LineRange";
-
-export const getFileExtension = (filename: string): string => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLineRange = exports.getLinesUpToIndex = exports.getFileExtension = void 0;
+const getFileExtension = (filename) => {
     const fileExtensionRegex = /(?:\.([^.]+))?$/;
     const fileExtension = fileExtensionRegex.exec(filename)[1];
     return fileExtension;
-}
-
-export const getLinesUpToIndex = (file: string, index: number | null): number => {
-    if (!index) return 0;
-
+};
+exports.getFileExtension = getFileExtension;
+const getLinesUpToIndex = (file, index) => {
+    if (!index)
+        return 0;
     const fileUpToIndex = file.substring(0, index);
     return fileUpToIndex.split('\n').length - 1;
-}
-
+};
+exports.getLinesUpToIndex = getLinesUpToIndex;
 /*
 Given a file and a string, find the line number of the string in the file.
 
@@ -25,13 +25,14 @@ Args:
 Returns:
     A LineRange object.
 */
-export const getLineRange = (file: string, searchingText: string, postition = 0): LineRange => {
+const getLineRange = (file, searchingText, postition = 0) => {
     const charAtStart = file.indexOf(searchingText, postition);
     const fileUpToStart = file.substring(0, charAtStart);
-
     const fileUpToEnd = file.substring(0, charAtStart + searchingText.length);
     return {
         lineStart: fileUpToStart.split('\n').length - 1,
         lineEnd: fileUpToEnd.split('\n').length - 1,
-    }
-}
+    };
+};
+exports.getLineRange = getLineRange;
+//# sourceMappingURL=Helpers.js.map

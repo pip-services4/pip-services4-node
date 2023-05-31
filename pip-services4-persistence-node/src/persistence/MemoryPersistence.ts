@@ -63,8 +63,8 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     protected _items: T[] = [];
     protected _loader: ILoader<T>;
     protected _saver: ISaver<T>;
-    protected _opened: boolean = false;
-    protected _maxPageSize: number = 100;
+    protected _opened = false;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence.
@@ -177,6 +177,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * @returns                 a requested page with data items.
      */
     protected async getPageByFilter(context: IContext, filter: any, 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         paging: PagingParams, sort: any, select: any): Promise<DataPage<T>> {
         
         let items = this._items;
@@ -187,8 +188,8 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
         }
         if (typeof sort === "function") {
             items = items.sort((a, b) => {
-                let sa = sort(a);
-                let sb = sort(b);
+                const sa = sort(a);
+                const sb = sort(b);
                 if (sa < sb) return -1;
                 if (sa > sb) return 1;
                 return 0;
@@ -197,8 +198,8 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
 
         // Extract a page
         paging = paging != null ? paging : new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
 
         let total = null;
         if (paging.total) {
@@ -251,6 +252,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
      * @param select           (optional) projection parameters (not used yet)
      * @returns                a list with found data items.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]> {
         let items = this._items;
 
@@ -262,8 +264,8 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
         // Apply sorting
         if (typeof sort === "function") { 
             items = items.sort((a, b) => {
-                let sa = sort(a);
-                let sb = sort(b);
+                const sa = sort(a);
+                const sb = sort(b);
                 if (sa < sb) return -1;
                 if (sa > sb) return 1;
                 return 0;
@@ -293,8 +295,8 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
             items = items.filter(filter);
         }
 
-        let index = Math.trunc(items.length * Math.random())
-        let item: T = items.length > 0 ? items[index] : null;
+        const index = Math.trunc(items.length * Math.random())
+        const item: T = items.length > 0 ? items[index] : null;
         
         if (item != null) {
             this._logger.trace(context, "Retrieved a random item");
@@ -336,7 +338,7 @@ export class MemoryPersistence<T> implements IConfigurable, IReferenceable, IOpe
     protected async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let deleted = 0;
         for (let index = this._items.length - 1; index>= 0; index--) {
-            let item = this._items[index];
+            const item = this._items[index];
             if (filter(item)) {
                 this._items.splice(index, 1);
                 deleted++;

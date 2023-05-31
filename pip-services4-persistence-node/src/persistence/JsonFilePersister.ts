@@ -1,6 +1,6 @@
 /** @module persistence */
 /** @hidden */
-const fs = require('fs');
+import fs = require('fs');
 
 import { IContext } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
@@ -90,9 +90,9 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
         }
 
         try {
-            let json: any = fs.readFileSync(this._path, "utf8");
-            let list = JsonConverter.toNullableMap(json);
-            let arr = ArrayConverter.listToArray(list);
+            const json: any = fs.readFileSync(this._path, "utf8");
+            const list = JsonConverter.toNullableMap(json);
+            const arr = ArrayConverter.listToArray(list);
             return arr;
         } catch (ex) {
             throw new FileException(
@@ -111,7 +111,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
      */
     public async save(context: IContext, items: T[]): Promise<void> {
         try {
-            let json = JsonConverter.toJson(items);
+            const json = JsonConverter.toJson(items);
             fs.writeFileSync(this._path, json);
         } catch (ex) {
             throw new FileException(

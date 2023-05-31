@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
 import { ConfigParams } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-components-node';
+import { ConfigException } from 'pip-services4-commons-node';
 
 import { JsonFilePersister } from '../../src/persistence/JsonFilePersister';
 import { Dummy } from '../sample/Dummy';
