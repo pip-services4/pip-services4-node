@@ -1,12 +1,10 @@
 import { Descriptor } from 'pip-services4-components-node';
-import { FilterParams } from 'pip-services4-components-node';
-import { PagingParams} from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
-import { ObjectSchema } from 'pip-services4-data-node';
+import { FilterParams, ObjectSchema, PagingParams } from 'pip-services4-data-node';
 import { TypeCode } from 'pip-services4-commons-node';
 import { FilterParamsSchema } from 'pip-services4-data-node';
 import { PagingParamsSchema } from 'pip-services4-data-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 
 import { CloudFunctionController } from '../../src/controllers/CloudFunctionController';
 import { IDummyService } from '../sample/IDummyService';

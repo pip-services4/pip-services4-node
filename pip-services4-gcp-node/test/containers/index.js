@@ -1,6 +1,6 @@
 const DummyCommandableCloudFunction = require('../../obj/test/containers/DummyCommandableCloudFunction').DummyCommandableCloudFunction;
 const DummyCloudFunction = require('../../obj/test/containers/DummyCloudFunction').DummyCloudFunction;
-const ConfigParams = require('../../node_modules/pip-services4-commons-node/obj/src/config/ConfigParams').ConfigParams;
+const ConfigParams = require('../../node_modules/pip-services4-components-node/obj/src/config/ConfigParams').ConfigParams;
 
 // CommandableCloudFunction
 let commandableFunction = null;

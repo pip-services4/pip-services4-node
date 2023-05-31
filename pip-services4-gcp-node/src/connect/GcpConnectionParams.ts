@@ -212,7 +212,7 @@ export class GcpConnectionParams extends ConfigParams {
 	 * @returns {GcpConnectionParams}	a new GcpConnectionParams object.
      */
     public static fromString(line: string): GcpConnectionParams {
-        let map = StringValueMap.fromString(line);
+        const map = StringValueMap.fromString(line);
         return new GcpConnectionParams(map);
     }
 
@@ -255,14 +255,14 @@ export class GcpConnectionParams extends ConfigParams {
 	 * @see [[mergeConfigs]]
 	 */
     public static fromConfig(config: ConfigParams): GcpConnectionParams {
-        let result = new GcpConnectionParams();
+        const result = new GcpConnectionParams();
 
-        let credentials = CredentialParams.manyFromConfig(config);
-        for (let credential of credentials)
+        const credentials = CredentialParams.manyFromConfig(config);
+        for (const credential of credentials)
             result.append(credential);
 
-        let connections = ConnectionParams.manyFromConfig(config);
-        for (let connection of connections)
+        const connections = ConnectionParams.manyFromConfig(config);
+        for (const connection of connections)
             result.append(connection);
 
         return result;
@@ -276,7 +276,7 @@ export class GcpConnectionParams extends ConfigParams {
      * @returns			a new ConfigParams object.
      */
     public static fromTuples(...tuples: any[]): GcpConnectionParams {
-        let config = ConfigParams.fromTuples(...tuples);
+        const config = ConfigParams.fromTuples(...tuples);
         return GcpConnectionParams.fromConfig(config);
     }
 
@@ -290,7 +290,7 @@ export class GcpConnectionParams extends ConfigParams {
 	 * @see [[fromConfig]]
 	 */
     public static mergeConfigs(...configs: ConfigParams[]): GcpConnectionParams {
-        let config = ConfigParams.mergeConfigs(...configs);
+        const config = ConfigParams.mergeConfigs(...configs);
         return new GcpConnectionParams(config);
     }
 }

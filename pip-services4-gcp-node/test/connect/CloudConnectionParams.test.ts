@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-components-node';
+import { ConfigParams, Context } from 'pip-services4-components-node';
 
 import { GcpConnectionParams } from '../../src/connect/GcpConnectionParams';
 import { GcpConnectionResolver } from '../../src/connect/GcpConnectionResolver';
@@ -31,7 +31,7 @@ suite('GcpConnectionParams', ()=> {
         );
         let resolver = new GcpConnectionResolver();
         resolver.configure(config1);
-        let connection =  await resolver.resolve('');
+        let connection =  await resolver.resolve(null);
 
         assert.equal('http://east-my_test_project.cloudfunctions.net/myfunction', connection.getUri());
         assert.equal('east', connection.getRegion());
@@ -42,7 +42,7 @@ suite('GcpConnectionParams', ()=> {
 
         resolver = new GcpConnectionResolver();
         resolver.configure(config2);
-        connection =  await resolver.resolve('');
+        connection = await resolver.resolve(null);
 
         assert.equal('http://east-my_test_project.cloudfunctions.net/myfunction', connection.getUri());
         assert.equal('east', connection.getRegion());

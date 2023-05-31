@@ -6,7 +6,7 @@ import { ObjectSchema } from 'pip-services4-data-node';
 import { TypeCode } from 'pip-services4-commons-node';
 import { FilterParamsSchema } from 'pip-services4-data-node';
 import { PagingParamsSchema } from 'pip-services4-data-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 
 import { CloudFunction } from '../../src/containers/CloudFunction';
 import { IDummyService } from '../sample/IDummyService';

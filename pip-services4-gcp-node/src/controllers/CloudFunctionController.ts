@@ -12,7 +12,7 @@ import { DependencyResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
 import { Schema } from 'pip-services4-data-node';
 
@@ -154,8 +154,8 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -174,6 +174,7 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
      * 
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async open(context: IContext): Promise<void> {
         if (this._opened) {
             return;
@@ -189,6 +190,7 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
      * 
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         if (!this._opened) {
             return;
@@ -201,13 +203,13 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
 
     protected applyValidation(schema: Schema, action: (req: Request, res: Response) => Promise<any>): (req: Request, res: Response) => Promise<any> {
         // Create an action function
-        let actionWrapper = async (req, res) => {
+        const actionWrapper = async (req, res) => {
             // Validate object
             if (schema && req) {
                 // Perform validation
-                let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let context = this.getTraceId(req);
-                let err = schema.validateAndReturnException(context, params, false);
+                const params = Object.assign({}, req.params, req.query, { body: req.body });
+                const context = this.getTraceId(req);
+                const err = schema.validateAndReturnException(context, params, false);
                 if (err) {
                     HttpResponseSender.sendError(req, res, err);
                 }
@@ -223,7 +225,7 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
         let actionWrapper = action;
 
         for (let index = this._interceptors.length - 1; index >= 0; index--) {
-            let interceptor = this._interceptors[index];
+            const interceptor = this._interceptors[index];
             actionWrapper = ((action) => {
                 return (req, res) => {
                     return interceptor(req, res, action);
@@ -253,8 +255,9 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
         let actionWrapper = this.applyValidation(schema, action);
         actionWrapper = this.applyInterceptors(actionWrapper);
 
-        let self = this;
-        let registeredAction: CloudFunctionAction = {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
+        const registeredAction: CloudFunctionAction = {
             cmd: this.generateActionCmd(name), 
             schema: schema,
             action: (req: Request, res: Response) => { return actionWrapper.call(self, req, res); }
@@ -281,8 +284,9 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
         };
         actionWrapper = this.applyInterceptors(actionWrapper);
 
-        let self = this;
-        let registeredAction: CloudFunctionAction = {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
+        const registeredAction: CloudFunctionAction = {
             cmd: this.generateActionCmd(name), 
             schema: schema,
             action: (req, res) => { return actionWrapper.call(self, req, res); }
@@ -296,10 +300,11 @@ export abstract class CloudFunctionController implements ICloudFunctionControlle
      * @param action an action function that is called when middleware is invoked.
      */
     protected registerInterceptor(cmd: string, action: (req: Request, res: Response, next: (req: Request, res: Response) => void) => void): void {
-        let self = this;
-        let interceptorWrapper = (req: Request, res: Response, next: () => void) => {
-            let currCmd = this.getCommand(req);
-            let match = (currCmd.match(cmd) || []).length > 0;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
+        const interceptorWrapper = (req: Request, res: Response, next: () => void) => {
+            const currCmd = this.getCommand(req);
+            const match = (currCmd.match(cmd) || []).length > 0;
             if (cmd != null && cmd != "" && !match)
                 next.call(self, req, res);
             else action.call(self,req, res, next);

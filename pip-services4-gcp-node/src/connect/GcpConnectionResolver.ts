@@ -1,5 +1,5 @@
 /** @module connect */
-const url = require('url');
+import url = require('url');
 
 import { IContext } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
@@ -115,20 +115,20 @@ export class GcpConnectionResolver implements IConfigurable, IReferenceable {
         let uri = connection.getUri();
 
         if (uri == null || uri == "") {
-            let protocol = connection.getProtocol();
-            let functionName = connection.getFunction();
-            let projectId = connection.getProjectId();
-            let region = connection.getRegion();
+            const protocol = connection.getProtocol();
+            const functionName = connection.getFunction();
+            const projectId = connection.getProjectId();
+            const region = connection.getRegion();
             // https://YOUR_REGION-YOUR_PROJECT_ID.cloudfunctions.net/FUNCTION_NAME
             uri = `${protocol}://${region}-${projectId}.cloudfunctions.net` + (functionName != null ? `/${functionName}` : '');
 
             connection.setUri(uri);
         } else {
-            let address = url.parse(uri);
-            let protocol = ("" + address.protocol).replace(':', '');
-            let functionName = address.path.replace('/', '');
-            let region = uri.indexOf('-') != -1 ? uri.slice(uri.indexOf('//') + 2, uri.indexOf('-')) : '';
-            let projectId = uri.indexOf('-') != -1 ? uri.slice(uri.indexOf('-') + 1, uri.indexOf('.')) : '';
+            const address = url.parse(uri);
+            const protocol = ("" + address.protocol).replace(':', '');
+            const functionName = address.path.replace('/', '');
+            const region = uri.indexOf('-') != -1 ? uri.slice(uri.indexOf('//') + 2, uri.indexOf('-')) : '';
+            const projectId = uri.indexOf('-') != -1 ? uri.slice(uri.indexOf('-') + 1, uri.indexOf('.')) : '';
             // let functionName = value.slice(-1) != '/' ? value.slice(value.lastIndexOf('/') + 1) : value.slice(value.slice(0, -1).lastIndexOf('/') + 1, -1);
             
             connection.setRegion(region);

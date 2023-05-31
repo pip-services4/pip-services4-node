@@ -1,8 +1,8 @@
 /** @module containers */
 import { ICommandable } from 'pip-services4-rpc-node';
 import { CommandSet } from 'pip-services4-rpc-node';
-import { Parameters } from 'pip-services4-components-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { Context, Parameters } from 'pip-services4-components-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 
 import { CloudFunction } from './CloudFunction';
 import { CloudFunctionRequestHelper } from "./CloudFunctionRequestHelper";
@@ -68,14 +68,14 @@ export abstract class CommandableCloudFunction extends CloudFunction {
     }
 
     private registerCommandSet(commandSet: CommandSet) {
-        let commands = commandSet.getCommands();
+        const commands = commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
 
             this.registerAction(command.getName(), null, async (req, res) => {
-                let context = this.getTraceId(req);
-                let args = this.getParameters(req);
-                let timing = this.instrument(context, this._info.name + '.' + command.getName());
+                const context = Context.fromTraceId(this.getTraceId(req));
+                const args = this.getParameters(req);
+                const timing = this.instrument(context, this._info.name + '.' + command.getName());
 
                 try {
                     const result = await command.execute(context, args);
@@ -93,8 +93,8 @@ export abstract class CommandableCloudFunction extends CloudFunction {
      * Registers all actions in this Google Function.
      */
     public register(): void {
-        let service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
-        let commandSet = service.getCommandSet();
+        const service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const commandSet = service.getCommandSet();
         this.registerCommandSet(commandSet);
     }
 }

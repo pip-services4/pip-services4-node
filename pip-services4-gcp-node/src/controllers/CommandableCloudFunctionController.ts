@@ -2,8 +2,8 @@
 
 import { ICommandable } from 'pip-services4-rpc-node';
 import { CommandSet } from 'pip-services4-rpc-node';
-import { Parameters } from 'pip-services4-components-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
+import { Context, Parameters } from 'pip-services4-components-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 
 import { CloudFunctionController } from './CloudFunctionController';
 import { CloudFunctionRequestHelper } from "../containers/CloudFunctionRequestHelper";
@@ -78,21 +78,21 @@ export abstract class CommandableCloudFunctionController extends CloudFunctionCo
      * Registers all actions in Google Function.
      */
     public register(): void {
-        let service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
         this._commandSet = service.getCommandSet();
 
-        let commands = this._commandSet.getCommands();
+        const commands = this._commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
-            let name = command.getName();
+            const command = commands[index];
+            const name = command.getName();
 
             this.registerAction(name, null, async (req, res) => {
-                let context = this.getTraceId(req);
-                let args = this.getParameters(req);
+                const context = Context.fromTraceId(this.getTraceId(req));
+                const args = this.getParameters(req);
                 args.remove("trace_id");
                 args.remove("correlation_id");
 
-                let timing = this.instrument(context, name);
+                const timing = this.instrument(context, name);
                 try {
                     const result = await command.execute(context, args);
                     HttpResponseSender.sendResult(req, res, result);

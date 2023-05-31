@@ -1,7 +1,7 @@
 import { Descriptor } from "pip-services4-components-node";
 
 import { CommandableCloudFunction } from '../../src/containers/CommandableCloudFunction';
-import { DummyFactory } from '../DummyFactory';
+import { DummyFactory } from "../sample/DummyFactory";
 
 export class DummyCommandableCloudFunction extends CommandableCloudFunction {
     public constructor() {

@@ -1,5 +1,5 @@
 const DummyCloudFunction = require('../../obj/test/controllers/DummyCloudFunction').DummyCloudFunction;
-const ConfigParams = require('../../node_modules/pip-services4-commons-node/obj/src/config/ConfigParams').ConfigParams;
+const ConfigParams = require('../../node_modules/pip-services4-components-node/obj/src/config/ConfigParams').ConfigParams;
 
 
 let functionController = new DummyCloudFunction();

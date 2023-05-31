@@ -1,10 +1,9 @@
 /** @module containers */
 /** @hidden */ 
-const process = require('process');
+import process = require('process');
 
-import { IContext } from 'pip-services4-components-node';
+import { ConfigParams, Context, IContext } from 'pip-services4-components-node';
 import { BadRequestException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-componnets-node';
 import { DependencyResolver } from 'pip-services4-components-node';
 import { Descriptor } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
@@ -14,8 +13,8 @@ import { Container } from 'pip-services4-container-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { ConsoleLogger } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
-import { HttpResponseSender } from 'pip-services4-rpc-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
+import { HttpResponseSender } from 'pip-services4-http-node';
 
 import { CloudFunctionRequestHelper } from './CloudFunctionRequestHelper';
 import { ICloudFunctionController } from '../controllers/ICloudFunctionController';
@@ -77,7 +76,7 @@ export abstract class CloudFunction extends Container {
     /**
      * The default path to config file.
      */
-    protected _configPath: string = './config/config.yml';
+    protected _configPath = './config/config.yml';
 
     /**
      * Creates a new instance of this Google Function function.
@@ -162,8 +161,8 @@ export abstract class CloudFunction extends Container {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -175,15 +174,15 @@ export abstract class CloudFunction extends Container {
      *  
      */
     public async run(): Promise<void> {
-        let context = this._info.name;
+        const context = Context.fromTraceId(this._info.name);
 
-        let path = this.getConfigPath();
-        let parameters = this.getConfigParameters();
+        const path = this.getConfigPath();
+        const parameters = this.getConfigParameters();
         this.readConfigFromFile(context, path, parameters);
 
         this.captureErrors(context);
         this.captureExit(context);
-    	await this.open(context);
+        await this.open(context);
     }
 
     /**
@@ -191,28 +190,30 @@ export abstract class CloudFunction extends Container {
      *
      * Note: Overloading of this method has been deprecated. Use CloudFunctionController instead.
      */
-    protected register(): void {}
+    protected register(): void {
+        //
+    }
 
     /**
      * Registers all Google Function controllers in the container.
      */
     protected registerControllers(): void {
         // Extract regular and commandable Google Function controllers from references
-        let controllers = this._references.getOptional<ICloudFunctionController>(
+        const controllers = this._references.getOptional<ICloudFunctionController>(
             new Descriptor("*", "controller", "cloudfunc", "*", "*")
         );
-        let cmdControllers = this._references.getOptional<ICloudFunctionController>(
+        const cmdControllers = this._references.getOptional<ICloudFunctionController>(
             new Descriptor("*", "controller", "commandable-cloudfunc", "*", "*")
         );
         controllers.push(...cmdControllers);
 
         // Register actions defined in those controllers
-        for (let controller of controllers) {
+        for (const controller of controllers) {
             // Check if the controller implements required interface
             if (typeof controller.getActions !== "function") continue;
 
-            let actions = controller.getActions();
-            for (let action of actions) {
+            const actions = controller.getActions();
+            for (const action of actions) {
                 this.registerAction(action.cmd, action.schema, action.action);
             }
         }
@@ -241,7 +242,7 @@ export abstract class CloudFunction extends Container {
             throw new UnknownException(null, 'ACTION_NOT_FUNCTION', 'Action is not a function');
         }
 
-        if (this._actions.hasOwnProperty(cmd)) {
+        if (Object.prototype.hasOwnProperty.call(this._actions, cmd)) {
             throw new UnknownException(null, 'DUPLICATED_ACTION', `"${cmd}" action already exists`);
         }
 
@@ -249,9 +250,9 @@ export abstract class CloudFunction extends Container {
         const actionCurl = async (req: Request, res: Response) => {
             // Perform validation
             if (schema != null) {
-                let params = Object.assign({}, req.params, req.query, { body: req.body });
-                let context = this.getTraceId(req);
-                let err = schema.validateAndReturnException(context, params, false);
+                const params = Object.assign({}, req.params, req.query, { body: req.body });
+                const context = this.getTraceId(req);
+                const err = schema.validateAndReturnException(context, params, false);
                 if (err != null) {
                     HttpResponseSender.sendError(req, res, err);
                 }
@@ -294,8 +295,8 @@ export abstract class CloudFunction extends Container {
      * @returns the promise.
      */
     protected async execute(req: Request, res: Response): Promise<any> {
-        let cmd: string = this.getCommand(req);
-        let traceId = this.getTraceId(req);
+        const cmd: string = this.getCommand(req);
+        const traceId = this.getTraceId(req);
         if (cmd == null) {
             HttpResponseSender.sendError(req, res,
                 new BadRequestException(
@@ -339,7 +340,8 @@ export abstract class CloudFunction extends Container {
      * @param res     an returnning response object with result parameters.
      */
     public getHandler(): (req: Request, res: Response) => Promise<any> {
-        let self = this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
         
         // Return plugin function
         return async function (req, res) {

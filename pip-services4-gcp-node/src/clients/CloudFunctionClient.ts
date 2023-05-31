@@ -1,5 +1,5 @@
 /** @module clients */
-import { IContext} from 'pip-services4-components-node';
+import { DependencyResolver, IContext} from 'pip-services4-components-node';
 import { IOpenable} from 'pip-services4-components-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
@@ -9,14 +9,11 @@ import { IReferences } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { IdGenerator } from 'pip-services4-data-node';
 import { UnknownException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
 import { InstrumentTiming } from "pip-services4-rpc-node";
 
 import { GcpConnectionParams } from '../connect/GcpConnectionParams';
 import { GcpConnectionResolver } from '../connect/GcpConnectionResolver';
+import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
 
 /**
  * Abstract client that calls Google Functions.
@@ -88,7 +85,7 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
      */
     protected _connection: GcpConnectionParams;
 
-    protected _retries: number = 3;
+    protected _retries = 3;
     /**
      * The default headers to be added to every request.
      */
@@ -96,11 +93,11 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
     /**
      * The connection timeout in milliseconds.
      */
-    protected _connectTimeout: number = 10000;
+    protected _connectTimeout = 10000;
     /**
      * The invocation timeout in milliseconds.
      */
-    protected _timeout: number = 10000;
+    protected _timeout = 10000;
     /**
      * The remote controller uri which is calculated on open.
      */
@@ -167,8 +164,8 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -199,7 +196,8 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
         this._uri = this._connection.getUri();
         try {
             this._uri = this._connection.getUri();
-            let restify = require('restify-clients');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const restify = require('restify-clients');
             this._client = restify.createJsonClient({
                 url: this._uri,
                 connectTimeout: this._connectTimeout,
@@ -270,7 +268,7 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
         args.trace_id = context || IdGenerator.nextShort();
 
         return new Promise((resolve, reject) => {
-            let action = (err, req, res, data) => {
+            const action = (err, req, res, data) => {
                 // Handling 204 codes
                 if (res && res.statusCode == 204)
                     resolve(null);

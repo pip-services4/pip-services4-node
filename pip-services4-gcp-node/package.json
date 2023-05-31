@@ -27,7 +27,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-gcp-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-gcp-node"
     },
     "license": "MIT",
     "engines": {
@@ -39,16 +40,19 @@
         "watch": "tsc --watch",
         "test": "mocha -t 15000 -R spec -u tdd --recursive ./obj/test --exit",
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test --exit",
-        "start": "npx functions-framework --target=handler --signature-type=http --source=bin"
+        "start": "npx functions-framework --target=handler --signature-type=http --source=bin",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
         "express": "^4.17.2",
-        "pip-services4-commons-node": "^0.0.1",
-        "pip-services4-components-node": "^0.0.1",
+        "pip-services4-commons-node": "0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "0.0.4",
         "pip-services4-container-node": "^0.0.1",
-        "pip-services4-config-node": "^0.0.1",
-        "pip-services4-data-node": "^0.0.1",
-        "pip-services4-observability-node": "^0.0.1",
+        "pip-services4-data-node": "^0.0.4",
+        "pip-services4-http-node": "0.0.2",
+        "pip-services4-observability-node": "0.0.2",
         "pip-services4-rpc-node": "^0.0.1",
         "restify-clients": "^4.2.0",
         "restify-cors-middleware2": "2.2.1"
@@ -61,9 +65,12 @@
         "@types/node": "*",
         "chai": "^4.3.4",
         "mocha": "^10.2.0",
-
         "gaxios": "^4.3.2",
         "restify": "^4.3.0",
-        "wait-port": "^1.0.4"
+        "wait-port": "^1.0.4",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "eslint": "^8.32.0",
+        "typescript": "*"
     }
 }
