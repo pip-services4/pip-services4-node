@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DummyClientFixture_1 = require("../DummyClientFixture");
 const DummyLambdaClient_1 = require("./DummyLambdaClient");
 suite('DummyLambdaClient', () => {
@@ -20,7 +20,7 @@ suite('DummyLambdaClient', () => {
     if (!awsAccessId || !awsAccessKey || !lambdaArn) {
         return;
     }
-    let lambdaConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.protocol', 'aws', 'connection.arn', lambdaArn, 'credential.access_id', awsAccessId, 'credential.access_key', awsAccessKey, 'options.connection_timeout', 30000);
+    let lambdaConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.protocol', 'aws', 'connection.arn', lambdaArn, 'credential.access_id', awsAccessId, 'credential.access_key', awsAccessKey, 'options.connection_timeout', 30000);
     let client;
     let fixture;
     setup(() => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,4 +1,5 @@
 /** @module clients */
+import { IContext } from 'pip-services4-components-node';
 import { LambdaClient } from './LambdaClient';
 
 /**
@@ -74,7 +75,7 @@ export class CommandableLambdaClient extends LambdaClient {
      * @return {any}            action result.
      */
     public async callCommand(cmd: string, context: IContext, params: any): Promise<any> {
-        let command = this._name + '.' + cmd;
+        const command = this._name + '.' + cmd;
         const timing = this.instrument(context, command);
         try {
             const result = await this.call(command, context, params);

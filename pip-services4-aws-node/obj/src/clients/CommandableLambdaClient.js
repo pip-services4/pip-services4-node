@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandableLambdaClient = void 0;
-/** @module clients */
 const LambdaClient_1 = require("./LambdaClient");
 /**
  * Abstract client that calls commandable AWS Lambda Functions.
@@ -83,7 +82,7 @@ class CommandableLambdaClient extends LambdaClient_1.LambdaClient {
      */
     callCommand(cmd, context, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let command = this._name + '.' + cmd;
+            const command = this._name + '.' + cmd;
             const timing = this.instrument(context, command);
             try {
                 const result = yield this.call(command, context, params);

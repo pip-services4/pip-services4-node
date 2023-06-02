@@ -1,8 +1,8 @@
-import { CommandSet } from 'pip-services4-commons-node';
-import { IDummyController } from './IDummyController';
+import { IDummyService } from './IDummyService';
+import { CommandSet } from 'pip-services4-rpc-node';
 export declare class DummyCommandSet extends CommandSet {
     private _controller;
-    constructor(controller: IDummyController);
+    constructor(controller: IDummyService);
     private makeGetPageByFilterCommand;
     private makeGetOneByIdCommand;
     private makeCreateCommand;

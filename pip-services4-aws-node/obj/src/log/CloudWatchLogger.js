@@ -1,4 +1,5 @@
 "use strict";
+/** @module log */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,13 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CloudWatchLogger = void 0;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
 const aws_sdk_1 = require("aws-sdk");
 const aws_sdk_2 = require("aws-sdk");
 const AwsConnectionResolver_1 = require("../connect/AwsConnectionResolver");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Logger that writes log messages to AWS Cloud Watch Log.
  *
@@ -68,7 +68,7 @@ const AwsConnectionResolver_1 = require("../connect/AwsConnectionResolver");
  *     logger.error("123", ex, "Error occured: %s", ex.message);
  *     logger.debug("123", "Everything is OK.");
  */
-class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
+class CloudWatchLogger extends pip_services4_observability_node_1.CachedLogger {
     /**
      * Creates a new instance of this logger.
      */
@@ -80,7 +80,7 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
         this._group = "undefined";
         this._stream = null;
         this._lastToken = null;
-        this._logger = new pip_services3_components_node_2.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -104,7 +104,7 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
         super.setReferences(references);
         this._logger.setReferences(references);
         this._connectionResolver.setReferences(references);
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_2.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._stream == null)
             this._stream = contextInfo.name;
         if (contextInfo != null && this._group == null)
@@ -192,6 +192,7 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
@@ -233,9 +234,9 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
                 return;
             }
             if (this._client == null) {
-                throw new pip_services3_commons_node_1.ConfigException("cloudwatch_logger", 'NOT_OPENED', 'CloudWatchLogger is not opened');
+                throw new pip_services4_commons_node_1.ConfigException("cloudwatch_logger", 'NOT_OPENED', 'CloudWatchLogger is not opened');
             }
-            let events = [];
+            const events = [];
             messages.forEach(message => {
                 events.push({
                     timestamp: message.time.getTime(),
@@ -291,7 +292,7 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
                 this._client.createLogStream(paramsStream, (err, data) => {
                     if (err) {
                         if (err.code == "ResourceAlreadyExistsException") {
-                            let params = {
+                            const params = {
                                 logGroupName: this._group,
                                 logStreamNamePrefix: this._stream,
                             };
@@ -319,11 +320,12 @@ class CloudWatchLogger extends pip_services3_components_node_1.CachedLogger {
     }
     putLogEvents(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             return new Promise((res, rej) => {
                 this._client.putLogEvents(params, (err, data) => {
                     if (err) {
                         if (this._logger)
-                            this._logger.error("cloudwatch_logger", err, "putLogEvents error");
+                            this._logger.error(pip_services4_components_node_1.Context.fromTraceId("cloudwatch_logger"), err, "putLogEvents error");
                     }
                     res(data);
                 });

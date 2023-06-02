@@ -1,5 +1,4 @@
-/** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams, IContext } from 'pip-services4-components-node';
 /**
  * Contains connection parameters to authenticate against Amazon Web Services (AWS)
  * and connect to specific AWS resource.

@@ -1,8 +1,7 @@
 /** @module containers */
-import { ICommandable } from 'pip-services4-commons-node';
-import { CommandSet } from 'pip-services4-commons-node';
-import { Parameters } from 'pip-services4-commons-node';
 
+import { Parameters } from 'pip-services4-components-node';
+import { CommandSet, ICommandable } from 'pip-services4-rpc-node';
 import { LambdaFunction } from './LambdaFunction';
 
 /**
@@ -13,14 +12,14 @@ import { LambdaFunction } from './LambdaFunction';
  * Container configuration for this Lambda function is stored in <code>"./config/config.yml"</code> file.
  * But this path can be overriden by <code>CONFIG_PATH</code> environment variable.
  * 
- * Note: This component has been deprecated. Use LambdaService instead.
+ * Note: This component has been deprecated. Use LambdaController instead.
  * 
  * ### References ###
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
- * - <code>\*:service:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
+ * - <code>\*:controller:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
  * 
  * @see [[LambdaClient]]
  * 
@@ -40,7 +39,7 @@ import { LambdaFunction } from './LambdaFunction';
  * 
  *     let lambda = new MyLambdaFunction();
  *     
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyLambdaFunction is started");
  */
 export abstract class CommandableLambdaFunction extends LambdaFunction {
@@ -53,18 +52,18 @@ export abstract class CommandableLambdaFunction extends LambdaFunction {
      */
     public constructor(name: string, description?: string) {
         super(name, description);
-        this._dependencyResolver.put('controller', 'none');
+        this._dependencyResolver.put('service', 'none');
     }
 
     private registerCommandSet(commandSet: CommandSet) {
-        let commands = commandSet.getCommands();
+        const commands = commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
 
             this.registerAction(command.getName(), null, async params => {
-                let context = params.trace_id;
-                let args = Parameters.fromValue(params);
-                let timing = this.instrument(context, this._info.name + '.' + command.getName());
+                const context = params.trace_id;
+                const args = Parameters.fromValue(params);
+                const timing = this.instrument(context, this._info.name + '.' + command.getName());
 
                 try {
                     const result = await command.execute(context, args);
@@ -82,8 +81,8 @@ export abstract class CommandableLambdaFunction extends LambdaFunction {
      * Registers all actions in this lambda function.
      */
     public register(): void {
-        let controller: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('controller');
-        let commandSet = controller.getCommandSet();
+        const controller: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const commandSet = controller.getCommandSet();
         this.registerCommandSet(commandSet);
     }
 }

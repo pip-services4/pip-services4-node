@@ -1,11 +1,6 @@
 /** @module log */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { LogLevel } from 'pip-services4-components-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedLogger } from 'pip-services4-components-node';
-import { LogMessage } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CachedLogger, LogLevel, LogMessage } from 'pip-services4-observability-node';
 /**
  * Logger that writes log messages to AWS Cloud Watch Log.
  *

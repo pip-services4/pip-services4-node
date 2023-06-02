@@ -2,11 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AwsConnectionParams = void 0;
 /** @module connect */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Contains connection parameters to authenticate against Amazon Web Services (AWS)
  * and connect to specific AWS resource.
@@ -40,7 +39,7 @@ const pip_services3_components_node_2 = require("pip-services4-components-node")
  *     let secretKey = connection.getAccessKey();               // Result: "XXXXXXXXXXXXXXX"
  *     let pin = connection.getAsNullableString("bucket");      // Result: "mybucket"
  */
-class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
+class AwsConnectionParams extends pip_services4_components_node_1.ConfigParams {
     /**
      * Creates an new instance of the connection parameters.
      *
@@ -156,18 +155,18 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
         if (arn)
             return arn;
         arn = "arn";
-        let partition = this.getPartition() || "aws";
+        const partition = this.getPartition() || "aws";
         arn += ":" + partition;
-        let service = this.getService() || "";
+        const service = this.getService() || "";
         arn += ":" + service;
-        let region = this.getRegion() || "";
+        const region = this.getRegion() || "";
         arn += ":" + region;
-        let account = this.getAccount() || "";
+        const account = this.getAccount() || "";
         arn += ":" + account;
-        let resourceType = this.getResourceType() || "";
+        const resourceType = this.getResourceType() || "";
         if (resourceType != "")
             arn += ":" + resourceType;
-        let resource = this.getResource() || "";
+        const resource = this.getResource() || "";
         arn += ":" + resource;
         return arn;
     }
@@ -181,7 +180,7 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
     setArn(value) {
         super.put("arn", value);
         if (value != null) {
-            let tokens = value.split(":");
+            const tokens = value.split(":");
             this.setPartition(tokens[1]);
             this.setService(tokens[2]);
             this.setRegion(tokens[3]);
@@ -191,8 +190,8 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
                 this.setResource(tokens[6]);
             }
             else {
-                let temp = tokens[5];
-                let pos = temp.indexOf("/");
+                const temp = tokens[5];
+                const pos = temp.indexOf("/");
                 if (pos > 0) {
                     this.setResourceType(temp.substring(0, pos));
                     this.setResource(temp.substring(pos + 1));
@@ -244,7 +243,7 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
      * @returns {AwsConnectionParams}	a new AwsConnectionParams object.
      */
     static fromString(line) {
-        let map = pip_services3_commons_node_2.StringValueMap.fromString(line);
+        const map = pip_services4_commons_node_1.StringValueMap.fromString(line);
         return new AwsConnectionParams(map);
     }
     /**
@@ -253,15 +252,15 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
      * @param context     (optional) a context to trace execution through call chain.
      */
     validate(context) {
-        let arn = this.getArn();
+        const arn = this.getArn();
         if (arn == "arn:aws::::") {
-            throw new pip_services3_commons_node_3.ConfigException(context, "NO_AWS_CONNECTION", "AWS connection is not set");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_AWS_CONNECTION", "AWS connection is not set");
         }
         if (this.getAccessId() == null) {
-            throw new pip_services3_commons_node_3.ConfigException(context, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
         }
         if (this.getAccessKey() == null) {
-            throw new pip_services3_commons_node_3.ConfigException(context, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
         }
     }
     /**
@@ -274,12 +273,12 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
      * @see [[mergeConfigs]]
      */
     static fromConfig(config) {
-        let result = new AwsConnectionParams();
-        let credentials = pip_services3_components_node_1.CredentialParams.manyFromConfig(config);
-        for (let credential of credentials)
+        const result = new AwsConnectionParams();
+        const credentials = pip_services4_config_node_1.CredentialParams.manyFromConfig(config);
+        for (const credential of credentials)
             result.append(credential);
-        let connections = pip_services3_components_node_2.ConnectionParams.manyFromConfig(config);
-        for (let connection of connections)
+        const connections = pip_services4_config_node_1.ConnectionParams.manyFromConfig(config);
+        for (const connection of connections)
             result.append(connection);
         return result;
     }
@@ -293,7 +292,7 @@ class AwsConnectionParams extends pip_services3_commons_node_1.ConfigParams {
      * @see [[fromConfig]]
      */
     static mergeConfigs(...configs) {
-        let config = pip_services3_commons_node_1.ConfigParams.mergeConfigs(...configs);
+        const config = pip_services4_components_node_1.ConfigParams.mergeConfigs(...configs);
         return new AwsConnectionParams(config);
     }
 }

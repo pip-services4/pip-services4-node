@@ -1,10 +1,8 @@
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Schema } from 'pip-services4-commons-node';
+import { DependencyResolver, IContext, IReferences } from 'pip-services4-components-node';
 import { Container } from 'pip-services4-container-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
+import { CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
+import { Schema } from 'pip-services4-data-node';
 /**
  * Abstract AWS Lambda function, that acts as a container to instantiate and run components
  * and expose them via external entry point.
@@ -19,8 +17,8 @@ import { InstrumentTiming } from 'pip-services4-rpc-node';
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
- * - <code>\*:service:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
+ * - <code>\*:controller:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
  *
  * @see [[LambdaClient]]
  *
@@ -34,7 +32,7 @@ import { InstrumentTiming } from 'pip-services4-rpc-node';
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyLambdaFunction is started");
  */
 export declare abstract class LambdaFunction extends Container {
@@ -93,7 +91,7 @@ export declare abstract class LambdaFunction extends Container {
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
-     * Note: This method has been deprecated. Use LambdaService instead.
+     * Note: This method has been deprecated. Use LambdaController instead.
      *
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -110,17 +108,17 @@ export declare abstract class LambdaFunction extends Container {
     /**
      * Registers all actions in this lambda function.
      *
-     * Note: Overloading of this method has been deprecated. Use LambdaService instead.
+     * Note: Overloading of this method has been deprecated. Use LambdaController instead.
      */
     protected register(): void;
     /**
-     * Registers all lambda services in the container.
+     * Registers all lambda controllers in the container.
      */
-    protected registerServices(): void;
+    protected registerControllers(): void;
     /**
      * Registers an action in this lambda function.
      *
-     * Note: This method has been deprecated. Use LambdaService instead.
+     * Note: This method has been deprecated. Use LambdaController instead.
      *
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.

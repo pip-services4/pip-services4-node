@@ -1,4 +1,5 @@
 /** @module test */
+import { IContext } from "pip-services4-components-node";
 import { CommandableLambdaClient } from "../clients/CommandableLambdaClient";
 
 export class TestCommandableLambdaClient extends CommandableLambdaClient {

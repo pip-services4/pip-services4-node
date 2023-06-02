@@ -1,13 +1,9 @@
 /** @module connect */
 
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
 
+import { IConfigurable, IReferenceable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { AwsConnectionParams } from './AwsConnectionParams';
+import { CredentialResolver } from 'pip-services4-config-node';
 
 /**
  * Helper class to retrieve AWS connection and credential parameters,
@@ -56,7 +52,7 @@ export class AwsConnectionResolver implements IConfigurable, IReferenceable {
     /**
      * The connection resolver.
      */
-    protected _connectionResolver: ConnectionResolver = new ConnectionResolver();
+    protected _connectionResolver: AwsConnectionResolver = new AwsConnectionResolver();
     /**
      * The credential resolver.
      */
@@ -93,7 +89,7 @@ export class AwsConnectionResolver implements IConfigurable, IReferenceable {
      * @see [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] (in the Pip.Services components package)
      */
     public async resolve(context: IContext): Promise<AwsConnectionParams> {
-        let connection = new AwsConnectionParams();
+        const connection = new AwsConnectionParams();
 
         const connectionParams = await this._connectionResolver.resolve(context);
         connection.append(connectionParams);

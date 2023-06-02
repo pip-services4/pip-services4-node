@@ -10,14 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DummyCommandableLambdaFunction_1 = require("./DummyCommandableLambdaFunction");
 suite('DummyCommandableLambdaFunction', () => {
     let DUMMY1 = { id: null, key: "Key 1", content: "Content 1" };
     let DUMMY2 = { id: null, key: "Key 2", content: "Content 2" };
     let lambda;
     suiteSetup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('logger.descriptor', 'pip-services:logger:console:default:1.0', 'controller.descriptor', 'pip-services-dummies:controller:default:default:1.0');
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('logger.descriptor', 'pip-services:logger:console:default:1.0', 'service.descriptor', 'pip-services-dummies:service:default:default:1.0');
         lambda = new DummyCommandableLambdaFunction_1.DummyCommandableLambdaFunction();
         lambda.configure(config);
         yield lambda.open(null);

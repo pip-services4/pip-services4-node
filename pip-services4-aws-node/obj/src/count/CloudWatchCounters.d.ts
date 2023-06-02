@@ -1,9 +1,6 @@
 /** @module count */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters, Counter } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CachedCounters, Counter } from 'pip-services4-observability-node';
 /**
  * Performance counters that periodically dumps counters to AWS Cloud Watch Metrics.
  *

@@ -9,10 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CloudWatchCounters_1 = require("../../src/count/CloudWatchCounters");
 const CountersFixture_1 = require("./CountersFixture");
 suite('CloudWatchCounters', () => {
@@ -27,11 +24,11 @@ suite('CloudWatchCounters', () => {
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         _counters = new CloudWatchCounters_1.CloudWatchCounters();
         _fixture = new CountersFixture_1.CountersFixture(_counters);
-        _counters.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("interval", "5000", "connection.region", AWS_REGION, "credential.access_id", AWS_ACCESS_ID, "credential.access_key", AWS_ACCESS_KEY));
-        const contextInfo = new pip_services3_components_node_1.ContextInfo();
+        _counters.configure(pip_services4_components_node_1.ConfigParams.fromTuples("interval", "5000", "connection.region", AWS_REGION, "credential.access_id", AWS_ACCESS_ID, "credential.access_key", AWS_ACCESS_KEY));
+        const contextInfo = new pip_services4_components_node_1.ContextInfo();
         contextInfo.name = "Test";
         contextInfo.description = "This is a test container";
-        _counters.setReferences(pip_services3_commons_node_2.References.fromTuples(new pip_services3_commons_node_3.Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo, new pip_services3_commons_node_3.Descriptor("pip-services", "counters", "cloudwatch", "default", "1.0"), _counters));
+        _counters.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo, new pip_services4_components_node_1.Descriptor("pip-services", "counters", "cloudwatch", "default", "1.0"), _counters));
         yield _counters.open(null);
     }));
     teardown(() => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,21 +1,14 @@
 /** @module log */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { LogLevel } from 'pip-services4-components-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedLogger } from 'pip-services4-components-node';
-import { LogMessage } from 'pip-services4-components-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { ContextInfo } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node'
+
 
 import { CloudWatchLogs } from 'aws-sdk';
 import { config } from 'aws-sdk';
 
 import { AwsConnectionResolver } from '../connect/AwsConnectionResolver';
 import { AwsConnectionParams } from '../connect/AwsConnectionParams';
+import { ConfigException } from 'pip-services4-commons-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, ContextInfo, Descriptor, IContext, Context } from 'pip-services4-components-node';
+import { CachedLogger, CompositeLogger, LogLevel, LogMessage } from 'pip-services4-observability-node';
 
 /**
  * Logger that writes log messages to AWS Cloud Watch Log.
@@ -74,9 +67,9 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
     private _connectionResolver: AwsConnectionResolver = new AwsConnectionResolver();
     private _client: any = null; //AmazonCloudWatchLogsClient
     private _connection: AwsConnectionParams;
-    private _connectTimeout: number = 30000;
+    private _connectTimeout = 30000;
 
-    private _group: string = "undefined";
+    private _group = "undefined";
     private _stream: string = null;
     private _lastToken: string = null;
 
@@ -114,7 +107,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
         this._logger.setReferences(references);
         this._connectionResolver.setReferences(references);
 
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._stream == null)
             this._stream = contextInfo.name;
@@ -210,6 +203,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
 	 */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         await this.save(this._cache);
         
@@ -223,7 +217,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
     }
 
     private formatMessageText(message: LogMessage): string {
-        let result: string = "";
+        let result = "";
         result += "[" + (message.source ? message.source : "---") + ":" +
             (message.trace_id ? message.trace_id : "---") + ":" + message.level + "] " +
             message.message;
@@ -260,7 +254,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
             );
         }
 
-        let events = [];
+        const events = [];
         messages.forEach(message => {
             events.push({
                 timestamp: message.time.getTime(),
@@ -316,7 +310,7 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
                 if (err) {
                     if (err.code == "ResourceAlreadyExistsException") {
 
-                        let params = {
+                        const params = {
                             logGroupName: this._group,
                             logStreamNamePrefix: this._stream,
                         };
@@ -345,10 +339,11 @@ export class CloudWatchLogger extends CachedLogger implements IReferenceable, IO
     }
 
     private async putLogEvents(params: any): Promise<any> {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         return new Promise((res, rej) => {
             this._client.putLogEvents(params, (err, data) => {
                 if (err) {
-                    if (this._logger) this._logger.error("cloudwatch_logger", err, "putLogEvents error");
+                    if (this._logger) this._logger.error(Context.fromTraceId("cloudwatch_logger"), err, "putLogEvents error");
                 }
                 res(data);
             });

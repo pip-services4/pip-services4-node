@@ -1,4 +1,5 @@
 /** @module test */
+import { IContext } from "pip-services4-components-node";
 import { LambdaClient } from "../clients/LambdaClient";
 /**
  * AWS Lambda client used for automated testing.

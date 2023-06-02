@@ -1,4 +1,5 @@
 "use strict";
+/** @module clients */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,17 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LambdaClient = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
 const aws_sdk_1 = require("aws-sdk");
 const aws_sdk_2 = require("aws-sdk");
 const AwsConnectionResolver_1 = require("../connect/AwsConnectionResolver");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
 /**
  * Abstract client that calls AWS Lambda Functions.
  *
@@ -84,7 +82,7 @@ class LambdaClient {
         /**
          * The dependencies resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_4.DependencyResolver();
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver();
         /**
          * The connection resolver.
          */
@@ -92,15 +90,15 @@ class LambdaClient {
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The performance counters.
          */
-        this._counters = new pip_services3_components_node_3.CompositeCounters();
+        this._counters = new pip_services4_observability_node_1.CompositeCounters();
         /**
          * The tracer.
          */
-        this._tracer = new pip_services3_components_node_2.CompositeTracer();
+        this._tracer = new pip_services4_observability_node_1.CompositeTracer();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -134,9 +132,9 @@ class LambdaClient {
     instrument(context, name) {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services4_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -176,6 +174,7 @@ class LambdaClient {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Todo: close listening?
@@ -197,12 +196,12 @@ class LambdaClient {
     invoke(invocationType, cmd, context, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (cmd == null) {
-                throw new pip_services3_commons_node_2.UnknownException(null, 'NO_COMMAND', 'Missing Seneca pattern cmd');
+                throw new pip_services4_commons_node_1.UnknownException(null, 'NO_COMMAND', 'Missing Seneca pattern cmd');
             }
             args = Object.assign({}, args);
             args.cmd = cmd;
-            args.trace_id = context || pip_services3_commons_node_1.IdGenerator.nextShort();
-            let params = {
+            args.trace_id = context || pip_services4_data_node_1.IdGenerator.nextShort();
+            const params = {
                 FunctionName: this._connection.getArn(),
                 InvocationType: invocationType,
                 LogType: 'None',
@@ -216,13 +215,13 @@ class LambdaClient {
                         result = JSON.parse(result);
                     }
                     catch (err) {
-                        throw new pip_services3_commons_node_3.InvocationException(context, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
+                        throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
                     }
                 }
                 return result;
             }
             catch (err) {
-                throw new pip_services3_commons_node_3.InvocationException(context, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
+                throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
             }
         });
     }

@@ -1,11 +1,7 @@
 /** @module connect */
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
+import { IConfigurable, IReferenceable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { AwsConnectionParams } from './AwsConnectionParams';
+import { CredentialResolver } from 'pip-services4-config-node';
 /**
  * Helper class to retrieve AWS connection and credential parameters,
  * validate them and compose a [[AwsConnectionParams]] value.
@@ -53,7 +49,7 @@ export declare class AwsConnectionResolver implements IConfigurable, IReferencea
     /**
      * The connection resolver.
      */
-    protected _connectionResolver: ConnectionResolver;
+    protected _connectionResolver: AwsConnectionResolver;
     /**
      * The credential resolver.
      */

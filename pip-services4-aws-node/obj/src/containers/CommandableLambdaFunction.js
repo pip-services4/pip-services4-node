@@ -1,4 +1,5 @@
 "use strict";
+/** @module containers */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandableLambdaFunction = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const LambdaFunction_1 = require("./LambdaFunction");
 /**
  * Abstract AWS Lambda function, that acts as a container to instantiate and run components
@@ -20,14 +21,14 @@ const LambdaFunction_1 = require("./LambdaFunction");
  * Container configuration for this Lambda function is stored in <code>"./config/config.yml"</code> file.
  * But this path can be overriden by <code>CONFIG_PATH</code> environment variable.
  *
- * Note: This component has been deprecated. Use LambdaService instead.
+ * Note: This component has been deprecated. Use LambdaController instead.
  *
  * ### References ###
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
- * - <code>\*:service:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
+ * - <code>\*:controller:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
  *
  * @see [[LambdaClient]]
  *
@@ -47,7 +48,7 @@ const LambdaFunction_1 = require("./LambdaFunction");
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyLambdaFunction is started");
  */
 class CommandableLambdaFunction extends LambdaFunction_1.LambdaFunction {
@@ -59,16 +60,16 @@ class CommandableLambdaFunction extends LambdaFunction_1.LambdaFunction {
      */
     constructor(name, description) {
         super(name, description);
-        this._dependencyResolver.put('controller', 'none');
+        this._dependencyResolver.put('service', 'none');
     }
     registerCommandSet(commandSet) {
-        let commands = commandSet.getCommands();
+        const commands = commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
             this.registerAction(command.getName(), null, (params) => __awaiter(this, void 0, void 0, function* () {
-                let context = params.trace_id;
-                let args = pip_services3_commons_node_1.Parameters.fromValue(params);
-                let timing = this.instrument(context, this._info.name + '.' + command.getName());
+                const context = params.trace_id;
+                const args = pip_services4_components_node_1.Parameters.fromValue(params);
+                const timing = this.instrument(context, this._info.name + '.' + command.getName());
                 try {
                     const result = yield command.execute(context, args);
                     timing.endTiming();
@@ -85,8 +86,8 @@ class CommandableLambdaFunction extends LambdaFunction_1.LambdaFunction {
      * Registers all actions in this lambda function.
      */
     register() {
-        let controller = this._dependencyResolver.getOneRequired('controller');
-        let commandSet = controller.getCommandSet();
+        const controller = this._dependencyResolver.getOneRequired('service');
+        const commandSet = controller.getCommandSet();
         this.registerCommandSet(commandSet);
     }
 }

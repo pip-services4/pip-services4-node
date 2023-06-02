@@ -1,21 +1,15 @@
 /** @module containers */
 /** @hidden */ 
-const process = require('process');
+import process = require('process');
 
-import { BadRequestException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Schema } from 'pip-services4-commons-node';
-import { UnknownException } from 'pip-services4-commons-node';
+
+import { ILambdaController } from '../controllers/ILambdaController';
+import { UnknownException, BadRequestException } from 'pip-services4-commons-node';
+import { DependencyResolver, ConfigParams, IContext, IReferences, Descriptor, Context } from 'pip-services4-components-node';
 import { Container } from 'pip-services4-container-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { ConsoleLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
+import { CompositeCounters, CompositeTracer, ConsoleLogger } from 'pip-services4-observability-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
-
-import { ILambdaService } from '../services/ILambdaService';
+import { Schema } from 'pip-services4-data-node';
 
 /**
  * Abstract AWS Lambda function, that acts as a container to instantiate and run components
@@ -31,8 +25,8 @@ import { ILambdaService } from '../services/ILambdaService';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
- * - <code>\*:service:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
+ * - <code>\*:controller:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
  * 
  * @see [[LambdaClient]]
  * 
@@ -46,7 +40,7 @@ import { ILambdaService } from '../services/ILambdaService';
  * 
  *     let lambda = new MyLambdaFunction();
  *     
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyLambdaFunction is started");
  */
 export abstract class LambdaFunction extends Container {
@@ -73,7 +67,7 @@ export abstract class LambdaFunction extends Container {
     /**
      * The default path to config file.
      */
-    protected _configPath: string = './config/config.yml';
+    protected _configPath = './config/config.yml';
 
     /**
      * Creates a new instance of this lambda function.
@@ -141,7 +135,7 @@ export abstract class LambdaFunction extends Container {
          if (this.isOpen()) return;
 
          await super.open(context);
-         this.registerServices();
+         this.registerControllers();
      }
 
 
@@ -149,7 +143,7 @@ export abstract class LambdaFunction extends Container {
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      * 
-     * Note: This method has been deprecated. Use LambdaService instead.
+     * Note: This method has been deprecated. Use LambdaController instead.
      * 
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -159,8 +153,8 @@ export abstract class LambdaFunction extends Container {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -172,44 +166,46 @@ export abstract class LambdaFunction extends Container {
      *  
      */
     public async run(): Promise<void> {
-        let context = this._info.name;
+        const context = Context.fromTraceId(this._info.name);
 
-        let path = this.getConfigPath();
-        let parameters = this.getParameters();
+        const path = this.getConfigPath();
+        const parameters = this.getParameters();
         this.readConfigFromFile(context, path, parameters);
 
         this.captureErrors(context);
         this.captureExit(context);
-    	await this.open(context);
+        await this.open(context);
     }
 
     /**
      * Registers all actions in this lambda function.
      * 
-     * Note: Overloading of this method has been deprecated. Use LambdaService instead.
+     * Note: Overloading of this method has been deprecated. Use LambdaController instead.
      */
-    protected register(): void {}
+    protected register(): void {
+        //
+    }
 
     /**
-     * Registers all lambda services in the container.
+     * Registers all lambda controllers in the container.
      */
-    protected registerServices(): void {
-        // Extract regular and commandable Lambda services from references
-        let services = this._references.getOptional<ILambdaService>(
-            new Descriptor("*", "service", "awslambda", "*", "*")
+    protected registerControllers(): void {
+        // Extract regular and commandable Lambda controllers from references
+        const controllers = this._references.getOptional<ILambdaController>(
+            new Descriptor("*", "controller", "awslambda", "*", "*")
         );
-        let cmdServices = this._references.getOptional<ILambdaService>(
-            new Descriptor("*", "service", "commandable-awslambda", "*", "*")
+        const cmdControllers = this._references.getOptional<ILambdaController>(
+            new Descriptor("*", "controller", "commandable-awslambda", "*", "*")
         );
-        services.push(...cmdServices);
+        controllers.push(...cmdControllers);
 
-        // Register actions defined in those services
-        for (let service of services) {
-            // Check if the service implements required interface
-            if (typeof service.getActions !== "function") continue;
+        // Register actions defined in those controllers
+        for (const controller of controllers) {
+            // Check if the controller implements required interface
+            if (typeof controller.getActions !== "function") continue;
 
-            let actions = service.getActions();
-            for (let action of actions) {
+            const actions = controller.getActions();
+            for (const action of actions) {
                 this.registerAction(action.cmd, action.schema, action.action);
             }
         }
@@ -218,7 +214,7 @@ export abstract class LambdaFunction extends Container {
     /**
      * Registers an action in this lambda function.
      * 
-     * Note: This method has been deprecated. Use LambdaService instead.
+     * Note: This method has been deprecated. Use LambdaController instead.
      * 
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.
@@ -238,7 +234,7 @@ export abstract class LambdaFunction extends Container {
             throw new UnknownException(null, 'ACTION_NOT_FUNCTION', 'Action is not a function');
         }
 
-        if (this._actions.hasOwnProperty(cmd)) {
+        if (Object.prototype.hasOwnProperty.call(this._actions, cmd)) {
             throw new UnknownException(null, 'DUPLICATED_ACTION', `"${cmd}" action already exists`);
         }
 
@@ -246,8 +242,8 @@ export abstract class LambdaFunction extends Container {
         const actionCurl = (params) => {
             // Perform validation
             if (schema != null) {
-                let context = params.correlaton_id;
-                let err = schema.validateAndReturnException(context, params, false);
+                const context = params.correlaton_id;
+                const err = schema.validateAndReturnException(context, params, false);
                 if (err != null) {
                     throw err;
                 }
@@ -269,8 +265,8 @@ export abstract class LambdaFunction extends Container {
      * @returns the result of the function execution.
      */
     protected async execute(event: any): Promise<any> {
-        let cmd: string = event.cmd;
-        let context = event.trace_id;
+        const cmd: string = event.cmd;
+        const context = event.trace_id;
         
         if (cmd == null) {
             throw new BadRequestException(
@@ -309,7 +305,8 @@ export abstract class LambdaFunction extends Container {
      * @param event     an incoming event object with invocation parameters.
      */
     public getHandler(): (event: any) => Promise<any> {
-        let self = this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
         
         // Return plugin function
         return async function (event) {

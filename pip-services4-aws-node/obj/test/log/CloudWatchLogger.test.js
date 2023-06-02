@@ -9,10 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CloudWatchLogger_1 = require("../../src/log/CloudWatchLogger");
 const LoggerFixture_1 = require("./LoggerFixture");
 suite('CloudWatchLogger', () => {
@@ -27,10 +24,10 @@ suite('CloudWatchLogger', () => {
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         _logger = new CloudWatchLogger_1.CloudWatchLogger();
         _fixture = new LoggerFixture_1.LoggerFixture(_logger);
-        _logger.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("group", "TestGroup", "connection.region", AWS_REGION, "credential.access_id", AWS_ACCESS_ID, "credential.access_key", AWS_ACCESS_KEY));
-        let contextInfo = new pip_services3_components_node_1.ContextInfo();
+        _logger.configure(pip_services4_components_node_1.ConfigParams.fromTuples("group", "TestGroup", "connection.region", AWS_REGION, "credential.access_id", AWS_ACCESS_ID, "credential.access_key", AWS_ACCESS_KEY));
+        let contextInfo = new pip_services4_components_node_1.ContextInfo();
         contextInfo.name = "TestStream";
-        _logger.setReferences(pip_services3_commons_node_2.References.fromTuples(new pip_services3_commons_node_3.Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo, new pip_services3_commons_node_3.Descriptor("pip-services", "counters", "cloudwatch", "default", "1.0"), _logger));
+        _logger.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo, new pip_services4_components_node_1.Descriptor("pip-services", "counters", "cloudwatch", "default", "1.0"), _logger));
         yield _logger.open(null);
     }));
     teardown(() => __awaiter(void 0, void 0, void 0, function* () {

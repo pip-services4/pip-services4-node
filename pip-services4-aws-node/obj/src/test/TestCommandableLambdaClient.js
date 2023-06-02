@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestCommandableLambdaClient = void 0;
-/** @module test */
 const CommandableLambdaClient_1 = require("../clients/CommandableLambdaClient");
 class TestCommandableLambdaClient extends CommandableLambdaClient_1.CommandableLambdaClient {
     constructor(baseRoute) {

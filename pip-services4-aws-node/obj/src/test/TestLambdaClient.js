@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestLambdaClient = void 0;
-/** @module test */
 const LambdaClient_1 = require("../clients/LambdaClient");
 /**
  * AWS Lambda client used for automated testing.

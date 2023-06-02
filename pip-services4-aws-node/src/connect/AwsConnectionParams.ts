@@ -1,9 +1,9 @@
 /** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
+import { ConfigParams, IContext } from 'pip-services4-components-node';
+import { ConnectionParams, CredentialParams } from 'pip-services4-config-node';
+
 
 /**
  * Contains connection parameters to authenticate against Amazon Web Services (AWS)
@@ -167,18 +167,18 @@ export class AwsConnectionParams extends ConfigParams {
         if (arn) return arn;
 
         arn = "arn";
-        let partition = this.getPartition() || "aws";
+        const partition = this.getPartition() || "aws";
         arn += ":" + partition;
-        let service = this.getService() || "";
+        const service = this.getService() || "";
         arn += ":" + service;
-        let region = this.getRegion() || "";
+        const region = this.getRegion() || "";
         arn += ":" + region;
-        let account = this.getAccount() || "";
+        const account = this.getAccount() || "";
         arn += ":" + account;
-        let resourceType = this.getResourceType() || "";
+        const resourceType = this.getResourceType() || "";
         if (resourceType != "")
             arn += ":" + resourceType;
-        let resource = this.getResource() || "";
+        const resource = this.getResource() || "";
         arn += ":" + resource;
 
         return arn;
@@ -195,7 +195,7 @@ export class AwsConnectionParams extends ConfigParams {
         super.put("arn", value);
 
         if (value != null) {
-            let tokens = value.split(":");
+            const tokens = value.split(":");
             this.setPartition(tokens[1]);
             this.setService(tokens[2]);
             this.setRegion(tokens[3]);
@@ -204,8 +204,8 @@ export class AwsConnectionParams extends ConfigParams {
                 this.setResourceType(tokens[5]);
                 this.setResource(tokens[6]);
             } else {
-                let temp = tokens[5];
-                let pos = temp.indexOf("/");
+                const temp = tokens[5];
+                const pos = temp.indexOf("/");
                 if (pos > 0) {
                     this.setResourceType(temp.substring(0, pos));
                     this.setResource(temp.substring(pos + 1));
@@ -261,7 +261,7 @@ export class AwsConnectionParams extends ConfigParams {
 	 * @returns {AwsConnectionParams}	a new AwsConnectionParams object.
      */
     public static fromString(line: string): AwsConnectionParams {
-        let map = StringValueMap.fromString(line);
+        const map = StringValueMap.fromString(line);
         return new AwsConnectionParams(map);
     }
 
@@ -271,10 +271,10 @@ export class AwsConnectionParams extends ConfigParams {
      * @param context     (optional) a context to trace execution through call chain.
      */
     public validate(context: IContext) {
-        let arn = this.getArn();
+        const arn = this.getArn();
         if (arn == "arn:aws::::") {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_AWS_CONNECTION",
                 "AWS connection is not set"
             );
@@ -282,7 +282,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessId() == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_ACCESS_ID",
                 "No access_id is configured in AWS credential"
             );
@@ -290,7 +290,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessKey() == null) {
             throw new ConfigException(
-                context, 
+                context != null ? context.getTraceId() : null,
                 "NO_ACCESS_KEY", 
                 "No access_key is configured in AWS credential"
             );
@@ -307,14 +307,14 @@ export class AwsConnectionParams extends ConfigParams {
 	 * @see [[mergeConfigs]]
 	 */
     public static fromConfig(config: ConfigParams): AwsConnectionParams {
-        let result = new AwsConnectionParams();
+        const result = new AwsConnectionParams();
 
-        let credentials = CredentialParams.manyFromConfig(config);
-        for (let credential of credentials)
+        const credentials = CredentialParams.manyFromConfig(config);
+        for (const credential of credentials)
             result.append(credential);
 
-        let connections = ConnectionParams.manyFromConfig(config);
-        for (let connection of connections)
+        const connections = ConnectionParams.manyFromConfig(config);
+        for (const connection of connections)
             result.append(connection);
 
         return result;
@@ -330,7 +330,7 @@ export class AwsConnectionParams extends ConfigParams {
 	 * @see [[fromConfig]]
 	 */
     public static mergeConfigs(...configs: ConfigParams[]): AwsConnectionParams {
-        let config = ConfigParams.mergeConfigs(...configs);
+        const config = ConfigParams.mergeConfigs(...configs);
         return new AwsConnectionParams(config);
     }
 }

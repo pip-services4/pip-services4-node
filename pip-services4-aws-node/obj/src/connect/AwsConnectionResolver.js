@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AwsConnectionResolver = void 0;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
 const AwsConnectionParams_1 = require("./AwsConnectionParams");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class to retrieve AWS connection and credential parameters,
  * validate them and compose a [[AwsConnectionParams]] value.
@@ -62,11 +61,11 @@ class AwsConnectionResolver {
         /**
          * The connection resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new AwsConnectionResolver();
         /**
          * The credential resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -98,7 +97,7 @@ class AwsConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = new AwsConnectionParams_1.AwsConnectionParams();
+            const connection = new AwsConnectionParams_1.AwsConnectionParams();
             const connectionParams = yield this._connectionResolver.resolve(context);
             connection.append(connectionParams);
             const credentialParams = yield this._credentialResolver.lookup(context);

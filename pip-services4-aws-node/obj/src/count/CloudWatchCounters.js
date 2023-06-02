@@ -1,4 +1,5 @@
 "use strict";
+/** @module count */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,14 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CloudWatchCounters = void 0;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const AwsConnectionResolver_1 = require("../connect/AwsConnectionResolver");
 const CloudWatchUnit_1 = require("./CloudWatchUnit");
 const aws_sdk_1 = require("aws-sdk");
 const aws_sdk_2 = require("aws-sdk");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Performance counters that periodically dumps counters to AWS Cloud Watch Metrics.
  *
@@ -69,13 +68,13 @@ const aws_sdk_2 = require("aws-sdk");
  *
  *     counters.dump();
  */
-class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters {
+class CloudWatchCounters extends pip_services4_observability_node_1.CachedCounters {
     /**
      * Creates a new instance of this counters.
      */
     constructor() {
         super();
-        this._logger = new pip_services3_components_node_3.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         this._connectionResolver = new AwsConnectionResolver_1.AwsConnectionResolver();
         this._connectTimeout = 30000;
         this._client = null; //AmazonCloudWatchClient
@@ -102,7 +101,7 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
     setReferences(references) {
         this._logger.setReferences(references);
         this._connectionResolver.setReferences(references);
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
         if (contextInfo != null && this._instance == null)
@@ -144,6 +143,7 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = false;
@@ -151,18 +151,18 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
         });
     }
     getCounterData(counter, now, dimensions) {
-        let value = {
+        const value = {
             MetricName: counter.name,
             Timestamp: counter.time,
             Dimensions: dimensions,
             Unit: CloudWatchUnit_1.CloudWatchUnit.None,
         };
         switch (counter.type) {
-            case pip_services3_components_node_1.CounterType.Increment:
+            case pip_services4_observability_node_1.CounterType.Increment:
                 value['Value'] = counter.count;
                 value.Unit = CloudWatchUnit_1.CloudWatchUnit.Count;
                 break;
-            case pip_services3_components_node_1.CounterType.Interval:
+            case pip_services4_observability_node_1.CounterType.Interval:
                 value.Unit = CloudWatchUnit_1.CloudWatchUnit.Milliseconds;
                 //value.Value = counter.average;
                 value['StatisticValues'] = {
@@ -172,7 +172,7 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
                     Sum: counter.count * counter.average
                 };
                 break;
-            case pip_services3_components_node_1.CounterType.Statistics:
+            case pip_services4_observability_node_1.CounterType.Statistics:
                 //value.Value = counter.average;
                 value['StatisticValues'] = {
                     SampleCount: counter.count,
@@ -181,10 +181,10 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
                     Sum: counter.count * counter.average
                 };
                 break;
-            case pip_services3_components_node_1.CounterType.LastValue:
+            case pip_services4_observability_node_1.CounterType.LastValue:
                 value['Value'] = counter.last;
                 break;
-            case pip_services3_components_node_1.CounterType.Timestamp:
+            case pip_services4_observability_node_1.CounterType.Timestamp:
                 value['Value'] = counter.time.getTime();
                 break;
         }
@@ -199,13 +199,14 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
         return __awaiter(this, void 0, void 0, function* () {
             if (this._client == null)
                 return;
-            let dimensions = [];
+            const dimensions = [];
             dimensions.push({
                 Name: "InstanceID",
                 Value: this._instance
             });
-            let now = new Date();
+            const now = new Date();
             let data = [];
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const params = {
                 MetricData: data,
                 Namespace: this._source
@@ -234,7 +235,7 @@ class CloudWatchCounters extends pip_services3_components_node_2.CachedCounters 
                 this._client.putMetricData(params, (err, data) => {
                     if (err) {
                         if (this._logger)
-                            this._logger.error("cloudwatch_counters", err, "putMetricData error");
+                            this._logger.error(pip_services4_components_node_1.Context.fromTraceId("cloudwatch_counters"), err, "putMetricData error");
                         rej(err);
                         return;
                     }

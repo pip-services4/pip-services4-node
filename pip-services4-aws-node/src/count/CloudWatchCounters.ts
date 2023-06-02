@@ -1,13 +1,5 @@
 /** @module count */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { CounterType } from 'pip-services4-components-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters, Counter } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { ContextInfo } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+
 
 import { AwsConnectionResolver } from '../connect/AwsConnectionResolver';
 import { AwsConnectionParams } from '../connect/AwsConnectionParams';
@@ -15,6 +7,8 @@ import { CloudWatchUnit } from './CloudWatchUnit';
 
 import { CloudWatch } from 'aws-sdk';
 import { config } from 'aws-sdk';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, ContextInfo, Descriptor, IContext, Context } from 'pip-services4-components-node';
+import { CachedCounters, CompositeLogger, Counter, CounterType } from 'pip-services4-observability-node';
 
 /**
  * Performance counters that periodically dumps counters to AWS Cloud Watch Metrics.
@@ -72,12 +66,12 @@ export class CloudWatchCounters extends CachedCounters implements IReferenceable
 
     private _connectionResolver: AwsConnectionResolver = new AwsConnectionResolver();
     private _connection: AwsConnectionParams;
-    private _connectTimeout: number = 30000;
+    private _connectTimeout = 30000;
     private _client: any = null; //AmazonCloudWatchClient
 
     private _source: string;
     private _instance: string;
-    private _opened: boolean = false;
+    private _opened = false;
 
     /**
      * Creates a new instance of this counters.
@@ -110,7 +104,7 @@ export class CloudWatchCounters extends CachedCounters implements IReferenceable
         this._logger.setReferences(references);
         this._connectionResolver.setReferences(references);
 
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
@@ -158,13 +152,14 @@ export class CloudWatchCounters extends CachedCounters implements IReferenceable
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
 	 */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         this._opened = false;
         this._client = null;
     }
 
     private getCounterData(counter: Counter, now: Date, dimensions: any[]): any {
-        let value = {
+        const value = {
             MetricName: counter.name,
             Timestamp: counter.time,
             Dimensions: dimensions,
@@ -214,16 +209,17 @@ export class CloudWatchCounters extends CachedCounters implements IReferenceable
     protected async save(counters: Counter[]): Promise<void> {
         if (this._client == null) return;
 
-        let dimensions = [];
+        const dimensions = [];
         dimensions.push({
             Name: "InstanceID",
             Value: this._instance
         });
 
-        let now = new Date();
+        const now = new Date();
 
         let data = [];
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const params = {
             MetricData: data,
             Namespace: this._source
@@ -251,7 +247,7 @@ export class CloudWatchCounters extends CachedCounters implements IReferenceable
         return new Promise((res, rej) => {
             this._client.putMetricData(params, (err, data) => {
                 if (err) {
-                    if (this._logger) this._logger.error("cloudwatch_counters", err, "putMetricData error");
+                    if (this._logger) this._logger.error(Context.fromTraceId("cloudwatch_counters"), err, "putMetricData error");
                     rej(err);
                     return;
                 }

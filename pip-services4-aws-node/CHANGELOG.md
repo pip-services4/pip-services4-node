@@ -21,10 +21,10 @@
 * Fixed base name adding to the command in CommandableLambda
 * Added reference to aws-sdk
 * Added aws as a formal dependency
-* Fix LambdaService act function, add  cmd duplication check
+* Fix LambdaController act function, add  cmd duplication check
 
 ## <a name="1.1.0"></a> 1.1.0 (2021-06-11)
 
 ### Features
-* **services** LambdaService, CommandableLambdaService
-* **containers** Modified LambdaFunction to delegate actions to LambdaService(s)
+* **services** LambdaController, CommandableLambdaController
+* **containers** Modified LambdaFunction to delegate actions to LambdaController(s)

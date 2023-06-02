@@ -1,5 +1,5 @@
-import { IReferences } from 'pip-services4-commons-node';
 import { LambdaFunction } from '../../src/containers/LambdaFunction';
+import { IReferences } from 'pip-services4-components-node';
 export declare class DummyLambdaFunction extends LambdaFunction {
     private _controller;
     constructor();

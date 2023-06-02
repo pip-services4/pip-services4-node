@@ -1,23 +1,16 @@
-import { DataPage } from 'pip-services4-commons-node';
-import { CommandSet } from 'pip-services4-commons-node';
-import { ICommand } from 'pip-services4-commons-node';
-import { Command } from 'pip-services4-commons-node';
-import { Parameters } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
-import { TypeCode } from 'pip-services4-commons-node';
-import { FilterParamsSchema } from 'pip-services4-commons-node';
-import { PagingParamsSchema } from 'pip-services4-commons-node';
 
 import { Dummy } from './Dummy';
-import { IDummyController } from './IDummyController';
+import { IDummyService } from './IDummyService';
 import { DummySchema } from './DummySchema';
+import { TypeCode } from 'pip-services4-commons-node';
+import { IContext, Parameters } from 'pip-services4-components-node';
+import { ObjectSchema, FilterParamsSchema, PagingParamsSchema, DataPage, FilterParams, PagingParams } from 'pip-services4-data-node';
+import { CommandSet, ICommand, Command } from 'pip-services4-rpc-node';
 
 export class DummyCommandSet extends CommandSet {
-    private _controller: IDummyController;
+    private _controller: IDummyService;
 
-	constructor(controller: IDummyController) {
+	constructor(controller: IDummyService) {
 		super();
 
 		this._controller = controller;

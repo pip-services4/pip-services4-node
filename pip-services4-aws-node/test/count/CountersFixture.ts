@@ -1,7 +1,8 @@
+import { CachedCounters, CounterType } from "pip-services4-observability-node";
+
 const assert = require('chai').assert;
 
-import { CounterType } from 'pip-services4-components-node';
-import { CachedCounters } from 'pip-services4-components-node';
+
 
 async function sleep(timeout: number) {
     return new Promise(res => {

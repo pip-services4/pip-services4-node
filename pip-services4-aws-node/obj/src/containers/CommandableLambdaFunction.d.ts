@@ -1,3 +1,4 @@
+/** @module containers */
 import { LambdaFunction } from './LambdaFunction';
 /**
  * Abstract AWS Lambda function, that acts as a container to instantiate and run components
@@ -7,14 +8,14 @@ import { LambdaFunction } from './LambdaFunction';
  * Container configuration for this Lambda function is stored in <code>"./config/config.yml"</code> file.
  * But this path can be overriden by <code>CONFIG_PATH</code> environment variable.
  *
- * Note: This component has been deprecated. Use LambdaService instead.
+ * Note: This component has been deprecated. Use LambdaController instead.
  *
  * ### References ###
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
- * - <code>\*:service:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdaservice.html ILambdaService]] services to handle action requests
+ * - <code>\*:controller:awslambda:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-awslambda:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-aws-node/interfaces/services.ilambdacontroller.html ILambdaController]] controllers to handle action requests
  *
  * @see [[LambdaClient]]
  *
@@ -34,7 +35,7 @@ import { LambdaFunction } from './LambdaFunction';
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyLambdaFunction is started");
  */
 export declare abstract class CommandableLambdaFunction extends LambdaFunction {

@@ -1,8 +1,6 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-import { ContextInfo } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
 
+
+import { ConfigParams, ContextInfo, References, Descriptor } from 'pip-services4-components-node';
 import { CloudWatchCounters } from '../../src/count/CloudWatchCounters';
 import { CountersFixture } from './CountersFixture';
 

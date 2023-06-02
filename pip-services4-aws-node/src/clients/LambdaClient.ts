@@ -1,23 +1,16 @@
 /** @module clients */
-import { IOpenable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
-import { UnknownException } from 'pip-services4-commons-node';
-import { InvocationException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { InstrumentTiming } from "pip-services4-rpc-node";
+
 
 import { Lambda } from 'aws-sdk';
 import { config } from 'aws-sdk';
 
 import { AwsConnectionParams } from '../connect/AwsConnectionParams';
 import { AwsConnectionResolver } from '../connect/AwsConnectionResolver';
+import { UnknownException, InvocationException } from 'pip-services4-commons-node';
+import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IdGenerator } from 'pip-services4-data-node';
+import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 
 
 /**
@@ -81,12 +74,12 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
     /**
      * The opened flag.
      */
-    protected _opened: boolean = false;
+    protected _opened = false;
     /**
      * The AWS connection parameters
      */
     protected _connection: AwsConnectionParams;
-    private _connectTimeout: number = 10000;
+    private _connectTimeout = 10000;
 
     /**
      * The dependencies resolver.
@@ -145,8 +138,8 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -194,6 +187,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         // Todo: close listening?
         if (!this.isOpen()) {
@@ -220,7 +214,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
         args.cmd = cmd;
         args.trace_id = context || IdGenerator.nextShort();
 
-        let params = {
+        const params = {
             FunctionName: this._connection.getArn(),
             InvocationType: invocationType,
             LogType: 'None',
@@ -237,7 +231,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
                     result = JSON.parse(result);
                 } catch (err) {
                     throw new InvocationException(
-                        context,
+                        context != null ? context.getTraceId() : null,
                         'DESERIALIZATION_FAILED',
                         'Failed to deserialize result'
                     ).withCause(err);
@@ -246,7 +240,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
             return result;
         } catch (err) {
             throw new InvocationException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'CALL_FAILED',
                 'Failed to invoke lambda function'
             ).withCause(err);

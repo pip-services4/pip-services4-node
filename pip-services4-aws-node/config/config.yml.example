@@ -2,4 +2,4 @@
 - descriptor: "pip-services:logger:console:default:1.0"
   level: "trace"
 
-- descriptor: "pip-services-dummies:controller:default:default:1.0"
+- descriptor: "pip-services-dummies:service:default:default:1.0"

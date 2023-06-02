@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const AwsConnectionParams_1 = require("../../src/connect/AwsConnectionParams");
 suite('AwsConnectionParams', () => {
     test('Test Empty Connection', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,7 +39,7 @@ suite('AwsConnectionParams', () => {
         assert.equal("pip-services-dummies", connection.getResource());
     }));
     test('Compose AR', () => __awaiter(void 0, void 0, void 0, function* () {
-        let connection = AwsConnectionParams_1.AwsConnectionParams.fromConfig(pip_services3_commons_node_1.ConfigParams.fromTuples('connection.service', 'lambda', 'connection.region', 'us-east-1', 'connection.account', '12342342332', 'connection.resource_type', 'function', 'connection.resource', 'pip-services-dummies', 'credential.access_id', '1234', 'credential.access_key', 'ABCDEF'));
+        let connection = AwsConnectionParams_1.AwsConnectionParams.fromConfig(pip_services4_components_node_1.ConfigParams.fromTuples('connection.service', 'lambda', 'connection.region', 'us-east-1', 'connection.account', '12342342332', 'connection.resource_type', 'function', 'connection.resource', 'pip-services-dummies', 'credential.access_id', '1234', 'credential.access_key', 'ABCDEF'));
         assert.equal("arn:aws:lambda:us-east-1:12342342332:function:pip-services-dummies", connection.getArn());
         assert.equal("1234", connection.getAccessId());
         assert.equal("ABCDEF", connection.getAccessKey());

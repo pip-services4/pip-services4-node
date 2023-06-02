@@ -1,6 +1,5 @@
-import { DataPage } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams, PagingParams, DataPage } from 'pip-services4-data-node';
 import { Dummy } from './Dummy';
 export interface IDummyClient {
     getDummies(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;
