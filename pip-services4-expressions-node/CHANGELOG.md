@@ -8,18 +8,3 @@ Rereleased for Pip.Services 4.
 
 ### Breaking changes
 * No breaking changes
-
-## <a name="1.0.4"></a> 1.0.4 (2023-04-04)
-### Bug fixes
-- Fixed mustache template uri parsing
-
-## <a name="1.0.3"></a> 1.0.3 (2023-02-07)
-### Features
-* Updated dependencies
-
-## <a name="Pip.Services 3 1.0.0"></a> 1.0.0 (2021-03-21)
-
-Converted from pip-services4-expressions-node moving to ES2017.
-
-### Breaking changes
-* Callbacks in functions replaced with promises

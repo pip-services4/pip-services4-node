@@ -6,15 +6,3 @@ Moved code from PipService 3
 ### Breaking Changes
 * Moved ContextInfo component from components module
 * Moved Shutdown component from components module
-
-## <a name="1.0.3"></a> 1.0.3 (2022-02-07)
-
-### Features
-* Updated dependencies
-
-## <a name="1.0.0"></a>Pip.Services 4 1.0.0 (2021-03-21)
-
-Converted from pip-services4-container-node by moving to ES2017
-
-### Breaking Changes
-* Replaced callbacks with promises
