@@ -2,15 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultElasticSearchFactory = void 0;
 /** @module build */
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const ElasticSearchLogger_1 = require("../log/ElasticSearchLogger");
 /**
  * Creates ElasticSearch components by their descriptors.
  *
  * @see [[ElasticSearchLogger]]
  */
-class DefaultElasticSearchFactory extends pip_services3_components_node_1.Factory {
+class DefaultElasticSearchFactory extends pip_services4_components_node_1.Factory {
     /**
      * Create a new instance of the factory.
      */
@@ -20,5 +19,5 @@ class DefaultElasticSearchFactory extends pip_services3_components_node_1.Factor
     }
 }
 exports.DefaultElasticSearchFactory = DefaultElasticSearchFactory;
-DefaultElasticSearchFactory.ElasticSearchLoggerDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "logger", "elasticsearch", "*", "1.0");
+DefaultElasticSearchFactory.ElasticSearchLoggerDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "logger", "elasticsearch", "*", "1.0");
 //# sourceMappingURL=DefaultElasticSearchFactory.js.map

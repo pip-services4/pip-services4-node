@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const ElasticSearchLogger_1 = require("../../src/log/ElasticSearchLogger");
 const LoggerFixture_1 = require("../fixtures/LoggerFixture");
 let assert = require('chai').assert;
@@ -22,7 +22,7 @@ suite('ElasticSearchLogger', () => {
         let dateFormat = "YYYYMMDD";
         _logger = new ElasticSearchLogger_1.ElasticSearchLogger();
         _fixture = new LoggerFixture_1.LoggerFixture(_logger);
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
         _logger.configure(config);
         yield _logger.open(null);
     }));
@@ -46,7 +46,7 @@ suite('ElasticSearchLogger', () => {
         let port = process.env['ELASTICSEARCH_SERVICE_PORT'] || 9200;
         let logger = new ElasticSearchLogger_1.ElasticSearchLogger();
         let dateFormat = "YYYY.MM.DD";
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
         logger.configure(config);
         yield logger.open(null);
         // Since the currentIndex property is private, we will just check for an open connection
@@ -61,7 +61,7 @@ suite('ElasticSearchLogger', () => {
         let port = process.env['ELASTICSEARCH_SERVICE_PORT'] || 9200;
         let logger = new ElasticSearchLogger_1.ElasticSearchLogger();
         let dateFormat = "YYYY.M.DD";
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'index', 'log', 'daily', true, "date_format", dateFormat, 'connection.host', host, 'connection.port', port);
         logger.configure(config);
         yield logger.open(null);
         // Since the currentIndex property is private, we will just check for an open connection

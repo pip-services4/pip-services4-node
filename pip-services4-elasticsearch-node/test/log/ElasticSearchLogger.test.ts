@@ -1,5 +1,4 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { ElasticSearchLogger } from '../../src/log/ElasticSearchLogger';
 import { LoggerFixture } from '../fixtures/LoggerFixture';
 

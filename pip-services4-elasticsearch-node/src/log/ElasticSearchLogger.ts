@@ -1,18 +1,15 @@
 /** @module log */
 import * as moment from 'moment';
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
-import { HttpConnectionResolver } from 'pip-services4-rpc-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext, Context } from 'pip-services4-components-node';
+import { CachedLogger, LogMessage } from 'pip-services4-observability-node';
+import { IdGenerator } from 'pip-services4-data-node';
+import { HttpConnectionResolver } from 'pip-services4-config-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { CachedLogger } from 'pip-services4-components-node';
-import { LogMessage } from 'pip-services4-components-node';
+
 
 /**
- * Logger that dumps execution logs to ElasticSearch service.
+ * Logger that dumps execution logs to ElasticSearch controller.
  * 
  * ElasticSearch is a popular search index. It is often used 
  * to store and index execution logs by itself or as a part of
@@ -65,15 +62,15 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
     private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
 
     private _timer: any;
-    private _index: string = "log";
-    private _dateFormat: string = "YYYYMMDD";
-    private _dailyIndex: boolean = false;
+    private _index = "log";
+    private _dateFormat = "YYYYMMDD";
+    private _dailyIndex = false;
     private _currentIndex: string;
-    private _reconnect: number = 60000;
-    private _timeout: number = 30000;
-    private _maxRetries: number = 3;
-    private _indexMessage: boolean = false;
-    private _include_type_name: boolean = false;
+    private _reconnect = 60000;
+    private _timeout = 30000;
+    private _maxRetries = 3;
+    private _indexMessage = false;
+    private _include_type_name = false;
     private _client: any = null;
 
     /**
@@ -132,25 +129,26 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let uri = connection.getAsString("uri");
+        const uri = connection.getAsString("uri");
 
-        let options = {
+        const options = {
             host: uri,
             requestTimeout: this._timeout,
             deadTimeout: this._reconnect,
             maxRetries: this._maxRetries
         };
 
-        let elasticsearch = require('elasticsearch');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const elasticsearch = require('elasticsearch');
         this._client = new elasticsearch.Client(options);
 
         await this.createIndexIfNeeded(context, true);
@@ -163,6 +161,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
      * 
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         await this.save(this._cache);
 
@@ -178,21 +177,21 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
     private getCurrentIndex(): string {
         if (!this._dailyIndex) return this._index;
 
-        let today = new Date().toUTCString();
-        let datePattern = moment(today).format(this._dateFormat);
+        const today = new Date().toUTCString();
+        const datePattern = moment(today).format(this._dateFormat);
 
         return this._index + "-" + datePattern;
     }
 
     private async createIndexIfNeeded(context: IContext, force: boolean): Promise<void> {
-        let newIndex = this.getCurrentIndex();
+        const newIndex = this.getCurrentIndex();
         if (!force && this._currentIndex == newIndex) {
             return;
         }
 
         this._currentIndex = newIndex;
 
-        let exists = new Promise<boolean>((resolve, reject) => {
+        const exists = new Promise<boolean>((resolve, reject) => {
             this._client.indices.exists(
                 { index: this._currentIndex },
                 (err, exists) => {
@@ -285,10 +284,10 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
             return;
         }
 
-        await this.createIndexIfNeeded('elasticsearch_logger', false);
+        await this.createIndexIfNeeded(Context.fromTraceId('elasticsearch_logger'), false);
 
-        let bulk = [];
-        for (let message of messages) {
+        const bulk = [];
+        for (const message of messages) {
             bulk.push({ index: this.getLogItem()})
             bulk.push(message);
         }

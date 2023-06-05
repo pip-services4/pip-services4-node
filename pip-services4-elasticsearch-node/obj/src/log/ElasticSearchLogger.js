@@ -12,12 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElasticSearchLogger = void 0;
 /** @module log */
 const moment = require("moment");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
- * Logger that dumps execution logs to ElasticSearch service.
+ * Logger that dumps execution logs to ElasticSearch controller.
  *
  * ElasticSearch is a popular search index. It is often used
  * to store and index execution logs by itself or as a part of
@@ -66,13 +67,13 @@ const pip_services3_components_node_1 = require("pip-services4-components-node")
  *     logger.error("123", ex, "Error occured: %s", ex.message);
  *     logger.debug("123", "Everything is OK.");
  */
-class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
+class ElasticSearchLogger extends pip_services4_observability_node_1.CachedLogger {
     /**
      * Creates a new instance of the logger.
      */
     constructor() {
         super();
-        this._connectionResolver = new pip_services3_rpc_node_1.HttpConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.HttpConnectionResolver();
         this._index = "log";
         this._dateFormat = "YYYYMMDD";
         this._dailyIndex = false;
@@ -127,18 +128,19 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let uri = connection.getAsString("uri");
-            let options = {
+            const uri = connection.getAsString("uri");
+            const options = {
                 host: uri,
                 requestTimeout: this._timeout,
                 deadTimeout: this._reconnect,
                 maxRetries: this._maxRetries
             };
-            let elasticsearch = require('elasticsearch');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const elasticsearch = require('elasticsearch');
             this._client = new elasticsearch.Client(options);
             yield this.createIndexIfNeeded(context, true);
             this._timer = setInterval(() => { this.dump(); }, this._interval);
@@ -149,6 +151,7 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
@@ -163,18 +166,18 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
     getCurrentIndex() {
         if (!this._dailyIndex)
             return this._index;
-        let today = new Date().toUTCString();
-        let datePattern = moment(today).format(this._dateFormat);
+        const today = new Date().toUTCString();
+        const datePattern = moment(today).format(this._dateFormat);
         return this._index + "-" + datePattern;
     }
     createIndexIfNeeded(context, force) {
         return __awaiter(this, void 0, void 0, function* () {
-            let newIndex = this.getCurrentIndex();
+            const newIndex = this.getCurrentIndex();
             if (!force && this._currentIndex == newIndex) {
                 return;
             }
             this._currentIndex = newIndex;
-            let exists = new Promise((resolve, reject) => {
+            const exists = new Promise((resolve, reject) => {
                 this._client.indices.exists({ index: this._currentIndex }, (err, exists) => {
                     if (err != null) {
                         reject(err);
@@ -256,9 +259,9 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
             if (!this.isOpen() || messages.length == 0) {
                 return;
             }
-            yield this.createIndexIfNeeded('elasticsearch_logger', false);
-            let bulk = [];
-            for (let message of messages) {
+            yield this.createIndexIfNeeded(pip_services4_components_node_1.Context.fromTraceId('elasticsearch_logger'), false);
+            const bulk = [];
+            for (const message of messages) {
                 bulk.push({ index: this.getLogItem() });
                 bulk.push(message);
             }
@@ -275,8 +278,8 @@ class ElasticSearchLogger extends pip_services3_components_node_1.CachedLogger {
     }
     getLogItem() {
         return this._include_type_name ?
-            { _index: this._currentIndex, _type: "log_message", _id: pip_services3_commons_node_1.IdGenerator.nextLong() } : // ElasticSearch 6.x
-            { _index: this._currentIndex, _id: pip_services3_commons_node_1.IdGenerator.nextLong() }; // ElasticSearch 7.x
+            { _index: this._currentIndex, _type: "log_message", _id: pip_services4_data_node_1.IdGenerator.nextLong() } : // ElasticSearch 6.x
+            { _index: this._currentIndex, _id: pip_services4_data_node_1.IdGenerator.nextLong() }; // ElasticSearch 7.x
     }
 }
 exports.ElasticSearchLogger = ElasticSearchLogger;
