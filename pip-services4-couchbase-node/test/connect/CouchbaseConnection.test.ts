@@ -1,7 +1,7 @@
-const process = require('process');
+import process = require('process');
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { CouchbaseConnection } from '../../src/connect/CouchbaseConnection';
 
 suite('CouchbaseConnection', ()=> {

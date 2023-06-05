@@ -1,11 +1,9 @@
 const process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummyCouchbasePersistence } from './DummyCouchbasePersistence';
 import { CouchbaseConnection } from '../../src/connect/CouchbaseConnection';
+import { ConfigParams, Descriptor, References } from 'pip-services4-components-node';
 
 suite('DummyCouchbaseConnection', ()=> {
     let connection: CouchbaseConnection;

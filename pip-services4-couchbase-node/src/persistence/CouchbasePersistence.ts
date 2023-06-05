@@ -1,19 +1,11 @@
 /** @module persistence */
-import { IReferenceable, IdGenerator } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
 
+import { DataPage, PagingParams } from 'pip-services4-data-node';
+import { InvalidStateException, ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { CouchbaseConnection } from '../connect/CouchbaseConnection';
+import { IdGenerator } from 'pip-services4-data-node/obj/src/keys';
 
 /**
  * Abstract persistence component that stores data in Couchbase
@@ -93,7 +85,7 @@ import { CouchbaseConnection } from '../connect/CouchbaseConnection';
  *     console.log(item);                   // Result: { name: "ABC" }
  */
 export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable {
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
     protected _collectionName: string;
 
     private static _defaultConfig: ConfigParams = ConfigParams.fromTuples(
@@ -204,7 +196,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
     }
 
     private createConnection(): CouchbaseConnection {
-        let connection = new CouchbaseConnection(this._bucketName);
+        const connection = new CouchbaseConnection(this._bucketName);
         
         if (this._config) {
             connection.configure(this._config);
@@ -282,7 +274,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -297,7 +289,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
@@ -305,7 +297,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Couchbase connection is not opened"
             );
@@ -315,7 +307,8 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         this._bucket = this._connection.getBucket();
         this._bucketName = this._connection.getBucketName();
         
-        let couchbase = require('couchbase');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const couchbase = require('couchbase');
         this._query = couchbase.N1qlQuery;
 
         this._opened = true;
@@ -327,13 +320,13 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
@@ -364,7 +357,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             this._bucket.manager().flush((err) => {
                 if (err != null) {
                     err = new ConnectionException(
-                        context,
+                        context != null ? context.getTraceId() : null,
                         "FLUSH_FAILED",
                         "Couchbase bucket flush failed"
                     ).withCause(err);
@@ -383,7 +376,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      * @returns a filter that includes a collection name.
      */
     protected createBucketFilter(filter: string): string {
-        let collectionFilter = "_c='" + this._collectionName + "'"
+        const collectionFilter = "_c='" + this._collectionName + "'"
         if (filter != null) {
             return collectionFilter + " AND " + filter;
         }        
@@ -411,9 +404,9 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         filter = this.createBucketFilter(filter);
         statement += " WHERE " + filter;
@@ -451,14 +444,14 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
                 + " WHERE " + filter;
 
             query = this._query.fromString(statement);
-            let count = await new Promise<number>((resolve, reject) => {
+            const count = await new Promise<number>((resolve, reject) => {
                 this._bucket.query(query, [], (err, counts) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
                         
-                    let count = counts ? counts[0]['$1'] : 0;
+                    const count = counts ? counts[0]['$1'] : 0;
                     resolve(count);
                 });
             });
@@ -480,18 +473,18 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
      */
     protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
         filter = this.createBucketFilter(filter);
-        let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
+        const statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
             + " WHERE " + filter;
 
-        let query = this._query.fromString(statement);
-        let count = await new Promise<number>((resolve, reject) => {
+        const query = this._query.fromString(statement);
+        const count = await new Promise<number>((resolve, reject) => {
             this._bucket.query(query, [], (err, counts) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
                     
-                let count = counts ? counts[0]['$1'] : 0;
+                const count = counts ? counts[0]['$1'] : 0;
                 resolve(count);
             });
         });
@@ -526,7 +519,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             statement += " ORDER BY " + sort;
         }
 
-        let query = this._query.fromString(statement);
+        const query = this._query.fromString(statement);
         // Todo: Make it configurable?
         query.consistency(this._query.Consistency.REQUEST_PLUS);
 
@@ -569,13 +562,13 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         let query = this._query.fromString(statement);
         // Todo: Make it configurable?
         query.consistency(this._query.Consistency.REQUEST_PLUS);
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._bucket.query(query, [], (err, counts) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = counts != null ? counts[0] : 0;
+                const count = counts != null ? counts[0] : 0;
                 resolve(count);
             });
         });
@@ -583,7 +576,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         statement = "SELECT * FROM " + this.quoteIdentifier(this._bucketName)
             + " WHERE " + filter;
 
-        let skip = Math.trunc(Math.random() * count);
+        const skip = Math.trunc(Math.random() * count);
         statement += " OFFSET " + skip + " LIMIT 1";            
 
         query = this._query.fromString(statement);
@@ -628,8 +621,8 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         // Assign unique id
         let newItem: any = Object.assign({}, item);
-        let id = newItem.id || IdGenerator.nextLong();
-        let objectId = this.generateBucketId(id);
+        const id = newItem.id || IdGenerator.nextLong();
+        const objectId = this.generateBucketId(id);
         newItem = this.convertFromPublic(newItem);
 
         await new Promise<any>((resolve, reject) => {
@@ -664,14 +657,14 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
         filter = this.createBucketFilter(filter);
         statement += " WHERE " + filter;
 
-        let query = this._query.fromString(statement);
-        let count = await new Promise<number>((resolve, reject) => {
+        const query = this._query.fromString(statement);
+        const count = await new Promise<number>((resolve, reject) => {
             this._bucket.query(query, [], (err, counts) => {
                 if (err != null) {
                     reject(err);
                 }
 
-                let count = counts != null ? counts[0] : 0;
+                const count = counts != null ? counts[0] : 0;
                 resolve(count);
             });    
         });

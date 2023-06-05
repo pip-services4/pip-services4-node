@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,11 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CouchbaseConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CouchbaseConnectionParams_1 = require("./CouchbaseConnectionParams");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves Couchbase connection and credential parameters,
  * validates them and generates a connection URI.
@@ -44,11 +44,11 @@ class CouchbaseConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -69,21 +69,21 @@ class CouchbaseConnectionResolver {
         this._credentialResolver.setReferences(references);
     }
     validateConnection(context, connection) {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null)
             return;
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
         // let database = connection.getAsNullableString("database");
         // if (database == null) {
         //     throw new ConfigException(
-        //         context,
+        //         context != null ? context.getTraceId() : null,
         //         "NO_DATABASE",
         //         "Connection database is not set"
         //     );
@@ -91,14 +91,14 @@ class CouchbaseConnectionResolver {
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
     composeConnection(connections, credential) {
-        let result = new CouchbaseConnectionParams_1.CouchbaseConnectionParams();
+        const result = new CouchbaseConnectionParams_1.CouchbaseConnectionParams();
         if (credential != null) {
             result.username = credential.getUsername();
             if (result.username) {
@@ -106,7 +106,7 @@ class CouchbaseConnectionResolver {
             }
         }
         // If there is a uri then return it immediately
-        for (let connection of connections) {
+        for (const connection of connections) {
             result.uri = connection.getUri();
             if (result.uri) {
                 result.uri = result.uri.replace(/[\\]/g, '');
@@ -115,9 +115,9 @@ class CouchbaseConnectionResolver {
         }
         // Define hosts
         let hosts = '';
-        for (let connection of connections) {
-            let host = connection.getHost();
-            let port = connection.getPort();
+        for (const connection of connections) {
+            const host = connection.getHost();
+            const port = connection.getPort();
             if (hosts.length > 0) {
                 hosts += ',';
             }
@@ -125,7 +125,7 @@ class CouchbaseConnectionResolver {
         }
         // Define database
         let database = '';
-        for (let connection of connections) {
+        for (const connection of connections) {
             database = database || connection.getAsNullableString("database");
         }
         database = database || '';
@@ -133,7 +133,7 @@ class CouchbaseConnectionResolver {
             database = '/' + database;
         }
         // Define additional parameters parameters
-        let options = pip_services3_commons_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
+        const options = pip_services4_components_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
         options.remove('uri');
         options.remove('host');
         options.remove('port');
@@ -141,13 +141,13 @@ class CouchbaseConnectionResolver {
         options.remove('username');
         options.remove('password');
         let params = '';
-        let keys = options.getKeys();
-        for (let key of keys) {
+        const keys = options.getKeys();
+        for (const key of keys) {
             if (params.length > 0) {
                 params += '&';
             }
             params += key;
-            let value = options.getAsString(key);
+            const value = options.getAsString(key);
             if (value != null) {
                 params += '=' + value;
             }
@@ -167,12 +167,12 @@ class CouchbaseConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
             this.validateConnections(context, connections);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let connection = this.composeConnection(connections, credential);
+            const connection = this.composeConnection(connections, credential);
             return connection;
         });
     }

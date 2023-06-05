@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,16 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CouchbasePersistence = void 0;
-/** @module persistence */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_commons_node_7 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const CouchbaseConnection_1 = require("../connect/CouchbaseConnection");
+const keys_1 = require("pip-services4-data-node/obj/src/keys");
 /**
  * Abstract persistence component that stores data in Couchbase
  * and is based using Couchbaseose object relational mapping.
@@ -109,15 +106,15 @@ class CouchbasePersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_5.DependencyResolver(CouchbasePersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(CouchbasePersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_2.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
         this._bucketName = bucket;
         this._collectionName = collection;
     }
@@ -160,7 +157,7 @@ class CouchbasePersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new CouchbaseConnection_1.CouchbaseConnection(this._bucketName);
+        const connection = new CouchbaseConnection_1.CouchbaseConnection(this._bucketName);
         if (this._config) {
             connection.configure(this._config);
         }
@@ -239,15 +236,16 @@ class CouchbasePersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_3.ConnectionException(context, "CONNECT_FAILED", "Couchbase connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Couchbase connection is not opened");
             }
             this._cluster = this._connection.getConnection();
             this._bucket = this._connection.getBucket();
             this._bucketName = this._connection.getBucketName();
-            let couchbase = require('couchbase');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const couchbase = require('couchbase');
             this._query = couchbase.N1qlQuery;
             this._opened = true;
         });
@@ -263,7 +261,7 @@ class CouchbasePersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -288,7 +286,7 @@ class CouchbasePersistence {
             yield new Promise((resolve, reject) => {
                 this._bucket.manager().flush((err) => {
                     if (err != null) {
-                        err = new pip_services3_commons_node_3.ConnectionException(context, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
                         reject(err);
                         return;
                     }
@@ -303,7 +301,7 @@ class CouchbasePersistence {
      * @returns a filter that includes a collection name.
      */
     createBucketFilter(filter) {
-        let collectionFilter = "_c='" + this._collectionName + "'";
+        const collectionFilter = "_c='" + this._collectionName + "'";
         if (filter != null) {
             return collectionFilter + " AND " + filter;
         }
@@ -327,10 +325,10 @@ class CouchbasePersistence {
             select = select != null ? select : "*";
             let statement = "SELECT " + select + " FROM " + this.quoteIdentifier(this._bucketName);
             // Adjust max item count based on configuration
-            paging = paging || new pip_services3_commons_node_6.PagingParams();
-            let skip = paging.getSkip(-1);
-            let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            paging = paging || new pip_services4_data_node_1.PagingParams();
+            const skip = paging.getSkip(-1);
+            const take = paging.getTake(this._maxPageSize);
+            const pagingEnabled = paging.total;
             filter = this.createBucketFilter(filter);
             statement += " WHERE " + filter;
             if (sort != null) {
@@ -360,20 +358,20 @@ class CouchbasePersistence {
                 statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
                     + " WHERE " + filter;
                 query = this._query.fromString(statement);
-                let count = yield new Promise((resolve, reject) => {
+                const count = yield new Promise((resolve, reject) => {
                     this._bucket.query(query, [], (err, counts) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
-                        let count = counts ? counts[0]['$1'] : 0;
+                        const count = counts ? counts[0]['$1'] : 0;
                         resolve(count);
                     });
                 });
-                return new pip_services3_commons_node_7.DataPage(items, count);
+                return new pip_services4_data_node_1.DataPage(items, count);
             }
             else {
-                return new pip_services3_commons_node_7.DataPage(items);
+                return new pip_services4_data_node_1.DataPage(items);
             }
         });
     }
@@ -390,16 +388,16 @@ class CouchbasePersistence {
     getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             filter = this.createBucketFilter(filter);
-            let statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
+            const statement = "SELECT COUNT(*) FROM " + this.quoteIdentifier(this._bucketName)
                 + " WHERE " + filter;
-            let query = this._query.fromString(statement);
-            let count = yield new Promise((resolve, reject) => {
+            const query = this._query.fromString(statement);
+            const count = yield new Promise((resolve, reject) => {
                 this._bucket.query(query, [], (err, counts) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = counts ? counts[0]['$1'] : 0;
+                    const count = counts ? counts[0]['$1'] : 0;
                     resolve(count);
                 });
             });
@@ -430,7 +428,7 @@ class CouchbasePersistence {
             if (sort != null) {
                 statement += " ORDER BY " + sort;
             }
-            let query = this._query.fromString(statement);
+            const query = this._query.fromString(statement);
             // Todo: Make it configurable?
             query.consistency(this._query.Consistency.REQUEST_PLUS);
             let items = yield new Promise((resolve, reject) => {
@@ -468,19 +466,19 @@ class CouchbasePersistence {
             let query = this._query.fromString(statement);
             // Todo: Make it configurable?
             query.consistency(this._query.Consistency.REQUEST_PLUS);
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._bucket.query(query, [], (err, counts) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = counts != null ? counts[0] : 0;
+                    const count = counts != null ? counts[0] : 0;
                     resolve(count);
                 });
             });
             statement = "SELECT * FROM " + this.quoteIdentifier(this._bucketName)
                 + " WHERE " + filter;
-            let skip = Math.trunc(Math.random() * count);
+            const skip = Math.trunc(Math.random() * count);
             statement += " OFFSET " + skip + " LIMIT 1";
             query = this._query.fromString(statement);
             let items = yield new Promise((resolve, reject) => {
@@ -522,8 +520,8 @@ class CouchbasePersistence {
             }
             // Assign unique id
             let newItem = Object.assign({}, item);
-            let id = newItem.id || pip_services3_commons_node_1.IdGenerator.nextLong();
-            let objectId = this.generateBucketId(id);
+            const id = newItem.id || keys_1.IdGenerator.nextLong();
+            const objectId = this.generateBucketId(id);
             newItem = this.convertFromPublic(newItem);
             yield new Promise((resolve, reject) => {
                 this._bucket.insert(objectId, newItem, (err, result) => {
@@ -554,13 +552,13 @@ class CouchbasePersistence {
             // Adjust max item count based on configuration
             filter = this.createBucketFilter(filter);
             statement += " WHERE " + filter;
-            let query = this._query.fromString(statement);
-            let count = yield new Promise((resolve, reject) => {
+            const query = this._query.fromString(statement);
+            const count = yield new Promise((resolve, reject) => {
                 this._bucket.query(query, [], (err, counts) => {
                     if (err != null) {
                         reject(err);
                     }
-                    let count = counts != null ? counts[0] : 0;
+                    const count = counts != null ? counts[0] : 0;
                     resolve(count);
                 });
             });
@@ -569,7 +567,7 @@ class CouchbasePersistence {
     }
 }
 exports.CouchbasePersistence = CouchbasePersistence;
-CouchbasePersistence._defaultConfig = pip_services3_commons_node_2.ConfigParams.fromTuples("bucket", null, "dependencies.connection", "*:connection:couchbase:*:1.0", 
+CouchbasePersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("bucket", null, "dependencies.connection", "*:connection:couchbase:*:1.0", 
 // connections.*
 // credential.*
 "options.auto_create", false, "options.auto_index", true, "options.flush_enabled", true, "options.bucket_type", "couchbase", "options.ram_quota", 100);

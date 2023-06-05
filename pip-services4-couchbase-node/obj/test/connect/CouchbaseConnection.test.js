@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CouchbaseConnection_1 = require("../../src/connect/CouchbaseConnection");
 suite('CouchbaseConnection', () => {
     let connection;
@@ -24,7 +24,7 @@ suite('CouchbaseConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('bucket', 'test', 'options.auto_create', true, 'options.auto_index', true, 'connection.uri', couchbaseUri, 'connection.host', couchbaseHost, 'connection.port', couchbasePort, 'connection.operation_timeout', 2, 
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('bucket', 'test', 'options.auto_create', true, 'options.auto_index', true, 'connection.uri', couchbaseUri, 'connection.host', couchbaseHost, 'connection.port', couchbasePort, 'connection.operation_timeout', 2, 
         // 'connection.durability_interval', 0.0001,
         // 'connection.durabilty_timeout', 4,
         'connection.detailed_errcodes', 1, 'credential.username', couchbaseUser, 'credential.password', couchbasePass);

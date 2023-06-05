@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiableCouchbasePersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const CouchbasePersistence_1 = require("./CouchbasePersistence");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract persistence component that stores data in Couchbase
  * and implements a number of CRUD operations over data items with unique ids.
@@ -136,7 +137,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let objectIds = this.generateBucketIds(ids);
+            const objectIds = this.generateBucketIds(ids);
             let items = yield new Promise((resolve, reject) => {
                 this._bucket.getMulti(objectIds, (count, items) => {
                     // Convert to array of results
@@ -172,7 +173,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let objectId = this.generateBucketId(id);
+            const objectId = this.generateBucketId(id);
             let item = yield new Promise((resolve, reject) => {
                 this._bucket.get(objectId, (err, result) => {
                     // Ignore "Key does not exist on the server" error
@@ -182,7 +183,7 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
                         reject(err);
                         return;
                     }
-                    let item = result != null ? result.value : null;
+                    const item = result != null ? result.value : null;
                     resolve(item);
                 });
             });
@@ -209,8 +210,8 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
             let newItem = item;
             // Assign unique id
             if (newItem.id == null && this._autoGenerateId) {
-                let _item = Object.assign({}, item);
-                _item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                const _item = Object.assign({}, item);
+                _item.id = pip_services4_data_node_1.IdGenerator.nextLong();
                 newItem = _item;
             }
             return yield _super.create.call(this, context, newItem);
@@ -232,14 +233,15 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
             let newItem = item;
             // Assign unique id
             if (newItem.id == null && this._autoGenerateId) {
-                let _item = Object.assign({}, item);
-                _item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                const _item = Object.assign({}, item);
+                _item.id = pip_services4_data_node_1.IdGenerator.nextLong();
                 newItem = _item;
             }
-            let id = newItem.id.toString();
-            let objectId = this.generateBucketId(id);
+            const id = newItem.id.toString();
+            const objectId = this.generateBucketId(id);
             newItem = this.convertFromPublic(newItem);
             yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._bucket.upsert(objectId, newItem, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -267,9 +269,10 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
             }
             let newItem = Object.assign(item);
             newItem = this.convertFromPublic(newItem);
-            let id = newItem.id.toString();
-            let objectId = this.generateBucketId(id);
+            const id = newItem.id.toString();
+            const objectId = this.generateBucketId(id);
             yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._bucket.replace(objectId, newItem, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -298,9 +301,9 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
             }
             let newItem = data.getAsObject();
             newItem = this.convertFromPublicPartial(newItem);
-            let objectId = this.generateBucketId(id);
+            const objectId = this.generateBucketId(id);
             // Todo: repeat until update is successful
-            let result = yield new Promise((resolve, reject) => {
+            const result = yield new Promise((resolve, reject) => {
                 this._bucket.get(objectId, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -312,8 +315,9 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
             if (result == null || result.value == null) {
                 return null;
             }
-            let objectValue = Object.assign(result.value, newItem);
+            const objectValue = Object.assign(result.value, newItem);
             yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._bucket.replace(objectId, objectValue, { cas: result.cas }, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -336,18 +340,19 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let objectId = this.generateBucketId(id);
+            const objectId = this.generateBucketId(id);
             let oldItem = yield new Promise((resolve, reject) => {
                 this._bucket.get(objectId, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result != null ? result.value : null;
+                    const item = result != null ? result.value : null;
                     resolve(item);
                 });
             });
             yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._bucket.remove(objectId, (err, result) => {
                     // Ignore "Key does not exist on the server" error
                     if (err && err.message && err.code == 13)
@@ -373,9 +378,9 @@ class IdentifiableCouchbasePersistence extends CouchbasePersistence_1.CouchbaseP
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             let count = 0;
-            for (let id of ids) {
-                let objectId = this.generateBucketId(id);
-                let deleted = yield new Promise((resolve, reject) => {
+            for (const id of ids) {
+                const objectId = this.generateBucketId(id);
+                const deleted = yield new Promise((resolve, reject) => {
                     this._bucket.remove(objectId, (err) => {
                         // Ignore "Key does not exist on the server" error
                         if (err && err.message && err.code == 13) {

@@ -1,13 +1,10 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { CouchbaseConnectionResolver } from '../connect/CouchbaseConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Couchbase connection using plain couchbase driver.
@@ -132,12 +129,13 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
 
         this._logger.debug(context, "Connecting to couchbase");
 
         try {
-            let couchbase = require('couchbase');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const couchbase = require('couchbase');
             this._connection = new couchbase.Cluster(connection.uri);
             if (connection.username) {
                 this._connection.authenticate(connection.username, connection.password);
@@ -145,15 +143,16 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
 
             let newBucket = false;
 
-            let autocreate = this._options.getAsBoolean('auto_create');
+            const autocreate = this._options.getAsBoolean('auto_create');
             if (autocreate) {
-                let options = {
+                const options = {
                     bucketType: this._options.getAsStringWithDefault('bucket_type', 'couchbase'),
                     ramQuotaMB: this._options.getAsLongWithDefault('ram_quota', 100),
                     flushEnabled: this._options.getAsBooleanWithDefault('flush_enabled', true) ? 1 : 0
                 };
 
                 await new Promise<void>((resolve, reject) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     this._connection.manager().createBucket(this._bucketName, options, (err, result) => {
                         if (err && err.message && err.message.indexOf('name already exist') > 0) {
                             err = null;
@@ -170,11 +169,12 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
 
                 // Delay to allow couchbase to initialize the bucket
                 // Otherwise opening will fail
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 await new Promise<void>((resolve, reject) => { setTimeout(resolve, 2000) });
             }
 
             this._bucket = await new Promise<any>((resolve, reject) => {
-                let bucket = this._connection.openBucket(this._bucketName, (err) => {
+                const bucket = this._connection.openBucket(this._bucketName, (err) => {
                     if (err != null) {
                         reject(err);
                         return;
@@ -185,7 +185,7 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
 
             this._logger.debug(context, "Connected to couchbase bucket %s", this._bucketName);
 
-            let autoIndex = this._options.getAsBoolean('auto_index');
+            const autoIndex = this._options.getAsBoolean('auto_index');
             if (newBucket || autoIndex) {
                 await new Promise<void>((resolve, reject) => {
                     this._bucket.manager().createPrimaryIndex({ ignoreIfExists: 1}, (err) => {
@@ -202,7 +202,7 @@ export class CouchbaseConnection implements IReferenceable, IConfigurable, IOpen
             this._bucket = null;
 
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to couchbase failed"
             ).withCause(ex);

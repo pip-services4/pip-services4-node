@@ -1,15 +1,14 @@
 /** @module persistence */
-import { ConfigParams } from 'pip-services4-commons-node';
 
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { CouchbasePersistence } from './CouchbasePersistence';
+import { IIdentifiable, IdGenerator } from 'pip-services4-data-node';
+import { ConfigParams, IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in Couchbase
@@ -97,7 +96,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Flag to turn on automated string ID generation
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -139,7 +138,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let objectIds = this.generateBucketIds(ids);
+        const objectIds = this.generateBucketIds(ids);
 
         let items = await new Promise<any[]>((resolve, reject) => {
             this._bucket.getMulti(objectIds, (count, items) => {
@@ -182,7 +181,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 a found data item.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let objectId = this.generateBucketId(id);
+        const objectId = this.generateBucketId(id);
 
         let item = await new Promise<any>((resolve, reject) => {
             this._bucket.get(objectId, (err, result) => {
@@ -195,7 +194,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
                     return;
                 }
 
-                let item = result != null ? result.value : null;
+                const item = result != null ? result.value : null;
                 resolve(item);
             });
         });
@@ -223,7 +222,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
         
         // Assign unique id
         if (newItem.id == null && this._autoGenerateId) {
-            let _item: any = Object.assign({}, item);
+            const _item: any = Object.assign({}, item);
             _item.id = IdGenerator.nextLong();
             newItem = _item;
         }
@@ -248,16 +247,17 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
         
         // Assign unique id
         if (newItem.id == null && this._autoGenerateId) {
-            let _item: any = Object.assign({}, item);
+            const _item: any = Object.assign({}, item);
             _item.id = IdGenerator.nextLong();
             newItem = _item;
         }
 
-        let id = newItem.id.toString();
-        let objectId = this.generateBucketId(id);
+        const id = newItem.id.toString();
+        const objectId = this.generateBucketId(id);
         newItem = this.convertFromPublic(newItem);
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._bucket.upsert(objectId, newItem, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -287,10 +287,11 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
 
         let newItem = Object.assign(item);
         newItem = this.convertFromPublic(newItem);
-        let id = newItem.id.toString();
-        let objectId = this.generateBucketId(id);
+        const id = newItem.id.toString();
+        const objectId = this.generateBucketId(id);
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._bucket.replace(objectId, newItem, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -321,10 +322,10 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
 
         let newItem = data.getAsObject();
         newItem = this.convertFromPublicPartial(newItem);
-        let objectId = this.generateBucketId(id);
+        const objectId = this.generateBucketId(id);
 
         // Todo: repeat until update is successful
-        let result = await new Promise<any>((resolve, reject) => {
+        const result = await new Promise<any>((resolve, reject) => {
             this._bucket.get(objectId, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -339,8 +340,9 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
             return null;
         }
 
-        let objectValue = Object.assign(result.value, newItem);
+        const objectValue = Object.assign(result.value, newItem);
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._bucket.replace(objectId, objectValue, { cas: result.cas }, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -364,7 +366,7 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let objectId = this.generateBucketId(id);
+        const objectId = this.generateBucketId(id);
 
         let oldItem = await new Promise<any>((resolve, reject) => {
             this._bucket.get(objectId, (err, result) => {
@@ -372,12 +374,13 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
                     reject(err);
                     return;
                 }
-                let item = result != null ? result.value : null;
+                const item = result != null ? result.value : null;
                 resolve(item);
             });
         });
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._bucket.remove(objectId, (err, result) => {
                 // Ignore "Key does not exist on the server" error
                 if (err && err.message && err.code == 13)
@@ -406,10 +409,10 @@ export class IdentifiableCouchbasePersistence<T extends IIdentifiable<K>, K> ext
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
         let count = 0;
-        for (let id of ids) {
-            let objectId = this.generateBucketId(id);
+        for (const id of ids) {
+            const objectId = this.generateBucketId(id);
 
-            let deleted = await new Promise<boolean>((resolve, reject) => {
+            const deleted = await new Promise<boolean>((resolve, reject) => {
                 this._bucket.remove(objectId, (err) => {
                     // Ignore "Key does not exist on the server" error
                     if (err && err.message && err.code == 13) {

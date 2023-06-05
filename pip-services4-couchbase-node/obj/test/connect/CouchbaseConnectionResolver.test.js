@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CouchbaseConnectionResolver_1 = require("../../src/connect/CouchbaseConnectionResolver");
 suite('CouchbaseConnectionResolver', () => {
     test('Single Connection', () => __awaiter(void 0, void 0, void 0, function* () {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.host", "localhost", "connection.port", "8091", "connection.database", "test");
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "localhost", "connection.port", "8091", "connection.database", "test");
         let resolver = new CouchbaseConnectionResolver_1.CouchbaseConnectionResolver();
         resolver.configure(config);
         let connection = yield resolver.resolve(null);
@@ -24,7 +24,7 @@ suite('CouchbaseConnectionResolver', () => {
         assert.isUndefined(connection.password);
     }));
     test('Multiple Connections', () => __awaiter(void 0, void 0, void 0, function* () {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples("connections.1.host", "host1", "connections.1.port", "8091", "connections.1.database", "test", "connections.2.host", "host2", "connections.2.port", "8091", "connections.2.database", "test");
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples("connections.1.host", "host1", "connections.1.port", "8091", "connections.1.database", "test", "connections.2.host", "host2", "connections.2.port", "8091", "connections.2.database", "test");
         let resolver = new CouchbaseConnectionResolver_1.CouchbaseConnectionResolver();
         resolver.configure(config);
         let connection = yield resolver.resolve(null);
@@ -34,7 +34,7 @@ suite('CouchbaseConnectionResolver', () => {
         assert.isUndefined(connection.password);
     }));
     test('Connection with Credentials', () => __awaiter(void 0, void 0, void 0, function* () {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.host", "localhost", "connection.port", "8091", "connection.database", "test", "credential.username", "admin", "credential.password", "password123");
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples("connection.host", "localhost", "connection.port", "8091", "connection.database", "test", "credential.username", "admin", "credential.password", "password123");
         let resolver = new CouchbaseConnectionResolver_1.CouchbaseConnectionResolver();
         resolver.configure(config);
         let connection = yield resolver.resolve(null);
@@ -44,7 +44,7 @@ suite('CouchbaseConnectionResolver', () => {
         assert.equal("password123", connection.password);
     }));
     test('Connection by URI', () => __awaiter(void 0, void 0, void 0, function* () {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples("credential.username", "admin", "credential.password", "password123", "connection.uri", "couchbase:\\/\\/localhost:8091/test");
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples("credential.username", "admin", "credential.password", "password123", "connection.uri", "couchbase:\\/\\/localhost:8091/test");
         let resolver = new CouchbaseConnectionResolver_1.CouchbaseConnectionResolver();
         resolver.configure(config);
         let connection = yield resolver.resolve(null);

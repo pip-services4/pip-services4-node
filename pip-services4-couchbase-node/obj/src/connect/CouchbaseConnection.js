@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CouchbaseConnection = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CouchbaseConnectionResolver_1 = require("../connect/CouchbaseConnectionResolver");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Couchbase connection using plain couchbase driver.
  *
@@ -54,14 +55,14 @@ class CouchbaseConnection {
      * @param bucketName the name of couchbase bucket
      */
     constructor(bucketName) {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("bucket", null, 
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("bucket", null, 
         // connections.*
         // credential.*
         "options.auto_create", false, "options.auto_index", true, "options.flush_enabled", true, "options.bucket_type", "couchbase", "options.ram_quota", 100);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -69,7 +70,7 @@ class CouchbaseConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
         this._bucketName = bucketName;
     }
     /**
@@ -108,23 +109,25 @@ class CouchbaseConnection {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             this._logger.debug(context, "Connecting to couchbase");
             try {
-                let couchbase = require('couchbase');
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const couchbase = require('couchbase');
                 this._connection = new couchbase.Cluster(connection.uri);
                 if (connection.username) {
                     this._connection.authenticate(connection.username, connection.password);
                 }
                 let newBucket = false;
-                let autocreate = this._options.getAsBoolean('auto_create');
+                const autocreate = this._options.getAsBoolean('auto_create');
                 if (autocreate) {
-                    let options = {
+                    const options = {
                         bucketType: this._options.getAsStringWithDefault('bucket_type', 'couchbase'),
                         ramQuotaMB: this._options.getAsLongWithDefault('ram_quota', 100),
                         flushEnabled: this._options.getAsBooleanWithDefault('flush_enabled', true) ? 1 : 0
                     };
                     yield new Promise((resolve, reject) => {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         this._connection.manager().createBucket(this._bucketName, options, (err, result) => {
                             if (err && err.message && err.message.indexOf('name already exist') > 0) {
                                 err = null;
@@ -139,10 +142,11 @@ class CouchbaseConnection {
                     newBucket = true;
                     // Delay to allow couchbase to initialize the bucket
                     // Otherwise opening will fail
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     yield new Promise((resolve, reject) => { setTimeout(resolve, 2000); });
                 }
                 this._bucket = yield new Promise((resolve, reject) => {
-                    let bucket = this._connection.openBucket(this._bucketName, (err) => {
+                    const bucket = this._connection.openBucket(this._bucketName, (err) => {
                         if (err != null) {
                             reject(err);
                             return;
@@ -151,7 +155,7 @@ class CouchbaseConnection {
                     });
                 });
                 this._logger.debug(context, "Connected to couchbase bucket %s", this._bucketName);
-                let autoIndex = this._options.getAsBoolean('auto_index');
+                const autoIndex = this._options.getAsBoolean('auto_index');
                 if (newBucket || autoIndex) {
                     yield new Promise((resolve, reject) => {
                         this._bucket.manager().createPrimaryIndex({ ignoreIfExists: 1 }, (err) => {
@@ -167,7 +171,7 @@ class CouchbaseConnection {
             catch (ex) {
                 this._connection = null;
                 this._bucket = null;
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
             }
         });
     }

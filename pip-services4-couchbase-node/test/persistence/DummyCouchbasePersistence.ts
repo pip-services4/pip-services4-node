@@ -1,10 +1,8 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-
+import { DataPage, FilterParams, PagingParams } from 'pip-services4-data-node';
 import { IdentifiableCouchbasePersistence } from '../../src/persistence/IdentifiableCouchbasePersistence';
 import { Dummy } from '../fixtures/Dummy';
 import { IDummyPersistence } from '../fixtures/IDummyPersistence';
+import { IContext } from 'pip-services4-components-node';
 
 export class DummyCouchbasePersistence 
     extends IdentifiableCouchbasePersistence<Dummy, string> 

@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-couchbase-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
     "description": "Couchbase components for Pip.Services in Node.js",
     "contributors": [
@@ -20,7 +20,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-couchbase-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-couchbase-node"
     },
     "license": "MIT",
     "engines": {
@@ -30,21 +31,30 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc --watch",
-        "delay_test": "sleep 70 && echo Continue... && mocha -t 30000 -R spec -u tdd --recursive ./obj/test --exit",
+        "delay_test": "sleep 75 && echo Continue... && mocha -t 70000 -R spec -u tdd --recursive ./obj/test --exit",
         "test": "mocha -t 30000 -R spec -u tdd --recursive ./obj/test",
-        "retest": "tsc && mocha -t 30000 -R spec -u tdd --recursive ./obj/test"
+        "retest": "tsc && mocha -t 30000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
         "couchbase": "^2.6.3",
-        "pip-services4-commons-node": "^1.0.0",
-        "pip-services4-components-node": "^1.0.0",
-        "pip-services4-persistence-node": "^1.0.0"
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "0.0.4",
+        "pip-services4-data-node": "0.0.4",
+        "pip-services4-observability-node": "0.0.2",
+        "pip-services4-persistence-node": "^0.0.1"
     },
     "devDependencies": {
-        "@types/chai": "^4.0.0",
-        "@types/mocha": "^8.0.0",
+        "@types/chai": "^4.3.4",
+        "@types/mocha": "^10.0.1",
         "@types/node": "*",
         "chai": "^4.3.4",
-        "mocha": "^8.3.2"
+        "mocha": "^10.2.0",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "eslint": "^8.32.0",
+        "typescript": "^4.*.*"
     }
 }

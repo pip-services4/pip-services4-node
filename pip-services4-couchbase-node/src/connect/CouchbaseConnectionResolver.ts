@@ -1,15 +1,9 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
 
+import { ConfigException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { CouchbaseConnectionParams } from './CouchbaseConnectionParams';
+import { ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver } from 'pip-services4-config-node';
 
 /**
  * Helper class that resolves Couchbase connection and credential parameters,
@@ -66,22 +60,22 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
     }
     
     private validateConnection(context: IContext, connection: ConnectionParams): void {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) return;
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -90,7 +84,7 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
         // let database = connection.getAsNullableString("database");
         // if (database == null) {
         //     throw new ConfigException(
-        //         context,
+        //         context != null ? context.getTraceId() : null,
         //         "NO_DATABASE",
         //         "Connection database is not set"
         //     );
@@ -100,19 +94,19 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
     private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "Database connection is not set"
             );
         }
 
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
 
     private composeConnection(connections: ConnectionParams[], credential: CredentialParams): CouchbaseConnectionParams {
-        let result = new CouchbaseConnectionParams();
+        const result = new CouchbaseConnectionParams();
 
         if (credential != null) {
             result.username = credential.getUsername();
@@ -122,7 +116,7 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
         }
 
         // If there is a uri then return it immediately
-        for (let connection of connections) {
+        for (const connection of connections) {
             result.uri = connection.getUri();
             if (result.uri) {
                 result.uri = result.uri.replace(/[\\]/g, '');
@@ -132,9 +126,9 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
 
         // Define hosts
         let hosts = '';
-        for (let connection of connections) {
-            let host = connection.getHost();
-            let port = connection.getPort();
+        for (const connection of connections) {
+            const host = connection.getHost();
+            const port = connection.getPort();
 
             if (hosts.length > 0) {
                 hosts += ',';
@@ -144,7 +138,7 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
 
         // Define database
         let database = '';
-        for (let connection of connections) {
+        for (const connection of connections) {
             database = database || connection.getAsNullableString("database");
         }
         database = database || '';
@@ -153,7 +147,7 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
         }
 
         // Define additional parameters parameters
-        let options = ConfigParams.mergeConfigs(...connections).override(credential);
+        const options = ConfigParams.mergeConfigs(...connections).override(credential);
         options.remove('uri');
         options.remove('host');
         options.remove('port');
@@ -162,15 +156,15 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
         options.remove('password');
 
         let params = '';
-        let keys = options.getKeys();
-        for (let key of keys) {
+        const keys = options.getKeys();
+        for (const key of keys) {
             if (params.length > 0) {
                 params += '&';
             }
 
             params += key;
 
-            let value = options.getAsString(key);
+            const value = options.getAsString(key);
             if (value != null) {
                 params += '=' + value;
             }
@@ -192,14 +186,14 @@ export class CouchbaseConnectionResolver implements IReferenceable, IConfigurabl
      * @returns			        a resolved URI.
      */
     public async resolve(context: IContext): Promise<CouchbaseConnectionParams> {
-        let connections = await this._connectionResolver.resolveAll(context);
+        const connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
         this.validateConnections(context, connections);
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let connection = this.composeConnection(connections, credential);
+        const connection = this.composeConnection(connections, credential);
         return connection;
     }
 
