@@ -1,4 +1,5 @@
 "use strict";
+/** @module log */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,11 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FluentdLogger = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
- * Logger that dumps execution logs to Fluentd service.
+ * Logger that dumps execution logs to Fluentd controller.
  *
  * Fluentd is a popular logging service that is often used
  * together with Kubernetes container orchestrator.
@@ -56,13 +57,13 @@ const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
  *     logger.error("123", ex, "Error occured: %s", ex.message);
  *     logger.debug("123", "Everything is OK.");
  */
-class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
+class FluentdLogger extends pip_services4_observability_node_1.CachedLogger {
     /**
      * Creates a new instance of the logger.
      */
     constructor() {
         super();
-        this._connectionResolver = new pip_services3_rpc_node_1.HttpConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.HttpConnectionResolver();
         this._reconnect = 10000;
         this._timeout = 3000;
         this._client = null;
@@ -105,13 +106,13 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
             if (this.isOpen()) {
                 return;
             }
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_1.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let host = connection.getAsString("host");
-            let port = connection.getAsIntegerWithDefault("port", 24224);
-            let options = {
+            const host = connection.getAsString("host");
+            const port = connection.getAsIntegerWithDefault("port", 24224);
+            const options = {
                 host: host,
                 port: port,
                 timeout: this._timeout / 1000,
@@ -127,6 +128,7 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.save(this._cache);
@@ -148,8 +150,8 @@ class FluentdLogger extends pip_services3_components_node_1.CachedLogger {
             if (!this.isOpen() || messages.length == 0) {
                 return;
             }
-            for (let message of messages) {
-                let record = {
+            for (const message of messages) {
+                const record = {
                     level: message.level,
                     source: message.source,
                     trace_id: message.trace_id,

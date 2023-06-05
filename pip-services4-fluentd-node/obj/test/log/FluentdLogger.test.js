@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const FluentdLogger_1 = require("../../src/log/FluentdLogger");
 const LoggerFixture_1 = require("../fixtures/LoggerFixture");
 suite('FluentdLogger', () => {
@@ -20,7 +20,7 @@ suite('FluentdLogger', () => {
         let port = process.env['FLUENTD_SERVICE_PORT'] || 24224;
         _logger = new FluentdLogger_1.FluentdLogger();
         _fixture = new LoggerFixture_1.LoggerFixture(_logger);
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'connection.host', host, 'connection.port', port);
         _logger.configure(config);
         yield _logger.open(null);
     }));

@@ -1,5 +1,4 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { FluentdLogger } from '../../src/log/FluentdLogger';
 import { LoggerFixture } from '../fixtures/LoggerFixture';
 

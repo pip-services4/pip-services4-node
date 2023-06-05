@@ -1,7 +1,6 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
 
+import { Factory, Descriptor } from 'pip-services4-components-node';
 import { FluentdLogger } from '../log/FluentdLogger';
 
 /**

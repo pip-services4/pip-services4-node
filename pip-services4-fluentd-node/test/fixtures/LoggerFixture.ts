@@ -1,7 +1,7 @@
-let assert = require('chai').assert;
+import { Context } from "pip-services4-components-node";
+import { CachedLogger, LogLevel } from "pip-services4-observability-node";
 
-import { LogLevel } from 'pip-services4-components-node';
-import { CachedLogger } from 'pip-services4-components-node';
+let assert = require('chai').assert;
 
 export class LoggerFixture {
     private _logger: CachedLogger;
@@ -35,8 +35,8 @@ export class LoggerFixture {
             // Raise an exception
             throw new Error();
         } catch (ex) {
-            this._logger.fatal("123", ex, "Fatal error");
-            this._logger.error("123", ex, "Recoverable error");
+            this._logger.fatal(Context.fromTraceId("123"), ex, "Fatal error");
+            this._logger.error(Context.fromTraceId("123"), ex, "Recoverable error");
 
             assert.isNotNull(ex);
         }

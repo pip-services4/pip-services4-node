@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-fluentd-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
     "description": "Fluentd logger for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -20,7 +20,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-fluentd-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-fluentd-node"
     },
     "license": "MIT",
     "engines": {
@@ -30,20 +31,29 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc --watch",
-        "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
-        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+        "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test --exit",
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
         "fluent-logger": "^2.6.1",
-        "pip-services4-commons-node": "^1.0.0",
-        "pip-services4-components-node": "^1.0.0",
-        "pip-services4-rpc-node": "^1.0.0"
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "^0.0.4",
+        "pip-services4-http-node": "^0.0.2",
+        "pip-services4-observability-node": "^0.0.2",
+        "pip-services4-rpc-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
-        "@types/mocha": "^8.0.0",
+        "@types/mocha": "^10.0.1",
         "@types/node": "*",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
         "chai": "^4.3.4",
-        "mocha": "^8.4.0"
+        "eslint": "^8.32.0",
+        "mocha": "^10.2.0",
+        "typescript": "*"
     }
 }

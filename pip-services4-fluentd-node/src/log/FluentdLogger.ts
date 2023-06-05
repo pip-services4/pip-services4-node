@@ -1,15 +1,12 @@
 /** @module log */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { CachedLogger } from 'pip-services4-components-node';
-import { LogMessage } from 'pip-services4-components-node';
-import { HttpConnectionResolver } from 'pip-services4-rpc-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { HttpConnectionResolver } from "pip-services4-config-node";
+import { CachedLogger, LogMessage } from "pip-services4-observability-node";
 
 /**
- * Logger that dumps execution logs to Fluentd service.
+ * Logger that dumps execution logs to Fluentd controller.
  * 
  * Fluentd is a popular logging service that is often used
  * together with Kubernetes container orchestrator.
@@ -54,8 +51,8 @@ import { HttpConnectionResolver } from 'pip-services4-rpc-node';
 export class FluentdLogger extends CachedLogger implements IReferenceable, IOpenable {
     private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
     
-    private _reconnect: number = 10000;
-    private _timeout: number = 3000;
+    private _reconnect = 10000;
+    private _timeout = 3000;
     private _timer: any;
 
     private _client: any = null;
@@ -110,19 +107,19 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
             return;
         }
 
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let host = connection.getAsString("host");
-        let port = connection.getAsIntegerWithDefault("port", 24224);
+        const host = connection.getAsString("host");
+        const port = connection.getAsIntegerWithDefault("port", 24224);
 
-        let options = {
+        const options = {
             host: host,
             port: port,
             timeout: this._timeout / 1000,
@@ -140,6 +137,7 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         await this.save (this._cache);
 
@@ -162,8 +160,8 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
             return;
         }
 
-        for (let message of messages) {
-            let record = {
+        for (const message of messages) {
+            const record = {
                 level: message.level,
                 source: message.source,
                 trace_id: message.trace_id,
