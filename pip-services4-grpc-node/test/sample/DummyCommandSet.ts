@@ -1,7 +1,7 @@
 import { CommandSet } from 'pip-services4-rpc-node';
 import { ICommand } from 'pip-services4-rpc-node';
 import { Command } from 'pip-services4-rpc-node';
-import { Parameters } from 'pip-services4-components-node';
+import { IContext, Parameters } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';
 import { PagingParams } from 'pip-services4-data-node';
 import { ObjectSchema } from 'pip-services4-data-node';

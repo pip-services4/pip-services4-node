@@ -1,4 +1,3 @@
-let _ = require('lodash');
 let services = require('../../../test/protos/dummies_grpc_pb');
 let messages = require('../../../test/protos/dummies_pb');
 
@@ -38,7 +37,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.get_page_by_filter');
 
         let result = await this.call<any>('get_dummies',
-            context, 
+            context != null ? context.getTraceId() : null,
             request
         );
 
@@ -58,7 +57,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.get_one_by_id');
 
         let result = await this.call<any>('get_dummy_by_id',
-            context,
+            context != null ? context.getTraceId() : null,
             request
         );
 
@@ -82,7 +81,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.create');
 
         let result = await this.call<any>('create_dummy',
-            context,
+            context != null ? context.getTraceId() : null,
             request
         );
 
@@ -106,7 +105,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.update');
 
         let result = await this.call<any>('update_dummy',
-            context, 
+            context != null ? context.getTraceId() : null,
             request
         );
 
@@ -125,7 +124,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.delete_by_id');
 
         let result = await this.call<any>('delete_dummy_by_id',
-            context, 
+            context != null ? context.getTraceId() : null,
             request
         );
 

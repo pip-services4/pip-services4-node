@@ -1,10 +1,8 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-
 import { CommandableGrpcClient } from '../../src/clients/CommandableGrpcClient';
 import { IDummyClient } from './IDummyClient';
 import { Dummy } from '../sample/Dummy';
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams, PagingParams, DataPage } from 'pip-services4-data-node';
 
 export class DummyCommandableGrpcClient extends CommandableGrpcClient implements IDummyClient {
         

@@ -17,7 +17,7 @@ export class DummyGrpcController2 extends GrpcController {
 	
     public constructor() {
         super(services.DummiesService);
-        this._dependencyResolver.put('controller', new Descriptor("pip-services-dummies", "service", "default", "*", "*"));
+        this._dependencyResolver.put('service', new Descriptor("pip-services-dummies", "service", "default", "*", "*"));
     }
 
 	public setReferences(references: IReferences): void {

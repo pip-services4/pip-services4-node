@@ -2,6 +2,7 @@
 // file: dummies.proto
 
 import * as jspb from "google-protobuf";
+import { IContext } from "pip-services4-components-node";
 
 export class ErrorDescription extends jspb.Message {
   getCategory(): string;

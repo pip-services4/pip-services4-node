@@ -20,14 +20,14 @@ suite('DummyGrpcClient', ()=> {
     let fixture: DummyClientFixture;
 
     suiteSetup(async () => {
-        let ctrl = new DummyService();
+        let service = new DummyService();
 
         controller = new DummyGrpcController2();
         controller.configure(grpcConfig);
 
         let references: References = References.fromTuples(
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl,
-            new Descriptor('pip-services-dummies', 'service', 'grpc', 'default', '1.0'), controller
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), service,
+            new Descriptor('pip-services-dummies', 'controller', 'grpc', 'default', '1.0'), controller
         );
         controller.setReferences(references);
 

@@ -21,7 +21,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-grpc-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-grpc-node"
     },
     "license": "MIT",
     "engines": {
@@ -35,16 +36,19 @@
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
         "protogen": "cd src/protos && npx grpc_tools_node_protoc  --js_out=import_style=commonjs,binary:./ --grpc_out=grpc_js:.  ./commandable.proto",
         "protogen2": "cd test/protos && npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=grpc_js:. dummies.proto",
-        "protogen3": "cd test/protos && npx grpc_tools_node_protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=. --grpc_out=grpc_js:. dummies.proto"
+        "protogen3": "cd test/protos && npx grpc_tools_node_protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=. --grpc_out=grpc_js:. dummies.proto",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
         "@grpc/grpc-js": "^1.8.9",
         "@grpc/proto-loader": "^0.7.5",
         "google-protobuf": "^3.7.1",
-        "pip-services4-commons-node": "^0.0.1",
-        "pip-services4-components-node": "^0.0.1",
-        "pip-services4-data-node": "^0.0.1",
-        "pip-services4-observability-node": "^0.0.1",
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "^0.0.4",
+        "pip-services4-data-node": "^0.0.4",
+        "pip-services4-observability-node": "^0.0.2",
         "pip-services4-rpc-node": "^0.0.1"
     },
     "devDependencies": {
@@ -55,6 +59,10 @@
         "grpc-tools": "^1.12.4",
         "grpc_tools_node_protoc_ts": "^5.0.1",
         "mocha": "^10.2.0",
-        "ts-protoc-gen": "^0.15.0"
+        "ts-protoc-gen": "^0.15.0",
+        "eslint": "^8.32.0",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "typescript": "*"
     }
 }

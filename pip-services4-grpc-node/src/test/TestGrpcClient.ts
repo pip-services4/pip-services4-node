@@ -1,6 +1,4 @@
 /** @module test */
-import { IContext } from 'pip-services4-components-node';
-
 import { GrpcClient } from "../clients/GrpcClient";
 
 /**

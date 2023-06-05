@@ -1,5 +1,5 @@
 /** @module controllers */
-import { IContext } from 'pip-services4-components-node';
+import { Context, IContext } from 'pip-services4-components-node';
 import { ICommandable } from 'pip-services4-rpc-node';
 import { CommandSet } from 'pip-services4-rpc-node';
 import { ErrorDescriptionFactory } from 'pip-services4-commons-node';
@@ -14,14 +14,14 @@ import { GrpcController } from './GrpcController';
  * to operations automatically generated for commands defined in [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/commands.icommandable.html ICommandable components]].
  * Each command is exposed as invoke method that receives command name and parameters.
  * 
- * Commandable services require only 3 lines of code to implement a robust external
+ * Commandable controllers require only 3 lines of code to implement a robust external
  * GRPC-based remote interface.
  * 
  * ### Configuration parameters ###
  * 
  * - dependencies:
  *   - endpoint:              override for HTTP Endpoint dependency
- *   - controller:            override for Controller dependency
+ *   - service:            override for Service dependency
  * - connection(s):           
  *   - discovery_key:         (optional) a key to retrieve the connection from [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]]
  *   - protocol:              connection protocol: http or https
@@ -33,11 +33,11 @@ import { GrpcController } from './GrpcController';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>               (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>             (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * - <code>\*:endpoint:grpc:\*:1.0</code>          (optional) [[GrpcEndpoint]] reference
  * 
  * @see [[CommandableGrpcClient]]
- * @see [[GrpcController]]
+ * @see [[GrpcService]]
  * 
  * ### Example ###
  * 
@@ -80,15 +80,15 @@ export abstract class CommandableGrpcController extends GrpcController {
     }
 
     private applyCommand(schema: Schema, action: (context: IContext, data: any) => Promise<any>): (call: any) => Promise<any> {
-        let actionWrapper = async (call) => {
-            let method = call.request.method;
-            let context = call.request.trace_id;
+        const actionWrapper = async (call) => {
+            const method = call.request.method;
+            const traceId = call.request.trace_id;
 
             try {
                 // Convert arguments
-                let argsEmpty = call.request.args_empty;
-                let argsJson = call.request.args_json;
-                let args = !argsEmpty && argsJson ? Parameters.fromJson(argsJson) : new Parameters();
+                const argsEmpty = call.request.args_empty;
+                const argsJson = call.request.args_json;
+                const args = !argsEmpty && argsJson ? Parameters.fromJson(argsJson) : new Parameters();
 
                 // Todo: Validate schema
                 if (schema) {
@@ -97,7 +97,7 @@ export abstract class CommandableGrpcController extends GrpcController {
 
                 // Call command action
                 try {
-                    let result = await action(context, args);
+                    const result = await action(Context.fromTraceId(traceId), args);
 
                     // Process result and generate response
                     return {
@@ -114,8 +114,8 @@ export abstract class CommandableGrpcController extends GrpcController {
                 }
             } catch (ex) {
                 // Handle unexpected exception
-                let err = new InvocationException(
-                    context != null ? context.getTraceId() : null,
+                const err = new InvocationException(
+                    traceId,
                     "METHOD_FAILED",
                     "Method " + method + " failed"
                 ).wrap(ex).withDetails("method", method);
@@ -151,17 +151,17 @@ export abstract class CommandableGrpcController extends GrpcController {
      * Registers all service routes in HTTP endpoint.
      */
     public register(): void {
-        let service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const service: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
         this._commandSet = service.getCommandSet();
 
-        let commands = this._commandSet.getCommands();
+        const commands = this._commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
 
-            let method = '' + this._name + '.' + command.getName();
+            const method = '' + this._name + '.' + command.getName();
 
             this.registerCommadableMethod(method, null, (context, args) => {
-                let timing = this.instrument(context, method);
+                const timing = this.instrument(context, method);
                 try {
                     return command.execute(context, args);
                 } catch (ex) {

@@ -1,12 +1,13 @@
 /** @module clients */
+import { IContext } from 'pip-services4-components-node';
 import { GrpcClient } from './GrpcClient';
 
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
 
 /**
- * Abstract client that calls commandable GRPC service.
+ * Abstract client that calls commandable GRPC controller.
  * 
- * Commandable services are generated automatically for [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/commands.icommandable.html ICommandable objects]].
+ * Commandable controllers are generated automatically for [[https://pip-services4-node.github.io/pip-services4-commons-node/interfaces/commands.icommandable.html ICommandable objects]].
  * Each command is exposed as Invoke method that receives all parameters as args.
  * 
  * ### Configuration parameters ###
@@ -26,7 +27,7 @@ import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * 
  * ### Example ###
  * 
@@ -55,14 +56,14 @@ import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
  */
 export class CommandableGrpcClient extends GrpcClient {
     /**
-     * The service name
+     * The controller name
      */
     protected _name: string;
 
     /**
      * Creates a new instance of the client.
      * 
-     * @param name     a service name. 
+     * @param name     a controller name. 
      */
     public constructor(name: string) {
         super(__dirname + "../../../../src/protos/commandable.proto", "commandable.Commandable");
@@ -72,7 +73,7 @@ export class CommandableGrpcClient extends GrpcClient {
     /**
      * Calls a remote method via GRPC commadable protocol.
      * The call is made via Invoke method and all parameters are sent in args object.
-     * The complete route to remote method is defined as serviceName + "." + name.
+     * The complete route to remote method is defined as controllerName + "." + name.
      * 
      * @param name              a name of the command to call. 
      * @param context     (optional) a context to trace execution through call chain.
@@ -80,22 +81,22 @@ export class CommandableGrpcClient extends GrpcClient {
      * @returns the received result.
      */
     protected async callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
-        let method = this._name + '.' + name;
-        let timing = this.instrument(context, method);
-
-        let request = {
+        const method = this._name + '.' + name;
+        const timing = this.instrument(context, method);
+        const traceId = context != null ? context.getTraceId() : null;
+        const request = {
             method: method,
-            trace_id: context,
+            trace_id: traceId,
             args_empty: params == null,
             args_json: params != null ? JSON.stringify(params) : null
         };
 
         try {
-            let response = await this.call<any>("invoke", context, request);
+            const response = await this.call<any>("invoke", traceId, request);
 
             // Handle error response
             if (response.error != null) {
-                let err = ApplicationExceptionFactory.create(response.error);
+                const err = ApplicationExceptionFactory.create(response.error);
                 throw err;
             }
 
@@ -105,7 +106,7 @@ export class CommandableGrpcClient extends GrpcClient {
             }
 
             // Handle regular response
-            let result = JSON.parse(response.result_json);
+            const result = JSON.parse(response.result_json);
 
             timing.endTiming();
             return result;

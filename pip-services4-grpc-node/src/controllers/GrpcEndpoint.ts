@@ -1,6 +1,6 @@
 /** @module controllers */
 /** @hidden */
-const fs = require('fs');
+import fs = require('fs');
 
 import { IContext } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
@@ -13,20 +13,20 @@ import { CompositeCounters } from 'pip-services4-observability-node';
 import { ErrorDescriptionFactory } from 'pip-services4-commons-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { InvocationException } from 'pip-services4-commons-node';
-import { HttpConnectionResolver } from 'pip-services4-rpc-node';
 import { Schema } from 'pip-services4-data-node';
 
 import { IRegisterable } from './IRegisterable';
+import { HttpConnectionResolver } from 'pip-services4-config-node';
 
 /**
- * Used for creating GRPC endpoints. An endpoint is a URL, at which a given service can be accessed by a client. 
+ * Used for creating GRPC endpoints. An endpoint is a URL, at which a given controller can be accessed by a client. 
  * 
  * ### Configuration parameters ###
  * 
  * Parameters to pass to the [[configure]] method for component configuration:
  * 
  * - connection(s) - the connection resolver's connections:
- *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
+ *     - "connection.discovery_key" - the key to use for connection resolving in a discovery controller;
  *     - "connection.protocol" - the connection's protocol;
  *     - "connection.host" - the target host;
  *     - "connection.port" - the target port;
@@ -80,20 +80,20 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
 	private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
 	private _logger: CompositeLogger = new CompositeLogger();
 	private _counters: CompositeCounters = new CompositeCounters();
-    private _maintenanceEnabled: boolean = false;
+    private _maintenanceEnabled = false;
     private _fileMaxSize: number = 200 * 1024 * 1024;
     private _uri: string;
     private _registrations: IRegisterable[] = [];
     private _commandableMethods: any;
     private _commandableSchemas: any;
-    private _commandableService: any;
+    private _commandableController: any;
     
     /**
      * Configures this HttpEndpoint using the given configuration parameters.
      * 
      * __Configuration parameters:__
      * - __connection(s)__ - the connection resolver's connections;
-     *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
+     *     - "connection.discovery_key" - the key to use for connection resolving in a discovery controller;
      *     - "connection.protocol" - the connection's protocol;
      *     - "connection.host" - the target host;
      *     - "connection.port" - the target port;
@@ -148,30 +148,30 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * @param context     (optional) a context to trace execution through call chain.
      */
 	public async open(context: IContext): Promise<void> {
-    	if (this.isOpen()) {
+        if (this.isOpen()) {
             return;
         }
-    	
-		let connection = await this._connectionResolver.resolve(context);
+       
+		const connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
 
         try {
-            let options: any = {};
+            const options: any = {};
 
             if (connection.getAsStringWithDefault("protocol", 'http') == 'https') {
-                let sslKeyFile = connection.getAsNullableString('ssl_key_file');
-                let privateKey = fs.readFileSync(sslKeyFile).toString();
+                const sslKeyFile = connection.getAsNullableString('ssl_key_file');
+                const privateKey = fs.readFileSync(sslKeyFile).toString();
     
-                let sslCrtFile = connection.getAsNullableString('ssl_crt_file');
-                let certificate = fs.readFileSync(sslCrtFile).toString();
+                const sslCrtFile = connection.getAsNullableString('ssl_crt_file');
+                const certificate = fs.readFileSync(sslCrtFile).toString();
     
-                let ca = [];
-                let sslCaFile = connection.getAsNullableString('ssl_ca_file');
+                const ca = [];
+                const sslCaFile = connection.getAsNullableString('ssl_ca_file');
                 if (sslCaFile != null) {
                     let caText = fs.readFileSync(sslCaFile).toString();
                     while (caText != null && caText.trim().length > 0) {
-                        let crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
+                        const crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
                         if (crtIndex > -1) {
                             ca.push(caText.substring(crtIndex));
                             caText = caText.substring(0, crtIndex);
@@ -187,10 +187,11 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             }
         
             // Create instance of express application   
-            let grpc = require('@grpc/grpc-js'); 
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const grpc = require('@grpc/grpc-js'); 
             this._server = new grpc.Server();
             
-            let credentials = connection.getAsStringWithDefault("protocol", 'http') == 'https' 
+            const credentials = connection.getAsStringWithDefault("protocol", 'http') == 'https' 
                 ? grpc.ServerCredentials.createSsl(options.ca, options.kvpair)
                 : grpc.ServerCredentials.createInsecure();
 
@@ -228,7 +229,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     /**
-     * Closes this endpoint and the GRPC server (service) that was opened earlier.
+     * Closes this endpoint and the GRPC server (controller) that was opened earlier.
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
@@ -237,7 +238,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             this._uri = null;
             this._commandableMethods = null;
             this._commandableSchemas = null;
-            this._commandableService = null;
+            this._commandableController = null;
 
             // Eat exceptions
             try {
@@ -285,20 +286,22 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     private performRegistrations(): void {
-        for (let registration of this._registrations) {
+        for (const registration of this._registrations) {
             registration.register();
         }
 
-        this.registerCommandableService();
+        this.registerCommandableController();
     }
 
-    private registerCommandableService() {
+    private registerCommandableController() {
         if (this._commandableMethods == null)  return;
 
-        let grpc = require('@grpc/grpc-js');
-        let protoLoader = require('@grpc/proto-loader');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const grpc = require('@grpc/grpc-js');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const protoLoader = require('@grpc/proto-loader');
 
-        let options = {
+        const options = {
             keepCase: true,
             // longs: String,
             // enums: String,
@@ -306,12 +309,12 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             oneofs: true
         };
 
-        let packageDefinition = protoLoader.loadSync(__dirname + "../../../../src/protos/commandable.proto", options);
-        let packageObject = grpc.loadPackageDefinition(packageDefinition);
-        let service = packageObject.commandable.Commandable.service;     
+        const packageDefinition = protoLoader.loadSync(__dirname + "../../../../src/protos/commandable.proto", options);
+        const packageObject = grpc.loadPackageDefinition(packageDefinition);
+        const controller = packageObject.commandable.Commandable.service;     
 
-        this.registerService(
-            service, 
+        this.registerController(
+            controller, 
             { 
                 invoke: (call, callback) => { 
                     this.invokeCommandableMethod(call)
@@ -327,19 +330,19 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     private async invokeCommandableMethod(call: any): Promise<any> {
-        let method = call.request.method;
-        let action = this._commandableMethods ? this._commandableMethods[method] : null;
-        let traceId = call.request.trace_id;
+        const method = call.request.method;
+        const action = this._commandableMethods ? this._commandableMethods[method] : null;
+        const traceId = call.request.trace_id;
 
         // Handle method not found
         if (action == null) {
-            let err = new InvocationException(
+            const err = new InvocationException(
                 traceId,
                 "METHOD_NOT_FOUND",
                 "Method " + method + " was not found"
             ).withDetails("method", method);
             
-            let response = { 
+            const response = { 
                 error: ErrorDescriptionFactory.create(err),
                 result_empty: true,
                 result_json: null 
@@ -352,17 +355,17 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     }
 
     /**
-     * Registers a service with related implementation
+     * Registers a controller with related implementation
      * 
-     * @param service        a GRPC service object.
-     * @param implementation the service implementation methods.
+     * @param controller        a GRPC controller object.
+     * @param implementation the controller implementation methods.
      */
-    public registerService(service: any, implementation: any): void {
-        this._server.addService(service, implementation);
+    public registerController(controller: any, implementation: any): void {
+        this._server.addService(controller, implementation);
     }
 
     /**
-     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     * Registers a commandable method in this objects GRPC server (controller) by the given name.,
      * 
      * @param method        the GRPC method name.
      * @param schema        the schema to use for parameter validation.

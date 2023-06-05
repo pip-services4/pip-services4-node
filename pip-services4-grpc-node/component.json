@@ -1,5 +1,5 @@
 {
-    "name":  "pip-services4-grpc-node",
+    "name": "pip-services4-grpc-node",
     "type": "module",
     "language": "node",
     "version": "0.0.1",
@@ -7,7 +7,7 @@
     "registry": "pipservices",
     "artifacts": [
         {
-            "name":  "<name>",
+            "name": "<name>",
             "type": "npm"
         }
     ]

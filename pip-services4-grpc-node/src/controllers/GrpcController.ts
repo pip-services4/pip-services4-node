@@ -1,7 +1,6 @@
 /** @module controllers */
-import { IContext } from 'pip-services4-components-node';
+import { IContext, IUnreferenceable } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
-import { IUnreferenceable } from 'pip-services4-componnets-node';
 import { InvalidStateException } from 'pip-services4-commons-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -93,9 +92,9 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
         "dependencies.endpoint", "*:endpoint:grpc:*:1.0"
     );
 
-    private _serviceProto: any;
+    private _controllerProto: any;
     private _protoPath: string;
-    private _serviceName: string;
+    private _controllerName: string;
     private _packageOptions: any;
     private _config: ConfigParams;
     private _references: IReferences;
@@ -106,7 +105,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
     private _opened: boolean;
 
     /**
-     * The GRPC endpoint that exposes this service.
+     * The GRPC endpoint that exposes this controller.
      */
     protected _endpoint: GrpcEndpoint;    
     /**
@@ -126,15 +125,15 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
      */
     protected _tracer: CompositeTracer = new CompositeTracer();
 
-    public constructor(serviceOrPath: any, serviceName?: string, packageOptions?: any) {
-        this._serviceProto = (typeof serviceOrPath !== "string") ? serviceOrPath : null;
-        this._protoPath = (typeof serviceOrPath === "string") ? serviceOrPath : null;
-        this._serviceName = serviceName;
+    public constructor(controllerOrPath: any, controllerName?: string, packageOptions?: any) {
+        this._controllerProto = (typeof controllerOrPath !== "string") ? controllerOrPath : null;
+        this._protoPath = (typeof controllerOrPath === "string") ? controllerOrPath : null;
+        this._controllerName = controllerName;
         this._packageOptions = packageOptions;
 
         this._registerable = {
             register: () => {
-                this.registerServiceProto();
+                this.registerControllerProto();
             }
         }
     }
@@ -189,7 +188,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
     }
 
     private createEndpoint(): GrpcEndpoint {
-        let endpoint = new GrpcEndpoint();
+        const endpoint = new GrpcEndpoint();
         
         if (this._config) {
             endpoint.configure(this._config);
@@ -214,8 +213,8 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-		let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+		const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -254,7 +253,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
 	public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -277,7 +276,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
@@ -296,21 +295,23 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
         this._opened = false;
     }
 
-    private registerServiceProto() {
+    private registerControllerProto() {
         // Register implementations
         this._implementation = {};
         this._interceptors = [];
         this.register();
     
-        // Load service
-        let grpc = require('@grpc/grpc-js');
-        let serviceProto = this._serviceProto;
+        // Load controller
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const grpc = require('@grpc/grpc-js');
+        let controllerProto = this._controllerProto;
 
-        // Dynamically load service
-        if (serviceProto == null && typeof this._protoPath === "string") {
-            let protoLoader = require('@grpc/proto-loader');
+        // Dynamically load controller
+        if (controllerProto == null && typeof this._protoPath === "string") {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const protoLoader = require('@grpc/proto-loader');
 
-            let options = this._packageOptions || {
+            const options = this._packageOptions || {
                 keepCase: true,
                 longs: Number,
                 enums: Number,
@@ -318,27 +319,27 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
                 oneofs: true
             };
 
-            let packageDefinition = protoLoader.loadSync(this._protoPath, options);
-            let packageObject = grpc.loadPackageDefinition(packageDefinition);
-            serviceProto = this.getServiceProtoByName(packageObject, this._serviceName);            
+            const packageDefinition = protoLoader.loadSync(this._protoPath, options);
+            const packageObject = grpc.loadPackageDefinition(packageDefinition);
+            controllerProto = this.getControllerProtoByName(packageObject, this._controllerName);            
         } 
-        // Statically load service
+            // Statically load controller
         else {
-            serviceProto = this.getServiceProtoByName(this._serviceProto, this._serviceName);
+            controllerProto = this.getControllerProtoByName(this._controllerProto, this._controllerName);
         }
 
-        // Register service if it is set
-        if (serviceProto) {
-            this._endpoint.registerService(serviceProto, this._implementation);
+        // Register controller if it is set
+        if (controllerProto) {
+            this._endpoint.registerController(controllerProto, this._implementation);
         }
     }
 
-    private getServiceProtoByName(packageObject: any, serviceName: string): any {
-        if (packageObject == null || serviceName == null)
+    private getControllerProtoByName(packageObject: any, controllerName: string): any {
+        if (packageObject == null || controllerName == null)
             return packageObject;
 
-        let names = serviceName.split(".");
-        for (let name of names) {
+        const names = controllerName.split(".");
+        for (const name of names) {
             packageObject = packageObject[name];
             if (packageObject == null) break;
         }
@@ -348,7 +349,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
 
     protected applyValidation(schema: Schema, action: (call: any) => Promise<any>): (call: any) => Promise<any> {
         // Create an action function
-        let actionWrapper = async (call) => {
+        const actionWrapper = async (call) => {
             // Validate object
             if (schema && call && call.request) {
                 let value = call.request;
@@ -357,14 +358,14 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
                 }
 
                 // Perform validation                    
-                let context = value.trace_id;
-                let err = schema.validateAndReturnException(context, value, false);
+                const context = value.trace_id;
+                const err = schema.validateAndReturnException(context, value, false);
                 if (err) {
                     throw err;
                 }
             }
 
-            let result = await action.call(this, call);
+            const result = await action.call(this, call);
             return result;
         };
 
@@ -375,7 +376,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
         let actionWrapper = action;
 
         for (let index = this._interceptors.length - 1; index >= 0; index--) {
-            let interceptor = this._interceptors[index];
+            const interceptor = this._interceptors[index];
             actionWrapper = ((action) => { 
                 return (call) => {
                     return interceptor(call, action);
@@ -387,7 +388,7 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
     }
     
     /**
-     * Registers a method in GRPC service.
+     * Registers a method in GRPC controller.
      * 
      * @param name          a method name
      * @param schema        a validation schema to validate received parameters.
@@ -456,9 +457,9 @@ export abstract class GrpcController implements IOpenable, IConfigurable, IRefer
     }    
     
     /**
-     * Registers all service routes in HTTP endpoint.
+     * Registers all controller routes in HTTP endpoint.
      * 
-     * This method is called by the service and must be overriden
+     * This method is called by the controller and must be overriden
      * in child classes.
      */
     public abstract register(): void;

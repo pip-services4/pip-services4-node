@@ -1,4 +1,3 @@
-import { IContext } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { Descriptor } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';

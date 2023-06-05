@@ -1,11 +1,8 @@
-import { Descriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-
-import { DummyController } from '../DummyController';
 import { DummyCommandableGrpcController } from '../controllers/DummyCommandableGrpcController';
 import { DummyCommandableGrpcClient } from './DummyCommandableGrpcClient';
 import { DummyClientFixture } from './DummyClientFixture';
+import { ConfigParams, Descriptor, References } from 'pip-services4-components-node';
+import { DummyService } from '../sample/DummyService';
 
 let grpcConfig = ConfigParams.fromTuples(
     "connection.protocol", "http",
@@ -14,27 +11,27 @@ let grpcConfig = ConfigParams.fromTuples(
 );
 
 suite('DummyCommandableGrpcClient', ()=> {
-    let service: DummyCommandableGrpcController;
+    let controller: DummyCommandableGrpcController;
     let client: DummyCommandableGrpcClient;
     let fixture: DummyClientFixture;
 
     suiteSetup(async () => {
-        let ctrl = new DummyController();
+        let service = new DummyService();
 
-        service = new DummyCommandableGrpcController();
-        service.configure(grpcConfig);
+        controller = new DummyCommandableGrpcController();
+        controller.configure(grpcConfig);
 
         let references: References = References.fromTuples(
-            new Descriptor('pip-services-dummies', 'controller', 'default', 'default', '1.0'), ctrl,
-            new Descriptor('pip-services-dummies', 'service', 'grpc', 'default', '1.0'), service
+            new Descriptor('pip-services-dummies', 'service', 'default', 'default', '1.0'), service,
+            new Descriptor('pip-services-dummies', 'controller', 'grpc', 'default', '1.0'), controller
         );
-        service.setReferences(references);
+        controller.setReferences(references);
 
-        await service.open(null);
+        await controller.open(null);
     });
     
     suiteTeardown(async () => {
-        await service.close(null);
+        await controller.close(null);
     });
 
     setup(async () => {

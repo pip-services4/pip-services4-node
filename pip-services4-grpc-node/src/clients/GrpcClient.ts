@@ -1,18 +1,13 @@
 /** @module clients */
 /** @hidden */
-const fs = require('fs');
-
-import { IOpenable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { InstrumentTiming } from 'pip-services4-rpc-node';
+import fs = require('fs');
 import { ConnectionException } from 'pip-services4-commons-node';
-import { HttpConnectionResolver } from 'pip-services4-rpc-node';
+import { IOpenable, IConfigurable, IReferenceable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { HttpConnectionResolver } from 'pip-services4-config-node';
+import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
+
+
 
 /**
  * Abstract client that calls remove endpoints using GRPC protocol.
@@ -34,10 +29,10 @@ import { HttpConnectionResolver } from 'pip-services4-rpc-node';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * 
- * @see [[GrpcService]]
- * @see [[CommandableGrpcService]]
+ * @see [[GrpcController]]
+ * @see [[CommandableGrpcController]]
  * 
  * ### Example ###
  * 
@@ -113,13 +108,13 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
     /**
      * The connection timeout in milliseconds.
      */
-    protected _connectTimeout: number = 10000;
+    protected _connectTimeout = 10000;
     /**
      * The invocation timeout in milliseconds.
      */
-    protected _timeout: number = 10000;
+    protected _timeout = 10000;
     /**
-     * The remote service uri which is calculated on open.
+     * The remote controller uri which is calculated on open.
      */
 	protected _uri: string;
 
@@ -168,8 +163,8 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".call_time");
 
-		let counterTiming = this._counters.beginTiming(name + ".call_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+		const counterTiming = this._counters.beginTiming(name + ".call_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -211,27 +206,27 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         if (this.isOpen()) {
             return;
         }
-    	
-		let connection = await this._connectionResolver.resolve(context);
+
+		const connection = await this._connectionResolver.resolve(context);
 
         this._uri = connection.getAsString("uri");
 
         try {
-            let options: any = {};
+            const options: any = {};
 
             if (connection.getAsStringWithDefault("protocol", 'http') == 'https') {
-                let sslKeyFile = connection.getAsNullableString('ssl_key_file');
-                let privateKey = fs.readFileSync(sslKeyFile).toString();
+                const sslKeyFile = connection.getAsNullableString('ssl_key_file');
+                const privateKey = fs.readFileSync(sslKeyFile).toString();
     
-                let sslCrtFile = connection.getAsNullableString('ssl_crt_file');
-                let certificate = fs.readFileSync(sslCrtFile).toString();
+                const sslCrtFile = connection.getAsNullableString('ssl_crt_file');
+                const certificate = fs.readFileSync(sslCrtFile).toString();
     
-                let ca = [];
-                let sslCaFile = connection.getAsNullableString('ssl_ca_file');
+                const ca = [];
+                const sslCaFile = connection.getAsNullableString('ssl_ca_file');
                 if (sslCaFile != null) {
                     let caText = fs.readFileSync(sslCaFile).toString();
                     while (caText != null && caText.trim().length > 0) {
-                        let crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
+                        const crtIndex = caText.lastIndexOf('-----BEGIN CERTIFICATE-----');
                         if (crtIndex > -1) {
                             ca.push(caText.substring(crtIndex));
                             caText = caText.substring(0, crtIndex);
@@ -249,9 +244,10 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
             }
         
             // Create instance of express application   
-            let grpc = require('@grpc/grpc-js'); 
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const grpc = require('@grpc/grpc-js'); 
             
-            let credentials = connection.getAsStringWithDefault("protocol", 'http') == 'https' 
+            const credentials = connection.getAsStringWithDefault("protocol", 'http') == 'https' 
                 ? grpc.credentials.createSsl(options.ca, options.key, options.cert)
                 : grpc.credentials.createInsecure();
 
@@ -259,9 +255,10 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
 
             // Dynamically load client type
             if (clientType == null) {
-                let protoLoader = require('@grpc/proto-loader');
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const protoLoader = require('@grpc/proto-loader');
     
-                let options = this._packageOptions || {
+                const options = this._packageOptions || {
                     keepCase: true,
                     longs: Number,
                     enums:  Number,
@@ -269,8 +266,8 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
                     oneofs: true
                 };
     
-                let packageDefinition = protoLoader.loadSync(this._protoPath, options);
-                let packageObject = grpc.loadPackageDefinition(packageDefinition);
+                const packageDefinition = protoLoader.loadSync(this._protoPath, options);
+                const packageObject = grpc.loadPackageDefinition(packageDefinition);
                 clientType = this.getClientByName(packageObject, this._clientName);            
             } 
             // Statically load client type
@@ -282,7 +279,7 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         } catch (ex) {
             this._client = null;
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CANNOT_CONNECT",
                 "Opening GRPC client failed"
             ).wrap(ex).withDetails("url", this._uri);
@@ -298,9 +295,9 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(context, "Closed GRPC service at %s", this._uri);
+                this._logger.debug(context, "Closed GRPC client at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(context, "Failed while closing GRPC service: %s", ex);
+                this._logger.warn(context, "Failed while closing GRPC client: %s", ex);
             }
 
             this._client = null;
@@ -313,8 +310,8 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
             return packageObject;
         }
 
-        let names = clientName.split(".");
-        for (let name of names) {
+        const names = clientName.split(".");
+        for (const name of names) {
             packageObject = packageObject[name];
             if (packageObject == null) break;
         }
@@ -326,11 +323,11 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
      * Calls a remote method via GRPC protocol.
      * 
      * @param method            a method name to called
-     * @param context     (optional) a context to trace execution through call chain.
+     * @param trace_id     (optional) a trace_id to trace execution through call chain.
      * @param request           (optional) request object.
      * @returns the received result.
      */
-    protected call<T>(method: string, context?: string, request: any = {}): Promise<T> {
+    protected call<T>(method: string, traceId?: string, request: any = {}): Promise<T> {
         method = method.toLowerCase();
 
         return new Promise<any>((resolve, reject) => {

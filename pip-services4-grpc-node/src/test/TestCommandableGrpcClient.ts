@@ -7,7 +7,7 @@ export class TestCommandableGrpcClient extends CommandableGrpcClient {
     /**
      * Creates a new instance of the client.
      * 
-     * @param name     a service name. 
+     * @param name     a controller name. 
      */
      public constructor(name: string) {
         super(name);
@@ -16,7 +16,7 @@ export class TestCommandableGrpcClient extends CommandableGrpcClient {
     /**
      * Calls a remote method via GRPC commadable protocol.
      * The call is made via Invoke method and all parameters are sent in args object.
-     * The complete route to remote method is defined as serviceName + "." + name.
+     * The complete route to remote method is defined as controllerName + "." + name.
      * 
      * @param name              a name of the command to call. 
      * @param context     (optional) a context to trace execution through call chain.
