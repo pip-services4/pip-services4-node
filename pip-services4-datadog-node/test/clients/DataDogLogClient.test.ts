@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
 
+import { ConfigParams } from 'pip-services4-components-node';
 import { DataDogLogClient } from '../../src/clients/DataDogLogClient';
 import { DataDogLogMessage } from '../../src/clients/DataDogLogMessage';
 import { DataDogStatus } from '../../src/clients/DataDogStatus';

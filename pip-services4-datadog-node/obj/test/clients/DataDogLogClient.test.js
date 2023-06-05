@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DataDogLogClient_1 = require("../../src/clients/DataDogLogClient");
 const DataDogStatus_1 = require("../../src/clients/DataDogStatus");
 suite('DataDogLogClient', () => {
@@ -18,7 +18,7 @@ suite('DataDogLogClient', () => {
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         let apiKey = process.env['DATADOG_API_KEY'] || '3eb3355caf628d4689a72084425177ac';
         _client = new DataDogLogClient_1.DataDogLogClient();
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
         _client.configure(config);
         yield _client.open(null);
     }));

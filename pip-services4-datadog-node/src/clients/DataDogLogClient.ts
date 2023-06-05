@@ -1,12 +1,11 @@
 /** @module clients */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { StringConverter } from 'pip-services4-commons-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { RestClient, } from 'pip-services4-rpc-node';
 
+
+import { ConfigException, StringConverter } from 'pip-services4-commons-node';
+import { ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { RestClient } from 'pip-services4-http-node';
 import { DataDogLogMessage } from './DataDogLogMessage';
+import { CredentialResolver } from 'pip-services4-config-node';
 
 export class DataDogLogClient extends RestClient {
     private _defaultConfig: ConfigParams = ConfigParams.fromTuples(
@@ -36,11 +35,11 @@ export class DataDogLogClient extends RestClient {
     }
 
     public async open(context: IContext): Promise<void> {
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
 
         if (credential == null || credential.getAccessKey() == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_ACCESS_KEY",
                 "Missing access key in credentials"
             );
@@ -55,9 +54,9 @@ export class DataDogLogClient extends RestClient {
     private convertTags(tags: any[]): string {
         if (tags == null) return null;
 
-        let builder: string = "";
+        let builder = "";
 
-        for (let key in tags) {
+        for (const key in tags) {
             if (builder != "")
                 builder += ",";
             builder += key + ":" + tags[key];
@@ -66,7 +65,7 @@ export class DataDogLogClient extends RestClient {
     }
 
     private convertMessage(message: DataDogLogMessage): any {
-        let result = {
+        const result = {
             "timestamp": StringConverter.toString(message.time || new Date()),
             "status": message.status || "INFO",
             "ddsource": message.source || 'pip-services',
@@ -98,7 +97,7 @@ export class DataDogLogClient extends RestClient {
     }
 
     public async sendLogs(context: IContext, messages: DataDogLogMessage[]): Promise<void> {
-        let data = this.convertMessages(messages);
+        const data = this.convertMessages(messages);
 
         // Commented instrumentation because otherwise it will never stop sending logs...
         //let timing = this.instrument(context, "datadog.send_logs");

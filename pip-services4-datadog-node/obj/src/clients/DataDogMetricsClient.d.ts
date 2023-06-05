@@ -1,7 +1,6 @@
 /** @module clients */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { RestClient } from 'pip-services4-rpc-node';
+import { ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { RestClient } from 'pip-services4-http-node';
 import { DataDogMetric } from './DataDogMetric';
 export declare class DataDogMetricsClient extends RestClient {
     private _defaultConfig;

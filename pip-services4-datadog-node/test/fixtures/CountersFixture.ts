@@ -1,7 +1,6 @@
-const assert = require('chai').assert;
+import { CachedCounters, CounterType } from "pip-services4-observability-node";
 
-import { CounterType } from 'pip-services4-components-node';
-import { CachedCounters } from 'pip-services4-components-node';
+const assert = require('chai').assert;
 
 export class CountersFixture {
     private _counters: CachedCounters;

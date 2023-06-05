@@ -1,4 +1,5 @@
 "use strict";
+/** @module clients */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,17 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataDogLogClient = void 0;
-/** @module clients */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
-class DataDogLogClient extends pip_services3_rpc_node_1.RestClient {
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_http_node_1 = require("pip-services4-http-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+class DataDogLogClient extends pip_services4_http_node_1.RestClient {
     constructor(config) {
         super();
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "https", "connection.host", "http-intake.logs.datadoghq.com", "connection.port", 443, "credential.internal_network", "true");
-        this._credentialResolver = new pip_services3_components_node_1.CredentialResolver();
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "https", "connection.host", "http-intake.logs.datadoghq.com", "connection.port", 443, "credential.internal_network", "true");
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         if (config)
             this.configure(config);
         this._baseRoute = "v1";
@@ -39,9 +38,9 @@ class DataDogLogClient extends pip_services3_rpc_node_1.RestClient {
             open: { get: () => super.open }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             if (credential == null || credential.getAccessKey() == null) {
-                throw new pip_services3_commons_node_2.ConfigException(context, "NO_ACCESS_KEY", "Missing access key in credentials");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_KEY", "Missing access key in credentials");
             }
             this._headers = this._headers || {};
             this._headers['DD-API-KEY'] = credential.getAccessKey();
@@ -52,7 +51,7 @@ class DataDogLogClient extends pip_services3_rpc_node_1.RestClient {
         if (tags == null)
             return null;
         let builder = "";
-        for (let key in tags) {
+        for (const key in tags) {
             if (builder != "")
                 builder += ",";
             builder += key + ":" + tags[key];
@@ -60,8 +59,8 @@ class DataDogLogClient extends pip_services3_rpc_node_1.RestClient {
         return builder;
     }
     convertMessage(message) {
-        let result = {
-            "timestamp": pip_services3_commons_node_3.StringConverter.toString(message.time || new Date()),
+        const result = {
+            "timestamp": pip_services4_commons_node_1.StringConverter.toString(message.time || new Date()),
             "status": message.status || "INFO",
             "ddsource": message.source || 'pip-services',
             //            "source": message.source || 'pip-services',
@@ -89,7 +88,7 @@ class DataDogLogClient extends pip_services3_rpc_node_1.RestClient {
     }
     sendLogs(context, messages) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = this.convertMessages(messages);
+            const data = this.convertMessages(messages);
             // Commented instrumentation because otherwise it will never stop sending logs...
             //let timing = this.instrument(context, "datadog.send_logs");
             try {

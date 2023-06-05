@@ -1,4 +1,4 @@
-import { CachedLogger } from 'pip-services4-components-node';
+import { CachedLogger } from "pip-services4-observability-node";
 export declare class LoggerFixture {
     private _logger;
     constructor(logger: CachedLogger);

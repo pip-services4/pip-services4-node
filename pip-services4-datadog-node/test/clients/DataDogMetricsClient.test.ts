@@ -1,11 +1,10 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { RandomDouble } from 'pip-services4-commons-node';
-
 import { DataDogMetricsClient } from '../../src/clients/DataDogMetricsClient';
 import { DataDogMetric } from '../../src/clients/DataDogMetric';
 import { DataDogMetricType } from '../../src/clients/DataDogMetricType';
+import { ConfigParams } from 'pip-services4-components-node';
+import { RandomDouble } from 'pip-services4-data-node';
 
 suite('DataDogMetricClient', () => {
     let _client: DataDogMetricsClient;

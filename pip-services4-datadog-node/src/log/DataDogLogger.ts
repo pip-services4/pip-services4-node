@@ -1,18 +1,13 @@
 /** @module log */
 /** @hidden */
-const os = require('os');
+import os = require('os');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedLogger } from 'pip-services4-components-node';
-import { LogMessage } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { ContextInfo } from 'pip-services4-components-node';
+
+import { ConfigParams, Context, ContextInfo, Descriptor, IContext, IOpenable, IReferenceable, IReferences } from 'pip-services4-components-node';
 
 import { DataDogLogMessage } from '../clients/DataDogLogMessage';
 import { DataDogLogClient } from '../clients/DataDogLogClient';
+import { CachedLogger, LogMessage } from 'pip-services4-observability-node';
 
 /**
  * Logger that dumps execution logs to DataDog service.
@@ -89,7 +84,7 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
         super.setReferences(references);
         this._client.setReferences(references);
 
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
@@ -159,7 +154,7 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
     // }
 
     private convertMessage(message: LogMessage): DataDogLogMessage {
-        let result: DataDogLogMessage = {
+        const result: DataDogLogMessage = {
             time: message.time || new Date(),
             tags: {
                 trace_id: message.trace_id
@@ -189,8 +184,8 @@ export class DataDogLogger extends CachedLogger implements IReferenceable, IOpen
             return;
         }
 
-        let data = messages.map((m) => { return this.convertMessage(m); });
+        const data = messages.map((m) => { return this.convertMessage(m); });
 
-        await this._client.sendLogs("datadog-logger", data);
+        await this._client.sendLogs(Context.fromTraceId('datadog-logger'), data);
     }
 }

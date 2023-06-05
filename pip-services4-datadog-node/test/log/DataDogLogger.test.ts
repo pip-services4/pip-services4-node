@@ -1,5 +1,5 @@
-import { ConfigParams } from 'pip-services4-commons-node';
 
+import { ConfigParams } from 'pip-services4-components-node';
 import { DataDogLogger } from '../../src/log/DataDogLogger';
 import { LoggerFixture } from '../fixtures/LoggerFixture';
 

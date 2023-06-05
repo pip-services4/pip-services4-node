@@ -12,13 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataDogCounters = void 0;
 /** @module count */
 /** @hidden */
-let os = require('os');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
+const os = require("os");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DataDogMetricsClient_1 = require("../clients/DataDogMetricsClient");
 const DataDogMetricType_1 = require("../clients/DataDogMetricType");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Performance counters that send their metrics to DataDog service.
  *
@@ -68,14 +66,14 @@ const DataDogMetricType_1 = require("../clients/DataDogMetricType");
  *
  *     counters.dump();
  */
-class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
+class DataDogCounters extends pip_services4_observability_node_1.CachedCounters {
     /**
      * Creates a new instance of the performance counters.
      */
     constructor() {
         super();
         this._client = new DataDogMetricsClient_1.DataDogMetricsClient();
-        this._logger = new pip_services3_components_node_3.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         this._opened = false;
         this._instance = os.hostname();
     }
@@ -98,7 +96,7 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
     setReferences(references) {
         this._logger.setReferences(references);
         this._client.setReferences(references);
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
         if (contextInfo != null && this._instance == null)
@@ -137,7 +135,7 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
     }
     convertCounter(counter) {
         switch (counter.type) {
-            case pip_services3_components_node_2.CounterType.Increment:
+            case pip_services4_observability_node_1.CounterType.Increment:
                 return [{
                         metric: counter.name,
                         type: DataDogMetricType_1.DataDogMetricType.Gauge,
@@ -145,7 +143,7 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
                         service: this._source,
                         points: [{ time: counter.time, value: counter.count }]
                     }];
-            case pip_services3_components_node_2.CounterType.LastValue:
+            case pip_services4_observability_node_1.CounterType.LastValue:
                 return [{
                         metric: counter.name,
                         type: DataDogMetricType_1.DataDogMetricType.Gauge,
@@ -153,8 +151,8 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
                         service: this._source,
                         points: [{ time: counter.time, value: counter.last }]
                     }];
-            case pip_services3_components_node_2.CounterType.Interval:
-            case pip_services3_components_node_2.CounterType.Statistics:
+            case pip_services4_observability_node_1.CounterType.Interval:
+            case pip_services4_observability_node_1.CounterType.Statistics:
                 return [
                     {
                         metric: counter.name + ".min",
@@ -182,9 +180,9 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
         return null;
     }
     convertCounters(counters) {
-        let metrics = [];
-        for (let counter of counters) {
-            let data = this.convertCounter(counter);
+        const metrics = [];
+        for (const counter of counters) {
+            const data = this.convertCounter(counter);
             if (data != null && data.length > 0)
                 metrics.push(...data);
         }
@@ -196,12 +194,13 @@ class DataDogCounters extends pip_services3_components_node_1.CachedCounters {
      * @param counters      current counters measurements to be saves.
      */
     save(counters) {
-        let metrics = this.convertCounters(counters);
+        const metrics = this.convertCounters(counters);
         if (metrics.length == 0)
             return;
-        this._client.sendMetrics('datadog-counters', metrics)
+        const context = pip_services4_components_node_1.Context.fromTraceId('datadog-counters');
+        this._client.sendMetrics(context, metrics)
             .catch((err) => {
-            this._logger.error("datadog-counters", err, "Failed to push metrics to DataDog");
+            this._logger.error(context, err, "Failed to push metrics to DataDog");
         });
     }
 }

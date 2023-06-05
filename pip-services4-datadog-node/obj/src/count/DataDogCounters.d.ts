@@ -1,9 +1,5 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters } from 'pip-services4-components-node';
-import { Counter } from 'pip-services4-components-node';
+import { ConfigParams, IContext, IOpenable, IReferenceable, IReferences } from 'pip-services4-components-node';
+import { CachedCounters, Counter } from 'pip-services4-observability-node';
 /**
  * Performance counters that send their metrics to DataDog service.
  *

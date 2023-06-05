@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultDataDogFactory = void 0;
 /** @module build */
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DataDogLogger_1 = require("../log/DataDogLogger");
 const DataDogCounters_1 = require("../count/DataDogCounters");
 /**
@@ -11,7 +10,7 @@ const DataDogCounters_1 = require("../count/DataDogCounters");
  *
  * @see [[DataDogLogger]]
  */
-class DefaultDataDogFactory extends pip_services3_components_node_1.Factory {
+class DefaultDataDogFactory extends pip_services4_components_node_1.Factory {
     /**
      * Create a new instance of the factory.
      */
@@ -22,6 +21,6 @@ class DefaultDataDogFactory extends pip_services3_components_node_1.Factory {
     }
 }
 exports.DefaultDataDogFactory = DefaultDataDogFactory;
-DefaultDataDogFactory.DataDogLoggerDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "logger", "datadog", "*", "1.0");
-DefaultDataDogFactory.DataDogCountersDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "counters", "datadog", "*", "1.0");
+DefaultDataDogFactory.DataDogLoggerDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "logger", "datadog", "*", "1.0");
+DefaultDataDogFactory.DataDogCountersDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "counters", "datadog", "*", "1.0");
 //# sourceMappingURL=DefaultDataDogFactory.js.map

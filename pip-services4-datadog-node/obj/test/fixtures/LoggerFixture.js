@@ -10,25 +10,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoggerFixture = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const assert = require('chai').assert;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
 class LoggerFixture {
     constructor(logger) {
         this._logger = logger;
     }
     testLogLevel() {
-        assert.isTrue(this._logger.getLevel() >= pip_services3_components_node_1.LogLevel.None);
-        assert.isTrue(this._logger.getLevel() <= pip_services3_components_node_1.LogLevel.Trace);
+        assert.isTrue(this._logger.getLevel() >= pip_services4_observability_node_1.LogLevel.None);
+        assert.isTrue(this._logger.getLevel() <= pip_services4_observability_node_1.LogLevel.Trace);
     }
     testSimpleLogging() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._logger.setLevel(pip_services3_components_node_1.LogLevel.Trace);
-            this._logger.fatal("987", null, "Fatal error message");
-            this._logger.error("987", null, "Error message");
-            this._logger.warn("987", "Warning message");
-            this._logger.info("987", "Information message");
-            this._logger.debug("987", "Debug message");
-            this._logger.trace("987", "Trace message");
+            this._logger.setLevel(pip_services4_observability_node_1.LogLevel.Trace);
+            const context = pip_services4_components_node_1.Context.fromTraceId("987");
+            this._logger.fatal(context, null, "Fatal error message");
+            this._logger.error(context, null, "Error message");
+            this._logger.warn(context, "Warning message");
+            this._logger.info(context, "Information message");
+            this._logger.debug(context, "Debug message");
+            this._logger.trace(context, "Trace message");
             this._logger.dump();
             yield new Promise((resolve, reject) => { setTimeout(resolve, 1000); });
         });
@@ -40,8 +42,8 @@ class LoggerFixture {
                 throw new Error();
             }
             catch (ex) {
-                this._logger.fatal("123", ex, "Fatal error");
-                this._logger.error("123", ex, "Recoverable error");
+                this._logger.fatal(pip_services4_components_node_1.Context.fromTraceId("123"), ex, "Fatal error");
+                this._logger.error(pip_services4_components_node_1.Context.fromTraceId("123"), ex, "Recoverable error");
                 assert.isNotNull(ex);
             }
             this._logger.dump();

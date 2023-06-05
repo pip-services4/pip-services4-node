@@ -1,6 +1,4 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { DataDogCounters } from '../../src/count/DataDogCounters';
 import { CountersFixture } from '../fixtures/CountersFixture';
 

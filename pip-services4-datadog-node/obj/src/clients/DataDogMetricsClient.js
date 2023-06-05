@@ -1,4 +1,5 @@
 "use strict";
+/** @module clients */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,17 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataDogMetricsClient = void 0;
-/** @module clients */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
-class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_http_node_1 = require("pip-services4-http-node");
+class DataDogMetricsClient extends pip_services4_http_node_1.RestClient {
     constructor(config) {
         super();
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "https", "connection.host", "api.datadoghq.com", "connection.port", 443, "credential.internal_network", "true");
-        this._credentialResolver = new pip_services3_components_node_1.CredentialResolver();
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "https", "connection.host", "api.datadoghq.com", "connection.port", 443, "credential.internal_network", "true");
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         if (config)
             this.configure(config);
         this._baseRoute = "api/v1";
@@ -39,9 +38,9 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
             open: { get: () => super.open }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             if (credential == null || credential.getAccessKey() == null) {
-                throw new pip_services3_commons_node_2.ConfigException(context, "NO_ACCESS_KEY", "Missing access key in credentials");
+                throw new pip_services4_commons_node_1.ConfigException(context, "NO_ACCESS_KEY", "Missing access key in credentials");
             }
             this._headers = this._headers || {};
             this._headers['DD-API-KEY'] = credential.getAccessKey();
@@ -52,7 +51,7 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
         if (tags == null)
             return null;
         let builder = "";
-        for (let key in tags) {
+        for (const key in tags) {
             if (builder != "")
                 builder += ",";
             builder += key + ":" + tags[key];
@@ -60,11 +59,11 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
         return builder;
     }
     convertPoints(points) {
-        let result = points.map((p) => {
-            let time = (p.time || new Date()).getTime() / 1000;
+        const result = points.map((p) => {
+            const time = (p.time || new Date()).getTime() / 1000;
             return [
-                pip_services3_commons_node_3.StringConverter.toString(time),
-                pip_services3_commons_node_3.StringConverter.toString(p.value)
+                pip_services4_commons_node_1.StringConverter.toString(time),
+                pip_services4_commons_node_1.StringConverter.toString(p.value)
             ];
         });
         return result;
@@ -75,7 +74,7 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
             tags = tags || {};
             tags.service = metric.service;
         }
-        let result = {
+        const result = {
             "metric": metric.metric,
             "type": metric.type || 'gauge',
             "points": this.convertPoints(metric.points),
@@ -89,14 +88,14 @@ class DataDogMetricsClient extends pip_services3_rpc_node_1.RestClient {
         return result;
     }
     convertMetrics(metrics) {
-        let series = metrics.map((m) => { return this.convertMetric(m); });
+        const series = metrics.map((m) => { return this.convertMetric(m); });
         return {
             series: series
         };
     }
     sendMetrics(context, metrics) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = this.convertMetrics(metrics);
+            const data = this.convertMetrics(metrics);
             // Commented instrumentation because otherwise it will never stop sending logs...
             //let timing = this.instrument(context, "datadog.send_metrics");
             try {

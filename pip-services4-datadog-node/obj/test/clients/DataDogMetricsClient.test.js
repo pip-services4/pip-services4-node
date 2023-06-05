@@ -10,16 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
 const DataDogMetricsClient_1 = require("../../src/clients/DataDogMetricsClient");
 const DataDogMetricType_1 = require("../../src/clients/DataDogMetricType");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 suite('DataDogMetricClient', () => {
     let _client;
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         let apiKey = process.env['DATADOG_API_KEY'] || '3eb3355caf628d4689a72084425177ac';
         _client = new DataDogMetricsClient_1.DataDogMetricsClient();
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
         _client.configure(config);
         yield _client.open(null);
     }));
@@ -35,7 +35,7 @@ suite('DataDogMetricClient', () => {
                 type: DataDogMetricType_1.DataDogMetricType.Gauge,
                 points: [{
                         time: new Date(),
-                        value: pip_services3_commons_node_2.RandomDouble.nextDouble(0, 100)
+                        value: pip_services4_data_node_1.RandomDouble.nextDouble(0, 100)
                     }]
             },
             {
@@ -46,7 +46,7 @@ suite('DataDogMetricClient', () => {
                 interval: 100,
                 points: [{
                         time: new Date(),
-                        value: pip_services3_commons_node_2.RandomDouble.nextDouble(0, 100)
+                        value: pip_services4_data_node_1.RandomDouble.nextDouble(0, 100)
                     }]
             },
             {
@@ -57,7 +57,7 @@ suite('DataDogMetricClient', () => {
                 interval: 100,
                 points: [{
                         time: new Date(),
-                        value: pip_services3_commons_node_2.RandomDouble.nextDouble(0, 100)
+                        value: pip_services4_data_node_1.RandomDouble.nextDouble(0, 100)
                     }]
             }
         ];

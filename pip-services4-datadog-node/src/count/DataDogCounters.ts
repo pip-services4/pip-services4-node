@@ -1,21 +1,14 @@
 /** @module count */
 /** @hidden */
-let os = require('os');
+import os = require('os');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters } from 'pip-services4-components-node';
-import { CounterType } from 'pip-services4-components-node';
-import { Counter } from 'pip-services4-components-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { ContextInfo } from 'pip-services4-components-node';
+
+import { ConfigParams, Context, ContextInfo, Descriptor, IContext, IOpenable, IReferenceable, IReferences } from 'pip-services4-components-node';
 
 import { DataDogMetricsClient } from '../clients/DataDogMetricsClient';
 import { DataDogMetric } from '../clients/DataDogMetric';
 import { DataDogMetricType } from '../clients/DataDogMetricType';
+import { CachedCounters, CompositeLogger, Counter, CounterType } from 'pip-services4-observability-node';
 
 /**
  * Performance counters that send their metrics to DataDog service.
@@ -69,7 +62,7 @@ import { DataDogMetricType } from '../clients/DataDogMetricType';
 export class DataDogCounters extends CachedCounters implements IReferenceable, IOpenable {
     private _client: DataDogMetricsClient = new DataDogMetricsClient();
     private _logger = new CompositeLogger();
-    private _opened: boolean = false;
+    private _opened = false;
     private _source: string;
     private _instance: string = os.hostname();
 
@@ -102,7 +95,7 @@ export class DataDogCounters extends CachedCounters implements IReferenceable, I
         this._logger.setReferences(references);
         this._client.setReferences(references);
 
-        let contextInfo = references.getOneOptional<ContextInfo>(
+        const contextInfo = references.getOneOptional<ContextInfo>(
             new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
@@ -194,10 +187,10 @@ export class DataDogCounters extends CachedCounters implements IReferenceable, I
     }
 
     private convertCounters(counters: Counter[]): DataDogMetric[] {
-        let metrics: DataDogMetric[] = [];
+        const metrics: DataDogMetric[] = [];
 
-        for (let counter of counters) {
-            let data = this.convertCounter(counter);
+        for (const counter of counters) {
+            const data = this.convertCounter(counter);
             if (data != null && data.length > 0)
                 metrics.push(...data);
         }
@@ -211,12 +204,12 @@ export class DataDogCounters extends CachedCounters implements IReferenceable, I
      * @param counters      current counters measurements to be saves.
      */
     protected save(counters: Counter[]): void {
-        let metrics = this.convertCounters(counters);
+        const metrics = this.convertCounters(counters);
         if (metrics.length == 0) return;
-
-        this._client.sendMetrics('datadog-counters', metrics)
+        const context = Context.fromTraceId('datadog-counters');
+        this._client.sendMetrics(context, metrics)
         .catch((err) => {
-            this._logger.error("datadog-counters", err, "Failed to push metrics to DataDog");
+            this._logger.error(context, err, "Failed to push metrics to DataDog");
         });
     }
 }

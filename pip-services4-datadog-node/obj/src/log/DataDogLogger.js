@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataDogLogger = void 0;
 /** @module log */
 /** @hidden */
-const os = require('os');
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const os = require("os");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DataDogLogClient_1 = require("../clients/DataDogLogClient");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Logger that dumps execution logs to DataDog service.
  *
@@ -58,7 +58,7 @@ const DataDogLogClient_1 = require("../clients/DataDogLogClient");
  *     logger.error("123", ex, "Error occured: %s", ex.message);
  *     logger.debug("123", "Everything is OK.");
  */
-class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
+class DataDogLogger extends pip_services4_observability_node_1.CachedLogger {
     /**
      * Creates a new instance of the logger.
      */
@@ -85,7 +85,7 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
     setReferences(references) {
         super.setReferences(references);
         this._client.setReferences(references);
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null)
             this._source = contextInfo.name;
         if (contextInfo != null && this._instance == null)
@@ -148,7 +148,7 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
     //     }
     // }
     convertMessage(message) {
-        let result = {
+        const result = {
             time: message.time || new Date(),
             tags: {
                 trace_id: message.trace_id
@@ -175,8 +175,8 @@ class DataDogLogger extends pip_services3_components_node_1.CachedLogger {
             if (!this.isOpen() || messages.length == 0) {
                 return;
             }
-            let data = messages.map((m) => { return this.convertMessage(m); });
-            yield this._client.sendLogs("datadog-logger", data);
+            const data = messages.map((m) => { return this.convertMessage(m); });
+            yield this._client.sendLogs(pip_services4_components_node_1.Context.fromTraceId('datadog-logger'), data);
         });
     }
 }

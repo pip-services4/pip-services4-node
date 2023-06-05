@@ -1,11 +1,10 @@
 /** @module clients */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { StringConverter } from 'pip-services4-commons-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { RestClient, } from 'pip-services4-rpc-node';
 
+
+import { ConfigException, StringConverter } from 'pip-services4-commons-node';
+import { ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CredentialResolver } from 'pip-services4-config-node';
+import { RestClient } from 'pip-services4-http-node';
 import { DataDogMetric } from './DataDogMetric';
 import { DataDogMetricPoint} from './DataDogMetricPoint';
 
@@ -37,7 +36,7 @@ export class DataDogMetricsClient extends RestClient {
     }
 
     public async open(context): Promise<void> {
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
 
         if (credential == null || credential.getAccessKey() == null) {
             throw new ConfigException(
@@ -56,9 +55,9 @@ export class DataDogMetricsClient extends RestClient {
     private convertTags(tags: any[]): string {
         if (tags == null) return null;
 
-        let builder: string = "";
+        let builder = "";
 
-        for (let key in tags) {
+        for (const key in tags) {
             if (builder != "")
                 builder += ",";
             builder += key + ":" + tags[key];
@@ -67,9 +66,9 @@ export class DataDogMetricsClient extends RestClient {
     }
 
     private convertPoints(points: DataDogMetricPoint[]) {
-        let result = points.map(
+        const result = points.map(
             (p) => {
-                let time = (p.time || new Date()).getTime() / 1000;
+                const time = (p.time || new Date()).getTime() / 1000;
                 return [
                     StringConverter.toString(time),
                     StringConverter.toString(p.value)
@@ -87,7 +86,7 @@ export class DataDogMetricsClient extends RestClient {
             tags.service = metric.service;
         }
 
-        let result = {
+        const result = {
             "metric": metric.metric,
             "type": metric.type || 'gauge',
             "points": this.convertPoints(metric.points),
@@ -104,14 +103,14 @@ export class DataDogMetricsClient extends RestClient {
     }
 
     private convertMetrics(metrics: DataDogMetric[]): any {
-        let series = metrics.map((m) => { return this.convertMetric(m); });
+        const series = metrics.map((m) => { return this.convertMetric(m); });
         return {
             series: series
         };
     }
 
     public async sendMetrics(context: IContext, metrics: DataDogMetric[]): Promise<void> {
-        let data = this.convertMetrics(metrics);
+        const data = this.convertMetrics(metrics);
 
         // Commented instrumentation because otherwise it will never stop sending logs...
         //let timing = this.instrument(context, "datadog.send_metrics");

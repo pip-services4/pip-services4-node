@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DataDogCounters_1 = require("../../src/count/DataDogCounters");
 const CountersFixture_1 = require("../fixtures/CountersFixture");
 suite('DataDogCounters', () => {
@@ -19,7 +19,7 @@ suite('DataDogCounters', () => {
         let apiKey = process.env['DATADOG_API_KEY'] || '3eb3355caf628d4689a72084425177ac';
         _counters = new DataDogCounters_1.DataDogCounters();
         _fixture = new CountersFixture_1.CountersFixture(_counters);
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('source', 'test', 'credential.access_key', apiKey);
         _counters.configure(config);
         yield _counters.open(null);
     }));

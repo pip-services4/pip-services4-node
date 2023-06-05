@@ -12,7 +12,7 @@ The module contains the following packages:
 <a name="links"></a> Quick links:
 
 * [Configuration](https://www.pipservices.org/recipies/configuration)
-* [API Reference](https://pip-services4-node.github.io/pip-services4-persistencedog-node/globals.html)
+* [API Reference](https://pip-services4-node.github.io/pip-services4-datadog-node/globals.html)
 * [Change Log](CHANGELOG.md)
 * [Get Help](https://www.pipservices.org/community/help)
 * [Contribute](https://www.pipservices.org/community/contribute)

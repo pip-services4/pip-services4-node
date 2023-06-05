@@ -1,7 +1,7 @@
-const assert = require('chai').assert;
+import { Context } from "pip-services4-components-node";
+import { CachedLogger, LogLevel } from "pip-services4-observability-node";
 
-import { LogLevel } from 'pip-services4-components-node';
-import { CachedLogger } from 'pip-services4-components-node';
+const assert = require('chai').assert;
 
 export class LoggerFixture {
     private _logger: CachedLogger;
@@ -17,13 +17,13 @@ export class LoggerFixture {
 
     public async testSimpleLogging() {
         this._logger.setLevel(LogLevel.Trace);
-
-        this._logger.fatal("987", null, "Fatal error message");
-        this._logger.error("987", null, "Error message");
-        this._logger.warn("987", "Warning message");
-        this._logger.info("987", "Information message");
-        this._logger.debug("987", "Debug message");
-        this._logger.trace("987", "Trace message");
+        const context = Context.fromTraceId("987");
+        this._logger.fatal(context, null, "Fatal error message");
+        this._logger.error(context, null, "Error message");
+        this._logger.warn(context, "Warning message");
+        this._logger.info(context, "Information message");
+        this._logger.debug(context, "Debug message");
+        this._logger.trace(context, "Trace message");
 
         this._logger.dump();
 
@@ -35,8 +35,8 @@ export class LoggerFixture {
             // Raise an exception
             throw new Error();
         } catch (ex) {
-            this._logger.fatal("123", ex, "Fatal error");
-            this._logger.error("123", ex, "Recoverable error");
+            this._logger.fatal(Context.fromTraceId("123"), ex, "Fatal error");
+            this._logger.error(Context.fromTraceId("123"), ex, "Recoverable error");
 
             assert.isNotNull(ex);
         }
