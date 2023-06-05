@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11,14 +12,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CassandraPersistence = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
-const pip_services4_commons_node_2 = require("pip-services4-commons-node");
-const pip_services4_commons_node_3 = require("pip-services4-commons-node");
-const pip_services4_commons_node_4 = require("pip-services4-commons-node");
-const pip_services4_commons_node_5 = require("pip-services4-commons-node");
-const pip_services4_commons_node_6 = require("pip-services4-commons-node");
-const pip_services4_commons_node_7 = require("pip-services4-commons-node");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const CassandraConnection_1 = require("../connect/CassandraConnection");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract persistence component that stores data in Cassandra using plain driver.
  *
@@ -116,11 +113,11 @@ class CassandraPersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services4_commons_node_6.DependencyResolver(CassandraPersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(CassandraPersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services4_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The maximum number of objects in data pages
          */
@@ -295,10 +292,10 @@ class CassandraPersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Cassandra connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Cassandra connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -322,7 +319,7 @@ class CassandraPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -467,7 +464,7 @@ class CassandraPersistence {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
             // Adjust max item count based on configuration
-            paging = paging || new pip_services4_commons_node_2.PagingParams();
+            paging = paging || new pip_services4_data_node_1.PagingParams();
             let skip = paging.getSkip(-1);
             let take = paging.getTake(this._maxPageSize);
             let pagingEnabled = paging.total;
@@ -507,11 +504,11 @@ class CassandraPersistence {
                 }
                 let result = yield this._client.execute(query);
                 let count = result.rows && result.rows.length == 1
-                    ? pip_services4_commons_node_7.LongConverter.toLong(result.rows[0].count) : 0;
-                return new pip_services4_commons_node_3.DataPage(items, count);
+                    ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
+                return new pip_services4_data_node_1.DataPage(items, count);
             }
             else {
-                return new pip_services4_commons_node_3.DataPage(items);
+                return new pip_services4_data_node_1.DataPage(items);
             }
         });
     }
@@ -533,7 +530,7 @@ class CassandraPersistence {
             }
             let result = yield this._client.execute(query);
             let count = result.rows && result.rows.length == 1
-                ? pip_services4_commons_node_7.LongConverter.toLong(result.rows[0].count) : 0;
+                ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
             this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             return count;
         });
@@ -660,7 +657,7 @@ class CassandraPersistence {
     }
 }
 exports.CassandraPersistence = CassandraPersistence;
-CassandraPersistence._defaultConfig = pip_services4_commons_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:cassandra:*:1.0", 
+CassandraPersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:cassandra:*:1.0", 
 // connections.*
 // credential.*
 "options.max_pool_size", 2, "options.keep_alive", 1, "options.connect_timeout", 5000, "options.auto_reconnect", true, "options.max_page_size", 100, "options.debug", true);

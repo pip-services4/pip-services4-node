@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyCassandraPersistence = void 0;
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const IdentifiableCassandraPersistence_1 = require("../../src/persistence/IdentifiableCassandraPersistence");
 class DummyCassandraPersistence extends IdentifiableCassandraPersistence_1.IdentifiableCassandraPersistence {
     constructor() {
@@ -13,7 +13,7 @@ class DummyCassandraPersistence extends IdentifiableCassandraPersistence_1.Ident
         this.ensureIndex('key', { key: 1 }, { unique: true });
     }
     getPageByFilter(context, filter, paging) {
-        filter = filter || new pip_services4_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = '';
         if (key != null)
@@ -21,7 +21,7 @@ class DummyCassandraPersistence extends IdentifiableCassandraPersistence_1.Ident
         return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
     getCountByFilter(context, filter) {
-        filter = filter || new pip_services4_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = '';
         if (key != null)

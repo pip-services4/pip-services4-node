@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CassandraConnectionResolver_1 = require("../../src/connect/CassandraConnectionResolver");
 suite('CassandraConnectionResolver', () => {
     test('Connection Config', () => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services4_commons_node_1.ConfigParams.fromTuples('connection.host', 'localhost', 'connection.port', 9042, 'connection.database', 'test', 'credential.username', 'cassandra', 'credential.password', 'cassandra');
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.host', 'localhost', 'connection.port', 9042, 'connection.database', 'test', 'credential.username', 'cassandra', 'credential.password', 'cassandra');
         let resolver = new CassandraConnectionResolver_1.CassandraConnectionResolver();
         resolver.configure(dbConfig);
         let config = yield resolver.resolve(null);
@@ -27,7 +27,7 @@ suite('CassandraConnectionResolver', () => {
         assert.isNull(config.getAsNullableBoolean("ssl"));
     }));
     test('Connection Config from URI', () => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services4_commons_node_1.ConfigParams.fromTuples('connection.uri', 'cassandra://cassandra:cassandra@localhost:9042/test');
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', 'cassandra://cassandra:cassandra@localhost:9042/test');
         let resolver = new CassandraConnectionResolver_1.CassandraConnectionResolver();
         resolver.configure(dbConfig);
         let config = yield resolver.resolve(null);

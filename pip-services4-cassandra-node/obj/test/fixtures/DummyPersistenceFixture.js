@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyPersistenceFixture = void 0;
 const assert = require('chai').assert;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 class DummyPersistenceFixture {
     constructor(persistence) {
         this._dummy1 = { id: null, key: "Key 1", content: "Content 1" };
@@ -72,7 +73,7 @@ class DummyPersistenceFixture {
             result = yield this._persistence.getOneById(null, dummy1.id);
             // Try to get item
             assert.isNull(result);
-            let count = yield this._persistence.getCountByFilter(null, pip_services4_commons_node_1.FilterParams.fromTuples("key", "Key 2"));
+            let count = yield this._persistence.getCountByFilter(null, pip_services4_data_node_1.FilterParams.fromTuples("key", "Key 2"));
             assert.equal(count, 1);
         });
     }

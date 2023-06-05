@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiableCassandraPersistence = void 0;
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const CassandraPersistence_1 = require("./CassandraPersistence");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract persistence component that stores data in Cassandra
  * and implements a number of CRUD operations over data items with unique ids.
@@ -174,7 +174,7 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
             let newItem = item;
             if (newItem.id == null && this._autoGenerateId) {
                 newItem = Object.assign({}, newItem);
-                newItem.id = item.id || pip_services4_commons_node_1.IdGenerator.nextLong();
+                newItem.id = item.id || pip_services4_data_node_1.IdGenerator.nextLong();
             }
             return yield _super.create.call(this, context, newItem);
         });

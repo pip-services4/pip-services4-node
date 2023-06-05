@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const process = require('process');
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CassandraConnection_1 = require("../../src/connect/CassandraConnection");
 suite('CassandraConnection', () => {
     let connection;
@@ -26,7 +26,7 @@ suite('CassandraConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services4_commons_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.keyspace', cassandraKeyspace, 'connection.datacenter', cassandraDatacenter, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.keyspace', cassandraKeyspace, 'connection.datacenter', cassandraDatacenter, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
         connection = new CassandraConnection_1.CassandraConnection();
         connection.configure(dbConfig);
         yield connection.open(null);

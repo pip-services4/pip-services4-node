@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11,9 +12,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CassandraConnection = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
-const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
 const CassandraConnectionResolver_1 = require("./CassandraConnectionResolver");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Cassandra connection using plain driver.
  *
@@ -48,14 +49,14 @@ class CassandraConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services4_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "options.connect_timeout", 0, "options.idle_timeout", 10000, "options.max_pool_size", 3);
         /**
          * The logger.
          */
-        this._logger = new pip_services4_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -63,7 +64,7 @@ class CassandraConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services4_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -140,7 +141,7 @@ class CassandraConnection {
                 this._keyspace = options.keyspace;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
             }
         });
     }
@@ -160,7 +161,7 @@ class CassandraConnection {
                 this._datacenter = null;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
             }
         });
     }

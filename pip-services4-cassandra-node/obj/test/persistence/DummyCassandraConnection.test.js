@@ -9,14 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
-const pip_services4_commons_node_2 = require("pip-services4-commons-node");
-const pip_services4_commons_node_3 = require("pip-services4-commons-node");
 const CassandraConnection_1 = require("../../src/connect/CassandraConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyCassandraPersistence_1 = require("./DummyCassandraPersistence");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('DummyCassandraConnection', () => {
     let connection;
     let persistence;
@@ -32,11 +30,11 @@ suite('DummyCassandraConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services4_commons_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.datacenter', cassandraDatacenter, 'connection.keyspace', cassandraKeyspace, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.datacenter', cassandraDatacenter, 'connection.keyspace', cassandraKeyspace, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
         connection = new CassandraConnection_1.CassandraConnection();
         connection.configure(dbConfig);
         persistence = new DummyCassandraPersistence_1.DummyCassandraPersistence();
-        persistence.setReferences(pip_services4_commons_node_3.References.fromTuples(new pip_services4_commons_node_2.Descriptor("pip-services", "connection", "cassandra", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "cassandra", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

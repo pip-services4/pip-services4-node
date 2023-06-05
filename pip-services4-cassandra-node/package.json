@@ -39,12 +39,12 @@
     },
     "dependencies": {
         "cassandra-driver": "^4.6.3",
-        "pip-services4-commons-node": "0.0.2",
-        "pip-services4-components-node": "0.0.4",
-        "pip-services4-config-node": "0.0.4",
-        "pip-services4-data-node": "0.0.4",
-        "pip-services4-observability-node": "0.0.2",
-        "pip-services4-persistence-node": "0.0.1"
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "^0.0.4",
+        "pip-services4-data-node": "^0.0.4",
+        "pip-services4-observability-node": "^0.0.2",
+        "pip-services4-persistence-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.3.4",

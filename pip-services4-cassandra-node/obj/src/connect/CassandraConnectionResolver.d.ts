@@ -1,6 +1,6 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeConnectionResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
+/** @module connect */
+import { ConfigParams } from 'pip-services4-components-node';
+import { CompositeConnectionResolver, ConnectionParams } from 'pip-services4-config-node';
 /**
  * Helper class that resolves Cassandra connection and credential parameters,
  * validates them and generates a connection URI.
