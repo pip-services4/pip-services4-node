@@ -1,13 +1,14 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { CassandraPersistence } from './CassandraPersistence';
+import { IContext } from 'pip-services4-components-node';
+import { IIdentifiable, IdGenerator } from 'pip-services4-data-node';
 
 /**
  * Abstract persistence component that stores data in Cassandra

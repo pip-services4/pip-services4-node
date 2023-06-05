@@ -1,13 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { CassandraConnectionResolver } from './CassandraConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Cassandra connection using plain driver.
@@ -172,7 +168,7 @@ export class CassandraConnection implements IReferenceable, IConfigurable, IOpen
             this._keyspace = options.keyspace;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to Cassandra failed"
             ).withCause(ex);
@@ -196,7 +192,7 @@ export class CassandraConnection implements IReferenceable, IConfigurable, IOpen
             this._datacenter = null;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from Cassandra failed: '
             ) .withCause(ex);

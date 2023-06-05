@@ -1,8 +1,9 @@
 const assert = require('chai').assert;
 
-import { AnyValueMap, FilterParams } from 'pip-services4-commons-node';
+import { AnyValueMap } from 'pip-services4-commons-node';
 import { Dummy } from './Dummy';
 import { IDummyPersistence } from './IDummyPersistence';
+import { FilterParams } from 'pip-services4-data-node';
 
 export class DummyPersistenceFixture {
     private _dummy1: Dummy = { id: null, key: "Key 1", content: "Content 1"};

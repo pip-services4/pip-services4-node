@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyCassandraPersistence_1 = require("./DummyCassandraPersistence");
 suite('DummyCassandraPersistence', () => {
@@ -27,7 +27,7 @@ suite('DummyCassandraPersistence', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.datacenter', cassandraDatacenter, 'connection.keyspace', cassandraKeyspace, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
+        let dbConfig = pip_services4_commons_node_1.ConfigParams.fromTuples('connection.uri', cassandraUri, 'connection.host', cassandraHost, 'connection.port', cassandraPort, 'connection.datacenter', cassandraDatacenter, 'connection.keyspace', cassandraKeyspace, 'credential.username', cassandraUser, 'credential.password', cassandraPassword);
         persistence = new DummyCassandraPersistence_1.DummyCassandraPersistence();
         persistence.configure(dbConfig);
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);

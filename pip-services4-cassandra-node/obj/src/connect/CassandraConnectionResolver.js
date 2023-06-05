@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CassandraConnectionResolver = void 0;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 /**
  * Helper class that resolves Cassandra connection and credential parameters,
  * validates them and generates a connection URI.
@@ -27,7 +27,7 @@ const pip_services3_components_node_2 = require("pip-services4-components-node")
  * - <code>\*:discovery:\*:\*:1.0</code>             (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services
  * - <code>\*:credential-store:\*:\*:1.0</code>      (optional) Credential stores to resolve credentials
  */
-class CassandraConnectionResolver extends pip_services3_components_node_1.CompositeConnectionResolver {
+class CassandraConnectionResolver extends pip_services4_components_node_1.CompositeConnectionResolver {
     /**
      * Creates instance of this class.
      */
@@ -50,12 +50,12 @@ class CassandraConnectionResolver extends pip_services3_components_node_1.Compos
         // Process uri if it is set.
         let uri = connection.getUri();
         if (uri != null && uri != "") {
-            originalOptions = pip_services3_components_node_2.ConnectionUtils.parseUri(uri, this._defaultProtocol, this._defaultPort);
-            originalOptions = pip_services3_components_node_2.ConnectionUtils.rename(originalOptions, "path", "datacenter");
+            originalOptions = pip_services4_components_node_2.ConnectionUtils.parseUri(uri, this._defaultProtocol, this._defaultPort);
+            originalOptions = pip_services4_components_node_2.ConnectionUtils.rename(originalOptions, "path", "datacenter");
         }
         // Rename common parameters
-        originalOptions = pip_services3_components_node_2.ConnectionUtils.rename(originalOptions, "database", "datacenter");
-        let mergedOptions = pip_services3_components_node_2.ConnectionUtils.concat(options, originalOptions, "host", "port");
+        originalOptions = pip_services4_components_node_2.ConnectionUtils.rename(originalOptions, "database", "datacenter");
+        let mergedOptions = pip_services4_components_node_2.ConnectionUtils.concat(options, originalOptions, "host", "port");
         return mergedOptions;
     }
 }

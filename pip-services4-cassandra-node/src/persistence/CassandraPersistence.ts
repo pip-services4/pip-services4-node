@@ -1,21 +1,11 @@
 /** @module persistence */
-import { table } from 'console';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { LongConverter } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+
+import { InvalidStateException, ConnectionException, LongConverter } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { CassandraConnection } from '../connect/CassandraConnection';
+import { PagingParams, DataPage } from 'pip-services4-data-node';
 
 /**
  * Abstract persistence component that stores data in Cassandra using plain driver.
@@ -366,7 +356,7 @@ export class CassandraPersistence<T> implements IReferenceable, IUnreferenceable
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Cassandra connection is missing'
             );
@@ -374,7 +364,7 @@ export class CassandraPersistence<T> implements IReferenceable, IUnreferenceable
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Cassandra connection is not opened"
             );
@@ -407,7 +397,7 @@ export class CassandraPersistence<T> implements IReferenceable, IUnreferenceable
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Cassandra connection is missing'
             );

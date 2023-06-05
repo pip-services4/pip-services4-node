@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyPersistenceFixture = void 0;
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 class DummyPersistenceFixture {
     constructor(persistence) {
         this._dummy1 = { id: null, key: "Key 1", content: "Content 1" };
@@ -50,7 +50,7 @@ class DummyPersistenceFixture {
             assert.equal(dummy1.key, result.key);
             assert.equal(dummy1.content, result.content);
             // Partially update the dummy
-            result = yield this._persistence.updatePartially(null, dummy1.id, pip_services3_commons_node_1.AnyValueMap.fromTuples('content', 'Partially Updated Content 1'));
+            result = yield this._persistence.updatePartially(null, dummy1.id, pip_services4_commons_node_1.AnyValueMap.fromTuples('content', 'Partially Updated Content 1'));
             assert.isNotNull(result);
             assert.equal(dummy1.id, result.id);
             assert.equal(dummy1.key, result.key);
@@ -72,7 +72,7 @@ class DummyPersistenceFixture {
             result = yield this._persistence.getOneById(null, dummy1.id);
             // Try to get item
             assert.isNull(result);
-            let count = yield this._persistence.getCountByFilter(null, pip_services3_commons_node_1.FilterParams.fromTuples("key", "Key 2"));
+            let count = yield this._persistence.getCountByFilter(null, pip_services4_commons_node_1.FilterParams.fromTuples("key", "Key 2"));
             assert.equal(count, 1);
         });
     }

@@ -1,13 +1,8 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { CompositeConnectionResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConnectionUtils } from 'pip-services4-components-node';
+
+import { ConfigParams } from 'pip-services4-components-node';
+import { CompositeConnectionResolver, ConnectionParams, ConnectionUtils } from 'pip-services4-config-node';
+
 
 /**
  * Helper class that resolves Cassandra connection and credential parameters,
