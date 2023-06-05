@@ -1,9 +1,7 @@
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Schema } from 'pip-services4-commons-node';
+import { DependencyResolver, IContext, IReferences } from 'pip-services4-components-node';
 import { Container } from 'pip-services4-container-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
+import { Schema } from 'pip-services4-data-node';
+import { CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
 /**
  * Abstract Azure Function, that acts as a container to instantiate and run components
@@ -19,8 +17,8 @@ import { InstrumentTiming } from 'pip-services4-rpc-node';
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  *
  *
  * ### Example ###
@@ -33,7 +31,7 @@ import { InstrumentTiming } from 'pip-services4-rpc-node';
  *
  *     let azureFunction = new MyAzureFunctionFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunctionFunction is started");
  */
 export declare abstract class AzureFunction extends Container {
@@ -92,7 +90,7 @@ export declare abstract class AzureFunction extends Container {
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      *
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -109,17 +107,17 @@ export declare abstract class AzureFunction extends Container {
     /**
      * Registers all actions in this Azure Function.
      *
-     * Note: Overloading of this method has been deprecated. Use AzureFunctionService instead.
+     * Note: Overloading of this method has been deprecated. Use AzureFunctionController instead.
      */
     protected register(): void;
     /**
-     * Registers all Azure Function services in the container.
+     * Registers all Azure Function controllers in the container.
      */
-    protected registerServices(): void;
+    protected registerControllers(): void;
     /**
      * Registers an action in this Azure Function.
      *
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      *
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.

@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandableAzureFunctionClient = void 0;
-/** @module clients */
 const AzureFunctionClient_1 = require("./AzureFunctionClient");
 /**
  * Abstract client that calls commandable Azure Functions.

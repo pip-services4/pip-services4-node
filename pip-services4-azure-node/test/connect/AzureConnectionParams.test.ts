@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { AzureFunctionConnectionParams } from '../../src/connect/AzureFunctionConnectionParams';
 import { AzureFunctionConnectionResolver } from '../../src/connect/AzureFunctionConnectionResolver';
 
@@ -28,7 +28,7 @@ suite('AzureConnectionParams', ()=> {
         );
         let resolver = new AzureFunctionConnectionResolver();
         resolver.configure(config1);
-        let connection =  await resolver.resolve('');
+        let connection = await resolver.resolve(null);
 
         assert.equal('http://myapp.azurewebsites.net/api/myfunction', connection.getFunctionUri());
         assert.equal('myapp', connection.getAppName());
@@ -38,7 +38,7 @@ suite('AzureConnectionParams', ()=> {
 
         resolver = new AzureFunctionConnectionResolver();
         resolver.configure(config2);
-        connection =  await resolver.resolve('');
+        connection =  await resolver.resolve(null);
 
         assert.equal('http://myapp.azurewebsites.net/api/myfunction', connection.getFunctionUri());
         assert.equal('http', connection.getProtocol());

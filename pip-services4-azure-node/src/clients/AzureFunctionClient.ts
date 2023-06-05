@@ -1,22 +1,13 @@
 /** @module clients */
-import { IOpenable} from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
-import { UnknownException } from 'pip-services4-commons-node';
-import { InvocationException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
+
 import { InstrumentTiming } from "pip-services4-rpc-node";
 
 import { AzureFunctionConnectionParams } from '../connect/AzureFunctionConnectionParams';
 import { AzureFunctionConnectionResolver } from '../connect/AzureFunctionConnectionResolver';
+import { ConnectionException, UnknownException, ApplicationExceptionFactory } from "pip-services4-commons-node";
+import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { CompositeLogger, CompositeCounters, CompositeTracer } from "pip-services4-observability-node";
+import { IdGenerator } from "pip-services4-data-node";
 
 
 /**
@@ -85,7 +76,7 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
      */
     protected _connection: AzureFunctionConnectionParams;
 
-    protected _retries: number = 3;
+    protected _retries = 3;
     /**
      * The default headers to be added to every request.
      */
@@ -93,13 +84,13 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
     /**
      * The connection timeout in milliseconds.
      */
-    protected _connectTimeout: number = 10000;
+    protected _connectTimeout = 10000;
     /**
      * The invocation timeout in milliseconds.
      */
-    protected _timeout: number = 10000;
+    protected _timeout = 10000;
     /**
-     * The remote service uri which is calculated on open.
+     * The remote controller uri which is calculated on open.
      */
     protected _uri: string;
 
@@ -162,8 +153,8 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -193,7 +184,8 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
         this._uri = this._connection.getFunctionUri();
         try {
             this._uri = this._connection.getFunctionUri();
-            let restify = require('restify-clients');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const restify = require('restify-clients');
             this._client = restify.createJsonClient({
                 url: this._uri,
                 connectTimeout: this._connectTimeout,
@@ -213,7 +205,7 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
             this._client = null;
 
             throw new ConnectionException(
-                context, "CANNOT_CONNECT", "Connection to Azure function service failed"
+                context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Connection to Azure function controller failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }
@@ -230,9 +222,9 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
         if (this._client != null) {
             // Eat exceptions
             try {
-                this._logger.debug(context, "Closed Azure function service at %s", this._uri);
+                this._logger.debug(context, "Closed Azure function controller at %s", this._uri);
             } catch (ex) {
-                this._logger.warn(context, "Failed while closing Azure function service: %s", ex);
+                this._logger.warn(context, "Failed while closing Azure function controller: %s", ex);
             }
 
             this._client = null;
@@ -258,7 +250,7 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
         args.trace_id = context || IdGenerator.nextShort();
 
         return new Promise((resolve, reject) => {
-            let action = (err, req, res, data) => {
+            const action = (err, req, res, data) => {
                 // Handling 204 codes
                 if (res && res.statusCode == 204)
                     resolve(null);

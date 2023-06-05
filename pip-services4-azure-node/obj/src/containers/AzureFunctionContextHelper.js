@@ -1,8 +1,8 @@
 "use strict";
+/** @module containers */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AzureFunctionContextHelper = void 0;
-/** @module containers */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 class AzureFunctionContextHelper {
     /**
      * Returns context from Azure Function context.
@@ -10,19 +10,19 @@ class AzureFunctionContextHelper {
      * @return returns context from context
      */
     static getTraceId(context) {
-        let context = context.trace_id || "";
+        let traceId = context.trace_id || "";
         try {
-            if ((context == null || context == "") && context.hasOwnProperty('body')) {
-                context = context.body.trace_id;
+            if ((context == null || context == "") && Object.prototype.hasOwnProperty.call(context, 'body')) {
+                traceId = context.body.trace_id;
                 if (context == null || context == "") {
-                    context = context.query.trace_id;
+                    traceId = context.query.trace_id;
                 }
             }
         }
         catch (e) {
             // Ignore the error
         }
-        return context;
+        return traceId;
     }
     /**
      * Returns command from Azure Function context.
@@ -32,7 +32,7 @@ class AzureFunctionContextHelper {
     static getCommand(context) {
         let cmd = context.cmd || "";
         try {
-            if ((cmd == null || cmd == "") && context.hasOwnProperty('body')) {
+            if ((cmd == null || cmd == "") && Object.prototype.hasOwnProperty.call(context, 'body')) {
                 cmd = context.body.cmd;
                 if (cmd == null || cmd == "") {
                     cmd = context.query.cmd;
@@ -52,14 +52,14 @@ class AzureFunctionContextHelper {
     static getParameters(context) {
         let body = context;
         try {
-            if (context.hasOwnProperty('body')) {
+            if (Object.prototype.hasOwnProperty.call(context, 'body')) {
                 body = context.body;
             }
         }
         catch (e) {
             // Ignore the error
         }
-        return pip_services3_commons_node_1.Parameters.fromValue(body);
+        return pip_services4_components_node_1.Parameters.fromValue(body);
     }
 }
 exports.AzureFunctionContextHelper = AzureFunctionContextHelper;

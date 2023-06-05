@@ -2,11 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AzureFunctionConnectionParams = void 0;
 /** @module connect */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Contains connection parameters to authenticate against Azure Functions
  * and connect to specific Azure Function.
@@ -43,7 +42,7 @@ const pip_services3_components_node_2 = require("pip-services4-components-node")
  *     const functionName = connection.getFunctionName();   // Result: "myfunction"
  *     const authCode = connection.getAuthCode();           // Result: "code"
  */
-class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigParams {
+class AzureFunctionConnectionParams extends pip_services4_components_node_1.ConfigParams {
     /**
      * Creates an new instance of the connection parameters.
      *
@@ -140,7 +139,7 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
      * @returns {AzureFunctionConnectionParams}	a new AzureConnectionParams object.
      */
     static fromString(line) {
-        let map = pip_services3_commons_node_2.StringValueMap.fromString(line);
+        const map = pip_services4_commons_node_1.StringValueMap.fromString(line);
         return new AzureFunctionConnectionParams(map);
     }
     /**
@@ -154,10 +153,10 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
         const appName = this.getAppName();
         const functionName = this.getFunctionName();
         if (uri === null && (appName === null || functionName === null || protocol === null)) {
-            throw new pip_services3_commons_node_3.ConfigException(context, "NO_CONNECTION_URI", "No uri, app_name and function_name is configured in Auzre function uri");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION_URI", "No uri, app_name and function_name is configured in Auzre function uri");
         }
         if (protocol != null && "http" != protocol && "https" != protocol) {
-            throw new pip_services3_commons_node_3.ConfigException(context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }
@@ -171,12 +170,12 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
      * @see [[mergeConfigs]]
      */
     static fromConfig(config) {
-        let result = new AzureFunctionConnectionParams();
-        let credentials = pip_services3_components_node_1.CredentialParams.manyFromConfig(config);
-        for (let credential of credentials)
+        const result = new AzureFunctionConnectionParams();
+        const credentials = pip_services4_config_node_1.CredentialParams.manyFromConfig(config);
+        for (const credential of credentials)
             result.append(credential);
-        let connections = pip_services3_components_node_2.ConnectionParams.manyFromConfig(config);
-        for (let connection of connections)
+        const connections = pip_services4_config_node_1.ConnectionParams.manyFromConfig(config);
+        for (const connection of connections)
             result.append(connection);
         return result;
     }
@@ -190,7 +189,7 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
      * @see [[fromConfig]]
      */
     static mergeConfigs(...configs) {
-        let config = pip_services3_commons_node_1.ConfigParams.mergeConfigs(...configs);
+        const config = pip_services4_components_node_1.ConfigParams.mergeConfigs(...configs);
         return new AzureFunctionConnectionParams(config);
     }
     /**
@@ -203,7 +202,7 @@ class AzureFunctionConnectionParams extends pip_services3_commons_node_1.ConfigP
      * @see [[ConfigParams.fromTuples]]
      */
     static fromTuples(...tuples) {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples(...tuples);
+        const config = pip_services4_components_node_1.ConfigParams.fromTuples(...tuples);
         return new AzureFunctionConnectionParams(config);
     }
 }

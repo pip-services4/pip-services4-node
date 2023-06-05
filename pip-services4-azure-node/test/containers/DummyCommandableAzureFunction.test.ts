@@ -1,7 +1,7 @@
 let assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
 
+import { ConfigParams } from 'pip-services4-components-node';
 import { Dummy } from '../Dummy';
 import { DummyCommandableAzureFunction } from './DummyCommandableAzureFunction';
 
@@ -14,7 +14,7 @@ suite('DummyCommandableAzureFunction', () => {
     suiteSetup(async () => {
         let config = ConfigParams.fromTuples(
             'logger.descriptor', 'pip-services:logger:console:default:1.0',
-            'controller.descriptor', 'pip-services-dummies:controller:default:default:1.0'
+            'service.descriptor', 'pip-services-dummies:service:default:default:1.0'
         );
 
         _function = new DummyCommandableAzureFunction();

@@ -1,31 +1,26 @@
-import { DataPage } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams} from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ObjectSchema } from 'pip-services4-commons-node';
-import { TypeCode } from 'pip-services4-commons-node';
-import { FilterParamsSchema } from 'pip-services4-commons-node';
-import { PagingParamsSchema } from 'pip-services4-commons-node';
+
 
 import { AzureFunction } from '../../src/containers/AzureFunction';
-import { IDummyController } from '../IDummyController';
+import { IDummyService } from '../IDummyService';
 import { DummyFactory } from '../DummyFactory';
 import { DummySchema } from '../DummySchema';
 import { Dummy } from "../Dummy";
+import { TypeCode } from 'pip-services4-commons-node';
+import { Descriptor, IReferences } from 'pip-services4-components-node';
+import { DataPage, FilterParams, PagingParams, ObjectSchema, FilterParamsSchema, PagingParamsSchema } from 'pip-services4-data-node';
 
 export class DummyAzureFunction extends AzureFunction {
-    private _controller: IDummyController;
+    private _controller: IDummyService;
 
     public constructor() {
         super("dummy", "Dummy Azure function");
-        this._dependencyResolver.put('controller', new Descriptor('pip-services-dummies', 'controller', 'default', '*', '*'));
+        this._dependencyResolver.put('service', new Descriptor('pip-services-dummies', 'service', 'default', '*', '*'));
         this._factories.add(new DummyFactory());
     }
 
     public setReferences(references: IReferences): void {
         super.setReferences(references);
-        this._controller = this._dependencyResolver.getOneRequired<IDummyController>('controller');
+        this._controller = this._dependencyResolver.getOneRequired<IDummyService>('service');
     }
 
     private async getPageByFilter(req: any): Promise<DataPage<Dummy>> {

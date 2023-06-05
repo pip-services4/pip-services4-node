@@ -1,4 +1,5 @@
 "use strict";
+/** @module clients */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,16 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AzureFunctionClient = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
+const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
 const AzureFunctionConnectionResolver_1 = require("../connect/AzureFunctionConnectionResolver");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract client that calls Azure Functions.
  *
@@ -94,7 +91,7 @@ class AzureFunctionClient {
         /**
          * The dependencies resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_5.DependencyResolver();
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver();
         /**
          * The connection resolver.
          */
@@ -102,15 +99,15 @@ class AzureFunctionClient {
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The performance counters.
          */
-        this._counters = new pip_services3_components_node_3.CompositeCounters();
+        this._counters = new pip_services4_observability_node_1.CompositeCounters();
         /**
          * The tracer.
          */
-        this._tracer = new pip_services3_components_node_2.CompositeTracer();
+        this._tracer = new pip_services4_observability_node_1.CompositeTracer();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -146,9 +143,9 @@ class AzureFunctionClient {
     instrument(context, name) {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services4_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Checks if the component is opened.
@@ -174,7 +171,8 @@ class AzureFunctionClient {
             this._uri = this._connection.getFunctionUri();
             try {
                 this._uri = this._connection.getFunctionUri();
-                let restify = require('restify-clients');
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const restify = require('restify-clients');
                 this._client = restify.createJsonClient({
                     url: this._uri,
                     connectTimeout: this._connectTimeout,
@@ -191,7 +189,7 @@ class AzureFunctionClient {
             }
             catch (err) {
                 this._client = null;
-                throw new pip_services3_commons_node_1.ConnectionException(context, "CANNOT_CONNECT", "Connection to Azure function service failed").wrap(err).withDetails("url", this._uri);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Connection to Azure function controller failed").wrap(err).withDetails("url", this._uri);
             }
         });
     }
@@ -208,10 +206,10 @@ class AzureFunctionClient {
             if (this._client != null) {
                 // Eat exceptions
                 try {
-                    this._logger.debug(context, "Closed Azure function service at %s", this._uri);
+                    this._logger.debug(context, "Closed Azure function controller at %s", this._uri);
                 }
                 catch (ex) {
-                    this._logger.warn(context, "Failed while closing Azure function service: %s", ex);
+                    this._logger.warn(context, "Failed while closing Azure function controller: %s", ex);
                 }
                 this._client = null;
                 this._uri = null;
@@ -229,13 +227,13 @@ class AzureFunctionClient {
     invoke(cmd, context, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (cmd == null) {
-                throw new pip_services3_commons_node_4.UnknownException(null, 'NO_COMMAND', 'Cmd parameter is missing');
+                throw new pip_services4_commons_node_1.UnknownException(null, 'NO_COMMAND', 'Cmd parameter is missing');
             }
             args = Object.assign({}, args);
             args.cmd = cmd;
-            args.trace_id = context || pip_services3_commons_node_3.IdGenerator.nextShort();
+            args.trace_id = context || pip_services4_data_node_1.IdGenerator.nextShort();
             return new Promise((resolve, reject) => {
-                let action = (err, req, res, data) => {
+                const action = (err, req, res, data) => {
                     // Handling 204 codes
                     if (res && res.statusCode == 204)
                         resolve(null);
@@ -244,7 +242,7 @@ class AzureFunctionClient {
                     else {
                         // Restore application exception
                         if (data != null)
-                            err = pip_services3_commons_node_2.ApplicationExceptionFactory.create(data).withCause(err);
+                            err = pip_services4_commons_node_1.ApplicationExceptionFactory.create(data).withCause(err);
                         reject(err);
                     }
                 };

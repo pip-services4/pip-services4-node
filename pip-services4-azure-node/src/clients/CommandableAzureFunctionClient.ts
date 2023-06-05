@@ -1,4 +1,5 @@
 /** @module clients */
+import { IContext } from 'pip-services4-components-node';
 import { AzureFunctionClient } from './AzureFunctionClient';
 
 /**

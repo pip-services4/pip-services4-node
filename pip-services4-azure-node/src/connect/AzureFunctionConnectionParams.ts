@@ -1,9 +1,8 @@
 /** @module connect */
-import { ConfigParams } from 'pip-services4-commons-node';
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
+import { ConfigParams, IContext } from 'pip-services4-components-node';
+import { CredentialParams, ConnectionParams } from 'pip-services4-config-node';
 
 /**
  * Contains connection parameters to authenticate against Azure Functions
@@ -149,7 +148,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 	 * @returns {AzureFunctionConnectionParams}	a new AzureConnectionParams object.
      */
     public static fromString(line: string): AzureFunctionConnectionParams {
-        let map = StringValueMap.fromString(line);
+        const map = StringValueMap.fromString(line);
         return new AzureFunctionConnectionParams(map);
     }
 
@@ -166,7 +165,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (uri === null && (appName === null || functionName === null || protocol === null)) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION_URI",
                 "No uri, app_name and function_name is configured in Auzre function uri"
             );
@@ -174,7 +173,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+                context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }
@@ -189,14 +188,14 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 	 * @see [[mergeConfigs]]
 	 */
     public static fromConfig(config: ConfigParams): AzureFunctionConnectionParams {
-        let result = new AzureFunctionConnectionParams();
+        const result = new AzureFunctionConnectionParams();
 
-        let credentials = CredentialParams.manyFromConfig(config);
-        for (let credential of credentials)
+        const credentials = CredentialParams.manyFromConfig(config);
+        for (const credential of credentials)
             result.append(credential);
 
-        let connections = ConnectionParams.manyFromConfig(config);
-        for (let connection of connections)
+        const connections = ConnectionParams.manyFromConfig(config);
+        for (const connection of connections)
             result.append(connection);
 
         return result;
@@ -212,7 +211,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 	 * @see [[fromConfig]]
 	 */
     public static mergeConfigs(...configs: ConfigParams[]): AzureFunctionConnectionParams {
-        let config = ConfigParams.mergeConfigs(...configs);
+        const config = ConfigParams.mergeConfigs(...configs);
         return new AzureFunctionConnectionParams(config);
     }
 
@@ -226,7 +225,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
      * @see [[ConfigParams.fromTuples]]
      */
     static fromTuples(...tuples: any[]): AzureFunctionConnectionParams {
-        let config = ConfigParams.fromTuples(...tuples);
+        const config = ConfigParams.fromTuples(...tuples);
         return new AzureFunctionConnectionParams(config);
     }
 }

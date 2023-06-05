@@ -1,4 +1,5 @@
-import { Parameters } from 'pip-services4-commons-node';
+/** @module containers */
+import { Parameters } from 'pip-services4-components-node';
 import { AzureFunction } from './AzureFunction';
 /**
  * Abstract Azure Function function, that acts as a container to instantiate and run components
@@ -14,8 +15,8 @@ import { AzureFunction } from './AzureFunction';
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  *
  *
  * ### Example ###
@@ -34,7 +35,7 @@ import { AzureFunction } from './AzureFunction';
  *
  *     let azureFunction = new MyAzureFunctionFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunction is started");
  */
 export declare abstract class CommandableAzureFunction extends AzureFunction {

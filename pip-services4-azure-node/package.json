@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-azure-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
     "description": "Azure-specific components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -26,7 +26,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-azure-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-azure-node"
     },
     "license": "MIT",
     "engines": {
@@ -38,14 +39,19 @@
         "watch": "tsc --watch",
         "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
         "test_cmd": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test -f DummyCommandableAzureFunctionClient",
-        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "pip-services4-commons-node": "^1.0.*",
-        "pip-services4-components-node": "^1.4.*",
-        "pip-services4-container-node": "^1.0.*",
-        "pip-services4-rpc-node": "^1.3.*",
-        "restify": "8.5.1",
+        "pip-services4-commons-node": "0.0.2",
+        "pip-services4-components-node": "0.0.4",
+        "pip-services4-config-node": "0.0.4",
+        "pip-services4-container-node": "0.0.1",
+        "pip-services4-data-node": "0.0.4",
+        "pip-services4-observability-node": "0.0.2",
+        "pip-services4-rpc-node": "0.0.1",
+        "restify": "^10.0.0",
         "restify-clients": "^4.2.0",
         "restify-cors-middleware2": "2.2.1"
     },
@@ -55,6 +61,10 @@
         "@types/mocha": "^10.0.1",
         "@types/node": "*",
         "chai": "^4.3.4",
-        "mocha": "^10.2.0"
+        "mocha": "^10.2.0",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "eslint": "^8.32.0",
+        "typescript": "^4.*.*"
     }
 }

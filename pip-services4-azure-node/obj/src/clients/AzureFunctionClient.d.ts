@@ -1,16 +1,9 @@
 /** @module clients */
-import { IOpenable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
 import { InstrumentTiming } from "pip-services4-rpc-node";
 import { AzureFunctionConnectionParams } from '../connect/AzureFunctionConnectionParams';
 import { AzureFunctionConnectionResolver } from '../connect/AzureFunctionConnectionResolver';
+import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { CompositeLogger, CompositeCounters, CompositeTracer } from "pip-services4-observability-node";
 /**
  * Abstract client that calls Azure Functions.
  *
@@ -90,7 +83,7 @@ export declare abstract class AzureFunctionClient implements IOpenable, IConfigu
      */
     protected _timeout: number;
     /**
-     * The remote service uri which is calculated on open.
+     * The remote controller uri which is calculated on open.
      */
     protected _uri: string;
     /**

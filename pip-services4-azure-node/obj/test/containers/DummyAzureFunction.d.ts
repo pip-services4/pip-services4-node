@@ -1,5 +1,5 @@
-import { IReferences } from 'pip-services4-commons-node';
 import { AzureFunction } from '../../src/containers/AzureFunction';
+import { IReferences } from 'pip-services4-components-node';
 export declare class DummyAzureFunction extends AzureFunction {
     private _controller;
     constructor();

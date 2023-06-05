@@ -1,5 +1,5 @@
 /** @module containers */
-import { Parameters } from 'pip-services4-commons-node';
+import { Parameters } from 'pip-services4-components-node';
 export declare class AzureFunctionContextHelper {
     /**
      * Returns context from Azure Function context.

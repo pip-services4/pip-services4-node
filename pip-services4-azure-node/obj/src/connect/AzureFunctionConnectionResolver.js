@@ -11,10 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AzureFunctionConnectionResolver = void 0;
 /** @module connect */
-const url = require('url');
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const url = require("url");
 const AzureFunctionConnectionParams_1 = require("./AzureFunctionConnectionParams");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class to retrieve Azure connection and credential parameters,
  * validate them and compose a [[AzureConnectionParams]] value.
@@ -57,11 +56,11 @@ class AzureFunctionConnectionResolver {
         /**
          * The connection resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credential resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -108,18 +107,18 @@ class AzureFunctionConnectionResolver {
         connection = AzureFunctionConnectionParams_1.AzureFunctionConnectionParams.mergeConfigs(connection);
         let uri = connection.getFunctionUri();
         if (uri == null || uri == "") {
-            let protocol = connection.getProtocol();
-            let appName = connection.getAppName();
-            let functionName = connection.getFunctionName();
+            const protocol = connection.getProtocol();
+            const appName = connection.getAppName();
+            const functionName = connection.getFunctionName();
             // http://myapp.azurewebsites.net/api/myfunction
             uri = `${protocol}://${appName}.azurewebsites.net/api/${functionName}`;
             connection.setFunctionUri(uri);
         }
         else {
-            let address = url.parse(uri);
-            let protocol = ("" + address.protocol).replace(':', '');
-            let appName = address.host.replace('.azurewebsites.net', '');
-            let functionName = address.path.replace('/api/', '');
+            const address = url.parse(uri);
+            const protocol = ("" + address.protocol).replace(':', '');
+            const appName = address.host.replace('.azurewebsites.net', '');
+            const functionName = address.path.replace('/api/', '');
             connection.setProtocol(protocol);
             connection.setAppName(appName);
             connection.setFunctionName(functionName);

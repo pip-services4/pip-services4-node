@@ -12,18 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AzureFunction = void 0;
 /** @module containers */
 /** @hidden */
-const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_container_node_1 = require("pip-services4-container-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
+const process = require("process");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_container_node_1 = require("pip-services4-container-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
 /**
  * Abstract Azure Function, that acts as a container to instantiate and run components
  * and expose them via external entry point.
@@ -38,8 +33,8 @@ const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  *
  *
  * ### Example ###
@@ -52,10 +47,10 @@ const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
  *
  *     let azureFunction = new MyAzureFunctionFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunctionFunction is started");
  */
-class AzureFunction extends pip_services3_container_node_1.Container {
+class AzureFunction extends pip_services4_container_node_1.Container {
     /**
      * Creates a new instance of this Azure Function function.
      *
@@ -67,15 +62,15 @@ class AzureFunction extends pip_services3_container_node_1.Container {
         /**
          * The performanc counters.
          */
-        this._counters = new pip_services3_components_node_1.CompositeCounters();
+        this._counters = new pip_services4_observability_node_1.CompositeCounters();
         /**
          * The tracer.
          */
-        this._tracer = new pip_services3_components_node_3.CompositeTracer();
+        this._tracer = new pip_services4_observability_node_1.CompositeTracer();
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_3.DependencyResolver();
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver();
         /**
          * The map of registred validation schemas.
          */
@@ -88,13 +83,13 @@ class AzureFunction extends pip_services3_container_node_1.Container {
          * The default path to config file.
          */
         this._configPath = './config/config.yml';
-        this._logger = new pip_services3_components_node_2.ConsoleLogger();
+        this._logger = new pip_services4_observability_node_1.ConsoleLogger();
     }
     getConfigPath() {
         return process.env.CONFIG_PATH || this._configPath;
     }
     getParameters() {
-        return pip_services3_commons_node_2.ConfigParams.fromValue(process.env);
+        return pip_services4_components_node_1.ConfigParams.fromValue(process.env);
     }
     captureErrors(context) {
         // Log uncaught exceptions
@@ -139,14 +134,14 @@ class AzureFunction extends pip_services3_container_node_1.Container {
             if (this.isOpen())
                 return;
             yield _super.open.call(this, context);
-            this.registerServices();
+            this.registerControllers();
         });
     }
     /**
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      *
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      *
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -155,9 +150,9 @@ class AzureFunction extends pip_services3_container_node_1.Container {
     instrument(context, name) {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
-        return new pip_services3_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
+        return new pip_services4_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     /**
      * Runs this Azure Function, loads container configuration,
@@ -167,9 +162,9 @@ class AzureFunction extends pip_services3_container_node_1.Container {
      */
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            let context = this._info.name;
-            let path = this.getConfigPath();
-            let parameters = this.getParameters();
+            const context = pip_services4_components_node_1.Context.fromTraceId(this._info.name);
+            const path = this.getConfigPath();
+            const parameters = this.getParameters();
             this.readConfigFromFile(context, path, parameters);
             this.captureErrors(context);
             this.captureExit(context);
@@ -179,24 +174,26 @@ class AzureFunction extends pip_services3_container_node_1.Container {
     /**
      * Registers all actions in this Azure Function.
      *
-     * Note: Overloading of this method has been deprecated. Use AzureFunctionService instead.
+     * Note: Overloading of this method has been deprecated. Use AzureFunctionController instead.
      */
-    register() { }
+    register() {
+        //
+    }
     /**
-     * Registers all Azure Function services in the container.
+     * Registers all Azure Function controllers in the container.
      */
-    registerServices() {
-        // Extract regular and commandable Azure Function services from references
-        let services = this._references.getOptional(new pip_services3_commons_node_4.Descriptor("*", "service", "azurefunc", "*", "*"));
-        let cmdServices = this._references.getOptional(new pip_services3_commons_node_4.Descriptor("*", "service", "commandable-azurefunc", "*", "*"));
-        services.push(...cmdServices);
-        // Register actions defined in those services
-        for (let service of services) {
-            // Check if the service implements required interface
-            if (typeof service.getActions !== "function")
+    registerControllers() {
+        // Extract regular and commandable Azure Function controllers from references
+        const controllers = this._references.getOptional(new pip_services4_components_node_1.Descriptor("*", "controller", "azurefunc", "*", "*"));
+        const cmdServices = this._references.getOptional(new pip_services4_components_node_1.Descriptor("*", "controller", "commandable-azurefunc", "*", "*"));
+        controllers.push(...cmdServices);
+        // Register actions defined in those controller
+        for (const controller of controllers) {
+            // Check if the controller implements required interface
+            if (typeof controller.getActions !== "function")
                 continue;
-            let actions = service.getActions();
-            for (let action of actions) {
+            const actions = controller.getActions();
+            for (const action of actions) {
                 this.registerAction(action.cmd, action.schema, action.action);
             }
         }
@@ -204,7 +201,7 @@ class AzureFunction extends pip_services3_container_node_1.Container {
     /**
      * Registers an action in this Azure Function.
      *
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      *
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.
@@ -212,30 +209,30 @@ class AzureFunction extends pip_services3_container_node_1.Container {
      */
     registerAction(cmd, schema, action) {
         if (cmd == '') {
-            throw new pip_services3_commons_node_5.UnknownException(null, 'NO_COMMAND', 'Missing command');
+            throw new pip_services4_commons_node_1.UnknownException(null, 'NO_COMMAND', 'Missing command');
         }
         if (action == null) {
-            throw new pip_services3_commons_node_5.UnknownException(null, 'NO_ACTION', 'Missing action');
+            throw new pip_services4_commons_node_1.UnknownException(null, 'NO_ACTION', 'Missing action');
         }
         if (typeof action != "function") {
-            throw new pip_services3_commons_node_5.UnknownException(null, 'ACTION_NOT_FUNCTION', 'Action is not a function');
+            throw new pip_services4_commons_node_1.UnknownException(null, 'ACTION_NOT_FUNCTION', 'Action is not a function');
         }
-        if (this._actions.hasOwnProperty(cmd)) {
-            throw new pip_services3_commons_node_5.UnknownException(null, 'DUPLICATED_ACTION', `"${cmd}" action already exists`);
+        if (Object.prototype.hasOwnProperty.call(this._actions, cmd)) {
+            throw new pip_services4_commons_node_1.UnknownException(null, 'DUPLICATED_ACTION', `"${cmd}" action already exists`);
         }
         // Hack!!! Wrapping action to preserve prototyping context
-        const actionCurl = (context) => {
+        const actionCurl = (actionContext) => {
             // Perform validation
             if (schema != null) {
-                let params = Object.assign({}, context.params, context.query, { body: context.body });
-                let context = this.getTraceId(context);
-                let err = schema.validateAndReturnException(context, params, false);
+                const params = Object.assign({}, actionContext.params, actionContext.query, { body: actionContext.body });
+                const traceId = this.getTraceId(actionContext);
+                const err = schema.validateAndReturnException(traceId, params, false);
                 if (err != null) {
                     return err;
                 }
             }
             // Todo: perform verification?
-            return action.call(this, context);
+            return action.call(this, actionContext);
         };
         this._actions[cmd] = actionCurl;
     }
@@ -267,14 +264,14 @@ class AzureFunction extends pip_services3_container_node_1.Container {
      */
     execute(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let cmd = this.getCommand(context);
-            let context = this.getTraceId(context);
+            const cmd = this.getCommand(context);
+            const traceId = this.getTraceId(context);
             if (cmd == null) {
-                throw new pip_services3_commons_node_1.BadRequestException(context, 'NO_COMMAND', 'Cmd parameter is missing');
+                throw new pip_services4_commons_node_1.BadRequestException(traceId, 'NO_COMMAND', 'Cmd parameter is missing');
             }
             const action = this._actions[cmd];
             if (action == null) {
-                throw new pip_services3_commons_node_1.BadRequestException(context, 'NO_ACTION', 'Action ' + cmd + ' was not found')
+                throw new pip_services4_commons_node_1.BadRequestException(traceId, 'NO_ACTION', 'Action ' + cmd + ' was not found')
                     .withDetails('command', cmd);
             }
             return action(context);
@@ -297,7 +294,8 @@ class AzureFunction extends pip_services3_container_node_1.Container {
      * @param context     an incoming context object with invocation parameters.
      */
     getHandler() {
-        let self = this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
         // Return plugin function
         return function (context) {
             return __awaiter(this, void 0, void 0, function* () {

@@ -1,4 +1,5 @@
 "use strict";
+/** @module containers */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandableAzureFunction = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const AzureFunction_1 = require("./AzureFunction");
 const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
 /**
@@ -26,8 +28,8 @@ const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
  *
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  *
  *
  * ### Example ###
@@ -46,7 +48,7 @@ const AzureFunctionContextHelper_1 = require("./AzureFunctionContextHelper");
  *
  *     let azureFunction = new MyAzureFunctionFunction();
  *
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunction is started");
  */
 class CommandableAzureFunction extends AzureFunction_1.AzureFunction {
@@ -58,7 +60,7 @@ class CommandableAzureFunction extends AzureFunction_1.AzureFunction {
      */
     constructor(name, description) {
         super(name, description);
-        this._dependencyResolver.put('controller', 'none');
+        this._dependencyResolver.put('service', 'none');
     }
     /**
      * Returns body from Azure Function context.
@@ -70,15 +72,15 @@ class CommandableAzureFunction extends AzureFunction_1.AzureFunction {
         return AzureFunctionContextHelper_1.AzureFunctionContextHelper.getParameters(context);
     }
     registerCommandSet(commandSet) {
-        let commands = commandSet.getCommands();
+        const commands = commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
             this.registerAction(command.getName(), null, (context) => __awaiter(this, void 0, void 0, function* () {
-                let context = this.getTraceId(context);
-                let args = this.getParametrs(context);
-                let timing = this.instrument(context, this._info.name + '.' + command.getName());
+                const traceId = this.getTraceId(context);
+                const args = this.getParametrs(context);
+                const timing = this.instrument(pip_services4_components_node_1.Context.fromTraceId(traceId), this._info.name + '.' + command.getName());
                 try {
-                    let res = yield command.execute(context, args);
+                    const res = yield command.execute(pip_services4_components_node_1.Context.fromTraceId(traceId), args);
                     timing.endTiming();
                     return res;
                 }
@@ -93,8 +95,8 @@ class CommandableAzureFunction extends AzureFunction_1.AzureFunction {
      * Registers all actions in this Azure Function.
      */
     register() {
-        let controller = this._dependencyResolver.getOneRequired('controller');
-        let commandSet = controller.getCommandSet();
+        const controller = this._dependencyResolver.getOneRequired('service');
+        const commandSet = controller.getCommandSet();
         this.registerCommandSet(commandSet);
     }
 }

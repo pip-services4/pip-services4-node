@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DummyClientFixture_1 = require("../DummyClientFixture");
 const DummyAzureFunctionClient_1 = require("./DummyAzureFunctionClient");
 suite('DummyAzureFunctionClient', () => {
@@ -22,7 +22,7 @@ suite('DummyAzureFunctionClient', () => {
     if (!uri && (!appName || !functionName || !protocol || !authCode)) {
         return;
     }
-    let config = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', uri, 'connection.protocol', protocol, 'connection.app_name', appName, 'connection.function_name', functionName, 'credential.auth_code', authCode);
+    let config = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', uri, 'connection.protocol', protocol, 'connection.app_name', appName, 'connection.function_name', functionName, 'credential.auth_code', authCode);
     let client;
     let fixture;
     setup(() => __awaiter(void 0, void 0, void 0, function* () {

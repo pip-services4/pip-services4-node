@@ -1,22 +1,17 @@
 /** @module containers */
 /** @hidden */ 
-const process = require('process');
+import process = require('process');
 
-import { BadRequestException } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Schema } from 'pip-services4-commons-node';
-import { UnknownException } from 'pip-services4-commons-node';
-import { Container } from 'pip-services4-container-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { ConsoleLogger } from 'pip-services4-components-node';
-import { CompositeTracer } from 'pip-services4-components-node';
-import { InstrumentTiming } from 'pip-services4-rpc-node';
+import { BadRequestException, UnknownException } from 'pip-services4-commons-node';
+
 
 import { AzureFunctionContextHelper } from './AzureFunctionContextHelper';
-import { IAzureFunctionService } from '../services/IAzureFunctionService';
+import { IAzureFunctionController } from '../controllers/IAzureFunctionController';
+import { DependencyResolver, ConfigParams, IContext, IReferences, Descriptor, Context } from 'pip-services4-components-node';
+import { Container } from 'pip-services4-container-node';
+import { Schema } from 'pip-services4-data-node';
+import { CompositeCounters, CompositeTracer, ConsoleLogger } from 'pip-services4-observability-node';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 
 /**
  * Abstract Azure Function, that acts as a container to instantiate and run components
@@ -32,8 +27,8 @@ import { IAzureFunctionService } from '../services/IAzureFunctionService';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  * 
  *
  * ### Example ###
@@ -46,7 +41,7 @@ import { IAzureFunctionService } from '../services/IAzureFunctionService';
  * 
  *     let azureFunction = new MyAzureFunctionFunction();
  *     
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunctionFunction is started");
  */
 export abstract class AzureFunction extends Container {
@@ -73,7 +68,7 @@ export abstract class AzureFunction extends Container {
     /**
      * The default path to config file.
      */
-    protected _configPath: string = './config/config.yml';
+    protected _configPath = './config/config.yml';
 
     /**
      * Creates a new instance of this Azure Function function.
@@ -140,7 +135,7 @@ export abstract class AzureFunction extends Container {
          if (this.isOpen()) return;
 
          await super.open(context);
-         this.registerServices();
+         this.registerControllers();
      }
 
 
@@ -148,7 +143,7 @@ export abstract class AzureFunction extends Container {
      * Adds instrumentation to log calls and measure call time.
      * It returns a InstrumentTiming object that is used to end the time measurement.
      * 
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      * 
      * @param context     (optional) a context to trace execution through call chain.
      * @param name              a method name.
@@ -158,8 +153,8 @@ export abstract class AzureFunction extends Container {
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-        let counterTiming = this._counters.beginTiming(name + ".exec_time");
-        let traceTiming = this._tracer.beginTrace(context, name, null);
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
     }
@@ -171,44 +166,46 @@ export abstract class AzureFunction extends Container {
      *  
      */
     public async run(): Promise<void> {
-        let context = this._info.name;
+        const context = Context.fromTraceId(this._info.name);
 
-        let path = this.getConfigPath();
-        let parameters = this.getParameters();
+        const path = this.getConfigPath();
+        const parameters = this.getParameters();
         this.readConfigFromFile(context, path, parameters);
 
         this.captureErrors(context);
         this.captureExit(context);
-    	await this.open(context);
+        await this.open(context);
     }
 
     /**
      * Registers all actions in this Azure Function.
      *
-     * Note: Overloading of this method has been deprecated. Use AzureFunctionService instead.
+     * Note: Overloading of this method has been deprecated. Use AzureFunctionController instead.
      */
-    protected register(): void {}
+    protected register(): void {
+        //
+    }
 
     /**
-     * Registers all Azure Function services in the container.
+     * Registers all Azure Function controllers in the container.
      */
-    protected registerServices(): void {
-        // Extract regular and commandable Azure Function services from references
-        let services = this._references.getOptional<IAzureFunctionService>(
-            new Descriptor("*", "service", "azurefunc", "*", "*")
+    protected registerControllers(): void {
+        // Extract regular and commandable Azure Function controllers from references
+        const controllers = this._references.getOptional<IAzureFunctionController>(
+            new Descriptor("*", "controller", "azurefunc", "*", "*")
         );
-        let cmdServices = this._references.getOptional<IAzureFunctionService>(
-            new Descriptor("*", "service", "commandable-azurefunc", "*", "*")
+        const cmdServices = this._references.getOptional<IAzureFunctionController>(
+            new Descriptor("*", "controller", "commandable-azurefunc", "*", "*")
         );
-        services.push(...cmdServices);
+        controllers.push(...cmdServices);
 
-        // Register actions defined in those services
-        for (let service of services) {
-            // Check if the service implements required interface
-            if (typeof service.getActions !== "function") continue;
+        // Register actions defined in those controller
+        for (const controller of controllers) {
+            // Check if the controller implements required interface
+            if (typeof controller.getActions !== "function") continue;
 
-            let actions = service.getActions();
-            for (let action of actions) {
+            const actions = controller.getActions();
+            for (const action of actions) {
                 this.registerAction(action.cmd, action.schema, action.action);
             }
         }
@@ -217,7 +214,7 @@ export abstract class AzureFunction extends Container {
     /**
      * Registers an action in this Azure Function.
      * 
-     * Note: This method has been deprecated. Use AzureFunctionService instead.
+     * Note: This method has been deprecated. Use AzureFunctionController instead.
      * 
      * @param cmd           a action/command name.
      * @param schema        a validation schema to validate received parameters.
@@ -237,24 +234,24 @@ export abstract class AzureFunction extends Container {
             throw new UnknownException(null, 'ACTION_NOT_FUNCTION', 'Action is not a function');
         }
 
-        if (this._actions.hasOwnProperty(cmd)) {
+        if (Object.prototype.hasOwnProperty.call(this._actions, cmd)) {
             throw new UnknownException(null, 'DUPLICATED_ACTION', `"${cmd}" action already exists`);
         }
 
         // Hack!!! Wrapping action to preserve prototyping context
-        const actionCurl = (context) => {
+        const actionCurl = (actionContext: { params: any; query: any; body: any; }) => {
             // Perform validation
             if (schema != null) {
-                let params = Object.assign({}, context.params, context.query, { body: context.body });
-                let context = this.getTraceId(context);
-                let err = schema.validateAndReturnException(context, params, false);
+                const params = Object.assign({}, actionContext.params, actionContext.query, { body: actionContext.body });
+                const traceId = this.getTraceId(actionContext);
+                const err = schema.validateAndReturnException(traceId, params, false);
                 if (err != null) {
                     return err;
                 }
             }
 
             // Todo: perform verification?
-            return action.call(this, context);
+            return action.call(this, actionContext);
         };
 
         this._actions[cmd] = actionCurl;
@@ -289,11 +286,11 @@ export abstract class AzureFunction extends Container {
      * @returns the result of the function execution.
      */
     protected async execute(context: any): Promise<any> {
-        let cmd: string = this.getCommand(context);
-        let context = this.getTraceId(context);
+        const cmd: string = this.getCommand(context);
+        const traceId = this.getTraceId(context);
         if (cmd == null) {
             throw new BadRequestException(
-                context, 
+                traceId, 
                 'NO_COMMAND', 
                 'Cmd parameter is missing'
             );
@@ -302,7 +299,7 @@ export abstract class AzureFunction extends Container {
         const action: any = this._actions[cmd];
         if (action == null) {
             throw new BadRequestException(
-                context, 
+                traceId, 
                 'NO_ACTION', 
                 'Action ' + cmd + ' was not found'
             )
@@ -328,7 +325,8 @@ export abstract class AzureFunction extends Container {
      * @param context     an incoming context object with invocation parameters.
      */
     public getHandler(): (context: any) => Promise<any> {
-        let self = this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self = this;
         
         // Return plugin function
         return async function (context) {

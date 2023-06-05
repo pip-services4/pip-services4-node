@@ -1,13 +1,10 @@
 /** @module connect */
-const url = require('url');
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
+import url = require('url');
+
 
 import { AzureFunctionConnectionParams } from './AzureFunctionConnectionParams';
+import { IConfigurable, IReferenceable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { ConnectionResolver, CredentialResolver } from 'pip-services4-config-node';
 
 /**
  * Helper class to retrieve Azure connection and credential parameters,
@@ -109,18 +106,18 @@ export class AzureFunctionConnectionResolver implements IConfigurable, IReferenc
         let uri = connection.getFunctionUri();
 
         if (uri == null || uri == "") {
-            let protocol = connection.getProtocol();
-            let appName = connection.getAppName();
-            let functionName = connection.getFunctionName();
+            const protocol = connection.getProtocol();
+            const appName = connection.getAppName();
+            const functionName = connection.getFunctionName();
             // http://myapp.azurewebsites.net/api/myfunction
             uri = `${protocol}://${appName}.azurewebsites.net/api/${functionName}`;
 
             connection.setFunctionUri(uri);
         } else {
-            let address = url.parse(uri);
-            let protocol = ("" + address.protocol).replace(':', '');
-            let appName = address.host.replace('.azurewebsites.net', '');
-            let functionName = address.path.replace('/api/', '');
+            const address = url.parse(uri);
+            const protocol = ("" + address.protocol).replace(':', '');
+            const appName = address.host.replace('.azurewebsites.net', '');
+            const functionName = address.path.replace('/api/', '');
 
             connection.setProtocol(protocol);
             connection.setAppName(appName);

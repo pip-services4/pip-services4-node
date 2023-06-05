@@ -1,10 +1,9 @@
 /** @module containers */
-import { ICommandable } from 'pip-services4-commons-node';
-import { CommandSet } from 'pip-services4-commons-node';
-import { Parameters } from 'pip-services4-commons-node';
 
+import { Context, Parameters } from 'pip-services4-components-node';
 import { AzureFunction } from './AzureFunction';
 import {AzureFunctionContextHelper} from "./AzureFunctionContextHelper";
+import { CommandSet, ICommandable } from 'pip-services4-rpc-node';
 
 /**
  * Abstract Azure Function function, that acts as a container to instantiate and run components
@@ -20,8 +19,8 @@ import {AzureFunctionContextHelper} from "./AzureFunctionContextHelper";
  * 
  * - <code>\*:logger:\*:\*:1.0</code>            (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:service:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
- * - <code>\*:service:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/services.iazurefunctionservice.html IAzureFunctionService]] services to handle action requests
+ * - <code>\*:controller:azurefunc:\*:1.0</code>       (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
+ * - <code>\*:controller:commandable-azurefunc:\*:1.0</code> (optional) [[https://pip-services4-node.github.io/pip-services4-azure-node/interfaces/controllers.iazurefunctioncontroller.html IAzureFunctionController]] controllers to handle action requests
  *
  * 
  * ### Example ###
@@ -40,7 +39,7 @@ import {AzureFunctionContextHelper} from "./AzureFunctionContextHelper";
  * 
  *     let azureFunction = new MyAzureFunctionFunction();
  *     
- *     await service.run();
+ *     await controller.run();
  *     console.log("MyAzureFunction is started");
  */
 export abstract class CommandableAzureFunction extends AzureFunction {
@@ -53,7 +52,7 @@ export abstract class CommandableAzureFunction extends AzureFunction {
      */
     public constructor(name: string, description?: string) {
         super(name, description);
-        this._dependencyResolver.put('controller', 'none');
+        this._dependencyResolver.put('service', 'none');
     }
 
     /**
@@ -67,17 +66,17 @@ export abstract class CommandableAzureFunction extends AzureFunction {
     }
 
     private registerCommandSet(commandSet: CommandSet) {
-        let commands = commandSet.getCommands();
+        const commands = commandSet.getCommands();
         for (let index = 0; index < commands.length; index++) {
-            let command = commands[index];
+            const command = commands[index];
 
             this.registerAction(command.getName(), null, async context => {
-                let context = this.getTraceId(context);
-                let args = this.getParametrs(context);
-                let timing = this.instrument(context, this._info.name + '.' + command.getName());
+                const traceId = this.getTraceId(context);
+                const args = this.getParametrs(context);
+                const timing = this.instrument(Context.fromTraceId(traceId), this._info.name + '.' + command.getName());
 
                 try {
-                    let res = await command.execute(context, args);
+                    const res = await command.execute(Context.fromTraceId(traceId), args);
                     timing.endTiming();
                     return res;
                 } catch (err) {
@@ -92,8 +91,8 @@ export abstract class CommandableAzureFunction extends AzureFunction {
      * Registers all actions in this Azure Function.
      */
     public register(): void {
-        let controller: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('controller');
-        let commandSet = controller.getCommandSet();
+        const controller: ICommandable = this._dependencyResolver.getOneRequired<ICommandable>('service');
+        const commandSet = controller.getCommandSet();
         this.registerCommandSet(commandSet);
     }
 }

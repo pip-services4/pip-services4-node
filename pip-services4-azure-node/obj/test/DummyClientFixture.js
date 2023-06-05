@@ -11,8 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyClientFixture = void 0;
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 class DummyClientFixture {
     constructor(client) {
         this._client = client;
@@ -34,7 +33,7 @@ class DummyClientFixture {
             assert.equal(createdDummy2.key, dummy2.key);
             dummy2 = createdDummy2;
             // Get all dummies
-            const dummyDataPage = yield this._client.getDummies(null, new pip_services3_commons_node_1.FilterParams(), new pip_services3_commons_node_2.PagingParams(0, 5, false));
+            const dummyDataPage = yield this._client.getDummies(null, new pip_services4_data_node_1.FilterParams(), new pip_services4_data_node_1.PagingParams(0, 5, false));
             assert.isObject(dummyDataPage);
             assert.isTrue(dummyDataPage.data.length >= 2);
             // Update the dummy
