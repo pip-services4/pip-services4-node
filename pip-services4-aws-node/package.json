@@ -43,13 +43,13 @@
     },
     "dependencies": {
         "aws-sdk": "^2.1325.0",
-        "pip-services4-commons-node": "0.0.2",
-        "pip-services4-components-node": "0.0.4",
-        "pip-services4-config-node": "0.0.4",
-        "pip-services4-container-node": "0.0.1",
-        "pip-services4-data-node": "0.0.4",
-        "pip-services4-observability-node": "0.0.2",
-        "pip-services4-rpc-node": "0.0.1"
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "^0.0.4",
+        "pip-services4-container-node": "^0.0.1",
+        "pip-services4-data-node": "^0.0.4",
+        "pip-services4-observability-node": "^0.0.2",
+        "pip-services4-rpc-node": "^0.0.1"
     },
     "devDependencies": {
         "@types/aws-sdk": "^2.7.0",
