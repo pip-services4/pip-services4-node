@@ -1,11 +1,7 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { MySqlConnectionResolver } from './MySqlConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 /**
  * MySQL connection using plain driver.
  *

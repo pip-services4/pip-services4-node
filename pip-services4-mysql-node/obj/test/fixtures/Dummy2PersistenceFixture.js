@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dummy2PersistenceFixture = void 0;
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 class Dummy2PersistenceFixture {
     constructor(persistence) {
         this._dummy1 = { id: 1, key: "Key 1", content: "Content 1" };
@@ -50,7 +50,7 @@ class Dummy2PersistenceFixture {
             assert.equal(dummy1.key, result.key);
             assert.equal(dummy1.content, result.content);
             // Partially update the dummy
-            result = yield this._persistence.updatePartially(null, dummy1.id, pip_services3_commons_node_1.AnyValueMap.fromTuples('content', 'Partially Updated Content 1'));
+            result = yield this._persistence.updatePartially(null, dummy1.id, pip_services4_commons_node_1.AnyValueMap.fromTuples('content', 'Partially Updated Content 1'));
             assert.isNotNull(result);
             assert.equal(dummy1.id, result.id);
             assert.equal(dummy1.key, result.key);

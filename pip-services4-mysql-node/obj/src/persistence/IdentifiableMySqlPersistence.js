@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiableMySqlPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MySqlPersistence_1 = require("./MySqlPersistence");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract persistence component that stores data in MySQL
  * and implements a number of CRUD operations over data items with unique ids.
@@ -129,8 +129,8 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
+            const params = this.generateParameters(ids);
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
             let items = yield new Promise((resolve, reject) => {
                 this._client.query(query, ids, (err, result) => {
                     if (err != null) {
@@ -156,15 +156,15 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-            let params = [id];
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+            const params = [id];
             let item = yield new Promise((resolve, reject) => {
                 this._client.query(query, params, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result ? result[0] || null : null;
+                    const item = result ? result[0] || null : null;
                     resolve(item);
                 });
             });
@@ -191,7 +191,7 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
         let newItem = item;
         if (newItem.id == null && this._autoGenerateId) {
             newItem = Object.assign({}, newItem);
-            newItem.id = item.id || pip_services3_commons_node_1.IdGenerator.nextLong();
+            newItem.id = item.id || pip_services4_data_node_1.IdGenerator.nextLong();
         }
         return super.create(context, newItem);
     }
@@ -211,13 +211,13 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
             // Assign unique id
             if (item.id == null && this._autoGenerateId) {
                 item = Object.assign({}, item);
-                item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                item.id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let setParams = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const setParams = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(...values);
             values.push(item.id);
             let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") VALUES (" + params + ")";
@@ -229,7 +229,7 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
                         reject(err);
                         return;
                     }
-                    let item = result && result.length == 2 && result[1].length == 1
+                    const item = result && result.length == 2 && result[1].length == 1
                         ? result[1][0] : null;
                     resolve(item);
                 });
@@ -251,9 +251,9 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
             if (item == null || item.id == null) {
                 return null;
             }
-            let row = this.convertFromPublic(item);
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublic(item);
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(item.id);
             values.push(item.id);
             let query = "UPDATE " + this.quotedTableName() + " SET " + params + " WHERE id=?";
@@ -264,7 +264,7 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
                         reject(err);
                         return;
                     }
-                    let item = result && result.length == 2 && result[1].length == 1
+                    const item = result && result.length == 2 && result[1].length == 1
                         ? result[1][0] : null;
                     resolve(item);
                 });
@@ -287,26 +287,26 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
             if (data == null || id == null) {
                 return null;
             }
-            let row = this.convertFromPublicPartial(data.getAsObject());
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublicPartial(data.getAsObject());
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(id);
             values.push(id);
             let query = "UPDATE " + this.quotedTableName() + " SET " + params + " WHERE id=?";
             query += "; SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-            let item = yield new Promise((resolve, reject) => {
+            const item = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.length == 2 && result[1].length == 1
+                    const item = result && result.length == 2 && result[1].length == 1
                         ? result[1][0] : null;
                     resolve(item);
                 });
             });
             this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
-            let newItem = this.convertToPublic(item);
+            const newItem = this.convertToPublic(item);
             return newItem;
         });
     }
@@ -319,7 +319,7 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let values = [id, id];
+            const values = [id, id];
             let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
             query += "; DELETE FROM " + this.quotedTableName() + " WHERE id=?";
             let item = yield new Promise((resolve, reject) => {
@@ -328,7 +328,7 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
                         reject(err);
                         return;
                     }
-                    let item = result && result.length == 2 && result[0].length == 1
+                    const item = result && result.length == 2 && result[0].length == 1
                         ? result[0][0] : null;
                     resolve(item);
                 });
@@ -346,15 +346,15 @@ class IdentifiableMySqlPersistence extends MySqlPersistence_1.MySqlPersistence {
      */
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "DELETE FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
-            let count = yield new Promise((resolve, reject) => {
+            const params = this.generateParameters(ids);
+            const query = "DELETE FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
+            const count = yield new Promise((resolve, reject) => {
                 this._client.query(query, ids, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result ? result.affectedRows : 0;
+                    const count = result ? result.affectedRows : 0;
                     resolve(count);
                 });
             });

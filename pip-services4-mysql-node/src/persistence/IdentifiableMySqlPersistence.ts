@@ -1,13 +1,13 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { MySqlPersistence } from './MySqlPersistence';
+import { IContext } from 'pip-services4-components-node';
+import { IIdentifiable, IdGenerator } from 'pip-services4-data-node';
 
 /**
  * Abstract persistence component that stores data in MySQL
@@ -99,7 +99,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
     /**
      * Flag to turn on auto generation of object ids.
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -129,8 +129,8 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
      * @returns a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let params = this.generateParameters(ids);
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
+        const params = this.generateParameters(ids);
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
 
         let items = await new Promise<any[]>((resolve, reject) => {
             this._client.query(query, ids, (err, result) => {
@@ -158,8 +158,8 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
      * @returns a requested data item or <code>null</code> if nothing was found.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-        let params = [ id ];
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+        const params = [ id ];
 
         let item = await new Promise<any>((resolve, reject) => {
             this._client.query(query, params, (err, result) => {
@@ -167,7 +167,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
                     reject(err);
                     return;
                 }
-                let item = result ? result[0] || null : null; 
+                const item = result ? result[0] || null : null; 
                 resolve(item);
             });
         });
@@ -222,11 +222,11 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
             item.id = <any>IdGenerator.nextLong();
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let setParams = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const setParams = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(...values);
         values.push(item.id);
 
@@ -240,7 +240,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
                     reject(err);
                     return;
                 }
-                let item = result && result.length == 2 && result[1].length == 1
+                const item = result && result.length == 2 && result[1].length == 1
                     ? result[1][0] : null;
                 resolve(item);
             });
@@ -264,9 +264,9 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
             return null;
         }
 
-        let row = this.convertFromPublic(item);
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
         values.push(item.id);
 
@@ -279,7 +279,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
                     reject(err);
                     return;
                 }
-                let item = result && result.length == 2 && result[1].length == 1
+                const item = result && result.length == 2 && result[1].length == 1
                     ? result[1][0] : null;
                 resolve(item);
             });
@@ -304,22 +304,22 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
             return null;
         }
 
-        let row = this.convertFromPublicPartial(data.getAsObject());
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublicPartial(data.getAsObject());
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(id);
         values.push(id);
 
         let query = "UPDATE " + this.quotedTableName() + " SET " + params + " WHERE id=?";
         query += "; SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
 
-        let item = await new Promise<any>((resolve, reject) => {
+        const item = await new Promise<any>((resolve, reject) => {
             this._client.query(query, values, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.length == 2 && result[1].length == 1
+                const item = result && result.length == 2 && result[1].length == 1
                     ? result[1][0] : null;
                 resolve(item);
             });
@@ -327,7 +327,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
 
         this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
 
-        let newItem = this.convertToPublic(item);
+        const newItem = this.convertToPublic(item);
         return newItem;
     }
 
@@ -339,7 +339,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
      * @returns the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let values = [ id, id ];
+        const values = [ id, id ];
 
         let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?"
         query += "; DELETE FROM " + this.quotedTableName() + " WHERE id=?";
@@ -351,7 +351,7 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
                     return;
                 }
 
-                let item = result && result.length == 2 && result[0].length == 1
+                const item = result && result.length == 2 && result[0].length == 1
                     ? result[0][0] : null;
                 resolve(item);
             });
@@ -370,16 +370,16 @@ export class IdentifiableMySqlPersistence<T extends IIdentifiable<K>, K> extends
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let params = this.generateParameters(ids);
-        let query = "DELETE FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
+        const params = this.generateParameters(ids);
+        const query = "DELETE FROM " + this.quotedTableName() + " WHERE id IN(" + params + ")";
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, ids, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result ? result.affectedRows : 0;
+                const count = result ? result.affectedRows : 0;
                 resolve(count);
             });
         });

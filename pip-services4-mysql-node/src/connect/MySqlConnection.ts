@@ -1,13 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { MySqlConnectionResolver } from './MySqlConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * MySQL connection using plain driver.
@@ -74,7 +70,9 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -109,11 +107,12 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
     }
 
     private composeUriSettings(uri: string): string {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
 
-        let settings: any = {
+        const settings: any = {
             multipleStatements: true,
             connectionLimit: maxPoolSize,
             connectTimeout: connectTimeoutMS,
@@ -122,14 +121,14 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
         };
 
         let params = '';
-        for (let key in settings) {
+        for (const key in settings) {
             if (params.length > 0) {
                 params += '&';
             }
 
             params += key;
 
-            let value = settings[key];
+            const value = settings[key];
             if (value != null) {
                 params += '=' + value;
             }
@@ -156,11 +155,12 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
         try {
             uri = this.composeUriSettings(uri);
 
-            let mysql = require('mysql');
-            let pool = mysql.createPool(uri);
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const mysql = require('mysql');
+            const pool = mysql.createPool(uri);
 
             // Try to connect
-            let connection = await new Promise<any>((resolve, reject) => {
+            const connection = await new Promise<any>((resolve, reject) => {
                 pool.getConnection((err, connection) => {
                     if (err != null) {
                         reject(err);
@@ -176,7 +176,7 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
             connection.release();
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to MySQL failed"
             ).withCause(ex);
@@ -210,7 +210,7 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
             this._databaseName = null;    
         } catch(ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from MySQL failed: '
             ) .withCause(ex);

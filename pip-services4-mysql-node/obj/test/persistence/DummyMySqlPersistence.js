@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyMySqlPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const IdentifiableMySqlPersistence_1 = require("../../src/persistence/IdentifiableMySqlPersistence");
 class DummyMySqlPersistence extends IdentifiableMySqlPersistence_1.IdentifiableMySqlPersistence {
     constructor() {
@@ -26,7 +26,7 @@ class DummyMySqlPersistence extends IdentifiableMySqlPersistence_1.IdentifiableM
             getPageByFilter: { get: () => super.getPageByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            filter = filter || new pip_services3_commons_node_1.FilterParams();
+            filter = filter || new pip_services4_data_node_1.FilterParams();
             let key = filter.getAsNullableString('key');
             let filterCondition = null;
             if (key != null) {
@@ -40,7 +40,7 @@ class DummyMySqlPersistence extends IdentifiableMySqlPersistence_1.IdentifiableM
             getCountByFilter: { get: () => super.getCountByFilter }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            filter = filter || new pip_services3_commons_node_1.FilterParams();
+            filter = filter || new pip_services4_data_node_1.FilterParams();
             let key = filter.getAsNullableString('key');
             let filterCondition = null;
             if (key != null) {

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MySqlConnection_1 = require("../../src/connect/MySqlConnection");
 suite('MySqlConnection', () => {
     let connection;
@@ -25,7 +25,7 @@ suite('MySqlConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
         connection = new MySqlConnection_1.MySqlConnection();
         connection.configure(dbConfig);
         yield connection.open(null);

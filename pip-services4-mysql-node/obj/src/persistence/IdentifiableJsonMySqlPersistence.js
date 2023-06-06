@@ -116,10 +116,10 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
      */
     ensureTable(idType = 'VARCHAR(32)', dataType = 'JSON') {
         if (this._schemaName != null) {
-            let query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
+            const query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
             this.ensureSchema(query);
         }
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (`id` " + idType + " PRIMARY KEY, `data` " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -143,7 +143,7 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
     convertFromPublic(value) {
         if (value == null)
             return null;
-        let result = {
+        const result = {
             id: value.id,
             data: JSON.stringify(value)
         };
@@ -164,14 +164,14 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
             }
             let query = "UPDATE " + this.quotedTableName() + " SET `data`=JSON_MERGE_PATCH(data,?) WHERE id=?";
             query += "; SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-            let values = [JSON.stringify(data.getAsObject()), id, id];
+            const values = [JSON.stringify(data.getAsObject()), id, id];
             let newItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.length == 2 && result[1].length == 1
+                    const item = result && result.length == 2 && result[1].length == 1
                         ? result[1][0] : null;
                     resolve(item);
                 });

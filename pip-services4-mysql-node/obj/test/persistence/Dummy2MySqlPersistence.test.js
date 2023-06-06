@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const Dummy2PersistenceFixture_1 = require("../fixtures/Dummy2PersistenceFixture");
 const Dummy2MySqlPersistence_1 = require("./Dummy2MySqlPersistence");
 suite('Dummy2MySqlPersistence', () => {
@@ -26,7 +26,7 @@ suite('Dummy2MySqlPersistence', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
         persistence = new Dummy2MySqlPersistence_1.Dummy2MySqlPersistence();
         persistence.configure(dbConfig);
         fixture = new Dummy2PersistenceFixture_1.Dummy2PersistenceFixture(persistence);

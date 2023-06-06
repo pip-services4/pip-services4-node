@@ -9,14 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
 const MySqlConnection_1 = require("../../src/connect/MySqlConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyMySqlPersistence_1 = require("./DummyMySqlPersistence");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('DummyMySqlConnection', () => {
     let connection;
     let persistence;
@@ -31,11 +29,11 @@ suite('DummyMySqlConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mysqlUri, 'connection.host', mysqlHost, 'connection.port', mysqlPort, 'connection.database', mysqlDatabase, 'credential.username', mysqlUser, 'credential.password', mysqlPassword);
         connection = new MySqlConnection_1.MySqlConnection();
         connection.configure(dbConfig);
         persistence = new DummyMySqlPersistence_1.DummyMySqlPersistence();
-        persistence.setReferences(pip_services3_commons_node_3.References.fromTuples(new pip_services3_commons_node_2.Descriptor("pip-services", "connection", "mysql", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "mysql", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

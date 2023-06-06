@@ -1,4 +1,4 @@
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from "pip-services4-data-node";
 
 export class Dummy2 implements IIdentifiable<number> {
     public id: number;

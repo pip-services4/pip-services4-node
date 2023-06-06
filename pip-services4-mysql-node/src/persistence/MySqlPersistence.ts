@@ -1,19 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { LongConverter } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException, InvalidStateException, LongConverter } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { PagingParams, DataPage } from 'pip-services4-data-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { MySqlConnection } from '../connect/MySqlConnection';
 
 /**
@@ -142,7 +132,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
     /**
      * Max number of objects in data pages
      */
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence component.
@@ -201,7 +191,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
     }
 
     private createConnection(): MySqlConnection {
-        let connection = new MySqlConnection();
+        const connection = new MySqlConnection();
         
         if (this._config) {
             connection.configure(this._config);
@@ -239,10 +229,10 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
         }
 
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "") fields += ", ";
             fields += this.quoteIdentifier(key);
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc) fields += " DESC";
         }
 
@@ -329,7 +319,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -344,7 +334,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "MySQL connection is not opened"
             );
@@ -369,7 +359,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
         } catch (ex) {
             this._client == null;
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to MySQL failed"
             ).withCause(ex);    
@@ -382,13 +372,13 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'MySql connection is missing'
             );
@@ -407,15 +397,17 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._tableName == null) {
             throw new Error('Table name is not defined');
         }
 
-        let query = "DELETE FROM " + this.quotedTableName();
+        const query = "DELETE FROM " + this.quotedTableName();
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -433,8 +425,8 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
     
         // Check if table exist to determine weither to auto create objects
         // Todo: include schema
-        let query = "SHOW TABLES LIKE '" + this._tableName + "'";
-        let exist = await new Promise<boolean>((resolve, reject) => {
+        const query = "SHOW TABLES LIKE '" + this._tableName + "'";
+        const exist = await new Promise<boolean>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -452,8 +444,9 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
         this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
 
         // Run all DML commands
-        for (let dml of this._schemaStatements) {
+        for (const dml of this._schemaStatements) {
             await new Promise<void>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.query(dml, (err, result) => {
                     if (err != null) {
                         this._logger.error(context, err, 'Failed to autocreate database object');
@@ -463,7 +456,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
                     resolve();
                 });
             });
-        };
+        }
     }
 
     /**
@@ -475,7 +468,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(value);
         }
@@ -491,12 +484,13 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
     protected generateParameters(values: any): string {
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
-        let index = 1;
+        // let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "") result += ",";
             result += "?"; // "$" + index;
-            index++;
+            // index++;
         }
 
         return result;
@@ -509,11 +503,11 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
      */
     protected generateSetParameters(values: any): string {
         let result = "";
-        let index = 1;
-        for (let column in values) {
+        // let index = 1;
+        for (const column in values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(column) + "=?"; //"=$" + index;
-            index++;
+            // index++;
         }
 
         return result;
@@ -549,9 +543,9 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         if (filter && filter != "") {
             query += " WHERE " + filter;
@@ -589,23 +583,23 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
                 query += " WHERE " + filter;
             }
 
-            let count = await new Promise<number>((resolve, reject) => {
+            const count = await new Promise<number>((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
                         
-                    let count = result && result.length == 1 
+                    const count = result && result.length == 1 
                         ? LongConverter.toLong(result[0].count) : 0;
                     resolve(count);
                 });
             });
 
-            let page = new DataPage<T>(items, count);
+            const page = new DataPage<T>(items, count);
             return page;
         } else {
-            let page = new DataPage<T>(items);
+            const page = new DataPage<T>(items);
             return page;
         }
     }
@@ -626,14 +620,14 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
     
-                let count = result && result.length == 1 
+                const count = result && result.length == 1 
                     ? LongConverter.toLong(result[0].count) : 0;
                 resolve(count);
             });
@@ -702,13 +696,13 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result && result.length == 1 ? result[0].count : 0;
+                const count = result && result.length == 1 ? result[0].count : 0;
                 resolve(count);
             });
         });
@@ -719,7 +713,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
             query += " WHERE " + filter;
         }
 
-        let pos = Math.trunc(Math.random() * count);
+        const pos = Math.trunc(Math.random() * count);
         query += " LIMIT 1" + " OFFSET " + pos;
 
         let item = await new Promise<any>((resolve, reject) => {
@@ -728,7 +722,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
                     reject(err);
                     return;
                 }
-                let item = (result != null && result.length > 0) ? result[0] : null;
+                const item = (result != null && result.length > 0) ? result[0] : null;
                 resolve(item);
             });
         });
@@ -754,15 +748,16 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
             return;
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const values = this.generateValues(row);
 
-        let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") VALUES (" + params + ")";
+        const query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") VALUES (" + params + ")";
         //query += "; SELECT * FROM " + this.quotedTableName();
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.query(query, values, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -774,7 +769,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 
         this._logger.trace(context, "Created in %s with id = %s", this.quotedTableName(), row.id);
 
-        let newItem = item;
+        const newItem = item;
         return newItem;
     }
 
@@ -793,13 +788,13 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result ? result.affectedRows : 0;
+                const count = result ? result.affectedRows : 0;
                 resolve(count);
             });
         });

@@ -1,12 +1,10 @@
-const process = require('process');
+import process = require('process');
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
 import { MySqlConnection } from '../../src/connect/MySqlConnection';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummyMySqlPersistence } from './DummyMySqlPersistence';
+import { ConfigParams, References, Descriptor } from 'pip-services4-components-node';
 
 suite('DummyMySqlConnection', ()=> {
     let connection: MySqlConnection;

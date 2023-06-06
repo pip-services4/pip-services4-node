@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MySqlConnection = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MySqlConnectionResolver_1 = require("./MySqlConnectionResolver");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * MySQL connection using plain driver.
  *
@@ -48,14 +49,14 @@ class MySqlConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "options.connect_timeout", 0, "options.idle_timeout", 10000, "options.max_pool_size", 3);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -63,7 +64,8 @@ class MySqlConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -93,10 +95,11 @@ class MySqlConnection {
         return this._connection != null;
     }
     composeUriSettings(uri) {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
-        let settings = {
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const settings = {
             multipleStatements: true,
             connectionLimit: maxPoolSize,
             connectTimeout: connectTimeoutMS,
@@ -104,12 +107,12 @@ class MySqlConnection {
             //            idleTimeoutMillis: idleTimeoutMS
         };
         let params = '';
-        for (let key in settings) {
+        for (const key in settings) {
             if (params.length > 0) {
                 params += '&';
             }
             params += key;
-            let value = settings[key];
+            const value = settings[key];
             if (value != null) {
                 params += '=' + value;
             }
@@ -133,10 +136,11 @@ class MySqlConnection {
             this._logger.debug(context, "Connecting to MySQL...");
             try {
                 uri = this.composeUriSettings(uri);
-                let mysql = require('mysql');
-                let pool = mysql.createPool(uri);
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const mysql = require('mysql');
+                const pool = mysql.createPool(uri);
                 // Try to connect
-                let connection = yield new Promise((resolve, reject) => {
+                const connection = yield new Promise((resolve, reject) => {
                     pool.getConnection((err, connection) => {
                         if (err != null) {
                             reject(err);
@@ -150,7 +154,7 @@ class MySqlConnection {
                 connection.release();
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
             }
         });
     }
@@ -179,7 +183,7 @@ class MySqlConnection {
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
             }
         });
     }

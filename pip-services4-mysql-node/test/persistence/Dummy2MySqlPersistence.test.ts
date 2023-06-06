@@ -1,6 +1,6 @@
 let process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { Dummy2PersistenceFixture } from '../fixtures/Dummy2PersistenceFixture';
 import { Dummy2MySqlPersistence } from './Dummy2MySqlPersistence';
 

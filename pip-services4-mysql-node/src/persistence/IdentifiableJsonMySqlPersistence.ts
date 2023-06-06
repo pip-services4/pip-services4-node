@@ -1,8 +1,9 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
 
 import { IdentifiableMySqlPersistence } from './IdentifiableMySqlPersistence';
+import { IContext } from 'pip-services4-components-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 
 /**
  * Abstract persistence component that stores data in MySQL in JSON or JSONB fields
@@ -108,12 +109,12 @@ export class IdentifiableJsonMySqlPersistence<T extends IIdentifiable<K>, K> ext
      * @param idType type of the id column (default: VARCHAR(32))
      * @param dataType type of the data column (default: JSON)
      */
-    protected ensureTable(idType: string = 'VARCHAR(32)', dataType: string = 'JSON') {
+    protected ensureTable(idType = 'VARCHAR(32)', dataType = 'JSON') {
         if (this._schemaName != null) {
-            let query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
+            const query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
             this.ensureSchema(query);
         }
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (`id` " + idType + " PRIMARY KEY, `data` " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -137,7 +138,7 @@ export class IdentifiableJsonMySqlPersistence<T extends IIdentifiable<K>, K> ext
      */
     protected convertFromPublic(value: any): any {
         if (value == null) return null;
-        let result: any = {
+        const result: any = {
             id: value.id,
             data: JSON.stringify(value)
         };
@@ -159,7 +160,7 @@ export class IdentifiableJsonMySqlPersistence<T extends IIdentifiable<K>, K> ext
 
         let query = "UPDATE " + this.quotedTableName() + " SET `data`=JSON_MERGE_PATCH(data,?) WHERE id=?";
         query += "; SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-        let values = [JSON.stringify(data.getAsObject()), id, id];
+        const values = [JSON.stringify(data.getAsObject()), id, id];
 
         let newItem = await new Promise<any>((resolve, reject) => {
             this._client.query(query, values, (err, result) => {
@@ -167,7 +168,7 @@ export class IdentifiableJsonMySqlPersistence<T extends IIdentifiable<K>, K> ext
                     reject(err);
                     return;
                 }
-                let item = result && result.length == 2 && result[1].length == 1
+                const item = result && result.length == 2 && result[1].length == 1
                     ? result[1][0] : null;
                 resolve(item);
             });
