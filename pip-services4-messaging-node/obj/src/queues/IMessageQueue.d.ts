@@ -1,9 +1,8 @@
 /** @module queues */
-import { IOpenable } from 'pip-services4-commons-node';
-import { IClosable } from 'pip-services4-commons-node';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
 import { IMessageReceiver } from './IMessageReceiver';
+import { IOpenable, IClosable, IContext } from 'pip-services4-components-node';
 /**
  * Interface for asynchronous message queues.
  *

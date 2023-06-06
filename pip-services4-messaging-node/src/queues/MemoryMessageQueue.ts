@@ -1,13 +1,11 @@
 /** @module queues */
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessageQueue } from './MessageQueue';
 import { MessageEnvelope } from './MessageEnvelope';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { LockedMessage } from './LockedMessage';
+import { IContext, ConfigParams, Context } from 'pip-services4-components-node';
+import { ConnectionParams, CredentialParams } from 'pip-services4-config-node';
 
 /**
  * Message queue that sends and receives messages within the same process by using shared memory.
@@ -40,12 +38,12 @@ import { LockedMessage } from './LockedMessage';
  */
 export class MemoryMessageQueue extends MessageQueue {
     private _messages: MessageEnvelope[] = [];
-    private _lockTokenSequence: number = 0;
+    private _lockTokenSequence = 0;
     private _lockedMessages: { [id: number]: LockedMessage; } = {};
-    private _opened: boolean = false;
+    private _opened = false;
     /** Used to stop the listening process. */
-    private _cancel: boolean = false;
-    private _listenInterval: number = 1000;
+    private _cancel = false;
+    private _listenInterval = 1000;
 
     /**
      * Creates a new instance of the message queue.
@@ -60,9 +58,9 @@ export class MemoryMessageQueue extends MessageQueue {
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._opened;
@@ -75,15 +73,15 @@ export class MemoryMessageQueue extends MessageQueue {
      * @param connections        connection parameters
      * @param credential        credential parameters
      */
-    protected async openWithParams(context: IContext, connections: ConnectionParams[],
-        credential: CredentialParams): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected async openWithParams(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<void> {
         this._opened = true;
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         this._opened = false;
@@ -92,10 +90,11 @@ export class MemoryMessageQueue extends MessageQueue {
     }
 
     /**
-	 * Clears component state.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Clears component state.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         this._messages = [];
         this._lockedMessages = {};
@@ -136,7 +135,7 @@ export class MemoryMessageQueue extends MessageQueue {
         this._messages.push(envelope);
 
         this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-        this._logger.debug(envelope.trace_id, "Sent message %s via %s", envelope.toString(), this.getName());
+        this._logger.debug(Context.fromTraceId(envelope.trace_id), "Sent message %s via %s", envelope.toString(), this.getName());
     }
 
     /**
@@ -146,6 +145,7 @@ export class MemoryMessageQueue extends MessageQueue {
      * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async peek(context: IContext): Promise<MessageEnvelope> {
         let message: MessageEnvelope = null;
 
@@ -154,7 +154,7 @@ export class MemoryMessageQueue extends MessageQueue {
             message = this._messages[0];
 
         if (message != null)
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
 
         return message;
     }
@@ -168,7 +168,7 @@ export class MemoryMessageQueue extends MessageQueue {
      * @returns                 a list with peeked messages.
      */
     public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]>{
-        let messages = this._messages.slice(0, messageCount);
+        const messages = this._messages.slice(0, messageCount);
         
         this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
     
@@ -183,7 +183,7 @@ export class MemoryMessageQueue extends MessageQueue {
      * @returns                 a received message or <code>null</code>.
      */
     public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
-        let checkIntervalMs = 100;
+        const checkIntervalMs = 100;
         let elapsedTime = 0;
 
         // Get message the the queue
@@ -191,6 +191,7 @@ export class MemoryMessageQueue extends MessageQueue {
 
         while (elapsedTime < waitTimeout && message == null) {
             // Wait for a while
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             await new Promise((resolve, reject) => { setTimeout(resolve, checkIntervalMs); });
             elapsedTime += checkIntervalMs;
 
@@ -203,12 +204,12 @@ export class MemoryMessageQueue extends MessageQueue {
         }
 
         // Generate and set locked token
-        let lockedToken = this._lockTokenSequence++;
+        const lockedToken = this._lockTokenSequence++;
         message.setReference(lockedToken);
 
         // Add messages to locked messages list
-        let lockedMessage: LockedMessage = new LockedMessage();
-        let now: Date = new Date();
+        const lockedMessage: LockedMessage = new LockedMessage();
+        const now: Date = new Date();
         now.setMilliseconds(now.getMilliseconds() + waitTimeout);
         lockedMessage.expirationTime = now;
         lockedMessage.message = message;
@@ -217,7 +218,7 @@ export class MemoryMessageQueue extends MessageQueue {
 
         // Instrument the process
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
 
         return message;
     }
@@ -229,18 +230,19 @@ export class MemoryMessageQueue extends MessageQueue {
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async renewLock(message: MessageEnvelope, lockTimeout: number): Promise<void> {
         if (message.getReference() == null) {
             return;
         }
 
         // Get message from locked queue
-        let lockedToken: number = message.getReference();
-        let lockedMessage: LockedMessage = this._lockedMessages[lockedToken];
+        const lockedToken: number = message.getReference();
+        const lockedMessage: LockedMessage = this._lockedMessages[lockedToken];
 
         // If lock is found, extend the lock
         if (lockedMessage) {
-            let now: Date = new Date();
+            const now: Date = new Date();
             // Todo: Shall we skip if the message already expired?
             if (lockedMessage.expirationTime > now) {
                 now.setMilliseconds(now.getMilliseconds() + lockedMessage.timeout);
@@ -248,7 +250,7 @@ export class MemoryMessageQueue extends MessageQueue {
             }
         }
 
-        this._logger.trace(message.trace_id, "Renewed lock for message %s at %s", message, this.getName());
+        this._logger.trace(Context.fromTraceId(message.trace_id), "Renewed lock for message %s at %s", message, this.getName());
     }
 
     /**
@@ -262,11 +264,11 @@ export class MemoryMessageQueue extends MessageQueue {
             return;
         }
 
-        let lockKey: number = message.getReference();
+        const lockKey: number = message.getReference();
         delete this._lockedMessages[lockKey];
         message.setReference(null);
 
-        this._logger.trace(message.trace_id, "Completed message %s at %s", message, this.getName());
+        this._logger.trace(Context.fromTraceId(message.trace_id), "Completed message %s at %s", message, this.getName());
     }
 
     /**
@@ -283,8 +285,8 @@ export class MemoryMessageQueue extends MessageQueue {
         }
 
         // Get message from locked queue
-        let lockedToken: number = message.getReference();
-        let lockedMessage: LockedMessage = this._lockedMessages[lockedToken];
+        const lockedToken: number = message.getReference();
+        const lockedMessage: LockedMessage = this._lockedMessages[lockedToken];
         if (lockedMessage) {
             // Remove from locked messages
             delete this._lockedMessages[lockedToken];
@@ -300,9 +302,9 @@ export class MemoryMessageQueue extends MessageQueue {
             return;
         }
 
-        this._logger.trace(message.trace_id, "Abandoned message %s at %s", message, this.getName());
+        this._logger.trace(Context.fromTraceId(message.trace_id), "Abandoned message %s at %s", message, this.getName());
 
-        await this.send(message.trace_id, message);
+        await this.send(Context.fromTraceId(message.trace_id), message);
     }
 
     /**
@@ -315,12 +317,12 @@ export class MemoryMessageQueue extends MessageQueue {
             return;
         }
 
-        let lockedToken: number = message.getReference();
+        const lockedToken: number = message.getReference();
         delete this._lockedMessages[lockedToken];
         message.setReference(null);
 
         this._counters.incrementOne("queue." + this.getName() + ".dead_messages");
-        this._logger.trace(message.trace_id, "Moved to dead message %s at %s", message, this.getName());
+        this._logger.trace(Context.fromTraceId(message.trace_id), "Moved to dead message %s at %s", message, this.getName());
     }
 
     /**
@@ -333,8 +335,8 @@ export class MemoryMessageQueue extends MessageQueue {
      * @see [[receive]]
      */
     public listen(context: IContext, receiver: IMessageReceiver): void {
-        let listenFunc = async () => {
-            let timeoutInterval = this._listenInterval;
+        const listenFunc = async () => {
+            const timeoutInterval = this._listenInterval;
 
             this._logger.trace(null, "Started listening messages at %s", this.toString());
 
@@ -342,7 +344,7 @@ export class MemoryMessageQueue extends MessageQueue {
 
             while (!this._cancel) {
                 try {
-                    let message: MessageEnvelope = await this.receive(context, timeoutInterval);
+                    const message: MessageEnvelope = await this.receive(context, timeoutInterval);
                     if (message != null && !this._cancel) {
                         await receiver.receiveMessage(message, this);
                     }
@@ -360,6 +362,7 @@ export class MemoryMessageQueue extends MessageQueue {
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._cancel = true;
     }

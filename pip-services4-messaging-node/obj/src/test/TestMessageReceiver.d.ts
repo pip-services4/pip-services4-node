@@ -1,8 +1,8 @@
 /** @module test */
-import { ICleanable } from 'pip-services4-commons-node';
 import { IMessageReceiver } from '../queues/IMessageReceiver';
 import { IMessageQueue } from '../queues/IMessageQueue';
 import { MessageEnvelope } from '../queues/MessageEnvelope';
+import { ICleanable, IContext } from 'pip-services4-components-node';
 export declare class TestMessageReceiver implements IMessageReceiver, ICleanable {
     private _messages;
     constructor();

@@ -1,11 +1,10 @@
 /** @module queues */
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessageQueue } from './MessageQueue';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
+import { ICleanable, ConfigParams, IContext, Context } from 'pip-services4-components-node';
 
 /**
  * Message queue that caches received messages in memory to allow peek operations
@@ -40,12 +39,12 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this.isOpen()) {
+        if (this.isOpen()) {
             return;
         }
 
@@ -61,12 +60,12 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this.isOpen()) {
+        if (!this.isOpen()) {
             return;
         }
 
@@ -82,22 +81,23 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     /**
      * Subscribes to the message broker.
      * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     protected abstract subscribe(context: IContext): Promise<void>;
 
     /**
      * Unsubscribes from the message broker.
      * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     protected abstract unsubscribe(context: IContext): Promise<void>;
 
     /**
-	 * Clears component state.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Clears component state.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
@@ -131,7 +131,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
         }
 
         if (message != null) {
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
         }
     
         return message;
@@ -154,7 +154,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
         await this.subscribe(context);
 
         // Peek a batch of messages
-        let messages = this._messages.slice(0, messageCount);
+        const messages = this._messages.slice(0, messageCount);
 
         this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
 
@@ -174,7 +174,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
         // Subscribe to topic if needed
         await this.subscribe(context);
 
-        let checkIntervalMs = 100;
+        const checkIntervalMs = 100;
         let elapsedTime = 0;
 
         // Get message the the queue
@@ -182,6 +182,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
 
         while (elapsedTime < waitTimeout && message == null) {
             // Wait for a while
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             await new Promise((resolve, reject) => { setTimeout(resolve, checkIntervalMs); });
             elapsedTime += checkIntervalMs;
 
@@ -193,7 +194,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
     }
 
     protected async sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): Promise<void> {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? Context.fromTraceId(message.trace_id) : new Context();
         if (message == null || receiver == null) {
             this._logger.warn(context, "Message was skipped.");
             return;
@@ -220,7 +221,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
             return;
         }
 
-        let listenFunc = async () => {
+        const listenFunc = async () => {
             // Subscribe to topic if needed
             await this.subscribe(context);
 
@@ -228,7 +229,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
 
             // Resend collected messages to receiver
             while(this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     await this.sendMessageToReceiver(receiver, message);
                 }
@@ -248,6 +249,7 @@ export abstract class CachedMessageQueue extends MessageQueue implements ICleana
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._receiver = null;
     }   

@@ -1,5 +1,4 @@
 "use strict";
-/** @module test */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,6 +13,7 @@ exports.TestMessageReceiver = void 0;
 class TestMessageReceiver {
     constructor() {
         this._messages = [];
+        //
     }
     /**
      * Gets the list of received messages.
@@ -36,6 +36,7 @@ class TestMessageReceiver {
      * @see [[MessageEnvelope]]
      * @see [[IMessageQueue]]
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     receiveMessage(envelope, queue) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages.push(envelope);
@@ -45,6 +46,7 @@ class TestMessageReceiver {
      * Clears all received messagers.
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];

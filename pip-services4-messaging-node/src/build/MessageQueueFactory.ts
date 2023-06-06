@@ -1,9 +1,6 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
+import { ConfigParams, Factory, IConfigurable, IReferenceable, IReferences } from 'pip-services4-components-node';
+
 
 import { IMessageQueue } from '../queues/IMessageQueue';
 import { IMessageQueueFactory } from './IMessageQueueFactory';
@@ -29,9 +26,9 @@ export abstract class MessageQueueFactory extends Factory implements IMessageQue
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
      public setReferences(references: IReferences): void {
         this._references = references;

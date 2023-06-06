@@ -1,10 +1,9 @@
 /** @module queues */
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessageQueue } from './MessageQueue';
 import { MessageEnvelope } from './MessageEnvelope';
+import { IContext, ConfigParams } from 'pip-services4-components-node';
+import { ConnectionParams, CredentialParams } from 'pip-services4-config-node';
 /**
  * Message queue that sends and receives messages within the same process by using shared memory.
  *
@@ -67,13 +66,13 @@ export declare class MemoryMessageQueue extends MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     clear(context: IContext): Promise<void>;
     /**

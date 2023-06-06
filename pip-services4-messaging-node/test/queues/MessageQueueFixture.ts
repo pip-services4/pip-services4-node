@@ -1,19 +1,21 @@
 const assert = require('chai').assert;
 
+import { Context } from 'pip-services4-components-node';
 import { IMessageQueue } from '../../src/queues/IMessageQueue';
 import { MessageEnvelope } from '../../src/queues/MessageEnvelope';
-import { RandomString, IdGenerator } from 'pip-services4-commons-node';
 import { TestMessageReceiver } from '../../src/test/TestMessageReceiver';
+import { IdGenerator, RandomString } from 'pip-services4-data-node';
 
 export class MessageQueueFixture {
     private _queue: IMessageQueue;
+    private context = Context.fromTraceId("123");
 
     public constructor(queue: IMessageQueue) {
         this._queue = queue;
     }
 
     public async testSendReceiveMessage(): Promise<void> {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -24,7 +26,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveSendMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
 
         setTimeout(() => {
             this._queue.send(null, envelope1);
@@ -38,7 +40,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveCompleteMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
 
         await this._queue.send(null, envelope1);
 
@@ -56,7 +58,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveAbandonMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -75,7 +77,7 @@ export class MessageQueueFixture {
     }
 
     public async testSendPeekMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.peek(null);
@@ -91,7 +93,7 @@ export class MessageQueueFixture {
     }
 
     public async testMoveToDeadMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -109,7 +111,7 @@ export class MessageQueueFixture {
 
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
 
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
@@ -135,7 +137,7 @@ export class MessageQueueFixture {
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
 
         //  send array of strings 
-        await this._queue.sendAsObject('123', 'messagetype', ['string1', 'string2']);
+        await this._queue.sendAsObject(this.context, 'messagetype', ['string1', 'string2']);
 
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
 
@@ -151,9 +153,9 @@ export class MessageQueueFixture {
 
         // send string
         await messageReceiver.clear(null);
-        await this._queue.sendAsObject('123', 'messagetype', 'string2');
+        await this._queue.sendAsObject(this.context, 'messagetype', 'string2');
 
-        await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
+        await new Promise<void>((resolve, reject) => setTimeout(resolve, 2000));
 
         assert.equal(1, messageReceiver.messageCount);
         envelope = messageReceiver.messages[0];

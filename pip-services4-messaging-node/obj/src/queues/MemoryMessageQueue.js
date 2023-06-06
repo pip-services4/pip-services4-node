@@ -13,6 +13,7 @@ exports.MemoryMessageQueue = void 0;
 const MessageQueue_1 = require("./MessageQueue");
 const MessagingCapabilities_1 = require("./MessagingCapabilities");
 const LockedMessage_1 = require("./LockedMessage");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Message queue that sends and receives messages within the same process by using shared memory.
  *
@@ -76,6 +77,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * @param connections        connection parameters
      * @param credential        credential parameters
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     openWithParams(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             this._opened = true;
@@ -84,7 +86,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -96,8 +98,9 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
@@ -137,7 +140,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             // Add message to the queue
             this._messages.push(envelope);
             this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-            this._logger.debug(envelope.trace_id, "Sent message %s via %s", envelope.toString(), this.getName());
+            this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(envelope.trace_id), "Sent message %s via %s", envelope.toString(), this.getName());
         });
     }
     /**
@@ -147,6 +150,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * @param context     (optional) a context to trace execution through call chain.
      * @returns                 a peeked message or <code>null</code>.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let message = null;
@@ -154,7 +158,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             if (this._messages.length > 0)
                 message = this._messages[0];
             if (message != null)
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
             return message;
         });
     }
@@ -168,7 +172,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      */
     peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
-            let messages = this._messages.slice(0, messageCount);
+            const messages = this._messages.slice(0, messageCount);
             this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
@@ -182,12 +186,13 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      */
     receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
-            let checkIntervalMs = 100;
+            const checkIntervalMs = 100;
             let elapsedTime = 0;
             // Get message the the queue
             let message = this._messages.shift();
             while (elapsedTime < waitTimeout && message == null) {
                 // Wait for a while
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 yield new Promise((resolve, reject) => { setTimeout(resolve, checkIntervalMs); });
                 elapsedTime += checkIntervalMs;
                 // Get message the the queue
@@ -197,11 +202,11 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
                 return message;
             }
             // Generate and set locked token
-            let lockedToken = this._lockTokenSequence++;
+            const lockedToken = this._lockTokenSequence++;
             message.setReference(lockedToken);
             // Add messages to locked messages list
-            let lockedMessage = new LockedMessage_1.LockedMessage();
-            let now = new Date();
+            const lockedMessage = new LockedMessage_1.LockedMessage();
+            const now = new Date();
             now.setMilliseconds(now.getMilliseconds() + waitTimeout);
             lockedMessage.expirationTime = now;
             lockedMessage.message = message;
@@ -209,7 +214,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             this._lockedMessages[lockedToken] = lockedMessage;
             // Instrument the process
             this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-            this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+            this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
             return message;
         });
     }
@@ -220,24 +225,25 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renewLock(message, lockTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             if (message.getReference() == null) {
                 return;
             }
             // Get message from locked queue
-            let lockedToken = message.getReference();
-            let lockedMessage = this._lockedMessages[lockedToken];
+            const lockedToken = message.getReference();
+            const lockedMessage = this._lockedMessages[lockedToken];
             // If lock is found, extend the lock
             if (lockedMessage) {
-                let now = new Date();
+                const now = new Date();
                 // Todo: Shall we skip if the message already expired?
                 if (lockedMessage.expirationTime > now) {
                     now.setMilliseconds(now.getMilliseconds() + lockedMessage.timeout);
                     lockedMessage.expirationTime = now;
                 }
             }
-            this._logger.trace(message.trace_id, "Renewed lock for message %s at %s", message, this.getName());
+            this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Renewed lock for message %s at %s", message, this.getName());
         });
     }
     /**
@@ -251,10 +257,10 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             if (message.getReference() == null) {
                 return;
             }
-            let lockKey = message.getReference();
+            const lockKey = message.getReference();
             delete this._lockedMessages[lockKey];
             message.setReference(null);
-            this._logger.trace(message.trace_id, "Completed message %s at %s", message, this.getName());
+            this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Completed message %s at %s", message, this.getName());
         });
     }
     /**
@@ -271,8 +277,8 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
                 return;
             }
             // Get message from locked queue
-            let lockedToken = message.getReference();
-            let lockedMessage = this._lockedMessages[lockedToken];
+            const lockedToken = message.getReference();
+            const lockedMessage = this._lockedMessages[lockedToken];
             if (lockedMessage) {
                 // Remove from locked messages
                 delete this._lockedMessages[lockedToken];
@@ -286,8 +292,8 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             else {
                 return;
             }
-            this._logger.trace(message.trace_id, "Abandoned message %s at %s", message, this.getName());
-            yield this.send(message.trace_id, message);
+            this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Abandoned message %s at %s", message, this.getName());
+            yield this.send(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), message);
         });
     }
     /**
@@ -300,11 +306,11 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
             if (message.getReference() == null) {
                 return;
             }
-            let lockedToken = message.getReference();
+            const lockedToken = message.getReference();
             delete this._lockedMessages[lockedToken];
             message.setReference(null);
             this._counters.incrementOne("queue." + this.getName() + ".dead_messages");
-            this._logger.trace(message.trace_id, "Moved to dead message %s at %s", message, this.getName());
+            this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Moved to dead message %s at %s", message, this.getName());
         });
     }
     /**
@@ -317,13 +323,13 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      * @see [[receive]]
      */
     listen(context, receiver) {
-        let listenFunc = () => __awaiter(this, void 0, void 0, function* () {
-            let timeoutInterval = this._listenInterval;
+        const listenFunc = () => __awaiter(this, void 0, void 0, function* () {
+            const timeoutInterval = this._listenInterval;
             this._logger.trace(null, "Started listening messages at %s", this.toString());
             this._cancel = false;
             while (!this._cancel) {
                 try {
-                    let message = yield this.receive(context, timeoutInterval);
+                    const message = yield this.receive(context, timeoutInterval);
                     if (message != null && !this._cancel) {
                         yield receiver.receiveMessage(message, this);
                     }
@@ -341,6 +347,7 @@ class MemoryMessageQueue extends MessageQueue_1.MessageQueue {
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         this._cancel = true;
     }

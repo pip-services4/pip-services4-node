@@ -1,10 +1,8 @@
 /** @module queues */
-import { IOpenable } from 'pip-services4-commons-node';
-import { IClosable } from 'pip-services4-commons-node';
-
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
 import { IMessageReceiver } from './IMessageReceiver';
+import { IOpenable, IClosable, IContext } from 'pip-services4-components-node';
 
 /**
  * Interface for asynchronous message queues.
@@ -29,7 +27,7 @@ export interface IMessageQueue extends IOpenable, IClosable {
      * 
      * @returns the queue's capabilities object.
      */
-	getCapabilities(): MessagingCapabilities;
+    getCapabilities(): MessagingCapabilities;
     
     /**
      * Reads the current number of messages in the queue to be delivered.

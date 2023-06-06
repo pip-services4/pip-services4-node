@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageEnvelope = void 0;
 /** @module queues */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Allows adding additional information to messages. A correlation id, message id, and a message type
  * are added to the data being sent/received. Additionally, a MessageEnvelope can reference a lock token.
@@ -22,7 +23,7 @@ class MessageEnvelope {
      * @param message           the data being sent/received.
      */
     constructor(context, messageType, message) {
-        this.trace_id = context;
+        this.trace_id = context != null ? context.getTraceId() : null;
         this.message_type = messageType;
         if (message instanceof Buffer)
             this.message = message;
@@ -30,7 +31,7 @@ class MessageEnvelope {
             this.setMessageAsString(message);
         else
             this.setMessageAsObject(message);
-        this.message_id = pip_services3_commons_node_1.IdGenerator.nextLong();
+        this.message_id = pip_services4_data_node_1.IdGenerator.nextLong();
     }
     /**
      * @returns the lock token that this MessageEnvelope references.
@@ -70,7 +71,7 @@ class MessageEnvelope {
     getMessageAs() {
         if (this.message == null)
             return null;
-        let temp = this.message.toString();
+        const temp = this.message.toString();
         return JSON.parse(temp);
     }
     /**
@@ -86,7 +87,7 @@ class MessageEnvelope {
             this.message = null;
         }
         else {
-            let temp = JSON.stringify(value);
+            const temp = JSON.stringify(value);
             this.message = Buffer.from(temp, 'utf8');
         }
     }
@@ -115,12 +116,12 @@ class MessageEnvelope {
      * @returns A JSON encoded representation is this object.
      */
     toJSON() {
-        let payload = this.message != null ? this.message.toString('base64') : null;
-        let json = {
+        const payload = this.message != null ? this.message.toString('base64') : null;
+        const json = {
             message_id: this.message_id,
             trace_id: this.trace_id,
             message_type: this.message_type,
-            sent_time: pip_services3_commons_node_2.StringConverter.toString(this.sent_time || new Date()),
+            sent_time: pip_services4_commons_node_1.StringConverter.toString(this.sent_time || new Date()),
             message: payload
         };
         return json;
@@ -134,13 +135,13 @@ class MessageEnvelope {
     static fromJSON(value) {
         if (value == null)
             return null;
-        let json = JSON.parse(value);
+        const json = JSON.parse(value);
         if (json == null)
             return null;
-        let message = new MessageEnvelope(json.trace_id, json.message_type, null);
+        const message = new MessageEnvelope(pip_services4_components_node_1.Context.fromTraceId(json.trace_id), json.message_type, null);
         message.message_id = json.message_id;
         message.message = json.message != null ? Buffer.from(json.message, 'base64') : null;
-        message.sent_time = pip_services3_commons_node_3.DateTimeConverter.toNullableDateTime(json.sent_time);
+        message.sent_time = pip_services4_commons_node_2.DateTimeConverter.toNullableDateTime(json.sent_time);
         return message;
     }
 }

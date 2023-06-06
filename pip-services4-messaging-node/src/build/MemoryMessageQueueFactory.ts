@@ -1,9 +1,9 @@
 /** @module build */
-import { Descriptor } from 'pip-services4-commons-node';
 
 import { MemoryMessageQueue } from '../queues/MemoryMessageQueue';
 import { IMessageQueue } from '../queues/IMessageQueue';
 import { MessageQueueFactory } from './MessageQueueFactory';
+import { Descriptor } from 'pip-services4-components-node';
 
 /**
  * Creates [[MemoryMessageQueue]] components by their descriptors.
@@ -16,12 +16,12 @@ export class MemoryMessageQueueFactory extends MessageQueueFactory {
     private static readonly MemoryQueueDescriptor: Descriptor = new Descriptor("pip-services", "message-queue", "memory", "*", "1.0");
 
     /**
-	 * Create a new instance of the factory.
-	 */
+     * Create a new instance of the factory.
+     */
     public constructor() {
         super();
         this.register(MemoryMessageQueueFactory.MemoryQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return this.createQueue(name);
         });
     }
@@ -31,7 +31,7 @@ export class MemoryMessageQueueFactory extends MessageQueueFactory {
      * @param name a name of the created message queue.
      */
     public createQueue(name: string): IMessageQueue {
-        let queue = new MemoryMessageQueue(name);
+        const queue = new MemoryMessageQueue(name);
 
         if (this._config != null) {
             queue.configure(this._config);

@@ -1,10 +1,9 @@
 /** @module queues */
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessageQueue } from './MessageQueue';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
+import { ICleanable, ConfigParams, IContext } from 'pip-services4-components-node';
 /**
  * Message queue that caches received messages in memory to allow peek operations
  * that may not be supported by the undelying queue.
@@ -31,31 +30,31 @@ export declare abstract class CachedMessageQueue extends MessageQueue implements
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context: IContext): Promise<void>;
     /**
      * Subscribes to the message broker.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     protected abstract subscribe(context: IContext): Promise<void>;
     /**
      * Unsubscribes from the message broker.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     protected abstract unsubscribe(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     clear(context: IContext): Promise<void>;
     /**

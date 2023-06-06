@@ -1,21 +1,12 @@
 /** @module queues */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { NameResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
-
 import { IMessageQueue } from './IMessageQueue';
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
+import { InvalidStateException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, ConfigParams, NameResolver, IReferences, IContext } from 'pip-services4-components-node';
+import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from 'pip-services4-config-node';
+import { CompositeLogger, CompositeCounters } from 'pip-services4-observability-node';
 
 /**
  * Abstract message queue that is used as a basis for specific message queue implementations.
@@ -58,11 +49,11 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
      * @param name  (optional) a queue name
      * @param capabilities (optional) a capabilities of this message queue
      */
-	public constructor(name?: string, capabilities?: MessagingCapabilities) {
+    public constructor(name?: string, capabilities?: MessagingCapabilities) {
         this._name = name;
         this._capabilities = capabilities
             || new MessagingCapabilities(false, false, false, false, false, false, false, false, false);
-	}
+    }
     
     /**
      * Gets the queue name
@@ -93,9 +84,9 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._logger.setReferences(references);
@@ -105,20 +96,20 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public abstract isOpen(): boolean;
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let connections = await this._connectionResolver.resolveAll(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connections = await this._connectionResolver.resolveAll(context);
+        const credential = await this._credentialResolver.lookup(context);
 
         await this.openWithParams(context, connections, credential);
     }
@@ -130,8 +121,8 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
-     protected async openWithParams(context: IContext,
-        connections: ConnectionParams[], credential: CredentialParams): Promise<void> {
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     protected async openWithParams(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<void> {
         throw new Error("Not supported");
     }   
 
@@ -142,7 +133,7 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     protected checkOpen(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NOT_OPENED",
                 "The queue is not opened"
             );
@@ -150,16 +141,16 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public abstract close(context: IContext): Promise<void>;
 
     /**
-	 * Clears component state.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Clears component state.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public abstract clear(context: IContext): Promise<void>;
 
@@ -189,7 +180,7 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
      * @see [[send]]
      */
     public sendAsObject(context: IContext, messageType: string, message: any): Promise<void> {
-        let envelope = new MessageEnvelope(context, messageType, message);
+        const envelope = new MessageEnvelope(context, messageType, message);
         return this.send(context, envelope);
     }
 

@@ -1,6 +1,7 @@
 import { IMessageQueue } from '../../src/queues/IMessageQueue';
 export declare class MessageQueueFixture {
     private _queue;
+    private context;
     constructor(queue: IMessageQueue);
     testSendReceiveMessage(): Promise<void>;
     testReceiveSendMessage(): Promise<void>;

@@ -1,10 +1,10 @@
 "use strict";
+/** @module build */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemoryMessageQueueFactory = void 0;
-/** @module build */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MemoryMessageQueue_1 = require("../queues/MemoryMessageQueue");
 const MessageQueueFactory_1 = require("./MessageQueueFactory");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Creates [[MemoryMessageQueue]] components by their descriptors.
  * Name of created message queue is taken from its descriptor.
@@ -19,7 +19,7 @@ class MemoryMessageQueueFactory extends MessageQueueFactory_1.MessageQueueFactor
     constructor() {
         super();
         this.register(MemoryMessageQueueFactory.MemoryQueueDescriptor, (locator) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null;
+            const name = (typeof locator.getName === "function") ? locator.getName() : null;
             return this.createQueue(name);
         });
     }
@@ -28,7 +28,7 @@ class MemoryMessageQueueFactory extends MessageQueueFactory_1.MessageQueueFactor
      * @param name a name of the created message queue.
      */
     createQueue(name) {
-        let queue = new MemoryMessageQueue_1.MemoryMessageQueue(name);
+        const queue = new MemoryMessageQueue_1.MemoryMessageQueue(name);
         if (this._config != null) {
             queue.configure(this._config);
         }
@@ -39,5 +39,5 @@ class MemoryMessageQueueFactory extends MessageQueueFactory_1.MessageQueueFactor
     }
 }
 exports.MemoryMessageQueueFactory = MemoryMessageQueueFactory;
-MemoryMessageQueueFactory.MemoryQueueDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "message-queue", "memory", "*", "1.0");
+MemoryMessageQueueFactory.MemoryQueueDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "message-queue", "memory", "*", "1.0");
 //# sourceMappingURL=MemoryMessageQueueFactory.js.map

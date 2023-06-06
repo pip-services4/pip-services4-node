@@ -1,18 +1,11 @@
 /** @module queues */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { CompositeCounters } from 'pip-services4-components-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
 import { IMessageQueue } from './IMessageQueue';
 import { IMessageReceiver } from './IMessageReceiver';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from 'pip-services4-config-node';
+import { CompositeLogger, CompositeCounters } from 'pip-services4-observability-node';
 /**
  * Abstract message queue that is used as a basis for specific message queue implementations.
  *
@@ -74,7 +67,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references: IReferences): void;
     /**
@@ -86,7 +79,7 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context: IContext): Promise<void>;
     /**
@@ -105,13 +98,13 @@ export declare abstract class MessageQueue implements IMessageQueue, IReferencea
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     abstract close(context: IContext): Promise<void>;
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     abstract clear(context: IContext): Promise<void>;
     /**

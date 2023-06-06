@@ -11,16 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageQueueFixture = void 0;
 const assert = require('chai').assert;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MessageEnvelope_1 = require("../../src/queues/MessageEnvelope");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const TestMessageReceiver_1 = require("../../src/test/TestMessageReceiver");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 class MessageQueueFixture {
     constructor(queue) {
+        this.context = pip_services4_components_node_1.Context.fromTraceId("123");
         this._queue = queue;
     }
     testSendReceiveMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -31,7 +33,7 @@ class MessageQueueFixture {
     }
     testReceiveSendMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             setTimeout(() => {
                 this._queue.send(null, envelope1);
             }, 500);
@@ -44,7 +46,7 @@ class MessageQueueFixture {
     }
     testReceiveCompleteMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let count = yield this._queue.readMessageCount();
             assert.isTrue(count > 0);
@@ -59,7 +61,7 @@ class MessageQueueFixture {
     }
     testReceiveAbandonMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -76,7 +78,7 @@ class MessageQueueFixture {
     }
     testSendPeekMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.peek(null);
             assert.isNotNull(envelope2);
@@ -93,7 +95,7 @@ class MessageQueueFixture {
     }
     testMoveToDeadMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -108,7 +110,7 @@ class MessageQueueFixture {
             let messageReceiver = new TestMessageReceiver_1.TestMessageReceiver();
             this._queue.beginListen(null, messageReceiver);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
-            let envelope1 = new MessageEnvelope_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new MessageEnvelope_1.MessageEnvelope(this.context, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
             let envelope2 = messageReceiver.messages[0];
@@ -123,13 +125,13 @@ class MessageQueueFixture {
         return __awaiter(this, void 0, void 0, function* () {
             let messageReceiver = new TestMessageReceiver_1.TestMessageReceiver();
             let testObj = {
-                id: pip_services3_commons_node_1.IdGenerator.nextLong(),
-                name: pip_services3_commons_node_1.RandomString.nextString(20, 50)
+                id: pip_services4_data_node_1.IdGenerator.nextLong(),
+                name: pip_services4_data_node_1.RandomString.nextString(20, 50)
             };
             this._queue.beginListen(null, messageReceiver);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
             //  send array of strings 
-            yield this._queue.sendAsObject('123', 'messagetype', ['string1', 'string2']);
+            yield this._queue.sendAsObject(this.context, 'messagetype', ['string1', 'string2']);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
             assert.equal(1, messageReceiver.messageCount);
             let envelope = messageReceiver.messages[0];
@@ -141,8 +143,8 @@ class MessageQueueFixture {
             assert.includeMembers(message, ['string1', 'string2']);
             // send string
             yield messageReceiver.clear(null);
-            yield this._queue.sendAsObject('123', 'messagetype', 'string2');
-            yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
+            yield this._queue.sendAsObject(this.context, 'messagetype', 'string2');
+            yield new Promise((resolve, reject) => setTimeout(resolve, 2000));
             assert.equal(1, messageReceiver.messageCount);
             envelope = messageReceiver.messages[0];
             assert.isNotNull(envelope);

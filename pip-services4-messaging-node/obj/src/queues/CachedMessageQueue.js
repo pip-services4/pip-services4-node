@@ -1,4 +1,5 @@
 "use strict";
+/** @module queues */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CachedMessageQueue = void 0;
 const MessageQueue_1 = require("./MessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Message queue that caches received messages in memory to allow peek operations
  * that may not be supported by the undelying queue.
@@ -40,7 +42,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -61,7 +63,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -81,8 +83,9 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
@@ -116,7 +119,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -137,7 +140,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
             // Subscribe to topic if needed
             yield this.subscribe(context);
             // Peek a batch of messages
-            let messages = this._messages.slice(0, messageCount);
+            const messages = this._messages.slice(0, messageCount);
             this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
@@ -154,12 +157,13 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
             this.checkOpen(context);
             // Subscribe to topic if needed
             yield this.subscribe(context);
-            let checkIntervalMs = 100;
+            const checkIntervalMs = 100;
             let elapsedTime = 0;
             // Get message the the queue
             let message = this._messages.shift();
             while (elapsedTime < waitTimeout && message == null) {
                 // Wait for a while
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 yield new Promise((resolve, reject) => { setTimeout(resolve, checkIntervalMs); });
                 elapsedTime += checkIntervalMs;
                 // Get message the the queue
@@ -170,7 +174,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
     }
     sendMessageToReceiver(receiver, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            let context = message != null ? message.trace_id : null;
+            const context = message != null ? pip_services4_components_node_1.Context.fromTraceId(message.trace_id) : new pip_services4_components_node_1.Context();
             if (message == null || receiver == null) {
                 this._logger.warn(context, "Message was skipped.");
                 return;
@@ -196,13 +200,13 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
         if (!this.isOpen()) {
             return;
         }
-        let listenFunc = () => __awaiter(this, void 0, void 0, function* () {
+        const listenFunc = () => __awaiter(this, void 0, void 0, function* () {
             // Subscribe to topic if needed
             yield this.subscribe(context);
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     yield this.sendMessageToReceiver(receiver, message);
                 }
@@ -220,6 +224,7 @@ class CachedMessageQueue extends MessageQueue_1.MessageQueue {
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         this._receiver = null;
     }

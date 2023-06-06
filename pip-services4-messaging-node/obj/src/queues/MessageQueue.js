@@ -10,14 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageQueue = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
-const pip_services3_components_node_4 = require("pip-services4-components-node");
 const MessagingCapabilities_1 = require("./MessagingCapabilities");
 const MessageEnvelope_1 = require("./MessageEnvelope");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Abstract message queue that is used as a basis for specific message queue implementations.
  *
@@ -52,10 +50,10 @@ class MessageQueue {
      * @param capabilities (optional) a capabilities of this message queue
      */
     constructor(name, capabilities) {
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
-        this._counters = new pip_services3_components_node_2.CompositeCounters();
-        this._connectionResolver = new pip_services3_components_node_3.ConnectionResolver();
-        this._credentialResolver = new pip_services3_components_node_4.CredentialResolver();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
+        this._counters = new pip_services4_observability_node_1.CompositeCounters();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         this._name = name;
         this._capabilities = capabilities
             || new MessagingCapabilities_1.MessagingCapabilities(false, false, false, false, false, false, false, false, false);
@@ -78,7 +76,7 @@ class MessageQueue {
      * @param config    configuration parameters to be set.
      */
     configure(config) {
-        this._name = pip_services3_commons_node_2.NameResolver.resolve(config, this._name);
+        this._name = pip_services4_components_node_1.NameResolver.resolve(config, this._name);
         this._logger.configure(config);
         this._connectionResolver.configure(config);
         this._credentialResolver.configure(config);
@@ -87,7 +85,7 @@ class MessageQueue {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._logger.setReferences(references);
@@ -98,12 +96,12 @@ class MessageQueue {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
+            const credential = yield this._credentialResolver.lookup(context);
             yield this.openWithParams(context, connections, credential);
         });
     }
@@ -114,6 +112,7 @@ class MessageQueue {
      * @param connection        connection parameters
      * @param credential        credential parameters
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     openWithParams(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             throw new Error("Not supported");
@@ -125,7 +124,7 @@ class MessageQueue {
      */
     checkOpen(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, "NOT_OPENED", "The queue is not opened");
         }
     }
     /**
@@ -139,7 +138,7 @@ class MessageQueue {
      * @see [[send]]
      */
     sendAsObject(context, messageType, message) {
-        let envelope = new MessageEnvelope_1.MessageEnvelope(context, messageType, message);
+        const envelope = new MessageEnvelope_1.MessageEnvelope(context, messageType, message);
         return this.send(context, envelope);
     }
     /**

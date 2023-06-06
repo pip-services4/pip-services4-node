@@ -1,7 +1,8 @@
 /** @module queues */
-import { IdGenerator } from 'pip-services4-commons-node';
 import { StringConverter } from 'pip-services4-commons-node';
 import { DateTimeConverter } from 'pip-services4-commons-node';
+import { Context, IContext } from 'pip-services4-components-node';
+import { IdGenerator } from 'pip-services4-data-node';
 
 /**
  * Allows adding additional information to messages. A correlation id, message id, and a message type 
@@ -22,7 +23,7 @@ export class MessageEnvelope {
      * @param message           the data being sent/received.
      */
     public constructor(context: IContext, messageType: string, message: any) {
-        this.trace_id = context;
+        this.trace_id = context != null ? context.getTraceId() : null;
         this.message_type = messageType;
 
         if (message instanceof Buffer)
@@ -86,7 +87,7 @@ export class MessageEnvelope {
      */
      public getMessageAs<T>(): T {
         if (this.message == null) return null;
-        let temp = this.message.toString();
+        const temp = this.message.toString();
         return JSON.parse(temp);
     }
 
@@ -102,7 +103,7 @@ export class MessageEnvelope {
         if (value == null) {
             this.message = null;
         } else {
-            let temp = JSON.stringify(value);
+            const temp = JSON.stringify(value);
             this.message = Buffer.from(temp, 'utf8');
         }
     }
@@ -133,8 +134,8 @@ export class MessageEnvelope {
      * @returns A JSON encoded representation is this object.
      */
     public toJSON(): any {
-        let payload = this.message != null ? this.message.toString('base64') : null;
-        let json = {
+        const payload = this.message != null ? this.message.toString('base64') : null;
+        const json = {
             message_id: this.message_id,
             trace_id: this.trace_id,
             message_type: this.message_type,
@@ -153,10 +154,10 @@ export class MessageEnvelope {
     public static fromJSON(value: string): MessageEnvelope {
         if (value == null) return null;
 
-        let json = JSON.parse(value);
+        const json = JSON.parse(value);
         if (json == null) return null;
 
-        let message = new MessageEnvelope(json.trace_id, json.message_type, null);
+        const message = new MessageEnvelope(Context.fromTraceId(json.trace_id), json.message_type, null);
         message.message_id = json.message_id;
         message.message = json.message != null ? Buffer.from(json.message, 'base64') : null;
         message.sent_time = DateTimeConverter.toNullableDateTime(json.sent_time);

@@ -1,6 +1,5 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 
 import { MemoryMessageQueue } from '../queues/MemoryMessageQueue';
 import { MemoryMessageQueueFactory } from './MemoryMessageQueueFactory';
@@ -17,12 +16,12 @@ export class DefaultMessagingFactory extends Factory {
     private static readonly MemoryQueueFactoryDescriptor: Descriptor = new Descriptor("pip-services", "queue-factory", "memory", "*", "1.0");
 
     /**
-	 * Create a new instance of the factory.
-	 */
+     * Create a new instance of the factory.
+     */
     public constructor() {
         super();
         this.register(DefaultMessagingFactory.MemoryQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return new MemoryMessageQueue(name);
         });
         this.registerAsType(DefaultMessagingFactory.MemoryQueueFactoryDescriptor, MemoryMessageQueueFactory);

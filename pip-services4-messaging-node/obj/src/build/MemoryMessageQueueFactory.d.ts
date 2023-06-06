@@ -1,3 +1,4 @@
+/** @module build */
 import { IMessageQueue } from '../queues/IMessageQueue';
 import { MessageQueueFactory } from './MessageQueueFactory';
 /**

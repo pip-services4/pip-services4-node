@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { IContext } from 'pip-services4-components-node';
 /**
  * Allows adding additional information to messages. A correlation id, message id, and a message type
  * are added to the data being sent/received. Additionally, a MessageEnvelope can reference a lock token.
