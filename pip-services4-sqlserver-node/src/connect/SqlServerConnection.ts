@@ -1,13 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { SqlServerConnectionResolver } from '../connect/SqlServerConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * SQLServer connection using plain driver.
@@ -75,7 +71,9 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -110,12 +108,16 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
     }
 
     private composeUriSettings(uri: string): string {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let requestTimeoutMS = this._options.getAsNullableInteger("request_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const requestTimeoutMS = this._options.getAsNullableInteger("request_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
 
-        let settings: any = {
+        const settings: any = {
             // parseJSON: true,
             // connectTimeout: connectTimeoutMS,
             // requestTimeout: requestTimeoutMS,
@@ -125,14 +127,14 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
         };
 
         let params = '';
-        for (let key in settings) {
+        for (const key in settings) {
             if (params.length > 0) {
                 params += '&';
             }
 
             params += key;
 
-            let value = settings[key];
+            const value = settings[key];
             if (value != null) {
                 params += '=' + value;
             }
@@ -159,6 +161,7 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
         try {
             uri = this.composeUriSettings(uri);
 
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const sql = require('mssql')
             const pool = new sql.ConnectionPool(uri);
             pool.config.options.enableArithAbort = true;
@@ -180,7 +183,7 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
             this._databaseName = pool.config.database;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to SQLServer failed"
             ).withCause(ex);
@@ -214,7 +217,7 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
             this._databaseName = null;
     } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from sqlserver failed: '
             ).withCause(ex);

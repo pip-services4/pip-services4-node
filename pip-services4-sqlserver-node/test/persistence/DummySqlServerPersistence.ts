@@ -1,7 +1,5 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-
+import { IContext } from 'pip-services4-components-node';
+import { FilterParams, PagingParams, DataPage } from 'pip-services4-data-node';
 import { IdentifiableSqlServerPersistence } from '../../src/persistence/IdentifiableSqlServerPersistence';
 import { Dummy } from '../fixtures/Dummy';
 import { IDummyPersistence } from '../fixtures/IDummyPersistence';
@@ -16,7 +14,7 @@ export class DummySqlServerPersistence
 
     protected defineSchema(): void {
         this.clearSchema();
-        this.ensureSchema('CREATE TABLE [' + this._tableName + '] ([id] VARCHAR(32) PRIMARY KEY, [name] VARCHAR(50), [content] VARCHAR(MAX))');
+        this.ensureSchema('CREATE TABLE [' + this._tableName + '] ([id] VARCHAR(32) PRIMARY KEY, [key] VARCHAR(50), [content] VARCHAR(MAX))');
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
 

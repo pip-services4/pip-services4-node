@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummySqlServerPersistence_1 = require("./DummySqlServerPersistence");
 suite('DummySqlServerPersistence', () => {
@@ -26,7 +26,7 @@ suite('DummySqlServerPersistence', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', sqlserverUri, 'connection.host', sqlserverHost, 'connection.port', sqlserverPort, 'connection.database', sqlserverDatabase, 'credential.username', sqlserverUser, 'credential.password', sqlserverPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', sqlserverUri, 'connection.host', sqlserverHost, 'connection.port', sqlserverPort, 'connection.database', sqlserverDatabase, 'credential.username', sqlserverUser, 'credential.password', sqlserverPassword);
         persistence = new DummySqlServerPersistence_1.DummySqlServerPersistence();
         persistence.configure(dbConfig);
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);

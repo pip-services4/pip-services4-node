@@ -9,14 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
 const SqlServerConnection_1 = require("../../src/connect/SqlServerConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummySqlServerPersistence_1 = require("./DummySqlServerPersistence");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('DummySqlServerConnection', () => {
     let connection;
     let persistence;
@@ -31,11 +29,11 @@ suite('DummySqlServerConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', sqlserverUri, 'connection.host', sqlserverHost, 'connection.port', sqlserverPort, 'connection.database', sqlserverDatabase, 'credential.username', sqlserverUser, 'credential.password', sqlserverPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', sqlserverUri, 'connection.host', sqlserverHost, 'connection.port', sqlserverPort, 'connection.database', sqlserverDatabase, 'credential.username', sqlserverUser, 'credential.password', sqlserverPassword);
         connection = new SqlServerConnection_1.SqlServerConnection();
         connection.configure(dbConfig);
         persistence = new DummySqlServerPersistence_1.DummySqlServerPersistence();
-        persistence.setReferences(pip_services3_commons_node_3.References.fromTuples(new pip_services3_commons_node_2.Descriptor("pip-services", "connection", "sqlserver", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "sqlserver", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

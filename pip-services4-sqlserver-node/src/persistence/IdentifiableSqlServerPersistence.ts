@@ -1,13 +1,14 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
+import { IdGenerator } from 'pip-services4-data-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { SqlServerPersistence } from './SqlServerPersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in SQLServer
@@ -93,7 +94,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Flag to turn on automated string ID generation
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -123,17 +124,17 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
      * @returns a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let params = this.generateParameters(ids);
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id] IN(" + params + ")";
+        const params = this.generateParameters(ids);
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id] IN(" + params + ")";
 
-        let request = this.createRequest(ids);
+        const request = this.createRequest(ids);
         let items = await new Promise<any[]>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let items = result.recordset;
+                const items = result.recordset;
                 resolve(items);
             });
         });
@@ -152,17 +153,17 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
      * @returns the requested data item or <code>null</code> if nothing was found.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id]=@1";
-        let params = [ id ];
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id]=@1";
+        const params = [ id ];
 
-        let request = this.createRequest(params);
+        const request = this.createRequest(params);
         let item = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset ? result.recordset[0] || null : null; 
+                const item = result && result.recordset ? result.recordset[0] || null : null; 
                 resolve(item);
             });
         });
@@ -218,11 +219,11 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             item.id = <any>IdGenerator.nextLong();
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let setParams = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const setParams = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
 
         let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
@@ -239,7 +240,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
                     reject(err);
                     return;
                 }                
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -262,7 +263,7 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -287,22 +288,22 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             return null;
         }
 
-        let row = this.convertFromPublic(item);
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
 
-        let request = this.createRequest(values);
+        const request = this.createRequest(values);
         let newItem = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -327,22 +328,22 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
             return null;
         }
 
-        let row = this.convertFromPublicPartial(data.getAsObject());
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublicPartial(data.getAsObject());
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
 
-        let request = this.createRequest(values);
+        const request = this.createRequest(values);
         let newItem = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -362,18 +363,18 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
      * @returns the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let values = [ id ];
+        const values = [ id ];
 
-        let query = "DELETE FROM " + this.quotedTableName() + " OUTPUT DELETED.* WHERE [id]=@1";
+        const query = "DELETE FROM " + this.quotedTableName() + " OUTPUT DELETED.* WHERE [id]=@1";
 
-        let request = this.createRequest(values);
+        const request = this.createRequest(values);
         let oldItem = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -392,17 +393,17 @@ export class IdentifiableSqlServerPersistence<T extends IIdentifiable<K>, K> ext
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let params = this.generateParameters(ids);
-        let query = "DELETE FROM " + this.quotedTableName() + " WHERE \"id\" IN(" + params + ")";
+        const params = this.generateParameters(ids);
+        const query = "DELETE FROM " + this.quotedTableName() + " WHERE \"id\" IN(" + params + ")";
 
-        let request = this.createRequest(ids);
-        let count = await new Promise<number>((resolve, reject) => {
+        const request = this.createRequest(ids);
+        const count = await new Promise<number>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
+                const count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
                 resolve(count);
             });    
         });

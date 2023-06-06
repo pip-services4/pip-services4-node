@@ -1,8 +1,9 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 
 import { IdentifiableSqlServerPersistence } from './IdentifiableSqlServerPersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in SQLServer in JSON or JSONB fields
@@ -101,15 +102,15 @@ export class IdentifiableJsonSqlServerPersistence<T extends IIdentifiable<K>, K>
      * @param idType type of the id column (default: TEXT)
      * @param dataType type of the data column (default: JSONB)
      */
-    protected ensureTable(idType: string = 'VARCHAR(32)', dataType: string = 'NVARCHAR(MAX)') {
+    protected ensureTable(idType = 'VARCHAR(32)', dataType = 'NVARCHAR(MAX)') {
         if (this._schemaName != null) {
-            let query = "IF NOT EXISTS (SELECT * FROM [sys].[schemas] WHERE [name]=N'"
+            const query = "IF NOT EXISTS (SELECT * FROM [sys].[schemas] WHERE [name]=N'"
                 + this._schemaName + "') EXEC('CREATE SCHEMA "
                 + this.quoteIdentifier(this._schemaName) + "')";
             this.ensureSchema(query);
         }
 
-        let query = "CREATE TABLE " + this.quotedTableName()
+        const query = "CREATE TABLE " + this.quotedTableName()
             + " ([id] " + idType + " PRIMARY KEY, [data] " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -133,7 +134,7 @@ export class IdentifiableJsonSqlServerPersistence<T extends IIdentifiable<K>, K>
      */
     protected convertFromPublic(value: any): any {
         if (value == null) return null;
-        let result: any = {
+        const result: any = {
             id: value.id,
             data: JSON.stringify(value)
         };
@@ -163,28 +164,28 @@ export class IdentifiableJsonSqlServerPersistence<T extends IIdentifiable<K>, K>
             return null;
         }
 
-        let row = this.convertFromPublicPartial(data.getAsObject());
-        let columns = Object.keys(row);
-        let values = Object.values(row);
+        const row = this.convertFromPublicPartial(data.getAsObject());
+        const columns = Object.keys(row);
+        const values = Object.values(row);
 
         let set = "[data]";
         for (let index = 1; index <= columns.length; index++) {
-            let column = columns[index - 1];
+            const column = columns[index - 1];
             set = "JSON_MODIFY(" + set + ",'$." + column + "',@" + index + ")";
         }
 
         values.push(id);
 
-        let query = "UPDATE " + this.quotedTableName() + " SET [data]=" + set + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
+        const query = "UPDATE " + this.quotedTableName() + " SET [data]=" + set + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
 
-        let request = this.createRequest(values);
+        const request = this.createRequest(values);
         let newItem = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });

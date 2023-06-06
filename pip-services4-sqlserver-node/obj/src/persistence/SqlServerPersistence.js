@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,14 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqlServerPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_commons_node_7 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const SqlServerConnection_1 = require("../connect/SqlServerConnection");
 /**
  * Abstract persistence component that stores data in SQLServer using plain driver.
@@ -100,11 +97,11 @@ class SqlServerPersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_6.DependencyResolver(SqlServerPersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(SqlServerPersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The maximum number of objects in data pages
          */
@@ -153,7 +150,7 @@ class SqlServerPersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new SqlServerConnection_1.SqlServerConnection();
+        const connection = new SqlServerConnection_1.SqlServerConnection();
         if (this._config) {
             connection.configure(this._config);
         }
@@ -182,11 +179,11 @@ class SqlServerPersistence {
             builder += " " + options.type;
         }
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "")
                 fields += ", ";
             fields += this.quoteIdentifier(key);
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc)
                 fields += " DESC";
         }
@@ -274,10 +271,11 @@ class SqlServerPersistence {
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "SQLServer connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "SQLServer connection is not opened");
             }
             this._client = this._connection.getConnection();
             this._databaseName = this._connection.getDatabaseName();
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             this._requestFactory = require('mssql').Request;
             // Define database schema
             this.defineSchema();
@@ -298,7 +296,7 @@ class SqlServerPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'SQLServer connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'SQLServer connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -313,13 +311,15 @@ class SqlServerPersistence {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         // Return error if collection is not set
         if (this._tableName == null) {
             throw new Error('Table name is not defined');
         }
-        let query = "DELETE FROM " + this.quotedTableName();
+        const query = "DELETE FROM " + this.quotedTableName();
         return new Promise((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -336,14 +336,14 @@ class SqlServerPersistence {
             }
             // Check if table exist to determine weither to auto create objects
             // Todo: Adde support for schema
-            let query = "SELECT OBJECT_ID('" + this._tableName + "', 'U') as oid";
-            let exists = yield new Promise((resolve, reject) => {
+            const query = "SELECT OBJECT_ID('" + this._tableName + "', 'U') as oid";
+            const exists = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let exists = result.recordset && result.recordset.length > 0 && result.recordset[0].oid != null;
+                    const exists = result.recordset && result.recordset.length > 0 && result.recordset[0].oid != null;
                     resolve(exists);
                 });
             });
@@ -353,8 +353,9 @@ class SqlServerPersistence {
             }
             this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             // Run all DML commands
-            for (let dml of this._schemaStatements) {
+            for (const dml of this._schemaStatements) {
                 yield new Promise((resolve, reject) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     this._client.query(dml, (err, result) => {
                         if (err != null) {
                             this._logger.error(context, err, 'Failed to autocreate database object');
@@ -375,7 +376,7 @@ class SqlServerPersistence {
     generateColumns(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(value);
@@ -391,7 +392,8 @@ class SqlServerPersistence {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += "@" + index;
@@ -407,7 +409,7 @@ class SqlServerPersistence {
     generateSetParameters(values) {
         let result = "";
         let index = 1;
-        for (let column in values) {
+        for (const column in values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(column) + "=@" + index;
@@ -429,10 +431,10 @@ class SqlServerPersistence {
      * @returns a created request
      */
     createRequest(values = null) {
-        let request = new this._requestFactory(this._client);
+        const request = new this._requestFactory(this._client);
         values = values || [];
         for (let index = 1; index <= values.length; index++) {
-            let value = values[index - 1];
+            const value = values[index - 1];
             request.input("" + index, value);
         }
         return request;
@@ -455,10 +457,10 @@ class SqlServerPersistence {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
             // Adjust max item count based on configuration
-            paging = paging || new pip_services3_commons_node_2.PagingParams();
+            paging = paging || new pip_services4_data_node_1.PagingParams();
             let skip = paging.getSkip(-1);
-            let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            const take = paging.getTake(this._maxPageSize);
+            const pagingEnabled = paging.total;
             if (filter != null) {
                 query += " WHERE " + filter;
             }
@@ -471,14 +473,14 @@ class SqlServerPersistence {
             if (skip < 0)
                 skip = 0;
             query += " OFFSET " + skip + " ROWS FETCH NEXT " + take + " ROWS ONLY";
-            let request = this.createRequest();
+            const request = this.createRequest();
             let items = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let items = result.recordset;
+                    const items = result.recordset;
                     resolve(items);
                 });
             });
@@ -491,22 +493,22 @@ class SqlServerPersistence {
                 if (filter != null) {
                     query += " WHERE " + filter;
                 }
-                let count = yield new Promise((resolve, reject) => {
+                const count = yield new Promise((resolve, reject) => {
                     this._client.query(query, (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
-                        let count = result.recordset && result.recordset.length == 1
-                            ? pip_services3_commons_node_7.LongConverter.toLong(result.recordset[0].count) : 0;
+                        const count = result.recordset && result.recordset.length == 1
+                            ? pip_services4_commons_node_1.LongConverter.toLong(result.recordset[0].count) : 0;
                         resolve(count);
                     });
                 });
-                let page = new pip_services3_commons_node_3.DataPage(items, count);
+                const page = new pip_services4_data_node_1.DataPage(items, count);
                 return page;
             }
             else {
-                let page = new pip_services3_commons_node_3.DataPage(items);
+                const page = new pip_services4_data_node_1.DataPage(items);
                 return page;
             }
         });
@@ -527,15 +529,15 @@ class SqlServerPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let request = this.createRequest();
-            let count = yield new Promise((resolve, reject) => {
+            const request = this.createRequest();
+            const count = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    let count = result.recordset && result.recordset.length == 1
-                        ? pip_services3_commons_node_7.LongConverter.toLong(result.recordset[0].count) : 0;
+                    const count = result.recordset && result.recordset.length == 1
+                        ? pip_services4_commons_node_1.LongConverter.toLong(result.recordset[0].count) : 0;
                     resolve(count);
                 });
             });
@@ -568,14 +570,14 @@ class SqlServerPersistence {
             if (sort != null) {
                 query += " ORDER BY " + sort;
             }
-            let request = this.createRequest();
+            const request = this.createRequest();
             let items = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let items = result.recordset;
+                    const items = result.recordset;
                     resolve(items);
                 });
             });
@@ -602,14 +604,14 @@ class SqlServerPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let request = this.createRequest();
-            let count = yield new Promise((resolve, reject) => {
+            const request = this.createRequest();
+            const count = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result.recordset && result.recordset.length == 1 ? result.recordset[0].count : 0;
+                    const count = result.recordset && result.recordset.length == 1 ? result.recordset[0].count : 0;
                     resolve(count);
                 });
             });
@@ -620,7 +622,7 @@ class SqlServerPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let pos = Math.trunc(Math.random() * count);
+            const pos = Math.trunc(Math.random() * count);
             query += " ORDER BY (SELECT NULL) OFFSET " + pos + " ROWS FETCH NEXT 1 ROWS ONLY";
             let item = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
@@ -628,8 +630,8 @@ class SqlServerPersistence {
                         reject(err);
                         return;
                     }
-                    let items = result.recordset;
-                    let item = (items != null && items.length > 0) ? items[0] : null;
+                    const items = result.recordset;
+                    const item = (items != null && items.length > 0) ? items[0] : null;
                     resolve(item);
                 });
             });
@@ -655,19 +657,19 @@ class SqlServerPersistence {
             if (item == null) {
                 return;
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let values = this.generateValues(row);
-            let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
-            let request = this.createRequest(values);
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const values = this.generateValues(row);
+            const query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
+            const request = this.createRequest(values);
             let newItem = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -692,14 +694,14 @@ class SqlServerPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let request = this.createRequest();
-            let count = yield new Promise((resolve, reject) => {
+            const request = this.createRequest();
+            const count = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
+                    const count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
                     resolve(count);
                 });
             });
@@ -708,7 +710,7 @@ class SqlServerPersistence {
     }
 }
 exports.SqlServerPersistence = SqlServerPersistence;
-SqlServerPersistence._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("table", null, "schema", null, "dependencies.connection", "*:connection:sqlserver:*:1.0", 
+SqlServerPersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("table", null, "schema", null, "dependencies.connection", "*:connection:sqlserver:*:1.0", 
 // connections.*
 // credential.*
 "options.max_pool_size", 2, "options.keep_alive", 1, "options.connect_timeout", 5000, "options.auto_reconnect", true, "options.max_page_size", 100, "options.debug", true);

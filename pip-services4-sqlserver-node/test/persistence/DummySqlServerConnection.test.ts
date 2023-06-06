@@ -1,12 +1,10 @@
-const process = require('process');
+import process = require('process');
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
 import { SqlServerConnection } from '../../src/connect/SqlServerConnection';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummySqlServerPersistence } from './DummySqlServerPersistence';
+import { ConfigParams, Descriptor, References } from 'pip-services4-components-node';
 
 suite('DummySqlServerConnection', ()=> {
     let connection: SqlServerConnection;

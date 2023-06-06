@@ -1,19 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { LongConverter } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException, InvalidStateException, LongConverter } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
+import { DataPage, PagingParams } from 'pip-services4-data-node';
 import { SqlServerConnection } from '../connect/SqlServerConnection';
 
 /**
@@ -146,7 +136,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
     /**
      * The maximum number of objects in data pages
      */
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence component.
@@ -205,7 +195,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
     }
 
     private createConnection(): SqlServerConnection {
-        let connection = new SqlServerConnection();
+        const connection = new SqlServerConnection();
         
         if (this._config) {
             connection.configure(this._config);
@@ -243,10 +233,10 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
         }
 
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "") fields += ", ";
             fields += this.quoteIdentifier(key);
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc) fields += " DESC";
         }
 
@@ -333,7 +323,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -348,7 +338,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "SQLServer connection is not opened"
             );
@@ -356,6 +346,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 
         this._client = this._connection.getConnection();
         this._databaseName = this._connection.getDatabaseName();
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         this._requestFactory = require('mssql').Request;
             
         // Define database schema
@@ -374,13 +365,13 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'SQLServer connection is missing'
             );
@@ -400,15 +391,17 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._tableName == null) {
             throw new Error('Table name is not defined');
         }
 
-        let query = "DELETE FROM " + this.quotedTableName();
+        const query = "DELETE FROM " + this.quotedTableName();
 
         return new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -426,15 +419,15 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
     
         // Check if table exist to determine weither to auto create objects
         // Todo: Adde support for schema
-        let query = "SELECT OBJECT_ID('" + this._tableName + "', 'U') as oid";
+        const query = "SELECT OBJECT_ID('" + this._tableName + "', 'U') as oid";
 
-        let exists = await new Promise<boolean>((resolve, reject) => {
+        const exists = await new Promise<boolean>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let exists = result.recordset && result.recordset.length > 0 && result.recordset[0].oid != null;
+                const exists = result.recordset && result.recordset.length > 0 && result.recordset[0].oid != null;
                 resolve(exists);
             });
         });
@@ -447,8 +440,9 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
         this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
 
         // Run all DML commands
-        for (let dml of this._schemaStatements) {
+        for (const dml of this._schemaStatements) {
            await new Promise<void>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.query(dml, (err, result) => {
                     if (err != null) {
                         this._logger.error(context, err, 'Failed to autocreate database object');
@@ -470,7 +464,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(value);
         }
@@ -488,7 +482,8 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
 
         let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "") result += ",";
             result += "@" + index;
             index++;
@@ -505,7 +500,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
     protected generateSetParameters(values: any): string {
         let result = "";
         let index = 1;
-        for (let column in values) {
+        for (const column in values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(column) + "=@" + index;
             index++;
@@ -529,10 +524,10 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
      * @returns a created request
      */
     protected createRequest(values: any[] = null) {
-        let request = new this._requestFactory(this._client);
+        const request = new this._requestFactory(this._client);
         values = values || [];
         for (let index = 1; index <= values.length; index++) {
-            let value = values[index - 1];
+            const value = values[index - 1];
             request.input("" + index, value);
         }
         return request;
@@ -560,8 +555,8 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
         let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         if (filter != null) {
             query += " WHERE " + filter;
@@ -576,14 +571,14 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
         if (skip < 0) skip = 0;
         query += " OFFSET " + skip + " ROWS FETCH NEXT " + take + " ROWS ONLY";
 
-        let request = this.createRequest();
+        const request = this.createRequest();
         let items = await new Promise<any[]>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 } 
-                let items = result.recordset;
+                const items = result.recordset;
                 resolve(items);
             });   
         });
@@ -600,22 +595,22 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
                 query += " WHERE " + filter;
             }
 
-            let count = await new Promise<number>((resolve, reject) => {
+            const count = await new Promise<number>((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }                        
-                    let count = result.recordset && result.recordset.length == 1 
+                    const count = result.recordset && result.recordset.length == 1 
                         ? LongConverter.toLong(result.recordset[0].count) : 0;
                     resolve(count);
                 });
             });
 
-            let page = new DataPage<T>(items, count);
+            const page = new DataPage<T>(items, count);
             return page;
         } else {
-            let page = new DataPage<T>(items);
+            const page = new DataPage<T>(items);
             return page;
         }
     }
@@ -636,14 +631,14 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             query += " WHERE " + filter;
         }
 
-        let request = this.createRequest();
-        let count = await new Promise<number>((resolve, reject) => {
+        const request = this.createRequest();
+        const count = await new Promise<number>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err) {
                     reject(err);
                     return;
                 }    
-                let count = result.recordset && result.recordset.length == 1 
+                const count = result.recordset && result.recordset.length == 1 
                     ? LongConverter.toLong(result.recordset[0].count) : 0;
                 resolve(count);
             });    
@@ -681,14 +676,14 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             query += " ORDER BY " + sort;
         }
 
-        let request = this.createRequest();
+        const request = this.createRequest();
         let items = await new Promise<any[]>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }    
-                let items = result.recordset;
+                const items = result.recordset;
                 resolve(items);
             });
         });
@@ -717,14 +712,14 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             query += " WHERE " + filter;
         }
 
-        let request = this.createRequest();
-        let count = await new Promise<number>((resolve, reject) => {
+        const request = this.createRequest();
+        const count = await new Promise<number>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result.recordset && result.recordset.length == 1 ? result.recordset[0].count : 0;
+                const count = result.recordset && result.recordset.length == 1 ? result.recordset[0].count : 0;
                 resolve(count);
             });
         });
@@ -739,7 +734,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             query += " WHERE " + filter;
         }
     
-        let pos = Math.trunc(Math.random() * count);
+        const pos = Math.trunc(Math.random() * count);
         query += " ORDER BY (SELECT NULL) OFFSET " + pos + " ROWS FETCH NEXT 1 ROWS ONLY";
 
         let item = await new Promise<any>((resolve, reject) => {
@@ -748,8 +743,8 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
                     reject(err);
                     return;
                 }
-                let items = result.recordset;
-                let item = (items != null && items.length > 0) ? items[0] : null;
+                const items = result.recordset;
+                const item = (items != null && items.length > 0) ? items[0] : null;
                 resolve(item);
             });
         });
@@ -776,21 +771,21 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             return;
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const values = this.generateValues(row);
 
-        let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
+        const query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
 
-        let request = this.createRequest(values);
+        const request = this.createRequest(values);
         let newItem = await new Promise<any>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let item = result && result.recordset && result.recordset.length == 1
+                const item = result && result.recordset && result.recordset.length == 1
                     ? result.recordset[0] : null;
                 resolve(item);
             });
@@ -817,14 +812,14 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
             query += " WHERE " + filter;
         }
 
-        let request = this.createRequest();
-        let count = await new Promise<number>((resolve, reject) => {
+        const request = this.createRequest();
+        const count = await new Promise<number>((resolve, reject) => {
             request.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
+                const count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
                 resolve(count);
             });
         });

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummySqlServerPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const IdentifiableSqlServerPersistence_1 = require("../../src/persistence/IdentifiableSqlServerPersistence");
 class DummySqlServerPersistence extends IdentifiableSqlServerPersistence_1.IdentifiableSqlServerPersistence {
     constructor() {
@@ -13,7 +13,7 @@ class DummySqlServerPersistence extends IdentifiableSqlServerPersistence_1.Ident
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
     getPageByFilter(context, filter, paging) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {
@@ -22,7 +22,7 @@ class DummySqlServerPersistence extends IdentifiableSqlServerPersistence_1.Ident
         return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
     getCountByFilter(context, filter) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = null;
         if (key != null) {

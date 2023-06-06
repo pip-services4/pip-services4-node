@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiableSqlServerPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const SqlServerPersistence_1 = require("./SqlServerPersistence");
 /**
  * Abstract persistence component that stores data in SQLServer
@@ -123,16 +123,16 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id] IN(" + params + ")";
-            let request = this.createRequest(ids);
+            const params = this.generateParameters(ids);
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id] IN(" + params + ")";
+            const request = this.createRequest(ids);
             let items = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let items = result.recordset;
+                    const items = result.recordset;
                     resolve(items);
                 });
             });
@@ -150,16 +150,16 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id]=@1";
-            let params = [id];
-            let request = this.createRequest(params);
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE [id]=@1";
+            const params = [id];
+            const request = this.createRequest(params);
             let item = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset ? result.recordset[0] || null : null;
+                    const item = result && result.recordset ? result.recordset[0] || null : null;
                     resolve(item);
                 });
             });
@@ -188,7 +188,7 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
         let newItem = item;
         if (newItem.id == null && this._autoGenerateId) {
             newItem = Object.assign({}, newItem);
-            newItem.id = item.id || pip_services3_commons_node_1.IdGenerator.nextLong();
+            newItem.id = item.id || pip_services4_data_node_1.IdGenerator.nextLong();
         }
         return super.create(context, newItem);
     }
@@ -208,13 +208,13 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
             // Assign unique id
             if (item.id == null && this._autoGenerateId) {
                 item = Object.assign({}, item);
-                item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                item.id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let setParams = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const setParams = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(item.id);
             let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ") OUTPUT INSERTED.* VALUES (" + params + ")";
             let request = this.createRequest(values);
@@ -229,7 +229,7 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -248,7 +248,7 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -270,20 +270,20 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
             if (item == null || item.id == null) {
                 return null;
             }
-            let row = this.convertFromPublic(item);
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublic(item);
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(item.id);
-            let query = "UPDATE " + this.quotedTableName()
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
-            let request = this.createRequest(values);
+            const request = this.createRequest(values);
             let newItem = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -306,20 +306,20 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
             if (data == null || id == null) {
                 return null;
             }
-            let row = this.convertFromPublicPartial(data.getAsObject());
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublicPartial(data.getAsObject());
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(id);
-            let query = "UPDATE " + this.quotedTableName()
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " OUTPUT INSERTED.* WHERE [id]=@" + values.length;
-            let request = this.createRequest(values);
+            const request = this.createRequest(values);
             let newItem = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -338,16 +338,16 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let values = [id];
-            let query = "DELETE FROM " + this.quotedTableName() + " OUTPUT DELETED.* WHERE [id]=@1";
-            let request = this.createRequest(values);
+            const values = [id];
+            const query = "DELETE FROM " + this.quotedTableName() + " OUTPUT DELETED.* WHERE [id]=@1";
+            const request = this.createRequest(values);
             let oldItem = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.recordset && result.recordset.length == 1
+                    const item = result && result.recordset && result.recordset.length == 1
                         ? result.recordset[0] : null;
                     resolve(item);
                 });
@@ -365,16 +365,16 @@ class IdentifiableSqlServerPersistence extends SqlServerPersistence_1.SqlServerP
      */
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "DELETE FROM " + this.quotedTableName() + " WHERE \"id\" IN(" + params + ")";
-            let request = this.createRequest(ids);
-            let count = yield new Promise((resolve, reject) => {
+            const params = this.generateParameters(ids);
+            const query = "DELETE FROM " + this.quotedTableName() + " WHERE \"id\" IN(" + params + ")";
+            const request = this.createRequest(ids);
+            const count = yield new Promise((resolve, reject) => {
                 request.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
+                    const count = result && result.rowsAffected ? result.rowsAffected[0] : 0;
                     resolve(count);
                 });
             });

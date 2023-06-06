@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqlServerConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves SQLServer connection and credential parameters,
  * validates them and generates a connection URI.
@@ -43,11 +43,11 @@ class SqlServerConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -68,42 +68,42 @@ class SqlServerConnectionResolver {
         this._credentialResolver.setReferences(references);
     }
     validateConnection(context, connection) {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null)
             return;
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
-        let database = connection.getAsNullableString("database");
+        const database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_DATABASE", "Connection database is not set");
         }
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
     composeUri(connections, credential) {
         // If there is a uri then return it immediately
-        for (let connection of connections) {
-            let uri = connection.getUri();
+        for (const connection of connections) {
+            const uri = connection.getUri();
             if (uri)
                 return uri;
         }
         // Define hosts
         let hosts = '';
-        for (let connection of connections) {
-            let host = connection.getHost();
-            let port = connection.getPort();
+        for (const connection of connections) {
+            const host = connection.getHost();
+            const port = connection.getPort();
             if (hosts.length > 0) {
                 hosts += ',';
             }
@@ -111,7 +111,7 @@ class SqlServerConnectionResolver {
         }
         // Define database
         let database = '';
-        for (let connection of connections) {
+        for (const connection of connections) {
             database = database || connection.getAsNullableString("database");
         }
         if (database.length > 0) {
@@ -120,9 +120,9 @@ class SqlServerConnectionResolver {
         // Define authentication part
         let auth = '';
         if (credential) {
-            let username = credential.getUsername();
+            const username = credential.getUsername();
             if (username) {
-                let password = credential.getPassword();
+                const password = credential.getPassword();
                 if (password) {
                     auth = username + ':' + password + '@';
                 }
@@ -132,7 +132,7 @@ class SqlServerConnectionResolver {
             }
         }
         // Define additional parameters parameters
-        let options = pip_services3_commons_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
+        const options = pip_services4_components_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
         options.remove('uri');
         options.remove('host');
         options.remove('port');
@@ -140,13 +140,13 @@ class SqlServerConnectionResolver {
         options.remove('username');
         options.remove('password');
         let params = '';
-        let keys = options.getKeys();
-        for (let key of keys) {
+        const keys = options.getKeys();
+        for (const key of keys) {
             if (params.length > 0) {
                 params += '&';
             }
             params += key;
-            let value = options.getAsString(key);
+            const value = options.getAsString(key);
             if (value != null) {
                 params += '=' + value;
             }
@@ -155,7 +155,7 @@ class SqlServerConnectionResolver {
             params = '?' + params;
         }
         // Compose uri
-        let uri = "mssql://" + auth + hosts + database + params;
+        const uri = "mssql://" + auth + hosts + database + params;
         return uri;
     }
     /**
@@ -166,12 +166,12 @@ class SqlServerConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
             this.validateConnections(context, connections);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let uri = this.composeUri(connections, credential);
+            const uri = this.composeUri(connections, credential);
             return uri;
         });
     }

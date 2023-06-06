@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
-const process = require('process');
+import process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
 import { SqlServerConnection } from '../../src/connect/SqlServerConnection';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('SqlServerConnection', ()=> {
     let connection: SqlServerConnection;

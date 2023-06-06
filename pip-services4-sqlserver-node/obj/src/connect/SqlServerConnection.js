@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqlServerConnection = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const SqlServerConnectionResolver_1 = require("../connect/SqlServerConnectionResolver");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * SQLServer connection using plain driver.
  *
@@ -48,14 +49,14 @@ class SqlServerConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "options.connect_timeout", 15000, "options.request_timeout", 15000, "options.idle_timeout", 30000, "options.max_pool_size", 3);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -63,7 +64,8 @@ class SqlServerConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -93,11 +95,15 @@ class SqlServerConnection {
         return this._connection != null;
     }
     composeUriSettings(uri) {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let requestTimeoutMS = this._options.getAsNullableInteger("request_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
-        let settings = {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const requestTimeoutMS = this._options.getAsNullableInteger("request_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const settings = {
         // parseJSON: true,
         // connectTimeout: connectTimeoutMS,
         // requestTimeout: requestTimeoutMS,
@@ -106,12 +112,12 @@ class SqlServerConnection {
         // 'pool.idleTimeoutMillis': idleTimeoutMS
         };
         let params = '';
-        for (let key in settings) {
+        for (const key in settings) {
             if (params.length > 0) {
                 params += '&';
             }
             params += key;
-            let value = settings[key];
+            const value = settings[key];
             if (value != null) {
                 params += '=' + value;
             }
@@ -135,6 +141,7 @@ class SqlServerConnection {
             this._logger.debug(context, "Connecting to SQLServer...");
             try {
                 uri = this.composeUriSettings(uri);
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const sql = require('mssql');
                 const pool = new sql.ConnectionPool(uri);
                 pool.config.options.enableArithAbort = true;
@@ -153,7 +160,7 @@ class SqlServerConnection {
                 this._databaseName = pool.config.database;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
             }
         });
     }
@@ -182,7 +189,7 @@ class SqlServerConnection {
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
             }
         });
     }
