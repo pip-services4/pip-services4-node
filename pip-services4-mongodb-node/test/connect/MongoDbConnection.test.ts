@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { MongoDbConnection } from '../../src/connect/MongoDbConnection';
 
 suite('MongoDbConnection', ()=> {

@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDbConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves MongoDB connection and credential parameters,
  * validates them and generates a connection URI.
@@ -43,11 +43,11 @@ class MongoDbConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -71,23 +71,24 @@ class MongoDbConnectionResolver {
         let uri = connection.getUri();
         if (uri != null)
             return null;
+        const traceId = context != null ? context.getTraceId() : null;
         let host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_HOST", "Connection host is not set");
         }
         let port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_PORT", "Connection port is not set");
         }
         let database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_DATABASE", "Connection database is not set");
         }
         return null;
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
         for (let connection of connections) {
             this.validateConnection(context, connection);
@@ -132,7 +133,7 @@ class MongoDbConnectionResolver {
             }
         }
         // Define additional parameters parameters
-        let options = pip_services3_commons_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
+        let options = pip_services4_components_node_1.ConfigParams.mergeConfigs(...connections).override(credential);
         options.remove('uri');
         options.remove('host');
         options.remove('port');

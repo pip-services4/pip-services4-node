@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MongoDbConnection_1 = require("../../src/connect/MongoDbConnection");
 suite('MongoDbConnection', () => {
     let connection;
@@ -26,7 +26,7 @@ suite('MongoDbConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
         connection = new MongoDbConnection_1.MongoDbConnection();
         connection.configure(dbConfig);
         yield connection.open(null);

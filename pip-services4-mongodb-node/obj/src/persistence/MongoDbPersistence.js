@@ -10,14 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDbPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
 const MongoDbConnection_1 = require("../connect/MongoDbConnection");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Abstract persistence component that stores data in MongoDB using plain driver.
  *
@@ -111,11 +108,11 @@ class MongoDbPersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_6.DependencyResolver(MongoDbPersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(MongoDbPersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         this._maxPageSize = 100;
         this._collectionName = collection;
     }
@@ -245,11 +242,12 @@ class MongoDbPersistence {
             if (this._localConnection) {
                 yield this._connection.open(context);
             }
+            const traceId = context != null ? context.getTraceId() : null;
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'MongoDB connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(traceId, 'NO_CONNECTION', 'MongoDB connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "MongoDB connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(traceId, "CONNECT_FAILED", "MongoDB connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -273,7 +271,7 @@ class MongoDbPersistence {
             catch (ex) {
                 this._db = null;
                 this._client == null;
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(traceId, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
             }
         });
     }
@@ -288,7 +286,7 @@ class MongoDbPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'MongoDb connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MongoDb connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -329,7 +327,7 @@ class MongoDbPersistence {
     getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             // Adjust max item count based on configuration
-            paging = paging || new pip_services3_commons_node_2.PagingParams();
+            paging = paging || new pip_services4_data_node_1.PagingParams();
             let skip = paging.getSkip(-1);
             let take = paging.getTake(this._maxPageSize);
             let pagingEnabled = paging.total;
@@ -350,7 +348,7 @@ class MongoDbPersistence {
             if (pagingEnabled) {
                 count = yield this._collection.countDocuments(filter);
             }
-            return new pip_services3_commons_node_3.DataPage(items, count);
+            return new pip_services4_data_node_1.DataPage(items, count);
         });
     }
     /**
@@ -473,7 +471,7 @@ class MongoDbPersistence {
     }
 }
 exports.MongoDbPersistence = MongoDbPersistence;
-MongoDbPersistence._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:mongodb:*:1.0", 
+MongoDbPersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:mongodb:*:1.0", 
 // connections.*
 // credential.*
 "options.max_pool_size", 2, "options.keep_alive", 1, "options.connect_timeout", 5000, "options.auto_reconnect", true, "options.max_page_size", 100, "options.debug", true);

@@ -1,8 +1,6 @@
 const process = require('process');
 
-import { ConfigParams, ConnectionException } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
+import { ConfigParams, References, Descriptor } from 'pip-services4-components-node';
 import { MongoDbConnection } from '../../src/connect/MongoDbConnection';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummyMongoDbPersistence } from './DummyMongoDbPersistence';

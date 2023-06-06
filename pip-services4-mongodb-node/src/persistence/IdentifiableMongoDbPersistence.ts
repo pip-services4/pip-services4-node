@@ -1,7 +1,5 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
@@ -9,6 +7,8 @@ import { ISetter } from 'pip-services4-persistence-node';
 
 import { MongoDbPersistence } from './MongoDbPersistence';
 import { FindOneAndReplaceOptions, FindOneAndUpdateOptions } from 'mongodb';
+import { IContext } from 'pip-services4-components-node';
+import { IIdentifiable, IdGenerator } from 'pip-services4-data-node';
 
 /**
  * Abstract persistence component that stores data in MongoDB
@@ -109,7 +109,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
     /**
      * Flag to turn on automated string ID generation
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -138,7 +138,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 a data list.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let filter = {
+        const filter = {
             _id: { $in: ids }
         }
         return await this.getListByFilter(context, filter, null, null);
@@ -152,7 +152,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the found data item.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let filter = { _id: id };
+        const filter = { _id: id };
 
         let item: any = await this._collection.findOne(filter);
 
@@ -179,7 +179,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         }
 
         // Assign unique id
-        let newItem: any = Object.assign({}, item);
+        const newItem: any = Object.assign({}, item);
         delete newItem.id;
         newItem._id = item.id;
 
@@ -216,16 +216,16 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
 
         newItem = this.convertFromPublic(newItem);
 
-        let filter = {
+        const filter = {
             _id: newItem._id
         };
 
-        let options: FindOneAndReplaceOptions = {
+        const options: FindOneAndReplaceOptions = {
             returnDocument: 'after',
             upsert: true
         };
    
-        let result = await this._collection.findOneAndReplace(filter, newItem, options);
+        const result = await this._collection.findOneAndReplace(filter, newItem, options);
 
         if (item != null) {
             this._logger.trace(context, "Set in %s with id = %s", this._collectionName, item.id);
@@ -251,13 +251,13 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         delete newItem.id;
         newItem = this.convertFromPublic(newItem);
 
-        let filter = { _id: item.id };
-        let update = { $set: newItem };
-        let options: FindOneAndUpdateOptions = {
+        const filter = { _id: item.id };
+        const update = { $set: newItem };
+        const options: FindOneAndUpdateOptions = {
             returnDocument: 'after'
         };
 
-        let result = await this._collection.findOneAndUpdate(filter, update, options);
+        const result = await this._collection.findOneAndUpdate(filter, update, options);
 
         this._logger.trace(context, "Updated in %s with id = %s", this._collectionName, item.id);
 
@@ -281,13 +281,13 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         let newItem = data.getAsObject();
         newItem = this.convertFromPublicPartial(newItem);
 
-        let filter = { _id: id };
-        let update = { $set: newItem };
-        let options: FindOneAndUpdateOptions = {
+        const filter = { _id: id };
+        const update = { $set: newItem };
+        const options: FindOneAndUpdateOptions = {
             returnDocument: 'after'
         };
 
-        let result = await this._collection.findOneAndUpdate(filter, update, options);
+        const result = await this._collection.findOneAndUpdate(filter, update, options);
 
         this._logger.trace(context, "Updated partially in %s with id = %s", this._collectionName, id);
 
@@ -303,13 +303,13 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let filter = { _id: id };
+        const filter = { _id: id };
         
-        let result = await this._collection.findOneAndDelete(filter);
+        const result = await this._collection.findOneAndDelete(filter);
 
         this._logger.trace(context, "Deleted from %s with id = %s", this._collectionName, id);
 
-        let oldItem = result ? this.convertToPublic(result.value) : null;
+        const oldItem = result ? this.convertToPublic(result.value) : null;
         return oldItem;
     }
 
@@ -320,7 +320,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let filter = { _id: { $in: ids } };
+        const filter = { _id: { $in: ids } };
         return await this.deleteByFilter(context, filter);
     }
 }

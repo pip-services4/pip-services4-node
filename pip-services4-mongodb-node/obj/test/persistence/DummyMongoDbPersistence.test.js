@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyMongoDbPersistence_1 = require("./DummyMongoDbPersistence");
 suite('DummyMongoDbPersistence', () => {
@@ -26,7 +26,7 @@ suite('DummyMongoDbPersistence', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
         persistence = new DummyMongoDbPersistence_1.DummyMongoDbPersistence();
         persistence.configure(dbConfig);
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);

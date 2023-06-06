@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyMongoDbPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const IdentifiableMongoDbPersistence_1 = require("../../src/persistence/IdentifiableMongoDbPersistence");
 class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence_1.IdentifiableMongoDbPersistence {
     constructor() {
@@ -11,7 +11,7 @@ class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence_1.Identifia
         this.ensureIndex({ key: 1 });
     }
     getPageByFilter(context, filter, paging) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = {};
         if (key != null)
@@ -19,7 +19,7 @@ class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence_1.Identifia
         return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
     getCountByFilter(context, filter) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = {};
         if (key != null)

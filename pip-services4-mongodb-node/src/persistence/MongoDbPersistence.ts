@@ -1,22 +1,12 @@
 /** @module persistence */
 import { Collection, Db, Document, FindOptions } from 'mongodb';
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-
 import { MongoDbConnection } from '../connect/MongoDbConnection';
 import { MongoDbIndex } from './MongoDbIndex';
+import { InvalidStateException, ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { PagingParams, DataPage } from 'pip-services4-data-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Abstract persistence component that stores data in MongoDB using plain driver.
@@ -158,7 +148,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      */
     protected _collection: Collection<Document>;
 
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence component.
@@ -213,7 +203,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
     }
 
     private createConnection(): MongoDbConnection {
-        let connection = new MongoDbConnection();
+        const connection = new MongoDbConnection();
         
         if (this._config)
             connection.configure(this._config);
@@ -300,7 +290,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -313,12 +303,14 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
             await this._connection.open(context);
         }
 
+        const traceId = context != null ? context.getTraceId() : null;
+
         if (this._connection == null) {
-            throw new InvalidStateException(context, 'NO_CONNECTION', 'MongoDB connection is missing');
+            throw new InvalidStateException(traceId, 'NO_CONNECTION', 'MongoDB connection is missing');
         }
 
         if (!this._connection.isOpen()) {
-            throw new ConnectionException(context, "CONNECT_FAILED", "MongoDB connection is not opened");
+            throw new ConnectionException(traceId, "CONNECT_FAILED", "MongoDB connection is not opened");
         }
 
         this._opened = false;
@@ -328,17 +320,17 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         this._databaseName = this._connection.getDatabaseName();
         
         try {
-            let collection = this._db.collection(this._collectionName);
+            const collection = this._db.collection(this._collectionName);
 
             // Define database schema
             this.defineSchema();
 
             // Recreate indexes
-            for (let index of this._indexes) {
+            for (const index of this._indexes) {
                 await collection.createIndex(index.keys, index.options);
 
-                let options = index.options || {};
-                let indexName = options.name || Object.keys(index.keys).join(',');
+                const options = index.options || {};
+                const indexName = options.name || Object.keys(index.keys).join(',');
                 this._logger.debug(context, "Created index %s for collection %s", indexName, this._collectionName);
             }
 
@@ -348,7 +340,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         } catch (ex) {
             this._db = null;
             this._client == null;
-            throw new ConnectionException(context, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+            throw new ConnectionException(traceId, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
         }
     }
 
@@ -358,12 +350,12 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
-            throw new InvalidStateException(context, 'NO_CONNECTION', 'MongoDb connection is missing');
+            throw new InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MongoDb connection is missing');
         }
 
         if (this._localConnection) {
@@ -381,6 +373,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._collectionName == null) {
@@ -408,12 +401,12 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         // Configure options
-        let options: FindOptions = {};
+        const options: FindOptions = {};
 
         if (skip >= 0) options.skip = skip;
         options.limit = take;
@@ -448,7 +441,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @returns                 a number of filtered items.
      */
     protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
-        let count = await this._collection.countDocuments(filter);
+        const count = await this._collection.countDocuments(filter);
 
         if (count != null) {
             this._logger.trace(context, "Counted %d items in %s", count, this._collectionName);
@@ -472,7 +465,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      */
     protected async getListByFilter(context: IContext, filter: any, sort: any, select: any): Promise<T[]> {
         // Configure options
-        let options: FindOptions = {};
+        const options: FindOptions = {};
         if (sort != null) options.sort = sort;
 
         let items: any = await this._collection.find(filter, options).project(select).toArray();
@@ -498,15 +491,15 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @returns                 a random item.
      */
     protected async getOneRandom(context: IContext, filter: any): Promise<T> {
-        let count = await this._collection.countDocuments(filter);
+        const count = await this._collection.countDocuments(filter);
 
-        let pos = Math.trunc(Math.random() * count);
-        let options = {
+        const pos = Math.trunc(Math.random() * count);
+        const options = {
             skip: pos >= 0 ? pos : 0,
             limit: 1,
         }
 
-        let items = await this._collection.find(filter, options).toArray();
+        const items = await this._collection.find(filter, options).toArray();
 
 
         let item: any = (items != null && items.length > 0) ? items[0] : null;
@@ -535,7 +528,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
 
         let newItem = this.convertFromPublic(item);
 
-        let result = await this._collection.insertOne(newItem);
+        const result = await this._collection.insertOne(newItem);
 
         this._logger.trace(context, "Created in %s with id = %s", this._collectionName, newItem._id);
 
@@ -558,9 +551,9 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @param filter            (optional) a filter JSON object.
      */
     public async deleteByFilter(context: IContext, filter: any): Promise<void> {
-        let result = await this._collection.deleteMany(filter);
+        const result = await this._collection.deleteMany(filter);
 
-        let count = result != null ? result.deletedCount : 0;
+        const count = result != null ? result.deletedCount : 0;
         this._logger.trace(context, "Deleted %d items from %s", count, this._collectionName);
     }
 

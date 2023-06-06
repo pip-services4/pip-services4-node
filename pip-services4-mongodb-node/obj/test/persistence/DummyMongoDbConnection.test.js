@@ -10,9 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MongoDbConnection_1 = require("../../src/connect/MongoDbConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyMongoDbPersistence_1 = require("./DummyMongoDbPersistence");
@@ -30,11 +28,11 @@ suite('DummyMongoDbConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', mongoUri, 'connection.host', mongoHost, 'connection.port', mongoPort, 'connection.database', mongoDatabase, 'credential.username', mongoUser, 'credential.password', mongoPass);
         connection = new MongoDbConnection_1.MongoDbConnection();
         connection.configure(dbConfig);
         persistence = new DummyMongoDbPersistence_1.DummyMongoDbPersistence();
-        persistence.setReferences(pip_services3_commons_node_3.References.fromTuples(new pip_services3_commons_node_2.Descriptor("pip-services", "connection", "mongodb", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "mongodb", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

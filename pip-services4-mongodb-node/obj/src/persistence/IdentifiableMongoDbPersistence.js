@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiableMongoDbPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MongoDbPersistence_1 = require("./MongoDbPersistence");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 /**
  * Abstract persistence component that stores data in MongoDB
  * and implements a number of CRUD operations over data items with unique ids.
@@ -185,7 +185,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             newItem._id = item.id;
             // Auto generate id
             if (newItem._id == null && this._autoGenerateId) {
-                newItem._id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                newItem._id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
             return yield _super.create.call(this, context, newItem);
         });
@@ -209,7 +209,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             newItem._id = item.id;
             // Auto generate id
             if (newItem._id == null && this._autoGenerateId) {
-                newItem._id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                newItem._id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
             newItem = this.convertFromPublic(newItem);
             let filter = {

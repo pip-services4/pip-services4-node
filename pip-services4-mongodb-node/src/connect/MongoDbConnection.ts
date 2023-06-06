@@ -1,15 +1,10 @@
 /** @module connect */
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-
 import { MongoDbConnectionResolver } from './MongoDbConnectionResolver';
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 
 /**
@@ -92,7 +87,9 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -127,21 +124,24 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
     }
 
     private composeSettings(): MongoClientOptions {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let keepAlive = this._options.getAsNullableInteger("keep_alive");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let socketTimeoutMS = this._options.getAsNullableInteger("socket_timeout");
-        let autoReconnect = this._options.getAsNullableBoolean("auto_reconnect");
-        let reconnectInterval = this._options.getAsNullableInteger("reconnect_interval");
-        let debug = this._options.getAsNullableBoolean("debug");
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const keepAlive = this._options.getAsNullableInteger("keep_alive");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        const socketTimeoutMS = this._options.getAsNullableInteger("socket_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const autoReconnect = this._options.getAsNullableBoolean("auto_reconnect");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reconnectInterval = this._options.getAsNullableInteger("reconnect_interval");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const debug = this._options.getAsNullableBoolean("debug");
 
-        let ssl = this._options.getAsNullableBoolean("ssl");
-        let replicaSet = this._options.getAsNullableString("replica_set");
-        let authSource = this._options.getAsNullableString("auth_source");
-        let authUser = this._options.getAsNullableString("auth_user");
-        let authPassword = this._options.getAsNullableString("auth_password");
+        const ssl = this._options.getAsNullableBoolean("ssl");
+        const replicaSet = this._options.getAsNullableString("replica_set");
+        const authSource = this._options.getAsNullableString("auth_source");
+        const authUser = this._options.getAsNullableString("auth_user");
+        const authPassword = this._options.getAsNullableString("auth_password");
 
-        let settings: MongoClientOptions = {
+        const settings: MongoClientOptions = {
             maxPoolSize: maxPoolSize,
             keepAliveInitialDelay: keepAlive,
             //autoReconnect: autoReconnect,
@@ -176,23 +176,23 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let uri = await this._connectionResolver.resolve(context);
+        const uri = await this._connectionResolver.resolve(context);
 
         this._logger.debug(context, "Connecting to mongodb");
 
         try {
-            let settings: MongoClientOptions = this.composeSettings();
+            const settings: MongoClientOptions = this.composeSettings();
 
             
 
-            let client = await new MongoClient(uri, settings).connect();
+            const client = await new MongoClient(uri, settings).connect();
 
             this._connection = client;                
             this._db = client.db();
             this._databaseName = this._db.databaseName;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to mongodb failed"
             ).withCause(ex);
