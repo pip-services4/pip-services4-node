@@ -1,5 +1,4 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { MemcachedLock } from '../../src/lock/MemcachedLock';
 import { LockFixture } from '../fixtures/LockFixture';
 

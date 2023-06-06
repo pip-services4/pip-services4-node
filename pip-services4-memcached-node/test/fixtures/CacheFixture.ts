@@ -1,6 +1,7 @@
+import { ICache } from "pip-services4-logic-node";
+
 const assert = require('chai').assert;
 
-import { ICache } from 'pip-services4-components-node';
 
 let KEY1: string = "key1";
 let KEY2: string = "key2";

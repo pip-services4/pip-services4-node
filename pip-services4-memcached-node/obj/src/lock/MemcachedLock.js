@@ -10,10 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemcachedLock = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+/** @module lock */
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_logic_node_1 = require("pip-services4-logic-node");
 /**
  * Distributed lock that implemented based on Memcaches caching service.
  *
@@ -61,10 +62,10 @@ const pip_services3_components_node_2 = require("pip-services4-components-node")
  *       await lock.releaseLock("123", "key1");
  *     }
  */
-class MemcachedLock extends pip_services3_components_node_2.Lock {
+class MemcachedLock extends pip_services4_logic_node_1.Lock {
     constructor() {
         super(...arguments);
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         this._maxKeySize = 250;
         this._maxExpiration = 2592000;
         this._maxValue = 1048576;
@@ -112,7 +113,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
      * @returns true if the component has been opened and false otherwise.
      */
     isOpen() {
-        return this._client;
+        return this._client != null;
     }
     /**
      * Opens the component.
@@ -121,17 +122,17 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             if (connections.length == 0) {
-                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let servers = [];
-            for (let connection of connections) {
-                let host = connection.getHost();
-                let port = connection.getPort() || 11211;
+            const servers = [];
+            for (const connection of connections) {
+                const host = connection.getHost();
+                const port = connection.getPort() || 11211;
                 servers.push(host + ':' + port);
             }
-            let options = {
+            const options = {
                 maxKeySize: this._maxKeySize,
                 maxExpiration: this._maxExpiration,
                 maxValue: this._maxValue,
@@ -144,7 +145,8 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
                 remove: this._remove,
                 idle: this._idle
             };
-            let Memcached = require('memcached');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const Memcached = require('memcached');
             this._client = new Memcached(servers, options);
         });
     }
@@ -153,6 +155,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._client = null;
@@ -160,7 +163,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
     }
     checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     /**
@@ -174,7 +177,7 @@ class MemcachedLock extends pip_services3_components_node_2.Lock {
      */
     tryAcquireLock(context, key, ttl) {
         this.checkOpened(context);
-        let lifetimeInSec = ttl / 1000;
+        const lifetimeInSec = ttl / 1000;
         return new Promise((resolve, reject) => {
             this._client.add(key, 'lock', lifetimeInSec, (err) => {
                 if (err != null && err.message && err.message.indexOf('not stored') >= 0) {

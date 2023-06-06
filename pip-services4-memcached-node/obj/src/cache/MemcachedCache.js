@@ -1,4 +1,5 @@
 "use strict";
+/** @module cache */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemcachedCache = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Distributed cache that stores values in Memcaches caching service.
  *
@@ -60,7 +60,7 @@ class MemcachedCache {
      * Creates a new instance of this cache.
      */
     constructor() {
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         this._maxKeySize = 250;
         this._maxExpiration = 2592000;
         this._maxValue = 1048576;
@@ -73,6 +73,7 @@ class MemcachedCache {
         this._remove = false;
         this._idle = 5000;
         this._client = null;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -107,7 +108,7 @@ class MemcachedCache {
      * @returns true if the component has been opened and false otherwise.
      */
     isOpen() {
-        return this._client;
+        return this._client != null;
     }
     /**
      * Opens the component.
@@ -116,17 +117,17 @@ class MemcachedCache {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             if (connections.length == 0) {
-                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let servers = [];
-            for (let connection of connections) {
-                let host = connection.getHost();
-                let port = connection.getPort() || 11211;
+            const servers = [];
+            for (const connection of connections) {
+                const host = connection.getHost();
+                const port = connection.getPort() || 11211;
                 servers.push(host + ':' + port);
             }
-            let options = {
+            const options = {
                 maxKeySize: this._maxKeySize,
                 maxExpiration: this._maxExpiration,
                 maxValue: this._maxValue,
@@ -139,7 +140,8 @@ class MemcachedCache {
                 remove: this._remove,
                 idle: this._idle
             };
-            let Memcached = require('memcached');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const Memcached = require('memcached');
             this._client = new Memcached(servers, options);
         });
     }
@@ -148,6 +150,7 @@ class MemcachedCache {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._client = null;
@@ -155,7 +158,7 @@ class MemcachedCache {
     }
     checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     /**
@@ -189,7 +192,7 @@ class MemcachedCache {
      */
     store(context, key, value, timeout) {
         this.checkOpened(context);
-        let timeoutInSec = timeout / 1000;
+        const timeoutInSec = timeout / 1000;
         return new Promise((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), timeoutInSec, (err, result) => {
                 if (err != null) {

@@ -1,4 +1,4 @@
-import { ICache } from 'pip-services4-components-node';
+import { ICache } from "pip-services4-logic-node";
 export declare class CacheFixture {
     private _cache;
     constructor(cache: ICache);

@@ -1,7 +1,6 @@
 let process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { MemcachedCache } from '../../src/cache/MemcachedCache';
 import { CacheFixture } from '../fixtures/CacheFixture';
 

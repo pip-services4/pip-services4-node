@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MemcachedLock_1 = require("../../src/lock/MemcachedLock");
 const LockFixture_1 = require("../fixtures/LockFixture");
 suite('MemcachedLock', () => {
@@ -19,7 +19,7 @@ suite('MemcachedLock', () => {
         let host = process.env['MEMCACHED_SERVICE_HOST'] || 'localhost';
         let port = process.env['MEMCACHED_SERVICE_PORT'] || 11211;
         _lock = new MemcachedLock_1.MemcachedLock();
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('connection.host', host, 'connection.port', port);
         _lock.configure(config);
         _fixture = new LockFixture_1.LockFixture(_lock);
         yield _lock.open(null);

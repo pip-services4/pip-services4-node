@@ -1,10 +1,5 @@
 /** @module cache */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICache } from 'pip-services4-components-node';
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
 /**
  * Distributed cache that stores values in Memcaches caching service.
  *
@@ -47,7 +42,7 @@ import { ICache } from 'pip-services4-components-node';
  *     await cache.store("123", "key1", "ABC");
  *     let value = await cache.store("123", "key1"); // Result: "ABC"
  */
-export declare class MemcachedCache implements ICache, IConfigurable, IReferenceable, IOpenable {
+export declare class MemcachedCache implements IConfigurable, IReferenceable, IOpenable {
     private _connectionResolver;
     private _maxKeySize;
     private _maxExpiration;

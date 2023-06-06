@@ -1,6 +1,5 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 
 import { MemcachedCache } from '../cache/MemcachedCache';
 import { MemcachedLock } from '../lock/MemcachedLock';

@@ -1,13 +1,8 @@
 /** @module cache */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { ICache } from 'pip-services4-components-node';
+
+import { ConfigException, InvalidStateException } from "pip-services4-commons-node";
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ConnectionResolver } from "pip-services4-config-node";
 
 /**
  * Distributed cache that stores values in Memcaches caching service.
@@ -51,27 +46,29 @@ import { ICache } from 'pip-services4-components-node';
  *     await cache.store("123", "key1", "ABC");
  *     let value = await cache.store("123", "key1"); // Result: "ABC"
  */
-export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IOpenable {
+export class MemcachedCache implements IConfigurable, IReferenceable, IOpenable {
     private _connectionResolver: ConnectionResolver = new ConnectionResolver();
 
-    private _maxKeySize: number = 250;
-    private _maxExpiration: number = 2592000;
-    private _maxValue: number = 1048576;
-    private _poolSize: number = 5;
-    private _reconnect: number = 10000;
-    private _timeout: number = 5000;
-    private _retries: number = 5;
-    private _failures: number = 5;
-    private _retry: number = 30000;
-    private _remove: boolean = false;
-    private _idle: number = 5000;
+    private _maxKeySize = 250;
+    private _maxExpiration = 2592000;
+    private _maxValue = 1048576;
+    private _poolSize = 5;
+    private _reconnect = 10000;
+    private _timeout = 5000;
+    private _retries = 5;
+    private _failures = 5;
+    private _retry = 30000;
+    private _remove = false;
+    private _idle = 5000;
 
     private _client: any = null;
 
     /**
      * Creates a new instance of this cache.
      */
-    public constructor() { }
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -118,23 +115,23 @@ export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IO
      * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let connections = await this._connectionResolver.resolveAll(context);
+        const connections = await this._connectionResolver.resolveAll(context);
         if (connections.length == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let servers: string[] = [];
-        for (let connection of connections) {
-            let host = connection.getHost();
-            let port = connection.getPort() || 11211;
+        const servers: string[] = [];
+        for (const connection of connections) {
+            const host = connection.getHost();
+            const port = connection.getPort() || 11211;
             servers.push(host + ':' + port);
         }
 
-        let options = {
+        const options = {
             maxKeySize: this._maxKeySize,
             maxExpiration: this._maxExpiration,
             maxValue: this._maxValue,
@@ -148,7 +145,8 @@ export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IO
             idle: this._idle
         };
 
-        let Memcached = require('memcached');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Memcached = require('memcached');
         this._client = new Memcached(servers, options);
     }
 
@@ -157,6 +155,7 @@ export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IO
      * 
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         this._client = null;
     }
@@ -164,7 +163,7 @@ export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IO
     private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
@@ -205,7 +204,7 @@ export class MemcachedCache implements ICache, IConfigurable, IReferenceable, IO
     public store(context: IContext, key: string, value: any, timeout: number): Promise<any> {
         this.checkOpened(context);
 
-        let timeoutInSec = timeout / 1000;
+        const timeoutInSec = timeout / 1000;
 
         return new Promise<any>((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), timeoutInSec, (err, result) => {
