@@ -1,9 +1,9 @@
 /** @module build */
-import { Descriptor } from 'pip-services4-commons-node';
 import { IMessageQueue } from 'pip-services4-messaging-node';
 import { MessageQueueFactory } from 'pip-services4-messaging-node';
 
 import { RabbitMQMessageQueue } from '../queues/RabbitMQMessageQueue';
+import { Descriptor } from 'pip-services4-components-node';
 
 /**
  * Creates [[RabbitMQMessageQueue]] components by their descriptors.

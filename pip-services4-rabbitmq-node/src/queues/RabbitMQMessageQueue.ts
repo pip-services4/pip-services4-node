@@ -3,16 +3,13 @@ import { Options } from 'amqplib';
 import amqplib = require('amqplib');
 
 import { ConfigException } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 import { InvalidStateException } from 'pip-services4-commons-node';
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { RabbitMQConnectionResolver } from '../connect';
+import { IConfigurable, IOpenable, ICleanable, ConfigParams, IContext, Context } from 'pip-services4-components-node';
 
 /**
  * Message queue that sends and receives messages via RabbitMQ message broker.
@@ -122,7 +119,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
     private checkOpened(context: IContext): void {
         if (this._mqChanel == null)
-            throw new InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
+            throw new InvalidStateException(context != null ? context.getTraceId() : null, "NOT_OPENED", "The queue is not opened");
     }
 
     /**
@@ -146,7 +143,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         let options = await this._optionsResolver.compose(context, connection, credential)
 
         if (this._queue == "" && this._exchange == "") {
-            throw new ConfigException(context,
+            throw new ConfigException(context != null ? context.getTraceId() : null,
                 "NO_QUEUE",
                 "Queue or exchange are not defined in connection parameters");
         }
@@ -223,7 +220,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * @returns number of available messages.
      */
     public async readMessageCount(): Promise<number> {
-        this.checkOpened("");
+        this.checkOpened(null);
 
         if (this._queue == "") {
             return 0;
@@ -237,7 +234,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     protected toMessage(msg: amqplib.Message): MessageEnvelope {
         if (msg == null) return null;
 
-        let message = new MessageEnvelope(msg.properties.context, msg.properties.type, msg.content.toString());
+        let message = new MessageEnvelope(Context.fromTraceId(msg.properties.correlationId), msg.properties.type, msg.content.toString());
         message.message_type = msg.properties.type;
         message.sent_time = new Date();
         message.setReference(msg);
@@ -261,7 +258,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         this._mqChanel.publish
 
         if (message.trace_id)
-            options.context = message.trace_id;
+            options.correlationId = message.trace_id;
 
         if (message.message_id)
             options.messageId = message.message_id;
@@ -275,9 +272,9 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         if (ok) {
             this._counters.incrementOne("queue." + this._name + ".sent_messages");
-            this._logger.debug(message.trace_id, "Sent message %s via %s", message, this._name);
+            this._logger.debug(Context.fromTraceId(message.trace_id), "Sent message %s via %s", message, this._name);
         } else {
-            this._logger.debug(message.trace_id, "Message %s was not sent to %s", message, this._name);
+            this._logger.debug(Context.fromTraceId(message.trace_id), "Message %s was not sent to %s", message, this._name);
         }
     }
 
@@ -298,7 +295,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         let message = this.toMessage(envelope);
 
         if (message != null) {
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this._name)
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this._name)
         }
 
         return message;
@@ -359,7 +356,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         if (message != null) {
             this._counters.incrementOne("queue." + this._name + ".received_messages");
-            this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
+            this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this._name);
         }
 
         return message;
@@ -389,7 +386,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     * @param message   a message to return.
     */
     public async abandon(message: MessageEnvelope): Promise<void> {
-        this.checkOpened("");
+        this.checkOpened(null);
 
         // Make the message immediately visible
         let envelope = message.getReference() as amqplib.GetMessage;
@@ -397,7 +394,7 @@ export class RabbitMQMessageQueue extends MessageQueue
             this._mqChanel.nack(envelope, false, true);
 
             message.setReference(null);
-            this._logger.trace(message.trace_id, "Abandoned message %s at %c", message, this._name);
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Abandoned message %s at %c", message, this._name);
         }
     }
 
@@ -410,7 +407,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * @param message   a message to remove.
      */
     public async complete(message: MessageEnvelope): Promise<void> {
-        this.checkOpened("");
+        this.checkOpened(null);
 
         // Make the message immediately visible
         let envelope = message.getReference() as amqplib.GetMessage;
@@ -418,7 +415,7 @@ export class RabbitMQMessageQueue extends MessageQueue
             this._mqChanel.ack(envelope, false);
 
             message.setReference(null);
-            this._logger.trace(message.trace_id, "Completed message %s at %s", message, this._name);
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Completed message %s at %s", message, this._name);
         }
     }
 
@@ -464,7 +461,7 @@ export class RabbitMQMessageQueue extends MessageQueue
                     if (msg != null) {
                         let message = this.toMessage(msg);
                         this._counters.incrementOne("queue." + this._name + ".received_messages");
-                        this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
+                        this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this._name);
                         await receiver.receiveMessage(message, this);
                         this._mqChanel.ack(msg, false);
                     }

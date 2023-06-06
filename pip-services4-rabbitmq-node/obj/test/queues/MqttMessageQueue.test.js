@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MessageQueueFixture_1 = require("./MessageQueueFixture");
 const RabbitMQMessageQueue_1 = require("../../src/queues/RabbitMQMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('RabbitMQMessageQueue', () => {
     let queue;
     let fixture;
@@ -25,7 +25,7 @@ suite('RabbitMQMessageQueue', () => {
     if (rabbitmqHost == "" && rabbitmqPort == "") {
         return;
     }
-    let queueConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("exchange", rabbitmqExchange, "queue", rabbitmqQueue, "options.auto_create", true, 
+    let queueConfig = pip_services4_components_node_1.ConfigParams.fromTuples("exchange", rabbitmqExchange, "queue", rabbitmqQueue, "options.auto_create", true, 
     //"connection.protocol", "amqp",
     "connection.host", rabbitmqHost, "connection.port", rabbitmqPort, "credential.username", rabbitmqUser, "credential.password", rabbitmqPassword);
     setup(() => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,6 +1,5 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 
 import { RabbitMQMessageQueue } from '../queues/RabbitMQMessageQueue';
 import { RabbitMQMessageQueueFactory } from './RabbitMQMessageQueueFactory';

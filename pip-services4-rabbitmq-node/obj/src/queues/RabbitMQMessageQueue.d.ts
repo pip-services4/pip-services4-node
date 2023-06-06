@@ -1,11 +1,8 @@
 import amqplib = require('amqplib');
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
+import { IConfigurable, IOpenable, ICleanable, ConfigParams, IContext } from 'pip-services4-components-node';
 /**
  * Message queue that sends and receives messages via RabbitMQ message broker.
  *

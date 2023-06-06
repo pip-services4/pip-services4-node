@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RabbitMQMessageQueue = void 0;
 const amqplib = require("amqplib");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_2 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_3 = require("pip-services4-messaging-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_2 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_3 = require("pip-services4-messaging-node");
 const connect_1 = require("../connect");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Message queue that sends and receives messages via RabbitMQ message broker.
  *
@@ -65,7 +66,7 @@ const connect_1 = require("../connect");
  *    	await queue.complete(message);
  *    }
  */
-class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
+class RabbitMQMessageQueue extends pip_services4_messaging_node_1.MessageQueue {
     /**
      * Creates a new instance of the persistence component.
      *
@@ -73,7 +74,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * @param config (optional) configuration parameters.
      */
     constructor(name, config) {
-        super(name, new pip_services3_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
+        super(name, new pip_services4_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
         this.interval = 10000;
         this._queue = "";
         this._exchange = "";
@@ -110,7 +111,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     }
     checkOpened(context) {
         if (this._mqChanel == null)
-            throw new pip_services3_commons_node_2.InvalidStateException(context, "NOT_OPENED", "The queue is not opened");
+            throw new pip_services4_commons_node_2.InvalidStateException(context != null ? context.getTraceId() : null, "NOT_OPENED", "The queue is not opened");
     }
     /**
      * Checks if the component is opened.
@@ -131,7 +132,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             let credential = yield this._credentialResolver.lookup(context);
             let options = yield this._optionsResolver.compose(context, connection, credential);
             if (this._queue == "" && this._exchange == "") {
-                throw new pip_services3_commons_node_1.ConfigException(context, "NO_QUEUE", "Queue or exchange are not defined in connection parameters");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_QUEUE", "Queue or exchange are not defined in connection parameters");
             }
             this._connection = yield amqplib.connect(options.getAsString("uri"));
             this._mqChanel = yield this._connection.createChannel();
@@ -192,7 +193,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      */
     readMessageCount() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpened("");
+            this.checkOpened(null);
             if (this._queue == "") {
                 return 0;
             }
@@ -203,7 +204,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     toMessage(msg) {
         if (msg == null)
             return null;
-        let message = new pip_services3_messaging_node_3.MessageEnvelope(msg.properties.context, msg.properties.type, msg.content.toString());
+        let message = new pip_services4_messaging_node_3.MessageEnvelope(pip_services4_components_node_1.Context.fromTraceId(msg.properties.correlationId), msg.properties.type, msg.content.toString());
         message.message_type = msg.properties.type;
         message.sent_time = new Date();
         message.setReference(msg);
@@ -223,7 +224,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             };
             this._mqChanel.publish;
             if (message.trace_id)
-                options.context = message.trace_id;
+                options.correlationId = message.trace_id;
             if (message.message_id)
                 options.messageId = message.message_id;
             if (message.message_type)
@@ -232,10 +233,10 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             let ok = this._mqChanel.publish(this._exchange, this._routingKey, buf, options);
             if (ok) {
                 this._counters.incrementOne("queue." + this._name + ".sent_messages");
-                this._logger.debug(message.trace_id, "Sent message %s via %s", message, this._name);
+                this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Sent message %s via %s", message, this._name);
             }
             else {
-                this._logger.debug(message.trace_id, "Message %s was not sent to %s", message, this._name);
+                this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Message %s was not sent to %s", message, this._name);
             }
         });
     }
@@ -254,7 +255,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 return null;
             let message = this.toMessage(envelope);
             if (message != null) {
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this._name);
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this._name);
             }
             return message;
         });
@@ -310,7 +311,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             }
             if (message != null) {
                 this._counters.incrementOne("queue." + this._name + ".received_messages");
-                this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
+                this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this._name);
             }
             return message;
         });
@@ -341,13 +342,13 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     */
     abandon(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpened("");
+            this.checkOpened(null);
             // Make the message immediately visible
             let envelope = message.getReference();
             if (envelope != null) {
                 this._mqChanel.nack(envelope, false, true);
                 message.setReference(null);
-                this._logger.trace(message.trace_id, "Abandoned message %s at %c", message, this._name);
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Abandoned message %s at %c", message, this._name);
             }
         });
     }
@@ -361,13 +362,13 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      */
     complete(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.checkOpened("");
+            this.checkOpened(null);
             // Make the message immediately visible
             let envelope = message.getReference();
             if (envelope != null) {
                 this._mqChanel.ack(envelope, false);
                 message.setReference(null);
-                this._logger.trace(message.trace_id, "Completed message %s at %s", message, this._name);
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Completed message %s at %s", message, this._name);
             }
         });
     }
@@ -409,7 +410,7 @@ class RabbitMQMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 if (msg != null) {
                     let message = this.toMessage(msg);
                     this._counters.incrementOne("queue." + this._name + ".received_messages");
-                    this._logger.debug(message.trace_id, "Received message %s via %s", message, this._name);
+                    this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this._name);
                     yield receiver.receiveMessage(message, this);
                     this._mqChanel.ack(msg, false);
                 }

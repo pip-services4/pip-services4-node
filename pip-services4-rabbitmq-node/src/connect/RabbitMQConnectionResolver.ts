@@ -1,13 +1,9 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { CredentialParams, CredentialResolver } from "pip-services4-config-node";
+import { ConnectionResolver, ConnectionParams } from "pip-services4-config-node/obj/src/connect";
 
 /**
  * Helper class that resolves RabbitMQ connection and credential parameters,
@@ -63,7 +59,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
     private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "RabbitMQ connection is not set"
             );
@@ -77,7 +73,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let protocol = connection.getAsStringWithDefault("protocol", "amqp");
         if (protocol == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -86,7 +82,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -95,7 +91,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         let port = connection.getAsInteger("port");
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );

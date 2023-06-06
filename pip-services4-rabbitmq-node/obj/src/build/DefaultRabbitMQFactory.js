@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultRabbitMQFactory = void 0;
 /** @module build */
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const RabbitMQMessageQueue_1 = require("../queues/RabbitMQMessageQueue");
 const RabbitMQMessageQueueFactory_1 = require("./RabbitMQMessageQueueFactory");
 /**
@@ -11,7 +10,7 @@ const RabbitMQMessageQueueFactory_1 = require("./RabbitMQMessageQueueFactory");
  *
  * @see [[RabbitMQMessageQueue]]
  */
-class DefaultRabbitMQFactory extends pip_services3_components_node_1.Factory {
+class DefaultRabbitMQFactory extends pip_services4_components_node_1.Factory {
     /**
      * Create a new instance of the factory.
      */
@@ -25,6 +24,6 @@ class DefaultRabbitMQFactory extends pip_services3_components_node_1.Factory {
     }
 }
 exports.DefaultRabbitMQFactory = DefaultRabbitMQFactory;
-DefaultRabbitMQFactory.RabbitMQMessageQueueDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "message-queue", "rabbitmq", "*", "1.0");
-DefaultRabbitMQFactory.RabbitMQMessageQueueFactoryDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "queue-factory", "rabbitmq", "*", "1.0");
+DefaultRabbitMQFactory.RabbitMQMessageQueueDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "message-queue", "rabbitmq", "*", "1.0");
+DefaultRabbitMQFactory.RabbitMQMessageQueueFactoryDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "queue-factory", "rabbitmq", "*", "1.0");
 //# sourceMappingURL=DefaultRabbitMQFactory.js.map

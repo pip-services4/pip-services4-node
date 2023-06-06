@@ -1,9 +1,8 @@
 const process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
 import { MessageQueueFixture } from './MessageQueueFixture';
 import { RabbitMQMessageQueue } from '../../src/queues/RabbitMQMessageQueue';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('RabbitMQMessageQueue', ()=> {
     let queue: RabbitMQMessageQueue;
