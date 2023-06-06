@@ -1,9 +1,9 @@
 /** @module build */
-import { Descriptor } from 'pip-services4-commons-node';
 import { IMessageQueue } from 'pip-services4-messaging-node';
 import { MessageQueueFactory } from 'pip-services4-messaging-node';
 
 import { MqttMessageQueue } from '../queues/MqttMessageQueue';
+import { Descriptor } from 'pip-services4-components-node';
 
 /**
  * Creates [[MqttMessageQueue]] components by their descriptors.
@@ -16,12 +16,12 @@ export class MqttMessageQueueFactory extends MessageQueueFactory {
     private static readonly MqttQueueDescriptor: Descriptor = new Descriptor("pip-services", "message-queue", "mqtt", "*", "1.0");
 
     /**
-	 * Create a new instance of the factory.
-	 */
+     * Create a new instance of the factory.
+     */
     public constructor() {
         super();
         this.register(MqttMessageQueueFactory.MqttQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return this.createQueue(name);
         });
     }
@@ -31,7 +31,7 @@ export class MqttMessageQueueFactory extends MessageQueueFactory {
      * @param name a name of the created message queue.
      */
      public createQueue(name: string): IMessageQueue {
-        let queue = new MqttMessageQueue(name);
+        const queue = new MqttMessageQueue(name);
 
         if (this._config != null) {
             queue.configure(this._config);

@@ -12,14 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MqttConnection = void 0;
 /** @module queues */
 /** @hidden */
-const mqtt = require('mqtt');
+const mqtt = require("mqtt");
 /** @hidden */
-const os = require('os');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const os = require("os");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const MqttConnectionResolver_1 = require("../connect/MqttConnectionResolver");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Connection to MQTT message broker.
  *
@@ -58,14 +58,14 @@ class MqttConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "client_id", null, "options.retry_connect", true, "options.connect_timeout", 30000, "options.reconnect_timeout", 1000, "options.keepalive_timeout", 60000);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -73,7 +73,7 @@ class MqttConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
         /**
          * Topic subscriptions
          */
@@ -83,6 +83,7 @@ class MqttConnection {
         this._connectTimeout = 30000;
         this._keepAliveTimeout = 60000;
         this._reconnectTimeout = 1000;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -102,7 +103,7 @@ class MqttConnection {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._logger.setReferences(references);
@@ -119,23 +120,23 @@ class MqttConnection {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection != null) {
                 return;
             }
-            let options = yield this._connectionResolver.resolve(context);
+            const options = yield this._connectionResolver.resolve(context);
             options.clientId = this._clientId;
             options.keepalive = this._keepAliveTimeout / 1000;
             options.connectTimeout = this._connectTimeout;
             options.reconnectPeriod = this._reconnectTimeout;
             options.resubscribe = this._retryConnect;
             yield new Promise((resolve, reject) => {
-                let client = mqtt.connect(options.uri, options);
+                const client = mqtt.connect(options.uri, options);
                 client.on('message', (topic, data, packet) => {
-                    for (let subscription of this._subscriptions) {
+                    for (const subscription of this._subscriptions) {
                         // Todo: Implement proper filtering by wildcards?
                         if (subscription.filter && topic != subscription.topic) {
                             continue;
@@ -150,7 +151,7 @@ class MqttConnection {
                 });
                 client.on('error', (err) => {
                     this._logger.error(context, err, "Failed to connect to MQTT broker at " + options.uri);
-                    err = new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
+                    err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
                     reject(err);
                 });
             });
@@ -159,7 +160,7 @@ class MqttConnection {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -191,6 +192,7 @@ class MqttConnection {
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be created.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createQueue(name) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -201,6 +203,7 @@ class MqttConnection {
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be deleted.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deleteQueue(name) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -212,7 +215,7 @@ class MqttConnection {
     checkOpen() {
         if (this.isOpen())
             return;
-        throw new pip_services3_commons_node_3.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
+        throw new pip_services4_commons_node_2.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
     }
     /**
      * Publish a message to a specified topic
@@ -256,9 +259,9 @@ class MqttConnection {
                 });
             });
             // Determine if messages shall be filtered (topic without wildcarts)
-            let filter = topic.indexOf("*") < 0;
+            const filter = topic.indexOf("*") < 0;
             // Add the subscription
-            let subscription = {
+            const subscription = {
                 topic: topic,
                 options: options,
                 filter: filter,

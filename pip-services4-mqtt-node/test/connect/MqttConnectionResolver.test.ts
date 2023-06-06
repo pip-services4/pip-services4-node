@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
 
+import { ConfigParams } from 'pip-services4-components-node';
 import { MqttConnectionResolver } from '../../src/connect/MqttConnectionResolver';
 
 suite('MqttConnectionResolver', ()=> {

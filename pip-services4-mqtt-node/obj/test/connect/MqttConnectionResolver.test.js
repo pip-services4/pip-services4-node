@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MqttConnectionResolver_1 = require("../../src/connect/MqttConnectionResolver");
 suite('MqttConnectionResolver', () => {
     test('Single Connection', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new MqttConnectionResolver_1.MqttConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "mqtt", "connection.host", "localhost", "connection.port", 1883));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "mqtt", "connection.host", "localhost", "connection.port", 1883));
         let connection = yield resolver.resolve(null);
         assert.equal("mqtt://localhost:1883", connection.uri);
         assert.isUndefined(connection.username);
@@ -67,7 +67,7 @@ suite('MqttConnectionResolver', () => {
     // });
     test('Cluster URI', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new MqttConnectionResolver_1.MqttConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connection.uri", "mqtt://server1:1883", "credential.username", "test", "credential.password", "pass123"));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.uri", "mqtt://server1:1883", "credential.username", "test", "credential.password", "pass123"));
         let connection = yield resolver.resolve(null);
         assert.isNotNull(connection.uri);
         assert.equal("test", connection.username);

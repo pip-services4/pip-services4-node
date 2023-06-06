@@ -11,15 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageQueueFixture = void 0;
 const assert = require('chai').assert;
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_2 = require("pip-services4-messaging-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_2 = require("pip-services4-messaging-node");
 class MessageQueueFixture {
     constructor(queue) {
+        this.cotntext = pip_services4_components_node_1.Context.fromTraceId("123");
         this._queue = queue;
     }
     testSendReceiveMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -30,7 +32,7 @@ class MessageQueueFixture {
     }
     testReceiveSendMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             setTimeout(() => {
                 this._queue.send(null, envelope1);
             }, 500);
@@ -43,7 +45,7 @@ class MessageQueueFixture {
     }
     testReceiveCompleteMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let count = yield this._queue.readMessageCount();
             assert.isTrue(count > 0);
@@ -58,7 +60,7 @@ class MessageQueueFixture {
     }
     testReceiveAbandonMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -75,7 +77,7 @@ class MessageQueueFixture {
     }
     testSendPeekMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             // Delay until the message is received
             yield new Promise((resolve, reject) => {
@@ -96,7 +98,7 @@ class MessageQueueFixture {
     }
     testMoveToDeadMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             let envelope2 = yield this._queue.receive(null, 10000);
             assert.isNotNull(envelope2);
@@ -108,10 +110,10 @@ class MessageQueueFixture {
     }
     testOnMessage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let messageReceiver = new pip_services3_messaging_node_2.TestMessageReceiver();
+            let messageReceiver = new pip_services4_messaging_node_2.TestMessageReceiver();
             this._queue.beginListen(null, messageReceiver);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
-            let envelope1 = new pip_services3_messaging_node_1.MessageEnvelope("123", "Test", "Test message");
+            let envelope1 = new pip_services4_messaging_node_1.MessageEnvelope(this.cotntext, "Test", "Test message");
             yield this._queue.send(null, envelope1);
             yield new Promise((resolve, reject) => setTimeout(resolve, 1000));
             let envelope2 = messageReceiver.messages[0];

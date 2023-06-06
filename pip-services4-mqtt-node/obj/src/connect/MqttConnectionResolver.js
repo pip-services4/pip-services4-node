@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MqttConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves MQTT connection and credential parameters,
  * validates them and generates connection options.
@@ -39,11 +39,11 @@ class MqttConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -57,7 +57,7 @@ class MqttConnectionResolver {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._connectionResolver.setReferences(references);
@@ -65,35 +65,35 @@ class MqttConnectionResolver {
     }
     validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "MQTT connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "MQTT connection is not set");
         }
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return null;
         }
-        let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
+        const protocol = connection.getAsStringWithDefault("protocol", "mqtt");
         if (protocol == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getAsIntegerWithDefault("port", 1883);
+        const port = connection.getAsIntegerWithDefault("port", 1883);
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
         return;
     }
     composeOptions(connection, credential) {
         // Define additional parameters parameters
-        let options = connection.override(credential);
+        const options = connection.override(credential);
         // Compose uri
         if (options.getAsString("uri") == null) {
-            let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
-            let host = connection.getHost();
-            let port = connection.getAsIntegerWithDefault("port", 1883);
-            let uri = protocol + "://" + host + ":" + port;
+            const protocol = connection.getAsStringWithDefault("protocol", "mqtt");
+            const host = connection.getHost();
+            const port = connection.getAsIntegerWithDefault("port", 1883);
+            const uri = protocol + "://" + host + ":" + port;
             options.setAsObject("uri", uri);
         }
         return options.getAsObject();
@@ -106,12 +106,12 @@ class MqttConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             // Validate connections
             this.validateConnection(context, connection);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let options = this.composeOptions(connection, credential);
+            const options = this.composeOptions(connection, credential);
             return options;
         });
     }
@@ -126,7 +126,7 @@ class MqttConnectionResolver {
     compose(context, connection, credential) {
         // Validate connections
         this.validateConnection(context, connection);
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 }

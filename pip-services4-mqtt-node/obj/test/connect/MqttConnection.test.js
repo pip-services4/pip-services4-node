@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const MqttConnection_1 = require("../../src/connect/MqttConnection");
 suite('MqttConnection', () => {
     let connection;
@@ -25,7 +25,7 @@ suite('MqttConnection', () => {
     let brokerPass = process.env['MQTT_PASS'];
     let brokerToken = process.env['MQTT_TOKEN'];
     setup(() => {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'mqtt', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.token', brokerToken);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'mqtt', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.token', brokerToken);
         connection = new MqttConnection_1.MqttConnection();
         connection.configure(config);
     });

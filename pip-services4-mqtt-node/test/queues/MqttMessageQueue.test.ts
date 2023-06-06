@@ -1,9 +1,8 @@
-const process = require('process');
-
-import { ConfigParams } from 'pip-services4-commons-node';
+import process = require('process');
 
 import { MessageQueueFixture } from './MessageQueueFixture';
 import { MqttMessageQueue } from '../../src/queues/MqttMessageQueue';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('MqttMessageQueue', ()=> {
     let queue: MqttMessageQueue;

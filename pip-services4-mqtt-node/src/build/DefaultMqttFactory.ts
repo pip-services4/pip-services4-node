@@ -1,6 +1,5 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 
 import { MqttMessageQueue } from '../queues/MqttMessageQueue';
 import { MqttConnection } from '../connect/MqttConnection';
@@ -13,19 +12,19 @@ import { MqttMessageQueueFactory } from './MqttMessageQueueFactory';
  */
 export class DefaultMqttFactory extends Factory {
     private static readonly MqttQueueDescriptor: Descriptor = new Descriptor("pip-services", "message-queue", "mqtt", "*", "1.0");
- 	private static readonly MqttConnectionDescriptor: Descriptor = new Descriptor("pip-services", "connection", "mqtt", "*", "1.0");
-	private static readonly MqttQueueFactoryDescriptor: Descriptor = new Descriptor("pip-services", "queue-factory", "mqtt", "*", "1.0");
+    private static readonly MqttConnectionDescriptor: Descriptor = new Descriptor("pip-services", "connection", "mqtt", "*", "1.0");
+    private static readonly MqttQueueFactoryDescriptor: Descriptor = new Descriptor("pip-services", "queue-factory", "mqtt", "*", "1.0");
 
-	/**
-	 * Create a new instance of the factory.
-	 */
-	public constructor() {
+    /**
+     * Create a new instance of the factory.
+     */
+    public constructor() {
         super();
         this.register(DefaultMqttFactory.MqttQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return new MqttMessageQueue(name);
         });
-		this.registerAsType(DefaultMqttFactory.MqttConnectionDescriptor, MqttConnection);
-		this.registerAsType(DefaultMqttFactory.MqttQueueFactoryDescriptor, MqttMessageQueueFactory);
-	}
+        this.registerAsType(DefaultMqttFactory.MqttConnectionDescriptor, MqttConnection);
+        this.registerAsType(DefaultMqttFactory.MqttQueueFactoryDescriptor, MqttMessageQueueFactory);
+    }
 }

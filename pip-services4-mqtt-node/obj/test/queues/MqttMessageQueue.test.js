@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const process = require("process");
 const MessageQueueFixture_1 = require("./MessageQueueFixture");
 const MqttMessageQueue_1 = require("../../src/queues/MqttMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('MqttMessageQueue', () => {
     let queue;
     let fixture;
@@ -22,7 +22,7 @@ suite('MqttMessageQueue', () => {
     if (brokerHost == '' && brokerPort == '') {
         return;
     }
-    let queueConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'mqtt', 'connection.host', brokerHost, 'connection.port', brokerPort, 'options.autosubscribe', true, 'options.serialize_envelope', true);
+    let queueConfig = pip_services4_components_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'mqtt', 'connection.host', brokerHost, 'connection.port', brokerPort, 'options.autosubscribe', true, 'options.serialize_envelope', true);
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         queue = new MqttMessageQueue_1.MqttMessageQueue();
         queue.configure(queueConfig);

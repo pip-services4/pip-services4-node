@@ -10,15 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MqttMessageQueue = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_2 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_3 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_2 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_3 = require("pip-services4-messaging-node");
 const MqttConnection_1 = require("../connect/MqttConnection");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Message queue that sends and receives messages via MQTT message broker.
  *
@@ -80,22 +78,22 @@ const MqttConnection_1 = require("../connect/MqttConnection");
  *         }
  *     });
  */
-class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
+class MqttMessageQueue extends pip_services4_messaging_node_1.MessageQueue {
     /**
      * Creates a new instance of the persistence component.
      *
      * @param name    (optional) a queue name.
      */
     constructor(name) {
-        super(name, new pip_services3_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
+        super(name, new pip_services4_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_4.DependencyResolver(MqttMessageQueue._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(MqttMessageQueue._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         this._messages = [];
     }
     /**
@@ -116,7 +114,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._references = references;
@@ -140,7 +138,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         this._connection = null;
     }
     createConnection() {
-        let connection = new MqttConnection_1.MqttConnection();
+        const connection = new MqttConnection_1.MqttConnection();
         if (this._config) {
             connection.configure(this._config);
         }
@@ -160,7 +158,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -175,7 +173,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "MQTT connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "MQTT connection is not opened");
             }
             // Subscribe right away
             if (this._autoSubscribe) {
@@ -187,7 +185,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -195,14 +193,14 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_3.InvalidStateException(context, 'NO_CONNECTION', 'MQTT connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MQTT connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
             }
             if (this._subscribed) {
                 // Unsubscribe from the topic
-                let topic = this.getTopic();
+                const topic = this.getTopic();
                 this._connection.unsubscribe(topic, this);
             }
             this._messages = [];
@@ -213,13 +211,14 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     getTopic() {
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     subscribe(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._subscribed) {
                 return;
             }
             // Subscribe right away
-            let topic = this.getTopic();
+            const topic = this.getTopic();
             yield this._connection.subscribe(topic, { qos: this._qos }, this);
         });
     }
@@ -229,7 +228,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         let data = message.message;
         if (this._serializeEnvelope) {
             message.sent_time = new Date();
-            let json = JSON.stringify(message);
+            const json = JSON.stringify(message);
             data = Buffer.from(json, 'utf-8');
         }
         return {
@@ -242,11 +241,11 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             return null;
         let message;
         if (this._serializeEnvelope) {
-            let json = Buffer.from(data).toString('utf-8');
-            message = pip_services3_messaging_node_3.MessageEnvelope.fromJSON(json);
+            const json = Buffer.from(data).toString('utf-8');
+            message = pip_services4_messaging_node_3.MessageEnvelope.fromJSON(json);
         }
         else {
-            message = new pip_services3_messaging_node_3.MessageEnvelope(null, topic, data);
+            message = new pip_services4_messaging_node_3.MessageEnvelope(null, topic, data);
             message.message_id = packet.messageId;
             // message.message_type = topic;
             // message.message = Buffer.from(data);
@@ -255,18 +254,18 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     }
     onMessage(topic, data, packet) {
         // Skip if it came from a wrong topic
-        let expectedTopic = this.getTopic();
+        const expectedTopic = this.getTopic();
         if (expectedTopic.indexOf("*") < 0 && expectedTopic != topic) {
             return;
         }
         // Deserialize message
-        let message = this.toMessage(topic, data, packet);
+        const message = this.toMessage(topic, data, packet);
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
             this.sendMessageToReceiver(this._receiver, message);
@@ -278,8 +277,9 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
@@ -313,7 +313,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -334,7 +334,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             // Subscribe to topic if needed
             yield this.subscribe(context);
             // Peek a batch of messages
-            let messages = this._messages.slice(0, messageCount);
+            const messages = this._messages.slice(0, messageCount);
             this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
@@ -358,15 +358,17 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 return message;
             }
             // Otherwise wait and return
-            let checkInterval = 100;
+            const checkInterval = 100;
             let elapsedTime = 0;
+            // eslint-disable-next-line no-constant-condition
             while (true) {
-                let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+                const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
                 if (!test)
                     break;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 message = yield new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        let message = this._messages.shift();
+                        const message = this._messages.shift();
                         resolve(message);
                     }, checkInterval);
                 });
@@ -385,9 +387,9 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkOpen(context);
             this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-            this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
-            let msg = this.fromMessage(message);
-            let options = { qos: this._qos, retain: this._retain };
+            this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Sent message %s via %s", message.toString(), this.toString());
+            const msg = this.fromMessage(message);
+            const options = { qos: this._qos, retain: this._retain };
             yield this._connection.publish(msg.topic, msg.data, options);
         });
     }
@@ -400,6 +402,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renewLock(message, lockTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -413,6 +416,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param message   a message to remove.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     complete(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -428,6 +432,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param message   a message to return.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     abandon(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -440,13 +445,14 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     moveToDeadLetter(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
         });
     }
     sendMessageToReceiver(receiver, message) {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? pip_services4_components_node_1.Context.fromTraceId(message.trace_id) : new pip_services4_components_node_1.Context();
         if (message == null || receiver == null) {
             this._logger.warn(context, "MQTT message was skipped.");
             return;
@@ -473,7 +479,7 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -490,10 +496,11 @@ class MqttMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         this._receiver = null;
     }
 }
 exports.MqttMessageQueue = MqttMessageQueue;
-MqttMessageQueue._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("topic", null, "options.serialize_envelope", false, "options.autosubscribe", false, "options.retry_connect", true, "options.connect_timeout", 30000, "options.reconnect_timeout", 1000, "options.keepalive_timeout", 60000, "options.qos", 0, "options.retain", false);
+MqttMessageQueue._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("topic", null, "options.serialize_envelope", false, "options.autosubscribe", false, "options.retry_connect", true, "options.connect_timeout", 30000, "options.reconnect_timeout", 1000, "options.keepalive_timeout", 60000, "options.qos", 0, "options.retain", false);
 //# sourceMappingURL=MqttMessageQueue.js.map

@@ -1,13 +1,8 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 
 /**
  * Helper class that resolves MQTT connection and credential parameters,
@@ -51,9 +46,9 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._connectionResolver.setReferences(references);
@@ -63,39 +58,39 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "MQTT connection is not set"
             );
         }
 
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return null;
         }
 
-        let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
+        const protocol = connection.getAsStringWithDefault("protocol", "mqtt");
         if (protocol == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getAsIntegerWithDefault("port", 1883);
+        const port = connection.getAsIntegerWithDefault("port", 1883);
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -106,14 +101,14 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
 
     private composeOptions(connection: ConnectionParams, credential: CredentialParams): any {
         // Define additional parameters parameters
-        let options = connection.override(credential);
+        const options = connection.override(credential);
 
         // Compose uri
         if (options.getAsString("uri") == null) {
-            let protocol = connection.getAsStringWithDefault("protocol", "mqtt");
-            let host = connection.getHost();
-            let port = connection.getAsIntegerWithDefault("port", 1883);
-            let uri = protocol + "://" + host + ":" + port;
+            const protocol = connection.getAsStringWithDefault("protocol", "mqtt");
+            const host = connection.getHost();
+            const port = connection.getAsIntegerWithDefault("port", 1883);
+            const uri = protocol + "://" + host + ":" + port;
             options.setAsObject("uri", uri);
         }
 
@@ -127,14 +122,14 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
      * @returns resolved MQTT connection options.
      */
     public async resolve(context: IContext): Promise<any> {
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
         // Validate connections
         this.validateConnection(context, connection);
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 
@@ -150,7 +145,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         // Validate connections
         this.validateConnection(context, connection);
 
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 }

@@ -1,15 +1,9 @@
 /** @module queues */
 /** @hidden */
-const mqtt = require('mqtt');
+import mqtt = require('mqtt');
 /** @hidden */
-const os = require('os');
+import os = require('os');
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageQueueConnection } from 'pip-services4-messaging-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { InvalidStateException } from 'pip-services4-commons-node';
@@ -17,6 +11,8 @@ import { InvalidStateException } from 'pip-services4-commons-node';
 import { MqttConnectionResolver } from '../connect/MqttConnectionResolver';
 import { IMqttMessageListener } from './IMqttMessageListener';
 import { MqttSubscription } from './MqttSubscription';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Connection to MQTT message broker.
@@ -88,15 +84,17 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     protected _subscriptions: MqttSubscription[] = [];
 
     protected _clientId: string = os.hostname();
-    protected _retryConnect: boolean = true;
-    protected _connectTimeout: number = 30000;
-    protected _keepAliveTimeout: number = 60000;
-    protected _reconnectTimeout: number = 1000;
+    protected _retryConnect = true;
+    protected _connectTimeout = 30000;
+    protected _keepAliveTimeout = 60000;
+    protected _reconnectTimeout = 1000;
 
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -116,9 +114,9 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._logger.setReferences(references);
@@ -126,25 +124,25 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._connection != null;
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
         if (this._connection != null) {
             return;
         }
 
-        let options = await this._connectionResolver.resolve(context);
+        const options = await this._connectionResolver.resolve(context);
 
         options.clientId = this._clientId;
         options.keepalive = this._keepAliveTimeout / 1000;
@@ -153,10 +151,10 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
         options.resubscribe = this._retryConnect;
 
         await new Promise<void>((resolve, reject) => {
-            let client = mqtt.connect(options.uri, options);
+            const client = mqtt.connect(options.uri, options);
 
             client.on('message', (topic, data, packet) => {
-                for (let subscription of this._subscriptions) {
+                for (const subscription of this._subscriptions) {
                     // Todo: Implement proper filtering by wildcards?
                     if (subscription.filter && topic != subscription.topic) {
                         continue;
@@ -175,16 +173,16 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
             
             client.on('error', (err) => {
                 this._logger.error(context, err, "Failed to connect to MQTT broker at "+options.uri);
-                err = new ConnectionException(context, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
+                err = new ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
                 reject(err);
             });
         });
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
@@ -216,6 +214,7 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be created.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async createQueue(name: string): Promise<void> {
         // Not supported
     }
@@ -225,6 +224,7 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
       * If connection doesn't support this function it exists without error.
       * @param name the name of the queue to be deleted.
       */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async deleteQueue(name: string): Promise<void> {
         // Not supported
     }
@@ -285,10 +285,10 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
         });
 
         // Determine if messages shall be filtered (topic without wildcarts)
-        let filter = topic.indexOf("*") < 0;
+        const filter = topic.indexOf("*") < 0;
 
         // Add the subscription
-        let subscription = <MqttSubscription>{
+        const subscription = <MqttSubscription>{
             topic: topic,
             options: options,
             filter: filter,

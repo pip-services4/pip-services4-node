@@ -1,21 +1,13 @@
 /** @module queues */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 
 import { MqttConnection } from '../connect/MqttConnection';
+import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, Context } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Message queue that sends and receives messages via MQTT message broker.
@@ -149,9 +141,9 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._references = references;
@@ -170,14 +162,14 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     /**
-	 * Unsets (clears) previously set references to dependent components. 
+     * Unsets (clears) previously set references to dependent components. 
      */
     public unsetReferences(): void {
         this._connection = null;
     }
 
     private createConnection(): MqttConnection {
-        let connection = new MqttConnection();
+        const connection = new MqttConnection();
         
         if (this._config) {
             connection.configure(this._config);
@@ -191,21 +183,21 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._opened;
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -220,7 +212,7 @@ export class MqttMessageQueue extends MessageQueue
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "MQTT connection is not opened"
             );
@@ -235,18 +227,18 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'MQTT connection is missing'
             );
@@ -258,7 +250,7 @@ export class MqttMessageQueue extends MessageQueue
 
         if (this._subscribed) {
             // Unsubscribe from the topic
-            let topic = this.getTopic();
+            const topic = this.getTopic();
             this._connection.unsubscribe(topic, this);
         }
 
@@ -271,13 +263,14 @@ export class MqttMessageQueue extends MessageQueue
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async subscribe(context: IContext): Promise<void> {
         if (this._subscribed) {
             return;
         }
 
         // Subscribe right away
-        let topic = this.getTopic();
+        const topic = this.getTopic();
 
         await this._connection.subscribe(topic, { qos: this._qos }, this);
     }
@@ -288,7 +281,7 @@ export class MqttMessageQueue extends MessageQueue
         let data = message.message;
         if (this._serializeEnvelope) {
             message.sent_time = new Date();
-            let json = JSON.stringify(message);
+            const json = JSON.stringify(message);
             data = Buffer.from(json, 'utf-8');
         }
 
@@ -303,7 +296,7 @@ export class MqttMessageQueue extends MessageQueue
 
         let message: MessageEnvelope;
         if (this._serializeEnvelope) {
-            let json = Buffer.from(data).toString('utf-8');
+            const json = Buffer.from(data).toString('utf-8');
             message = MessageEnvelope.fromJSON(json);
         } else {
             message = new MessageEnvelope(null, topic, data);
@@ -317,20 +310,20 @@ export class MqttMessageQueue extends MessageQueue
 
     public onMessage(topic: string, data: any, packet: any): void {
         // Skip if it came from a wrong topic
-        let expectedTopic = this.getTopic();
+        const expectedTopic = this.getTopic();
         if (expectedTopic.indexOf("*") < 0 && expectedTopic != topic) {
             return;
         }
 
         // Deserialize message
-        let message = this.toMessage(topic, data, packet);
+        const message = this.toMessage(topic, data, packet);
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
 
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
@@ -341,10 +334,11 @@ export class MqttMessageQueue extends MessageQueue
     }
 
     /**
-	 * Clears component state.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Clears component state.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
@@ -378,7 +372,7 @@ export class MqttMessageQueue extends MessageQueue
         }
         
         if (message != null) {
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
         }
 
         return message;
@@ -401,7 +395,7 @@ export class MqttMessageQueue extends MessageQueue
         await this.subscribe(context);
 
         // Peek a batch of messages
-        let messages = this._messages.slice(0, messageCount);
+        const messages = this._messages.slice(0, messageCount);
 
         this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
     
@@ -430,15 +424,17 @@ export class MqttMessageQueue extends MessageQueue
         }
 
         // Otherwise wait and return
-        let checkInterval = 100;
+        const checkInterval = 100;
         let elapsedTime = 0;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
-            let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+            const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
             if (!test) break;
             
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             message = await new Promise<MessageEnvelope>((resolve, reject) => {
                 setTimeout(() => {
-                    let message = this._messages.shift();
+                    const message = this._messages.shift();
                     resolve(message);
                 }, checkInterval);
             });
@@ -459,10 +455,10 @@ export class MqttMessageQueue extends MessageQueue
         this.checkOpen(context);
 
         this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-        this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Sent message %s via %s", message.toString(), this.toString());
 
-        let msg = this.fromMessage(message);
-        let options = { qos: this._qos, retain: this._retain };
+        const msg = this.fromMessage(message);
+        const options = { qos: this._qos, retain: this._retain };
         await this._connection.publish(msg.topic, msg.data, options);
     }
 
@@ -475,6 +471,7 @@ export class MqttMessageQueue extends MessageQueue
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async renewLock(message: MessageEnvelope, lockTimeout: number): Promise<void> {
         // Not supported
     }
@@ -487,6 +484,7 @@ export class MqttMessageQueue extends MessageQueue
      * 
      * @param message   a message to remove.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async complete(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
@@ -501,6 +499,7 @@ export class MqttMessageQueue extends MessageQueue
      * 
      * @param message   a message to return.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async abandon(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
@@ -512,12 +511,13 @@ export class MqttMessageQueue extends MessageQueue
      * 
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async moveToDeadLetter(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
 
     private sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): void {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? Context.fromTraceId(message.trace_id) : new Context();
         if (message == null || receiver == null) {
             this._logger.warn(context, "MQTT message was skipped.");
             return;
@@ -548,7 +548,7 @@ export class MqttMessageQueue extends MessageQueue
 
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -567,6 +567,7 @@ export class MqttMessageQueue extends MessageQueue
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._receiver = null;
     }   
