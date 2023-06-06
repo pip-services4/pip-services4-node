@@ -12,14 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KafkaConnection = void 0;
 /** @module connect */
 /** @hidden */
-const kafka = require('kafkajs');
+const kafka = require("kafkajs");
 /** @hidden */
-const os = require('os');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const os = require("os");
 const KafkaConnectionResolver_1 = require("./KafkaConnectionResolver");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Kafka connection using plain driver.
  *
@@ -60,14 +59,14 @@ class KafkaConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "client_id", null, "options.log_level", 1, "options.connect_timeout", 1000, "options.retry_timeout", 30000, "options.max_retries", 5, "options.request_timeout", 30000);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -75,7 +74,7 @@ class KafkaConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
         /**
          * Topic subscriptions
          */
@@ -89,6 +88,7 @@ class KafkaConnection {
         this._requestTimeout = 30000;
         this._numPartitions = 1;
         this._replicationFactor = 1;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -112,7 +112,7 @@ class KafkaConnection {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._logger.setReferences(references);
@@ -129,16 +129,16 @@ class KafkaConnection {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._connection != null) {
                 return;
             }
-            let config = yield this._connectionResolver.resolve(context);
+            const config = yield this._connectionResolver.resolve(context);
             try {
-                let options = {
+                const options = {
                     clientId: this._clientId,
                     retry: {
                         maxRetryType: this._requestTimeout,
@@ -148,12 +148,12 @@ class KafkaConnection {
                     connectionTimeout: this._connectTimeout,
                     logLevel: this._logLevel
                 };
-                let brokers = config.getAsString("brokers");
+                const brokers = config.getAsString("brokers");
                 options.brokers = brokers.split(",");
                 options.ssl = config.getAsBoolean("ssl");
-                let username = config.getAsString("username");
-                let password = config.getAsString("password");
-                let mechanism = config.getAsStringWithDefault("mechanism", "plain");
+                const username = config.getAsString("username");
+                const password = config.getAsString("password");
+                const mechanism = config.getAsStringWithDefault("mechanism", "plain");
                 if (username != null) {
                     options.sasl = {
                         mechanism: mechanism,
@@ -162,8 +162,8 @@ class KafkaConnection {
                     };
                 }
                 this._clientConfig = options;
-                let connection = new kafka.Kafka(options);
-                let producer = connection.producer();
+                const connection = new kafka.Kafka(options);
+                const producer = connection.producer();
                 yield producer.connect();
                 this._connection = connection;
                 this._producer = producer;
@@ -171,14 +171,14 @@ class KafkaConnection {
             }
             catch (ex) {
                 this._logger.error(context, ex, "Failed to connect to Kafka server");
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to Kafka service failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to Kafka service failed").withCause(ex);
             }
         });
     }
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -194,7 +194,7 @@ class KafkaConnection {
                 this._adminClient = null;
             }
             // Disconnect consumers
-            for (let subscription of this._subscriptions) {
+            for (const subscription of this._subscriptions) {
                 if (subscription.handler) {
                     subscription.handler.disconnect();
                 }
@@ -217,7 +217,7 @@ class KafkaConnection {
     checkOpen() {
         if (this.isOpen())
             return;
-        throw new pip_services3_commons_node_3.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
+        throw new pip_services4_commons_node_1.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
     }
     /**
      * Connect admin client on demand.
@@ -228,7 +228,7 @@ class KafkaConnection {
             if (this._adminClient != null) {
                 return;
             }
-            let adminClient = this._connection.admin();
+            const adminClient = this._connection.admin();
             yield adminClient.connect();
             this._adminClient = adminClient;
         });
@@ -305,7 +305,7 @@ class KafkaConnection {
             this.checkOpen();
             options = options || {};
             // Subscribe to topic
-            let consumer = this._connection.consumer({
+            const consumer = this._connection.consumer({
                 groupId: groupId || "default",
                 sessionTimeout: options.sessionTimeout,
                 heartbeatInterval: options.heartbeatInterval,
@@ -328,7 +328,7 @@ class KafkaConnection {
                     })
                 });
                 // Add the subscription
-                let subscription = {
+                const subscription = {
                     topic: topic,
                     groupId: groupId,
                     options: options,
@@ -347,12 +347,14 @@ class KafkaConnection {
                 // })
                 let isReady = true;
                 const restartConsumer = (event) => __awaiter(this, void 0, void 0, function* () {
+                    // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-unused-vars
                     new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                        // eslint-disable-next-line no-constant-condition
                         while (true) {
                             if (!isReady)
                                 continue;
                             isReady = false;
-                            let err = event != null && event.payload != null ? event.payload.error : new Error("Consummer disconnected");
+                            const err = event != null && event.payload != null ? event.payload.error : new Error("Consummer disconnected");
                             this._logger.error(null, err, "Consummer crashed, try restart");
                             try {
                                 // try reopen connection
@@ -404,12 +406,12 @@ class KafkaConnection {
     unsubscribe(topic, groupId, listener) {
         return __awaiter(this, void 0, void 0, function* () {
             // Find the subscription index
-            let index = this._subscriptions.findIndex((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+            const index = this._subscriptions.findIndex((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
             if (index < 0) {
                 return;
             }
             // Remove the subscription
-            let subscription = this._subscriptions.splice(index, 1)[0];
+            const subscription = this._subscriptions.splice(index, 1)[0];
             // Unsubscribe from the topic
             if (this.isOpen() && subscription.handler != null) {
                 yield subscription.handler.disconnect();
@@ -429,7 +431,7 @@ class KafkaConnection {
             // Check for open connection
             this.checkOpen();
             // Find the subscription index
-            let subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+            const subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
             if (subscription == null || subscription.options.autoCommit) {
                 return;
             }
@@ -452,7 +454,7 @@ class KafkaConnection {
             // Check for open connection
             this.checkOpen();
             // Find the subscription index
-            let subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+            const subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
             if (subscription == null || subscription.options.autoCommit) {
                 return;
             }

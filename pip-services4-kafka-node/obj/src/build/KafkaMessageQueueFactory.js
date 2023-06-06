@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KafkaMessageQueueFactory = void 0;
-/** @module build */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
 const KafkaMessageQueue_1 = require("../queues/KafkaMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Creates [[KafkaMessageQueue]] components by their descriptors.
  * Name of created message queue is taken from its descriptor.
@@ -12,14 +11,14 @@ const KafkaMessageQueue_1 = require("../queues/KafkaMessageQueue");
  * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/build.factory.html Factory]]
  * @see [[KafkaMessageQueue]]
  */
-class KafkaMessageQueueFactory extends pip_services3_messaging_node_1.MessageQueueFactory {
+class KafkaMessageQueueFactory extends pip_services4_messaging_node_1.MessageQueueFactory {
     /**
      * Create a new instance of the factory.
      */
     constructor() {
         super();
         this.register(KafkaMessageQueueFactory.KafkaQueueDescriptor, (locator) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null;
+            const name = (typeof locator.getName === "function") ? locator.getName() : null;
             return this.createQueue(name);
         });
     }
@@ -28,7 +27,7 @@ class KafkaMessageQueueFactory extends pip_services3_messaging_node_1.MessageQue
      * @param name a name of the created message queue.
      */
     createQueue(name) {
-        let queue = new KafkaMessageQueue_1.KafkaMessageQueue(name);
+        const queue = new KafkaMessageQueue_1.KafkaMessageQueue(name);
         if (this._config != null) {
             queue.configure(this._config);
         }
@@ -39,5 +38,5 @@ class KafkaMessageQueueFactory extends pip_services3_messaging_node_1.MessageQue
     }
 }
 exports.KafkaMessageQueueFactory = KafkaMessageQueueFactory;
-KafkaMessageQueueFactory.KafkaQueueDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "message-queue", "kafka", "*", "1.0");
+KafkaMessageQueueFactory.KafkaQueueDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "message-queue", "kafka", "*", "1.0");
 //# sourceMappingURL=KafkaMessageQueueFactory.js.map

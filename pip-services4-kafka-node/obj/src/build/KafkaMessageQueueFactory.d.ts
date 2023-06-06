@@ -1,3 +1,4 @@
+/** @module build */
 import { IMessageQueue } from 'pip-services4-messaging-node';
 import { MessageQueueFactory } from 'pip-services4-messaging-node';
 /**

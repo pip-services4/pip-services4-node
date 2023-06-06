@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const KafkaConnectionResolver_1 = require("../../src/connect/KafkaConnectionResolver");
 suite('KafkaConnectionResolver', () => {
     test('Single Connection', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new KafkaConnectionResolver_1.KafkaConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "tcp", "connection.host", "localhost", "connection.port", 9092));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "tcp", "connection.host", "localhost", "connection.port", 9092));
         let connection = yield resolver.resolve(null);
         assert.equal("localhost:9092", connection.getAsString("brokers"));
         assert.isNull(connection.getAsString("username"));
@@ -24,7 +24,7 @@ suite('KafkaConnectionResolver', () => {
     }));
     test('Cluster Connection', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new KafkaConnectionResolver_1.KafkaConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connections.0.protocol", "tcp", "connections.0.host", "server1", "connections.0.port", 9092, "connections.1.protocol", "tcp", "connections.1.host", "server2", "connections.1.port", 9092, "connections.2.protocol", "tcp", "connections.2.host", "server3", "connections.2.port", 9092));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connections.0.protocol", "tcp", "connections.0.host", "server1", "connections.0.port", 9092, "connections.1.protocol", "tcp", "connections.1.host", "server2", "connections.1.port", 9092, "connections.2.protocol", "tcp", "connections.2.host", "server3", "connections.2.port", 9092));
         let connection = yield resolver.resolve(null);
         assert.isNotNull(connection.getAsString("brokers"));
         assert.isNull(connection.getAsString("username"));
@@ -33,7 +33,7 @@ suite('KafkaConnectionResolver', () => {
     }));
     test('Cluster Connection with Auth', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new KafkaConnectionResolver_1.KafkaConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connections.0.protocol", "tcp", "connections.0.host", "server1", "connections.0.port", 9092, "connections.1.protocol", "tcp", "connections.1.host", "server2", "connections.1.port", 9092, "connections.2.protocol", "tcp", "connections.2.host", "server3", "connections.2.port", 9092, "credential.mechanism", "plain", "credential.username", "test", "credential.password", "pass123"));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connections.0.protocol", "tcp", "connections.0.host", "server1", "connections.0.port", 9092, "connections.1.protocol", "tcp", "connections.1.host", "server2", "connections.1.port", 9092, "connections.2.protocol", "tcp", "connections.2.host", "server3", "connections.2.port", 9092, "credential.mechanism", "plain", "credential.username", "test", "credential.password", "pass123"));
         let connection = yield resolver.resolve(null);
         assert.isNotNull(connection.getAsString("brokers"));
         assert.equal("test", connection.getAsString("username"));
@@ -42,7 +42,7 @@ suite('KafkaConnectionResolver', () => {
     }));
     test('Cluster URI', () => __awaiter(void 0, void 0, void 0, function* () {
         let resolver = new KafkaConnectionResolver_1.KafkaConnectionResolver();
-        resolver.configure(pip_services3_commons_node_1.ConfigParams.fromTuples("connection.uri", "tcp://test:pass123@server1:9092,server2:9092,server3:9092?param=234"));
+        resolver.configure(pip_services4_components_node_1.ConfigParams.fromTuples("connection.uri", "tcp://test:pass123@server1:9092,server2:9092,server3:9092?param=234"));
         let connection = yield resolver.resolve(null);
         assert.isNotNull(connection.getAsString("brokers"));
         assert.equal("test", connection.getAsString("username"));

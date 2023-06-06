@@ -10,17 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KafkaMessageQueue = void 0;
-/** @module queues */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_2 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_3 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_2 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_3 = require("pip-services4-messaging-node");
 const KafkaConnection_1 = require("../connect/KafkaConnection");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Message queue that sends and receives messages via Kafka message broker.
  *
@@ -86,22 +82,22 @@ const KafkaConnection_1 = require("../connect/KafkaConnection");
  *         }
  *     });
  */
-class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
+class KafkaMessageQueue extends pip_services4_messaging_node_1.MessageQueue {
     /**
      * Creates a new instance of the persistence component.
      *
      * @param name    (optional) a queue name.
      */
     constructor(name) {
-        super(name, new pip_services3_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, true, false, true));
+        super(name, new pip_services4_messaging_node_2.MessagingCapabilities(false, true, true, true, true, false, true, false, true));
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_5.DependencyResolver(KafkaMessageQueue._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(KafkaMessageQueue._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         this._autoCommit = true;
         this._messages = [];
     }
@@ -129,7 +125,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._references = references;
@@ -153,8 +149,8 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         this._connection = null;
     }
     createConnection() {
-        let connection = new KafkaConnection_1.KafkaConnection();
-        let reference = new pip_services3_commons_node_1.Reference(new pip_services3_commons_node_1.Descriptor("pip-services", "connection", "kafka", "*", "1.0"), connection);
+        const connection = new KafkaConnection_1.KafkaConnection();
+        const reference = new pip_services4_components_node_1.Reference(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "kafka", "*", "1.0"), connection);
         if (this._config) {
             connection.configure(this._config);
         }
@@ -163,7 +159,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             this._references.put(reference.getLocator(), reference.getComponent());
         }
         else {
-            this._references = pip_services3_commons_node_1.References.fromTuples(reference.getLocator(), reference.getComponent());
+            this._references = pip_services4_components_node_1.References.fromTuples(reference.getLocator(), reference.getComponent());
         }
         return connection;
     }
@@ -178,7 +174,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -193,10 +189,10 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_3.ConnectionException(context, "CONNECT_FAILED", "Kafka connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Kafka connection is not opened");
             }
             // create topic if it does not exist
-            let topics = yield this._connection.readQueueNames();
+            const topics = yield this._connection.readQueueNames();
             if (topics.indexOf(this.getTopic()) == -1)
                 yield this._connection.createQueue(this.getTopic());
             // Subscribe right away
@@ -209,7 +205,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -217,14 +213,14 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_4.InvalidStateException(context, 'NO_CONNECTION', 'Kafka connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Kafka connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
             }
             // Unsubscribe from the topic
             if (this._subscribed) {
-                let topic = this.getTopic();
+                const topic = this.getTopic();
                 this._connection.unsubscribe(topic, this._groupId, this);
             }
             this._subscribed = false;
@@ -236,14 +232,15 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     getTopic() {
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     subscribe(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._subscribed) {
                 return;
             }
             // Subscribe to the topic
-            let topic = this.getTopic();
-            let options = {
+            const topic = this.getTopic();
+            const options = {
                 fromBeginning: this._fromBeginning,
                 autoCommit: this._autoCommit
             };
@@ -254,14 +251,14 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     fromMessage(message) {
         if (message == null)
             return null;
-        let headers = {};
+        const headers = {};
         if (message.message_type != null) {
             headers.message_type = Buffer.from(message.message_type);
         }
         if (message.trace_id != null) {
             headers.trace_id = Buffer.from(message.trace_id);
         }
-        let msg = {
+        const msg = {
             key: Buffer.from(message.message_id),
             value: message.message,
             headers: headers,
@@ -272,9 +269,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     toMessage(msg) {
         if (msg == null)
             return null;
-        let messageType = this.getHeaderByKey(msg.headers, "message_type");
-        let context = this.getHeaderByKey(msg.headers, "trace_id");
-        let message = new pip_services3_messaging_node_3.MessageEnvelope(context, messageType, null);
+        const messageType = this.getHeaderByKey(msg.headers, "message_type");
+        const context = this.getHeaderByKey(msg.headers, "trace_id");
+        const message = new pip_services4_messaging_node_3.MessageEnvelope(pip_services4_components_node_1.Context.fromTraceId(context), messageType, null);
         message.message_id = msg.key.toString();
         message.sent_time = new Date(msg.timestamp);
         message.message = msg.value;
@@ -284,7 +281,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     getHeaderByKey(headers, key) {
         if (headers == null)
             return null;
-        let value = headers[key];
+        const value = headers[key];
         if (value != null) {
             return value.toString();
         }
@@ -299,13 +296,13 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             // }
             if (this._readablePartitions == null || this._readablePartitions.length == 0 || this._readablePartitions.includes(partition)) {
                 // Deserialize message
-                let message = this.toMessage(msg);
+                const message = this.toMessage(msg);
                 if (message == null) {
                     this._logger.error(null, null, "Failed to read received message");
                     return;
                 }
                 this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-                this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+                this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
                 // Send message to receiver if its set or put it into the queue
                 if (this._receiver != null) {
                     this.sendMessageToReceiver(this._receiver, message);
@@ -319,8 +316,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
     /**
      * Clears component state.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
@@ -354,7 +352,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -375,7 +373,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             // Subscribe to topic if needed
             yield this.subscribe(context);
             // Peek a batch of messages
-            let messages = this._messages.slice(0, messageCount);
+            const messages = this._messages.slice(0, messageCount);
             this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
@@ -399,15 +397,17 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
                 return message;
             }
             // Otherwise wait and return
-            let checkInterval = 100;
+            const checkInterval = 100;
             let elapsedTime = 0;
+            // eslint-disable-next-line no-constant-condition
             while (true) {
-                let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+                const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
                 if (!test)
                     break;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 message = yield new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        let message = this._messages.shift();
+                        const message = this._messages.shift();
                         resolve(message);
                     }, checkInterval);
                 });
@@ -426,9 +426,9 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkOpen(context);
             this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-            this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
-            let msg = this.fromMessage(message);
-            let topic = this.getName() || this._topic;
+            this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Sent message %s via %s", message.toString(), this.toString());
+            const msg = this.fromMessage(message);
+            const topic = this.getName() || this._topic;
             msg.partition = this._writePartition;
             yield this._connection.publish(topic, [msg]);
         });
@@ -442,6 +442,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renewLock(message, lockTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -460,13 +461,13 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             // Check open status
             this.checkOpen(null);
             // Incomplete message shall have a reference
-            let msg = message.getReference();
+            const msg = message.getReference();
             // Skip on autocommit
             if (this._autoCommit || msg == null || msg.partition == null || msg.offset == null) {
                 return null;
             }
             // Commit the message offset so it won't come back
-            let topic = this.getTopic();
+            const topic = this.getTopic();
             yield this._connection.commit(topic, this._groupId, msg.partition, msg.offset, this);
         });
     }
@@ -485,13 +486,13 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             // Check open status
             this.checkOpen(null);
             // Incomplete message shall have a reference
-            let msg = message.getReference();
+            const msg = message.getReference();
             // Skip on autocommit
             if (this._autoCommit || msg == null || msg.partition == null || msg.offset == null) {
                 return null;
             }
             // Seek to the message offset so it will come back
-            let topic = this.getTopic();
+            const topic = this.getTopic();
             yield this._connection.seek(topic, this._groupId, msg.partition, msg.offset, this);
         });
     }
@@ -502,20 +503,21 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     moveToDeadLetter(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
         });
     }
     sendMessageToReceiver(receiver, message) {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(context, "Kafka message was skipped.");
+            this._logger.warn(pip_services4_components_node_1.Context.fromTraceId(context), "Kafka message was skipped.");
             return;
         }
         this._receiver.receiveMessage(message, this)
             .catch((err) => {
-            this._logger.error(context, err, "Failed to process the message");
+            this._logger.error(pip_services4_components_node_1.Context.fromTraceId(context), err, "Failed to process the message");
         });
     }
     /**
@@ -535,7 +537,7 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -552,10 +554,11 @@ class KafkaMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         this._receiver = null;
     }
 }
 exports.KafkaMessageQueue = KafkaMessageQueue;
-KafkaMessageQueue._defaultConfig = pip_services3_commons_node_2.ConfigParams.fromTuples("topic", null, "group_id", "default", "from_beginning", false, "read_partitions", 1, "autocommit", true, "options.autosubscribe", false, "options.acks", -1, "options.log_level", 1, "options.connect_timeout", 1000, "options.retry_timeout", 30000, "options.max_retries", 5, "options.request_timeout", 30000, "options.listen_connection", false);
+KafkaMessageQueue._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("topic", null, "group_id", "default", "from_beginning", false, "read_partitions", 1, "autocommit", true, "options.autosubscribe", false, "options.acks", -1, "options.log_level", 1, "options.connect_timeout", 1000, "options.retry_timeout", 30000, "options.max_retries", 5, "options.request_timeout", 30000, "options.listen_connection", false);
 //# sourceMappingURL=KafkaMessageQueue.js.map

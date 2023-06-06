@@ -1,21 +1,13 @@
 /** @module queues */
-import { Descriptor, IReferenceable, Reference, References } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 
 import { KafkaConnection } from '../connect/KafkaConnection';
+import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, Reference, Descriptor, References, IContext, Context } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Message queue that sends and receives messages via Kafka message broker.
@@ -123,7 +115,7 @@ export class KafkaMessageQueue extends MessageQueue
     protected _topic: string;
     protected _groupId: string;
     protected _fromBeginning: boolean;
-    protected _autoCommit: boolean = true;
+    protected _autoCommit = true;
     protected _autoSubscribe: boolean;
     protected _subscribed: boolean;
     protected _messages: MessageEnvelope[] = [];
@@ -170,9 +162,9 @@ export class KafkaMessageQueue extends MessageQueue
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._references = references;
@@ -191,15 +183,15 @@ export class KafkaMessageQueue extends MessageQueue
     }
 
     /**
-	 * Unsets (clears) previously set references to dependent components. 
+     * Unsets (clears) previously set references to dependent components. 
      */
     public unsetReferences(): void {
         this._connection = null;
     }
 
     private createConnection(): KafkaConnection {
-        let connection = new KafkaConnection();
-        let reference = new Reference(new Descriptor("pip-services", "connection", "kafka", "*", "1.0"), connection);
+        const connection = new KafkaConnection();
+        const reference = new Reference(new Descriptor("pip-services", "connection", "kafka", "*", "1.0"), connection);
 
         if (this._config) {
             connection.configure(this._config);
@@ -216,21 +208,21 @@ export class KafkaMessageQueue extends MessageQueue
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._opened;
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -245,14 +237,14 @@ export class KafkaMessageQueue extends MessageQueue
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Kafka connection is not opened"
             );
         }
 
         // create topic if it does not exist
-        let topics = await this._connection.readQueueNames();
+        const topics = await this._connection.readQueueNames();
         if (topics.indexOf(this.getTopic()) ==  -1 )
             await this._connection.createQueue(this.getTopic());
 
@@ -265,18 +257,18 @@ export class KafkaMessageQueue extends MessageQueue
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Kafka connection is missing'
             );
@@ -288,7 +280,7 @@ export class KafkaMessageQueue extends MessageQueue
         
         // Unsubscribe from the topic
         if (this._subscribed) {
-            let topic = this.getTopic();
+            const topic = this.getTopic();
             this._connection.unsubscribe(topic, this._groupId, this);
         }
 
@@ -302,14 +294,15 @@ export class KafkaMessageQueue extends MessageQueue
         return this._topic != null && this._topic != "" ? this._topic : this.getName();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async subscribe(context: IContext): Promise<void> {
         if (this._subscribed) {
             return;
         }
 
         // Subscribe to the topic
-        let topic = this.getTopic();
-        let options = {
+        const topic = this.getTopic();
+        const options = {
             fromBeginning: this._fromBeginning,
             autoCommit: this._autoCommit
         };
@@ -322,7 +315,7 @@ export class KafkaMessageQueue extends MessageQueue
     protected fromMessage(message: MessageEnvelope): any {
         if (message == null) return null;
 
-        let headers: any = {};
+        const headers: any = {};
         if (message.message_type != null) {
             headers.message_type = Buffer.from(message.message_type);
         }
@@ -330,7 +323,7 @@ export class KafkaMessageQueue extends MessageQueue
             headers.trace_id = Buffer.from(message.trace_id);
         }
 
-        let msg = {
+        const msg = {
             key: Buffer.from(message.message_id),
             value: message.message,
             headers: headers,
@@ -343,10 +336,10 @@ export class KafkaMessageQueue extends MessageQueue
     protected toMessage(msg: any): MessageEnvelope {
         if (msg == null) return null;
 
-        let messageType = this.getHeaderByKey(msg.headers, "message_type");
-        let context = this.getHeaderByKey(msg.headers, "trace_id");
+        const messageType = this.getHeaderByKey(msg.headers, "message_type");
+        const context = this.getHeaderByKey(msg.headers, "trace_id");
 
-        let message = new MessageEnvelope(context, messageType, null);
+        const message = new MessageEnvelope(Context.fromTraceId(context), messageType, null);
         message.message_id = msg.key.toString();
         message.sent_time = new Date(msg.timestamp);
         message.message = msg.value;
@@ -358,7 +351,7 @@ export class KafkaMessageQueue extends MessageQueue
     private getHeaderByKey(headers: any, key: string): string {
         if (headers == null) return null;
 
-        let value = headers[key];
+        const value = headers[key];
         if (value != null) {
             return value.toString();
         }
@@ -374,14 +367,14 @@ export class KafkaMessageQueue extends MessageQueue
 
         if (this._readablePartitions == null || this._readablePartitions.length == 0 || this._readablePartitions.includes(partition)) {
             // Deserialize message
-            let message = this.toMessage(msg);
+            const message = this.toMessage(msg);
             if (message == null) {
                 this._logger.error(null, null, "Failed to read received message");
                 return;
             }
 
             this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-            this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+            this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
 
             // Send message to receiver if its set or put it into the queue
             if (this._receiver != null) {
@@ -393,10 +386,11 @@ export class KafkaMessageQueue extends MessageQueue
     }
 
     /**
-	 * Clears component state.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Clears component state.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
@@ -430,7 +424,7 @@ export class KafkaMessageQueue extends MessageQueue
         }
 
         if (message != null) {
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
         }
     
         return message;
@@ -453,7 +447,7 @@ export class KafkaMessageQueue extends MessageQueue
         await this.subscribe(context);
 
         // Peek a batch of messages
-        let messages = this._messages.slice(0, messageCount);
+        const messages = this._messages.slice(0, messageCount);
 
         this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
     
@@ -482,15 +476,17 @@ export class KafkaMessageQueue extends MessageQueue
         }
 
         // Otherwise wait and return
-        let checkInterval = 100;
+        const checkInterval = 100;
         let elapsedTime = 0;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
-            let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+            const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
             if (!test) break;
             
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             message = await new Promise<MessageEnvelope>((resolve, reject) => {
                 setTimeout(() => {
-                    let message = this._messages.shift();
+                    const message = this._messages.shift();
                     resolve(message);
                 }, checkInterval);
             });
@@ -511,10 +507,10 @@ export class KafkaMessageQueue extends MessageQueue
         this.checkOpen(context);
 
         this._counters.incrementOne("queue." + this.getName() + ".sent_messages");
-        this._logger.debug(message.trace_id, "Sent message %s via %s", message.toString(), this.toString());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Sent message %s via %s", message.toString(), this.toString());
 
-        let msg = this.fromMessage(message);
-        let topic = this.getName() || this._topic;
+        const msg = this.fromMessage(message);
+        const topic = this.getName() || this._topic;
 
         msg.partition = this._writePartition;
         await this._connection.publish(topic, [msg]);
@@ -529,6 +525,7 @@ export class KafkaMessageQueue extends MessageQueue
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public async renewLock(message: MessageEnvelope, lockTimeout: number): Promise<void> {
         // Not supported
     }
@@ -546,7 +543,7 @@ export class KafkaMessageQueue extends MessageQueue
         this.checkOpen(null);
 
         // Incomplete message shall have a reference
-        let msg = message.getReference();
+        const msg = message.getReference();
 
         // Skip on autocommit
         if (this._autoCommit || msg == null || msg.partition == null || msg.offset == null) {
@@ -554,7 +551,7 @@ export class KafkaMessageQueue extends MessageQueue
         }
 
         // Commit the message offset so it won't come back
-        let topic = this.getTopic();
+        const topic = this.getTopic();
         await this._connection.commit(topic, this._groupId, msg.partition, msg.offset, this);
     }
 
@@ -573,7 +570,7 @@ export class KafkaMessageQueue extends MessageQueue
         this.checkOpen(null);
 
         // Incomplete message shall have a reference
-        let msg = message.getReference();
+        const msg = message.getReference();
 
         // Skip on autocommit
         if (this._autoCommit || msg == null || msg.partition == null || msg.offset == null) {
@@ -581,7 +578,7 @@ export class KafkaMessageQueue extends MessageQueue
         }
 
         // Seek to the message offset so it will come back
-        let topic = this.getTopic();
+        const topic = this.getTopic();
         await this._connection.seek(topic, this._groupId, msg.partition, msg.offset, this);
     }
 
@@ -592,20 +589,21 @@ export class KafkaMessageQueue extends MessageQueue
      * 
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async moveToDeadLetter(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
 
     private sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): void {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? message.trace_id : null;
         if (message == null || receiver == null) {
-            this._logger.warn(context, "Kafka message was skipped.");
+            this._logger.warn(Context.fromTraceId(context), "Kafka message was skipped.");
             return;
         }
 
         this._receiver.receiveMessage(message, this)
         .catch((err) => {
-            this._logger.error(context, err, "Failed to process the message");
+            this._logger.error(Context.fromTraceId(context), err, "Failed to process the message");
         });
     }
 
@@ -628,7 +626,7 @@ export class KafkaMessageQueue extends MessageQueue
 
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -647,6 +645,7 @@ export class KafkaMessageQueue extends MessageQueue
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._receiver = null;
     }   

@@ -1,13 +1,9 @@
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageQueueConnection } from 'pip-services4-messaging-node';
 import { KafkaConnectionResolver } from './KafkaConnectionResolver';
 import { IKafkaMessageListener } from './IKafkaMessageListener';
 import { KafkaSubscription } from './KafkaSubscription';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 /**
  * Kafka connection using plain driver.
  *
@@ -99,7 +95,7 @@ export declare class KafkaConnection implements IMessageQueueConnection, IRefere
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references: IReferences): void;
     /**
@@ -111,13 +107,13 @@ export declare class KafkaConnection implements IMessageQueueConnection, IRefere
     /**
      * Opens the component.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     open(context: IContext): Promise<void>;
     /**
      * Closes component and frees used resources.
      *
-     * @param context 	(optional) execution context to trace execution through call chain.
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     close(context: IContext): Promise<void>;
     getConnection(): any;

@@ -1,13 +1,8 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver } from "pip-services4-config-node";
 
 /**
  * Helper class that resolves Kafka connection and credential parameters,
@@ -51,9 +46,9 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._connectionResolver.setReferences(references);
@@ -63,44 +58,44 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "Kafka connection is not set"
             );
         }
 
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) return;
 
-        let protocol = connection.getAsStringWithDefault("protocol", "tcp");
+        const protocol = connection.getAsStringWithDefault("protocol", "tcp");
         if (protocol == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
         }
         if (protocol != "tcp") {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "UNSUPPORTED_PROTOCOL",
                 "The protocol "+protocol+" is not supported"
             );
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getAsIntegerWithDefault("port", 9092);
+        const port = connection.getAsIntegerWithDefault("port", 9092);
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -111,7 +106,7 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
         if (value == null) return null;
 
         let brokers = "";
-        let uris = value.split(",");
+        const uris = value.split(",");
         for (let uri of uris) {
             uri = uri.trim();
             
@@ -123,17 +118,17 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
 
             pos = uri.indexOf("@");
 
-            let server = pos > 0 ? uri.substring(pos + 1) : uri;
+            const server = pos > 0 ? uri.substring(pos + 1) : uri;
             if (brokers != "") {
                 brokers += ",";
             }
             brokers += server;
 
             if (pos > 0) {
-                let namePass = uri.substring(0, pos);
+                const namePass = uri.substring(0, pos);
                 pos = namePass.indexOf(":");
-                let name = pos > 0 ? namePass.substring(0, pos) : namePass;
-                let pass = pos > 0 ? namePass.substring(pos + 1) : "";
+                const name = pos > 0 ? namePass.substring(0, pos) : namePass;
+                const pass = pos > 0 ? namePass.substring(pos + 1) : "";
                 options.setAsObject("username", name);
                 options.setAsObject("password", pass);
             }
@@ -156,12 +151,12 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
         let brokers = "";
 
         // Process connections, find or constract uri
-        for (let connection of connections) {
+        for (const connection of connections) {
             if (globalUri != "") {
                 continue;
             }
 
-            let uri = connection.getUri()
+            const uri = connection.getUri()
             if (uri != null) {
                 globalUri = uri;
                 continue;
@@ -171,10 +166,10 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
                 brokers += ",";
             }
 
-            let host = connection.getHost();
+            const host = connection.getHost();
             brokers += host;
 
-            let port = connection.getAsIntegerWithDefault("port", 9092);
+            const port = connection.getAsIntegerWithDefault("port", 9092);
             brokers += ":" + port;
         }
 
@@ -195,16 +190,16 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
      * @returns resolved Kafka connection options.
      */
     public async resolve(context: IContext): Promise<any> {
-        let connections = await this._connectionResolver.resolveAll(context);
+        const connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let options = this.composeOptions(connections, credential);
+        const options = this.composeOptions(connections, credential);
         return options;
     }
 
@@ -218,11 +213,11 @@ export class KafkaConnectionResolver implements IReferenceable, IConfigurable {
      */
     public async compose(context: IContext, connections: ConnectionParams[], credential: CredentialParams): Promise<any> {
         // Validate connections
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
 
-        let options = this.composeOptions(connections, credential);
+        const options = this.composeOptions(connections, credential);
         return options;
     }
 }

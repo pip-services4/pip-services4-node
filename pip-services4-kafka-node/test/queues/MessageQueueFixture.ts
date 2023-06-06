@@ -1,18 +1,20 @@
 const assert = require('chai').assert;
 
+import { Context } from 'pip-services4-components-node';
 import { IMessageQueue } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { TestMessageReceiver } from 'pip-services4-messaging-node';
 
 export class MessageQueueFixture {
     private _queue: IMessageQueue;
+    private context = Context.fromTraceId("123")
 
     public constructor(queue: IMessageQueue) {
         this._queue = queue;
     }
 
     public async testSendReceiveMessage(): Promise<void> {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -23,7 +25,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveSendMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
 
         setTimeout(() => {
             this._queue.send(null, envelope1);
@@ -37,7 +39,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveCompleteMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
 
         await this._queue.send(null, envelope1);
 
@@ -55,7 +57,7 @@ export class MessageQueueFixture {
     }
 
     public async testReceiveAbandonMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -74,7 +76,7 @@ export class MessageQueueFixture {
     }
 
     public async testSendPeekMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         // Delay until the message is received
@@ -95,7 +97,7 @@ export class MessageQueueFixture {
     }
 
     public async testMoveToDeadMessage() {
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         let envelope2 = await this._queue.receive(null, 10000);
@@ -113,7 +115,7 @@ export class MessageQueueFixture {
 
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));
 
-        let envelope1: MessageEnvelope = new MessageEnvelope("123", "Test", "Test message");
+        let envelope1: MessageEnvelope = new MessageEnvelope(this.context, "Test", "Test message");
         await this._queue.send(null, envelope1);
 
         await new Promise<void>((resolve, reject) => setTimeout(resolve, 1000));

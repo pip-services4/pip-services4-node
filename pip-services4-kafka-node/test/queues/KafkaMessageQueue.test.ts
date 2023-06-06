@@ -1,9 +1,8 @@
 let process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
 import { MessageQueueFixture } from './MessageQueueFixture';
 import { KafkaMessageQueue } from '../../src/queues/KafkaMessageQueue';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('KafkaMessageQueue', () => {
     let queue: KafkaMessageQueue;

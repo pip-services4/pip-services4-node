@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,11 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KafkaConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_components_node_3 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves Kafka connection and credential parameters,
  * validates them and generates connection options.
@@ -41,11 +40,11 @@ class KafkaConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -59,7 +58,7 @@ class KafkaConnectionResolver {
     /**
      * Sets references to dependent components.
      *
-     * @param references 	references to locate the component dependencies.
+     * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
         this._connectionResolver.setReferences(references);
@@ -67,32 +66,32 @@ class KafkaConnectionResolver {
     }
     validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_CONNECTION", "Kafka connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Kafka connection is not set");
         }
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null)
             return;
-        let protocol = connection.getAsStringWithDefault("protocol", "tcp");
+        const protocol = connection.getAsStringWithDefault("protocol", "tcp");
         if (protocol == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         if (protocol != "tcp") {
-            throw new pip_services3_commons_node_2.ConfigException(context, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getAsIntegerWithDefault("port", 9092);
+        const port = connection.getAsIntegerWithDefault("port", 9092);
         if (port == 0) {
-            throw new pip_services3_commons_node_2.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
     }
     parseUri(value, options) {
         if (value == null)
             return null;
         let brokers = "";
-        let uris = value.split(",");
+        const uris = value.split(",");
         for (let uri of uris) {
             uri = uri.trim();
             let pos = uri.indexOf("?");
@@ -100,16 +99,16 @@ class KafkaConnectionResolver {
             pos = uri.indexOf("://");
             uri = pos >= 0 ? uri.substring(pos + 3) : uri;
             pos = uri.indexOf("@");
-            let server = pos > 0 ? uri.substring(pos + 1) : uri;
+            const server = pos > 0 ? uri.substring(pos + 1) : uri;
             if (brokers != "") {
                 brokers += ",";
             }
             brokers += server;
             if (pos > 0) {
-                let namePass = uri.substring(0, pos);
+                const namePass = uri.substring(0, pos);
                 pos = namePass.indexOf(":");
-                let name = pos > 0 ? namePass.substring(0, pos) : namePass;
-                let pass = pos > 0 ? namePass.substring(pos + 1) : "";
+                const name = pos > 0 ? namePass.substring(0, pos) : namePass;
+                const pass = pos > 0 ? namePass.substring(pos + 1) : "";
                 options.setAsObject("username", name);
                 options.setAsObject("password", pass);
             }
@@ -119,19 +118,19 @@ class KafkaConnectionResolver {
     composeOptions(connections, credential) {
         // Define additional parameters parameters
         if (credential == null) {
-            credential = new pip_services3_components_node_3.CredentialParams();
+            credential = new pip_services4_config_node_1.CredentialParams();
         }
         // Contruct options and copy over credentials
-        let options = new pip_services3_commons_node_1.ConfigParams();
+        let options = new pip_services4_components_node_1.ConfigParams();
         options = options.setDefaults(credential);
         let globalUri = "";
         let brokers = "";
         // Process connections, find or constract uri
-        for (let connection of connections) {
+        for (const connection of connections) {
             if (globalUri != "") {
                 continue;
             }
-            let uri = connection.getUri();
+            const uri = connection.getUri();
             if (uri != null) {
                 globalUri = uri;
                 continue;
@@ -139,9 +138,9 @@ class KafkaConnectionResolver {
             if (brokers != "") {
                 brokers += ",";
             }
-            let host = connection.getHost();
+            const host = connection.getHost();
             brokers += host;
-            let port = connection.getAsIntegerWithDefault("port", 9092);
+            const port = connection.getAsIntegerWithDefault("port", 9092);
             brokers += ":" + port;
         }
         // Set connection uri
@@ -161,14 +160,14 @@ class KafkaConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
-            for (let connection of connections) {
+            for (const connection of connections) {
                 this.validateConnection(context, connection);
             }
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let options = this.composeOptions(connections, credential);
+            const options = this.composeOptions(connections, credential);
             return options;
         });
     }
@@ -183,10 +182,10 @@ class KafkaConnectionResolver {
     compose(context, connections, credential) {
         return __awaiter(this, void 0, void 0, function* () {
             // Validate connections
-            for (let connection of connections) {
+            for (const connection of connections) {
                 this.validateConnection(context, connection);
             }
-            let options = this.composeOptions(connections, credential);
+            const options = this.composeOptions(connections, credential);
             return options;
         });
     }

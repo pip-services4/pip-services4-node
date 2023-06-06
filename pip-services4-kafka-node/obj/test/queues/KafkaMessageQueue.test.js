@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MessageQueueFixture_1 = require("./MessageQueueFixture");
 const KafkaMessageQueue_1 = require("../../src/queues/KafkaMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('KafkaMessageQueue', () => {
     let queue;
     let fixture;
@@ -24,7 +24,7 @@ suite('KafkaMessageQueue', () => {
     let brokerTopic = process.env['KAFKA_TOPIC'] || 'test';
     let brokerUser = process.env['KAFKA_USER']; // || 'kafka';
     let brokerPass = process.env['KAFKA_PASS']; // || 'pass123';
-    let queueConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('queue', brokerTopic, 'connection.protocol', 'tcp', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.mechanism', 'plain', 'options.autosubscribe', true, 'options.num_partitions', 2, 'options.read_partitions', '1', 'options.write_partition', '1', "options.listen_connection", true);
+    let queueConfig = pip_services4_components_node_1.ConfigParams.fromTuples('queue', brokerTopic, 'connection.protocol', 'tcp', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.mechanism', 'plain', 'options.autosubscribe', true, 'options.num_partitions', 2, 'options.read_partitions', '1', 'options.write_partition', '1', "options.listen_connection", true);
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         queue = new KafkaMessageQueue_1.KafkaMessageQueue(brokerTopic);
         queue.configure(queueConfig);

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
 const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const KafkaConnection_1 = require("../../src/connect/KafkaConnection");
 suite('KafkaConnection', () => {
     let connection;
@@ -24,7 +24,7 @@ suite('KafkaConnection', () => {
     let brokerUser = process.env['KAFKA_USER']; // || 'kafka';
     let brokerPass = process.env['KAFKA_PASS']; // || 'pass123';
     setup(() => {
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'tcp', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.mechanism', 'plain', 'options.num_partitions', 2, 'options.read_partitions', '1', 'options.write_partition', '1');
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('topic', brokerTopic, 'connection.protocol', 'tcp', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.mechanism', 'plain', 'options.num_partitions', 2, 'options.read_partitions', '1', 'options.write_partition', '1');
         connection = new KafkaConnection_1.KafkaConnection();
         connection.configure(config);
     });

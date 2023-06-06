@@ -1,22 +1,18 @@
 /** @module connect */
 /** @hidden */
-const kafka = require('kafkajs');
+import kafka = require('kafkajs');
 /** @hidden */
-const os = require('os');
+import os = require('os');
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+
 import { IMessageQueueConnection } from 'pip-services4-messaging-node';
 
 import { KafkaConnectionResolver } from './KafkaConnectionResolver';
 import { IKafkaMessageListener } from './IKafkaMessageListener';
 import { KafkaSubscription } from './KafkaSubscription';
+import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Kafka connection using plain driver.
@@ -103,19 +99,21 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     protected _subscriptions: KafkaSubscription[] = [];
 
     protected _clientId: string = os.hostname();
-    protected _logLevel: number = 1;
-    protected _acks: number = -1;
-    protected _connectTimeout: number = 1000;
-    protected _maxRetries: number = 5;
-    protected _retryTimeout: number = 30000;
-    protected _requestTimeout: number = 30000;
-    protected _numPartitions: number = 1
-    protected _replicationFactor: number = 1    
+    protected _logLevel = 1;
+    protected _acks = -1;
+    protected _connectTimeout = 1000;
+    protected _maxRetries = 5;
+    protected _retryTimeout = 30000;
+    protected _requestTimeout = 30000;
+    protected _numPartitions = 1
+    protected _replicationFactor = 1    
 
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -141,9 +139,9 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     }
 
     /**
-	 * Sets references to dependent components.
-	 * 
-	 * @param references 	references to locate the component dependencies. 
+     * Sets references to dependent components.
+     * 
+     * @param references     references to locate the component dependencies. 
      */
     public setReferences(references: IReferences): void {
         this._logger.setReferences(references);
@@ -151,27 +149,27 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     }
 
     /**
-	 * Checks if the component is opened.
-	 * 
-	 * @returns true if the component has been opened and false otherwise.
+     * Checks if the component is opened.
+     * 
+     * @returns true if the component has been opened and false otherwise.
      */
     public isOpen(): boolean {
         return this._connection != null;
     }
 
     /**
-	 * Opens the component.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Opens the component.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
         if (this._connection != null) {
             return;
         }
 
-        let config = await this._connectionResolver.resolve(context);
+        const config = await this._connectionResolver.resolve(context);
         try {                
-            let options: any = {
+            const options: any = {
                 clientId: this._clientId,
                 retry: {
                     maxRetryType: this._requestTimeout,
@@ -182,14 +180,14 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
                 logLevel: this._logLevel
             };
 
-            let brokers = config.getAsString("brokers");
+            const brokers = config.getAsString("brokers");
             options.brokers = brokers.split(",");
 
             options.ssl = config.getAsBoolean("ssl");
 
-            let username = config.getAsString("username");
-            let password = config.getAsString("password");
-            let mechanism = config.getAsStringWithDefault("mechanism", "plain");
+            const username = config.getAsString("username");
+            const password = config.getAsString("password");
+            const mechanism = config.getAsStringWithDefault("mechanism", "plain");
             if (username != null) {
                 options.sasl = {
                     mechanism: mechanism,
@@ -200,8 +198,8 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
 
             this._clientConfig = options;
 
-            let connection = new kafka.Kafka(options);
-            let producer = connection.producer();
+            const connection = new kafka.Kafka(options);
+            const producer = connection.producer();
             await producer.connect();
             this._connection = connection;
             this._producer = producer;
@@ -210,7 +208,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         } catch (ex) {
             this._logger.error(context, ex, "Failed to connect to Kafka server");
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to Kafka service failed"
             ).withCause(ex);
@@ -218,9 +216,9 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
     }
 
     /**
-	 * Closes component and frees used resources.
-	 * 
-	 * @param context 	(optional) execution context to trace execution through call chain.
+     * Closes component and frees used resources.
+     * 
+     * @param context     (optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
         if (this._connection == null) {
@@ -238,7 +236,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         }
 
         // Disconnect consumers
-        for (let subscription of this._subscriptions) {
+        for (const subscription of this._subscriptions) {
             if (subscription.handler) {
                 subscription.handler.disconnect();
             }
@@ -281,7 +279,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
             return;
         }
 
-        let adminClient = this._connection.admin();
+        const adminClient = this._connection.admin();
         await adminClient.connect();
         this._adminClient = adminClient;
     }
@@ -358,7 +356,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         options = options || {};
 
         // Subscribe to topic
-        let consumer = this._connection.consumer({
+        const consumer = this._connection.consumer({
             groupId: groupId || "default",
             sessionTimeout: options.sessionTimeout,
             heartbeatInterval: options.heartbeatInterval,
@@ -385,7 +383,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
             });
 
             // Add the subscription
-            let subscription = <KafkaSubscription>{
+            const subscription = <KafkaSubscription>{
                 topic: topic,
                 groupId: groupId,
                 options: options,
@@ -408,12 +406,14 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
 
             let isReady = true;
             const restartConsumer = async (event) => {
+                // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-unused-vars
                 new Promise(async resolve => {
+                    // eslint-disable-next-line no-constant-condition
                     while (true) {
                         if (!isReady) continue;
                         isReady = false;
 
-                        let err = event != null && event.payload != null ? event.payload.error : new Error("Consummer disconnected");
+                        const err = event != null && event.payload != null ? event.payload.error : new Error("Consummer disconnected");
                         this._logger.error(null, err, "Consummer crashed, try restart");
 
                         try {
@@ -465,13 +465,13 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
      */
     public async unsubscribe(topic: string, groupId: string, listener: IKafkaMessageListener): Promise<void> {
         // Find the subscription index
-        let index = this._subscriptions.findIndex((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+        const index = this._subscriptions.findIndex((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
         if (index < 0) {
             return;
         }
         
         // Remove the subscription
-        let subscription = this._subscriptions.splice(index, 1)[0];
+        const subscription = this._subscriptions.splice(index, 1)[0];
 
         // Unsubscribe from the topic
         if (this.isOpen() && subscription.handler != null) {
@@ -492,7 +492,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         this.checkOpen();
 
         // Find the subscription index
-        let subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+        const subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
         if (subscription == null || subscription.options.autoCommit) {
             return;
         }
@@ -516,7 +516,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         this.checkOpen();
 
         // Find the subscription index
-        let subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
+        const subscription = this._subscriptions.find((s) => s.topic == topic && s.groupId == groupId && s.listener == listener);
         if (subscription == null || subscription.options.autoCommit) {
             return;
         }
