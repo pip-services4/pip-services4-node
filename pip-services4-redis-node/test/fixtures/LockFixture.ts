@@ -1,6 +1,6 @@
-const assert = require('chai').assert;
+import { ILock } from "pip-services4-logic-node";
 
-import { ILock } from 'pip-services4-components-node';
+const assert = require('chai').assert;
 
 let LOCK1: string = "lock_1";
 let LOCK2: string = "lock_2";

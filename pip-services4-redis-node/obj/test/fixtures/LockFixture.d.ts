@@ -1,4 +1,4 @@
-import { ILock } from 'pip-services4-components-node';
+import { ILock } from "pip-services4-logic-node";
 export declare class LockFixture {
     private _lock;
     constructor(lock: ILock);

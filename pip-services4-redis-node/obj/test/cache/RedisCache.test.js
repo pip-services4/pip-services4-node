@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const RedisCache_1 = require("../../src/cache/RedisCache");
 const CacheFixture_1 = require("../fixtures/CacheFixture");
 suite('RedisCache', () => {
@@ -20,7 +20,7 @@ suite('RedisCache', () => {
         let host = process.env['REDIS_SERVICE_HOST'] || 'localhost';
         let port = process.env['REDIS_SERVICE_PORT'] || 6379;
         _cache = new RedisCache_1.RedisCache();
-        let config = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.host', host, 'connection.port', port);
+        let config = pip_services4_components_node_1.ConfigParams.fromTuples('connection.host', host, 'connection.port', port);
         _cache.configure(config);
         _fixture = new CacheFixture_1.CacheFixture(_cache);
         yield _cache.open(null);

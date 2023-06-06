@@ -1,4 +1,5 @@
 "use strict";
+/** @module cache */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedisCache = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Distributed cache that stores values in Redis in-memory database.
  *
@@ -56,11 +55,12 @@ class RedisCache {
      * Creates a new instance of this cache.
      */
     constructor() {
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         this._timeout = 30000;
         this._retries = 3;
         this._client = null;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -97,12 +97,12 @@ class RedisCache {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services3_commons_node_2.ConfigException(context, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
             }
-            let credential = yield this._credentialResolver.lookup(context);
-            let options = {
+            const credential = yield this._credentialResolver.lookup(context);
+            const options = {
                 // connect_timeout: this._timeout,
                 // max_attempts: this._retries,
                 retry_strategy: (options) => { return this.retryStrategy(options); }
@@ -117,7 +117,8 @@ class RedisCache {
             if (credential != null) {
                 options.password = credential.getPassword();
             }
-            let redis = require('redis');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const redis = require('redis');
             this._client = redis.createClient(options);
         });
     }
@@ -126,6 +127,7 @@ class RedisCache {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     close(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._client == null)
@@ -144,7 +146,7 @@ class RedisCache {
     }
     checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services3_commons_node_1.InvalidStateException(context, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     retryStrategy(options) {

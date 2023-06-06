@@ -1,7 +1,6 @@
 let process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { RedisCache } from '../../src/cache/RedisCache';
 import { CacheFixture } from '../fixtures/CacheFixture';
 

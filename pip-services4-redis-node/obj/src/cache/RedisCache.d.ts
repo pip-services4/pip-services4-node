@@ -1,10 +1,6 @@
 /** @module cache */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICache } from 'pip-services4-components-node';
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ICache } from "pip-services4-logic-node";
 /**
  * Distributed cache that stores values in Redis in-memory database.
  *

@@ -1,14 +1,9 @@
 /** @module cache */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ICache } from 'pip-services4-components-node';
+
+import { ConfigException, InvalidStateException } from "pip-services4-commons-node";
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ConnectionResolver, CredentialResolver } from "pip-services4-config-node";
+import { ICache } from "pip-services4-logic-node";
 
 /**
  * Distributed cache that stores values in Redis in-memory database.
@@ -51,15 +46,17 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     private _connectionResolver: ConnectionResolver = new ConnectionResolver();
     private _credentialResolver: CredentialResolver = new CredentialResolver();
 
-    private _timeout: number = 30000;
-    private _retries: number = 3;
+    private _timeout = 30000;
+    private _retries = 3;
 
     private _client: any = null;
 
     /**
      * Creates a new instance of this cache.
      */
-    public constructor() { }
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -99,18 +96,18 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
         }
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
 
-        let options: any = {
+        const options: any = {
             // connect_timeout: this._timeout,
             // max_attempts: this._retries,
             retry_strategy: (options) => { return this.retryStrategy(options); }
@@ -127,7 +124,8 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
             options.password = credential.getPassword();
         }
 
-        let redis = require('redis');
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const redis = require('redis');
         this._client = redis.createClient(options);
     }
 
@@ -136,6 +134,7 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * 
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async close(context: IContext): Promise<void> {
         if (this._client == null) return;
 
@@ -155,7 +154,7 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
     private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NOT_OPENED',
                 'Connection is not opened'
             );

@@ -1,10 +1,6 @@
 /** @module lock */
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { Lock } from 'pip-services4-components-node';
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { Lock } from "pip-services4-logic-node";
 /**
  * Distributed lock that is implemented based on Redis in-memory database.
  *

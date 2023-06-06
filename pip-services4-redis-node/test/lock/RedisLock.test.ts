@@ -1,5 +1,5 @@
-import { ConfigParams } from 'pip-services4-commons-node';
 
+import { ConfigParams } from 'pip-services4-components-node';
 import { RedisLock } from '../../src/lock/RedisLock';
 import { LockFixture } from '../fixtures/LockFixture';
 
