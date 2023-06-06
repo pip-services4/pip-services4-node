@@ -1,13 +1,8 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver } from "pip-services4-config-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
 
 /**
  * Helper class that resolves SQLite connection and credential parameters,
@@ -58,11 +53,11 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
     }
     
     private validateConnection(context: IContext, connection: ConnectionParams): void {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             if (!uri.startsWith("file://")) {
                 throw new ConfigException(
-                    context,
+                    context != null ? context.getTraceId() : null,
                     "WRONG_PROTOCOL",
                     "Connection protocol must be file://"
                 );
@@ -88,10 +83,10 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
         //     );
         // }
 
-        let database = connection.getAsNullableString("database");
+        const database = connection.getAsNullableString("database");
         if (database == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_DATABASE",
                 "Connection database is not set"
             );
@@ -103,23 +98,24 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "Database connection is not set"
             );
         }
 
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private composeConfig(connections: ConnectionParams[], credential: CredentialParams): any {
-        let config: any = {};
+        const config: any = {};
 
         // Define connection part
-        for (let connection of connections) {
-            let uri = connection.getUri();
+        for (const connection of connections) {
+            const uri = connection.getUri();
             if (uri) {
                 // Removing file://
                 config.database = uri.substring(7);
@@ -131,7 +127,7 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
             // let port = connection.getPort();
             // if (port) config.port = port;
 
-            let database = connection.getAsNullableString("database");
+            const database = connection.getAsNullableString("database");
             if (database) config.database = database;
         }
 
@@ -154,14 +150,14 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
      * @returns 			    a resolved config.
      */
     public async resolve(context: IContext): Promise<any> {
-        let connections = await this._connectionResolver.resolveAll(context);
+        const connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
         this.validateConnections(context, connections);
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let config = this.composeConfig(connections, credential);
+        const config = this.composeConfig(connections, credential);
         return config;
     }
 }

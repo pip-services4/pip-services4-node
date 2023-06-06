@@ -9,14 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
 const SqliteConnection_1 = require("../../src/connect/SqliteConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummySqlitePersistence_1 = require("./DummySqlitePersistence");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('DummySqliteConnection', () => {
     let connection;
     let persistence;
@@ -26,11 +24,11 @@ suite('DummySqliteConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
         connection = new SqliteConnection_1.SqliteConnection();
         connection.configure(dbConfig);
         persistence = new DummySqlitePersistence_1.DummySqlitePersistence();
-        persistence.setReferences(pip_services3_commons_node_3.References.fromTuples(new pip_services3_commons_node_2.Descriptor("pip-services", "connection", "sqlite", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "sqlite", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

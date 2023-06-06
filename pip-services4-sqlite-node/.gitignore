@@ -6,4 +6,5 @@
 /config/config.yaml
 /data/*.db
 package-lock.json
-.npmrc
+docker/.npmrc
+docker/*id_rsa

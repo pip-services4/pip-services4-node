@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
+import { PagingParams } from 'pip-services4-data-node';
 import { Dummy } from './Dummy';
 import { IDummyPersistence } from './IDummyPersistence';
 

@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const SqliteConnectionResolver_1 = require("../../src/connect/SqliteConnectionResolver");
 suite('SqliteConnectionResolver', () => {
     test('Connection Config with Params', () => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.database', './data/test.db');
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.database', './data/test.db');
         let resolver = new SqliteConnectionResolver_1.SqliteConnectionResolver();
         resolver.configure(dbConfig);
         let config = yield resolver.resolve(null);
@@ -22,7 +22,7 @@ suite('SqliteConnectionResolver', () => {
         assert.equal('./data/test.db', config.database);
     }));
     test('Connection Config with URI', () => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', 'file://./data/test.db');
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', 'file://./data/test.db');
         let resolver = new SqliteConnectionResolver_1.SqliteConnectionResolver();
         resolver.configure(dbConfig);
         let config = yield resolver.resolve(null);

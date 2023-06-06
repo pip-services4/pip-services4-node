@@ -1,13 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { SqliteConnectionResolver } from './SqliteConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * SQLite connection using plain driver.
@@ -61,7 +57,9 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -101,15 +99,16 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let config = await this._connectionResolver.resolve(context);
+        const config = await this._connectionResolver.resolve(context);
 
         this._logger.debug(context, "Connecting to sqlite");
 
         try {
-            let sqlite = require('sqlite3');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const sqlite = require('sqlite3');
 
-            let db = await new Promise<any>((resolve, reject) => {
-                let db = new sqlite.Database(config.database, /*sqlite.OPEN_CREATE,*/ (err) => {
+            const db = await new Promise<any>((resolve, reject) => {
+                const db = new sqlite.Database(config.database, /*sqlite.OPEN_CREATE,*/ (err) => {
                     if (err != null) {
                         reject(err);
                         return;
@@ -122,7 +121,7 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
             this._databaseName = config.database;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to sqlite failed"
             ).withCause(ex);
@@ -156,7 +155,7 @@ export class SqliteConnection implements IReferenceable, IConfigurable, IOpenabl
             this._databaseName = null;
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from sqlite failed: '
             ).withCause(ex);

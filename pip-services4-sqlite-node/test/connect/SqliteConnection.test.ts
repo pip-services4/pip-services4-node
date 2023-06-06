@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
-const process = require('process');
+import process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
 import { SqliteConnection } from '../../src/connect/SqliteConnection';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('SqliteConnection', ()=> {
     let connection: SqliteConnection;

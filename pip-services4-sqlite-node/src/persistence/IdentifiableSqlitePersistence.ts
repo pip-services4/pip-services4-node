@@ -1,13 +1,14 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
+import { IdGenerator } from 'pip-services4-data-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { SqlitePersistence } from './SqlitePersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in SQLite
@@ -82,7 +83,7 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
     /**
      * Flag to turn on automated string ID generation
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -115,8 +116,8 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
      * @returns                 a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let params = this.generateParameters(ids);
-        let query = "SELECT * FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "SELECT * FROM " + this.quotedTableName()
             + " WHERE id IN(" + params + ")";
 
         let items = await new Promise<any[]>((resolve, reject) => {
@@ -143,8 +144,8 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
      * @returns                 the requested data item or <code>null</code>.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
-        let params = [ id ];
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+        const params = [ id ];
 
         let item = await new Promise<any>((resolve, reject) => {
             this._client.get(query, params, (err, result) => {
@@ -208,11 +209,11 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
             item.id = <any>IdGenerator.nextLong();
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let setParams = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const setParams = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(...values);
 
         let query = "INSERT INTO " + this.quotedTableName()
@@ -221,6 +222,7 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
 
         return await new Promise((resolve, reject) => {
             this._client.serialize(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -229,14 +231,14 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
 
                     this._logger.trace(context, "Set in %s with id = %s", this.quotedTableName(), item.id);
                     
-                    let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+                    const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                     this._client.get(query, [item.id], (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
 
-                        let newItem = result ? this.convertToPublic(result) : null;
+                        const newItem = result ? this.convertToPublic(result) : null;
                         resolve(newItem);
                     });
                 });
@@ -256,16 +258,17 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
             return null;
         }
 
-        let row = this.convertFromPublic(item);
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " WHERE id=?";
 
         return await new Promise((resolve, reject) => {
             this._client.serialize(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -274,14 +277,14 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
 
                     this._logger.trace(context, "Updated in %s with id = %s", this._tableName, item.id);
 
-                    let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+                    const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                     this._client.get(query, [item.id], (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
 
-                        let newItem = result ? this.convertToPublic(result) : null;
+                        const newItem = result ? this.convertToPublic(result) : null;
                         resolve(newItem);
                     });
                 });    
@@ -302,16 +305,17 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
             return null;
         }
 
-        let row = this.convertFromPublicPartial(data.getAsObject());
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublicPartial(data.getAsObject());
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " WHERE id=?";
 
         return await new Promise((resolve, reject) => {
             this._client.serialize(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -320,14 +324,14 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
 
                     this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
 
-                    let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+                    const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                     this._client.get(query, [id], (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
             
-                        let newItem = result ? this.convertToPublic(result) : null;
+                        const newItem = result ? this.convertToPublic(result) : null;
                         resolve(newItem);
                     });
                 });    
@@ -343,7 +347,7 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
      * @returns                 the deleted item.
      */
     public deleteById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?"
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?"
 
         return new Promise((resolve, reject) => {
             this._client.serialize(() => {
@@ -353,7 +357,7 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
                         return;
                     }
         
-                    let newItem = result != null ? this.convertToPublic(result) : null;
+                    const newItem = result != null ? this.convertToPublic(result) : null;
 
                     // Skip if there is nothing to delete
                     if (newItem == null) {
@@ -361,7 +365,8 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
                         return;
                     }
         
-                    let query = "DELETE FROM " + this.quotedTableName() + " WHERE id=?";
+                    const query = "DELETE FROM " + this.quotedTableName() + " WHERE id=?";
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     this._client.run(query, [ id ], (err, result) => {
                         if (err != null) {
                             reject(err);
@@ -384,17 +389,18 @@ export class IdentifiableSqlitePersistence<T extends IIdentifiable<K>, K> extend
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let params = this.generateParameters(ids);
-        let query = "DELETE FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "DELETE FROM " + this.quotedTableName()
             + " WHERE id IN(" + params + ")";
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.run(query, ids, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = 0; //result ? result.affectedRows : 0;
+                const count = 0; //result ? result.affectedRows : 0;
                 resolve(count);
             });
         });

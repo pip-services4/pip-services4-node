@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const process = require("process");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummySqlitePersistence_1 = require("./DummySqlitePersistence");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('DummySqlitePersistence', () => {
     let persistence;
     let fixture;
@@ -21,7 +21,7 @@ suite('DummySqlitePersistence', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
         persistence = new DummySqlitePersistence_1.DummySqlitePersistence();
         persistence.configure(dbConfig);
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);

@@ -1,12 +1,13 @@
-import { FilterParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
+import { FilterParams } from 'pip-services4-data-node'
+import { PagingParams } from 'pip-services4-data-node'
+import { DataPage } from 'pip-services4-data-node'
 import { AnyValueMap } from 'pip-services4-commons-node';
 
 import { IGetter } from 'pip-services4-persistence-node';
 import { IWriter } from 'pip-services4-persistence-node';
 import { IPartialUpdater } from 'pip-services4-persistence-node';
 import { Dummy } from './Dummy';
+import { IContext } from 'pip-services4-components-node';
 
 export interface IDummyPersistence extends IGetter<Dummy, String>, IWriter<Dummy, String>, IPartialUpdater<Dummy, String> {
     getPageByFilter(context: IContext, filter: FilterParams, paging: PagingParams): Promise<DataPage<Dummy>>;

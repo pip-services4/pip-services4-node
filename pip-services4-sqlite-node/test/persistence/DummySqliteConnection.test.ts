@@ -1,12 +1,10 @@
-const process = require('process');
+import process = require('process');
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
 import { SqliteConnection } from '../../src/connect/SqliteConnection';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummySqlitePersistence } from './DummySqlitePersistence';
+import { ConfigParams, References, Descriptor } from 'pip-services4-components-node';
 
 suite('DummySqliteConnection', ()=> {
     let connection: SqliteConnection;

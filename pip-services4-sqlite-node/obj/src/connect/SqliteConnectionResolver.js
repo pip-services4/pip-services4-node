@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqliteConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves SQLite connection and credential parameters,
  * validates them and generates a connection URI.
@@ -36,11 +36,11 @@ class SqliteConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -61,10 +61,10 @@ class SqliteConnectionResolver {
         this._credentialResolver.setReferences(references);
     }
     validateConnection(context, connection) {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             if (!uri.startsWith("file://")) {
-                throw new pip_services3_commons_node_1.ConfigException(context, "WRONG_PROTOCOL", "Connection protocol must be file://");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Connection protocol must be file://");
             }
             return;
         }
@@ -84,25 +84,26 @@ class SqliteConnectionResolver {
         //         "Connection port is not set"
         //     );
         // }
-        let database = connection.getAsNullableString("database");
+        const database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_DATABASE", "Connection database is not set");
         }
         return null;
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     composeConfig(connections, credential) {
-        let config = {};
+        const config = {};
         // Define connection part
-        for (let connection of connections) {
-            let uri = connection.getUri();
+        for (const connection of connections) {
+            const uri = connection.getUri();
             if (uri) {
                 // Removing file://
                 config.database = uri.substring(7);
@@ -111,7 +112,7 @@ class SqliteConnectionResolver {
             // if (host) config.host = host;
             // let port = connection.getPort();
             // if (port) config.port = port;
-            let database = connection.getAsNullableString("database");
+            const database = connection.getAsNullableString("database");
             if (database)
                 config.database = database;
         }
@@ -132,12 +133,12 @@ class SqliteConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
             this.validateConnections(context, connections);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let config = this.composeConfig(connections, credential);
+            const config = this.composeConfig(connections, credential);
             return config;
         });
     }

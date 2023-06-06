@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
+import { ConfigParams } from 'pip-services4-components-node';
 import { SqliteConnectionResolver } from '../../src/connect/SqliteConnectionResolver';
 
 suite('SqliteConnectionResolver', ()=> {

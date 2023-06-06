@@ -1,19 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { LongConverter } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { InvalidStateException, ConnectionException, LongConverter } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
+import { DataPage, PagingParams } from 'pip-services4-data-node';
 import { SqliteConnection } from '../connect/SqliteConnection';
 
 /**
@@ -153,7 +143,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
     /**
      * The maximum number of objects in data pages
      */
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence component.
@@ -212,7 +202,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
     }
 
     private createConnection(): SqliteConnection {
-        let connection = new SqliteConnection();
+        const connection = new SqliteConnection();
         
         if (this._config)
             connection.configure(this._config);
@@ -248,10 +238,10 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
         }
 
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "") fields += ", ";
             fields += this.quoteIdentifier(key);
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc) fields += " DESC";
         }
 
@@ -337,7 +327,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -352,7 +342,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'SQLite connection is missing'
             );
@@ -360,7 +350,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "SQLite connection is not opened"
             );
@@ -383,7 +373,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             this._client == null;
 
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to sqlite failed"
             ).withCause(ex);    
@@ -396,13 +386,13 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'Sqlite connection is missing'
             );
@@ -421,15 +411,17 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         // Return error if collection is not set
         if (this._tableName == null) {
             throw new Error('Table name is not defined');
         }
 
-        let query = "DELETE FROM " + this.quotedTableName();
+        const query = "DELETE FROM " + this.quotedTableName();
 
         await new Promise<void>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.exec(query, (err, result) => {
                 if (err) {
                     reject(err);
@@ -447,8 +439,8 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
         }
     
         // Check if table exist to determine weither to auto create objects
-        let query = "SELECT * FROM " + this.quotedTableName() + " LIMIT 1";
-        let exists = await new Promise<boolean>((resolve, reject) => {
+        const query = "SELECT * FROM " + this.quotedTableName() + " LIMIT 1";
+        const exists = await new Promise<boolean>((resolve, reject) => {
             this._client.get(query, (err) => {
                 if (err != null) {
                     if (err.message == null || err.message.indexOf("no such table") > -1) {
@@ -470,7 +462,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
         this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
 
         // Run all DML commands
-        for (let dml of this._schemaStatements) {
+        for (const dml of this._schemaStatements) {
             await new Promise<void>((resolve, reject) => {
                 this._client.exec(dml, (err) => {
                     if (err != null) {
@@ -492,7 +484,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(value);
         }
@@ -508,12 +500,13 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
     protected generateParameters(values: any): string {
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
-        let index = 1;
+        //let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "") result += ",";
             result += "?"; // + index;
-            index++;
+            //index++;
         }
 
         return result;
@@ -526,11 +519,11 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
      */
     protected generateSetParameters(values: any): string {
         let result = "";
-        let index = 1;
-        for (let column in values) {
+        //let index = 1;
+        for (const column in values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(column) + "=?"; // + index;
-            index++;
+            //index++;
         }
 
         return result;
@@ -566,9 +559,9 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         if (filter != null) {
             query += " WHERE " + filter;
@@ -604,14 +597,14 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
                 query += " WHERE " + filter;
             }
 
-            let count = await new Promise<number>((resolve, reject) => {
+            const count = await new Promise<number>((resolve, reject) => {
                 this._client.get(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
                         
-                    let count = result ? LongConverter.toLong(result.count) : 0;
+                    const count = result ? LongConverter.toLong(result.count) : 0;
                     resolve(count);
                 });
             });
@@ -638,14 +631,14 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.get(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
 
-                let count = result ? LongConverter.toLong(result.count) : 0;
+                const count = result ? LongConverter.toLong(result.count) : 0;
                 resolve(count);
             });
         });
@@ -715,13 +708,13 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.get(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result ? result.count : 0;
+                const count = result ? result.count : 0;
                 resolve(count);
             });
         });
@@ -731,7 +724,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             query += " WHERE " + filter;
         }
     
-        let pos = Math.trunc(Math.random() * count);
+        const pos = Math.trunc(Math.random() * count);
         query += " LIMIT 1 OFFSET " + pos;
     
         let item = await new Promise<any>((resolve, reject) => {
@@ -766,16 +759,17 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             return null;
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const values = this.generateValues(row);
 
-        let query = "INSERT INTO " + this.quotedTableName()
+        const query = "INSERT INTO " + this.quotedTableName()
             + " (" + columns + ") VALUES (" + params + ")";
         //query += "; SELECT * FROM " + this.quotedTableName();
 
         let newItem = await new Promise<any>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.run(query, values, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -808,13 +802,14 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.run(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = 0; //result ? result.affectedRows : 0;
+                const count = 0; //result ? result.affectedRows : 0;
                 resolve(count);
             });
         });

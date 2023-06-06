@@ -1,8 +1,8 @@
-const process = require('process');
+import process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
 import { DummyPersistenceFixture } from '../fixtures/DummyPersistenceFixture';
 import { DummyJsonSqlitePersistence } from './DummyJsonSqlitePersistence';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('DummyJsonSqlitePersistence', ()=> {
     let persistence: DummyJsonSqlitePersistence;

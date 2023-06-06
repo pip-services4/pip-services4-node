@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const process = require("process");
 const SqliteConnection_1 = require("../../src/connect/SqliteConnection");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('SqliteConnection', () => {
     let connection;
     let sqliteDatabase = process.env['SQLITE_DB'] || './data/test.db';
@@ -20,7 +20,7 @@ suite('SqliteConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.database', sqliteDatabase);
         connection = new SqliteConnection_1.SqliteConnection();
         connection.configure(dbConfig);
         yield connection.open(null);

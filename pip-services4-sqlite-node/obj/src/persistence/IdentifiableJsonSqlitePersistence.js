@@ -97,7 +97,7 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
      * @param dataType type of the data column (default: JSON)
      */
     ensureTable(idType = 'VARCHAR(32)', dataType = 'JSON') {
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (id " + idType + " PRIMARY KEY, data " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -121,7 +121,7 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
     convertFromPublic(value) {
         if (value == null)
             return null;
-        let result = {
+        const result = {
             id: value.id,
             data: JSON.stringify(value)
         };
@@ -141,24 +141,25 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
                 return null;
             }
             // let row = this.convertFromPublicPartial(data.getAsObject());
-            let values = [JSON.stringify(data.getAsObject()), id];
-            let query = "UPDATE " + this.quotedTableName()
+            const values = [JSON.stringify(data.getAsObject()), id];
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET data=JSON_PATCH(data,?) WHERE id=?";
             return yield new Promise((resolve, reject) => {
                 this._client.serialize(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     this._client.run(query, values, (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
                         this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
-                        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+                        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                         this._client.get(query, [id], (err, result) => {
                             if (err != null) {
                                 reject(err);
                                 return;
                             }
-                            let newItem = result ? this.convertToPublic(result) : null;
+                            const newItem = result ? this.convertToPublic(result) : null;
                             resolve(newItem);
                         });
                     });

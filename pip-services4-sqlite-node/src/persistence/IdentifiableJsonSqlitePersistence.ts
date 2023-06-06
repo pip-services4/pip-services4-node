@@ -1,8 +1,9 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 
 import { IdentifiableSqlitePersistence } from './IdentifiableSqlitePersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in SQLite in JSON or JSONB fields
@@ -90,8 +91,8 @@ export class IdentifiableJsonSqlitePersistence<T extends IIdentifiable<K>, K> ex
      * @param idType type of the id column (default: VARCHAR(32))
      * @param dataType type of the data column (default: JSON)
      */
-    protected ensureTable(idType: string = 'VARCHAR(32)', dataType: string = 'JSON') {
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+    protected ensureTable(idType = 'VARCHAR(32)', dataType = 'JSON') {
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (id " + idType + " PRIMARY KEY, data " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -115,7 +116,7 @@ export class IdentifiableJsonSqlitePersistence<T extends IIdentifiable<K>, K> ex
      */
     protected convertFromPublic(value: any): any {
         if (value == null) return null;
-        let result: any = {
+        const result: any = {
             id: value.id,
             data: JSON.stringify(value)
         };
@@ -136,13 +137,14 @@ export class IdentifiableJsonSqlitePersistence<T extends IIdentifiable<K>, K> ex
         }
 
         // let row = this.convertFromPublicPartial(data.getAsObject());
-        let values = [JSON.stringify(data.getAsObject()), id];
+        const values = [JSON.stringify(data.getAsObject()), id];
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET data=JSON_PATCH(data,?) WHERE id=?";
 
         return await new Promise((resolve, reject) => {
             this._client.serialize(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -151,14 +153,14 @@ export class IdentifiableJsonSqlitePersistence<T extends IIdentifiable<K>, K> ex
 
                     this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
 
-                    let query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
+                    const query = "SELECT * FROM " + this.quotedTableName() + " WHERE id=?";
                     this._client.get(query, [id], (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
             
-                        let newItem = result ? this.convertToPublic(result) : null;
+                        const newItem = result ? this.convertToPublic(result) : null;
                         resolve(newItem);
                     });
                 });    

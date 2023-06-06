@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,14 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqlitePersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_commons_node_7 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const SqliteConnection_1 = require("../connect/SqliteConnection");
 /**
  * Abstract persistence component that stores data in SQLite using plain driver.
@@ -112,11 +109,11 @@ class SqlitePersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_6.DependencyResolver(SqlitePersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(SqlitePersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The maximum number of objects in data pages
          */
@@ -165,7 +162,7 @@ class SqlitePersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new SqliteConnection_1.SqliteConnection();
+        const connection = new SqliteConnection_1.SqliteConnection();
         if (this._config)
             connection.configure(this._config);
         if (this._references)
@@ -192,11 +189,11 @@ class SqlitePersistence {
             builder += " " + options.type;
         }
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "")
                 fields += ", ";
             fields += this.quoteIdentifier(key);
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc)
                 fields += " DESC";
         }
@@ -283,10 +280,10 @@ class SqlitePersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'SQLite connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'SQLite connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "SQLite connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "SQLite connection is not opened");
             }
             this._client = this._connection.getConnection();
             this._databaseName = this._connection.getDatabaseName();
@@ -300,7 +297,7 @@ class SqlitePersistence {
             }
             catch (ex) {
                 this._client == null;
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to sqlite failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to sqlite failed").withCause(ex);
             }
         });
     }
@@ -315,7 +312,7 @@ class SqlitePersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Sqlite connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Sqlite connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -329,14 +326,16 @@ class SqlitePersistence {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._tableName == null) {
                 throw new Error('Table name is not defined');
             }
-            let query = "DELETE FROM " + this.quotedTableName();
+            const query = "DELETE FROM " + this.quotedTableName();
             yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.exec(query, (err, result) => {
                     if (err) {
                         reject(err);
@@ -353,8 +352,8 @@ class SqlitePersistence {
                 return;
             }
             // Check if table exist to determine weither to auto create objects
-            let query = "SELECT * FROM " + this.quotedTableName() + " LIMIT 1";
-            let exists = yield new Promise((resolve, reject) => {
+            const query = "SELECT * FROM " + this.quotedTableName() + " LIMIT 1";
+            const exists = yield new Promise((resolve, reject) => {
                 this._client.get(query, (err) => {
                     if (err != null) {
                         if (err.message == null || err.message.indexOf("no such table") > -1) {
@@ -374,7 +373,7 @@ class SqlitePersistence {
             }
             this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             // Run all DML commands
-            for (let dml of this._schemaStatements) {
+            for (const dml of this._schemaStatements) {
                 yield new Promise((resolve, reject) => {
                     this._client.exec(dml, (err) => {
                         if (err != null) {
@@ -395,7 +394,7 @@ class SqlitePersistence {
     generateColumns(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(value);
@@ -409,13 +408,14 @@ class SqlitePersistence {
      */
     generateParameters(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
-        let index = 1;
+        //let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += "?"; // + index;
-            index++;
+            //index++;
         }
         return result;
     }
@@ -426,12 +426,12 @@ class SqlitePersistence {
      */
     generateSetParameters(values) {
         let result = "";
-        let index = 1;
-        for (let column in values) {
+        //let index = 1;
+        for (const column in values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(column) + "=?"; // + index;
-            index++;
+            //index++;
         }
         return result;
     }
@@ -461,10 +461,10 @@ class SqlitePersistence {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
             // Adjust max item count based on configuration
-            paging = paging || new pip_services3_commons_node_2.PagingParams();
-            let skip = paging.getSkip(-1);
-            let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            paging = paging || new pip_services4_data_node_1.PagingParams();
+            const skip = paging.getSkip(-1);
+            const take = paging.getTake(this._maxPageSize);
+            const pagingEnabled = paging.total;
             if (filter != null) {
                 query += " WHERE " + filter;
             }
@@ -491,20 +491,20 @@ class SqlitePersistence {
                 if (filter != null) {
                     query += " WHERE " + filter;
                 }
-                let count = yield new Promise((resolve, reject) => {
+                const count = yield new Promise((resolve, reject) => {
                     this._client.get(query, (err, result) => {
                         if (err != null) {
                             reject(err);
                             return;
                         }
-                        let count = result ? pip_services3_commons_node_7.LongConverter.toLong(result.count) : 0;
+                        const count = result ? pip_services4_commons_node_1.LongConverter.toLong(result.count) : 0;
                         resolve(count);
                     });
                 });
-                return new pip_services3_commons_node_3.DataPage(items, count);
+                return new pip_services4_data_node_1.DataPage(items, count);
             }
             else {
-                return new pip_services3_commons_node_3.DataPage(items);
+                return new pip_services4_data_node_1.DataPage(items);
             }
         });
     }
@@ -524,13 +524,13 @@ class SqlitePersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.get(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result ? pip_services3_commons_node_7.LongConverter.toLong(result.count) : 0;
+                    const count = result ? pip_services4_commons_node_1.LongConverter.toLong(result.count) : 0;
                     resolve(count);
                 });
             });
@@ -591,13 +591,13 @@ class SqlitePersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.get(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result ? result.count : 0;
+                    const count = result ? result.count : 0;
                     resolve(count);
                 });
             });
@@ -605,7 +605,7 @@ class SqlitePersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let pos = Math.trunc(Math.random() * count);
+            const pos = Math.trunc(Math.random() * count);
             query += " LIMIT 1 OFFSET " + pos;
             let item = yield new Promise((resolve, reject) => {
                 this._client.get(query, (err, result) => {
@@ -638,14 +638,15 @@ class SqlitePersistence {
             if (item == null) {
                 return null;
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let values = this.generateValues(row);
-            let query = "INSERT INTO " + this.quotedTableName()
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const values = this.generateValues(row);
+            const query = "INSERT INTO " + this.quotedTableName()
                 + " (" + columns + ") VALUES (" + params + ")";
             //query += "; SELECT * FROM " + this.quotedTableName();
             let newItem = yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
@@ -676,13 +677,14 @@ class SqlitePersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.run(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = 0; //result ? result.affectedRows : 0;
+                    const count = 0; //result ? result.affectedRows : 0;
                     resolve(count);
                 });
             });
@@ -691,7 +693,7 @@ class SqlitePersistence {
     }
 }
 exports.SqlitePersistence = SqlitePersistence;
-SqlitePersistence._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:sqlite:*:1.0", 
+SqlitePersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("collection", null, "dependencies.connection", "*:connection:sqlite:*:1.0", 
 // connections.*
 // credential.*
 "options.max_pool_size", 2, "options.keep_alive", 1, "options.connect_timeout", 5000, "options.auto_reconnect", true, "options.max_page_size", 100, "options.debug", true);
