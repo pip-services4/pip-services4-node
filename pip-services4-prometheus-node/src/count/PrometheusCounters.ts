@@ -2,23 +2,15 @@
 /** @hidden */
 let os = require('os');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { Descriptor } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters } from 'pip-services4-components-node';
-import { Counter } from 'pip-services4-components-node';
-import { CompositeLogger } from 'pip-services4-components-node';
-import { ContextInfo } from 'pip-services4-components-node';
-import { HttpConnectionResolver } from 'pip-services4-rpc-node';
-
+import { IReferenceable, IOpenable, ConfigParams, IReferences, ContextInfo, Descriptor, IContext, Context } from 'pip-services4-components-node';
+import { CachedCounters, CompositeLogger, Counter } from 'pip-services4-observability-node';
+import { HttpConnectionResolver } from 'pip-services4-config-node';
 import { PrometheusCounterConverter } from './PrometheusCounterConverter';
 
 /**
- * Performance counters that send their metrics to Prometheus service.
+ * Performance counters that send their metrics to Prometheus controller.
  * 
- * The component is normally used in passive mode conjunction with [[PrometheusMetricsService]].
+ * The component is normally used in passive mode conjunction with [[PrometheusMetricsController]].
  * Alternatively when connection parameters are set it can push metrics to Prometheus PushGateway.
  * 
  * ### Configuration parameters ###
@@ -38,10 +30,10 @@ import { PrometheusCounterConverter } from './PrometheusCounterConverter';
  * 
  * - <code>\*:logger:\*:\*:1.0</code>           (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  * 
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.restservice.html RestService]]
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.commandablehttpservice.html CommandableHttpService]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.restcontroller.html RestController]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.commandablehttpcontroller.html CommandableHttpController]]
  * 
  * ### Example ###
  * 
@@ -176,7 +168,7 @@ export class PrometheusCounters extends CachedCounters implements IReferenceable
 
         this._client.put(this._requestRoute, body, (err, req, res, data) => {
             if (err || res.statusCode >= 400)
-                this._logger.error("prometheus-counters", err, "Failed to push metrics to prometheus");
+                this._logger.error(Context.fromTraceId("prometheus-counters"), err, "Failed to push metrics to prometheus");
         });
     }
 }

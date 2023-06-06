@@ -1,14 +1,10 @@
 let assert = require('chai').assert;
 let restify = require('restify-clients');
 
-import { Descriptor } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { References } from 'pip-services4-commons-node';
-import { ContextInfo } from 'pip-services4-components-node';
-import { CounterType } from 'pip-services4-components-node';
-
-import { PrometheusMetricsService } from '../../src/services/PrometheusMetricsService';
+import { PrometheusMetricsController } from '../../src/controllers/PrometheusMetricsController';
 import { PrometheusCounters } from '../../src/count/PrometheusCounters';
+import { ConfigParams, ContextInfo, References, Descriptor } from 'pip-services4-components-node';
+import { CounterType } from 'pip-services4-observability-node';
 
 let restConfig = ConfigParams.fromTuples(
     "connection.protocol", "http",
@@ -16,14 +12,14 @@ let restConfig = ConfigParams.fromTuples(
     "connection.port", 3000
 );
 
-suite('PrometheusMetricsService', () => {
-    let service: PrometheusMetricsService;
+suite('PrometheusMetricsController', () => {
+    let controller: PrometheusMetricsController;
     let counters: PrometheusCounters;
     let rest: any;
 
     suiteSetup(async () => {
-        service = new PrometheusMetricsService();
-        service.configure(restConfig);
+        controller = new PrometheusMetricsController();
+        controller.configure(restConfig);
 
         counters = new PrometheusCounters();
 
@@ -34,17 +30,17 @@ suite('PrometheusMetricsService', () => {
         let references = References.fromTuples(
             new Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo,
             new Descriptor("pip-services", "counters", "prometheus", "default", "1.0"), counters,
-            new Descriptor("pip-services", "metrics-service", "prometheus", "default", "1.0"), service
+            new Descriptor("pip-services", "metrics-controller", "prometheus", "default", "1.0"), controller
         );
         counters.setReferences(references);
-        service.setReferences(references);
+        controller.setReferences(references);
 
         await counters.open(null);
-        await service.open(null);
+        await controller.open(null);
     });
 
     suiteTeardown(async () => {
-        await service.close(null);
+        await controller.close(null);
         await counters.close(null);
     });
 

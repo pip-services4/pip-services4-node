@@ -1,13 +1,9 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { CachedCounters } from 'pip-services4-components-node';
-import { Counter } from 'pip-services4-components-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CachedCounters, Counter } from 'pip-services4-observability-node';
 /**
- * Performance counters that send their metrics to Prometheus service.
+ * Performance counters that send their metrics to Prometheus controller.
  *
- * The component is normally used in passive mode conjunction with [[PrometheusMetricsService]].
+ * The component is normally used in passive mode conjunction with [[PrometheusMetricsController]].
  * Alternatively when connection parameters are set it can push metrics to Prometheus PushGateway.
  *
  * ### Configuration parameters ###
@@ -27,10 +23,10 @@ import { Counter } from 'pip-services4-components-node';
  *
  * - <code>\*:logger:\*:\*:1.0</code>           (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  *
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.restservice.html RestService]]
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.commandablehttpservice.html CommandableHttpService]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.restcontroller.html RestController]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.commandablehttpcontroller.html CommandableHttpController]]
  *
  * ### Example ###
  *

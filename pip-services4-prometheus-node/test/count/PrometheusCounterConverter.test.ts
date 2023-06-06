@@ -1,7 +1,5 @@
-import { Counter } from 'pip-services4-components-node';
-import { CounterType } from 'pip-services4-components-node';
-import { RandomDateTime } from 'pip-services4-commons-node';
-
+import { Counter, CounterType } from 'pip-services4-observability-node';
+import { RandomDateTime } from 'pip-services4-data-node';
 import { PrometheusCounterConverter } from '../../src/count/PrometheusCounterConverter';
 
 let assert = require('chai').assert;

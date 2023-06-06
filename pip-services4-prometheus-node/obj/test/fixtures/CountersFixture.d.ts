@@ -1,4 +1,4 @@
-import { CachedCounters } from 'pip-services4-components-node';
+import { CachedCounters } from "pip-services4-observability-node";
 export declare class CountersFixture {
     private _counters;
     constructor(counters: CachedCounters);

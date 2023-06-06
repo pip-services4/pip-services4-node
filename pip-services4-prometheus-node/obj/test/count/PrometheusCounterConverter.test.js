@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const PrometheusCounterConverter_1 = require("../../src/count/PrometheusCounterConverter");
 let assert = require('chai').assert;
 suite('PrometheusCounterConverter', () => {
@@ -16,27 +15,27 @@ suite('PrometheusCounterConverter', () => {
             const counterName = testData.counterName;
             const expectedName = testData.expectedName;
             let counters = new Array();
-            let counter1 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Increment);
+            let counter1 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Increment);
             counter1.count = 1;
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter1);
-            let counter2 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Interval);
+            let counter2 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Interval);
             counter2.count = 11;
             counter2.max = 13;
             counter2.min = 3;
             counter2.average = 3.5;
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter2);
-            let counter3 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.LastValue);
+            let counter3 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.LastValue);
             counter3.last = 2;
-            counter3.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter3.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter3);
-            let counter4 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Statistics);
+            let counter4 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Statistics);
             counter4.count = 111;
             counter4.max = 113;
             counter4.min = 13;
             counter4.average = 13.5;
-            counter4.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter4.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter4);
             let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
             let expected = `# TYPE ${expectedName} gauge\n${expectedName}{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"} 1\n`
@@ -62,27 +61,27 @@ suite('PrometheusCounterConverter', () => {
             const counterName = testData.counterName;
             const expectedName = testData.expectedName;
             let counters = new Array();
-            let counter1 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Increment);
+            let counter1 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Increment);
             counter1.count = 1;
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter1);
-            let counter2 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Interval);
+            let counter2 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Interval);
             counter2.count = 11;
             counter2.max = 13;
             counter2.min = 3;
             counter2.average = 3.5;
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter2);
-            let counter3 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.LastValue);
+            let counter3 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.LastValue);
             counter3.last = 2;
-            counter3.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter3.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter3);
-            let counter4 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Statistics);
+            let counter4 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Statistics);
             counter4.count = 111;
             counter4.max = 113;
             counter4.min = 13;
             counter4.average = 13.5;
-            counter4.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter4.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter4);
             let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
             let expected = `# TYPE ${expectedName} gauge\n${expectedName}{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"} 1\n`
@@ -108,27 +107,27 @@ suite('PrometheusCounterConverter', () => {
             const counterName = testData.counterName;
             const expectedName = testData.expectedName;
             let counters = new Array();
-            let counter1 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Increment);
+            let counter1 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Increment);
             counter1.count = 1;
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter1);
-            let counter2 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Interval);
+            let counter2 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Interval);
             counter2.count = 11;
             counter2.max = 13;
             counter2.min = 3;
             counter2.average = 3.5;
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter2);
-            let counter3 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.LastValue);
+            let counter3 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.LastValue);
             counter3.last = 2;
-            counter3.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter3.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter3);
-            let counter4 = new pip_services3_components_node_1.Counter(counterName, pip_services3_components_node_2.CounterType.Statistics);
+            let counter4 = new pip_services4_observability_node_1.Counter(counterName, pip_services4_observability_node_1.CounterType.Statistics);
             counter4.count = 111;
             counter4.max = 113;
             counter4.min = 13;
             counter4.average = 13.5;
-            counter4.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter4.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
             counters.push(counter4);
             let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
             let expected = `# TYPE ${expectedName} gauge\n${expectedName}{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"} 1\n`
@@ -155,13 +154,13 @@ suite('PrometheusCounterConverter', () => {
     });
     test('SingleIncrement_NoLabels', () => {
         let counters = new Array();
-        let counter = new pip_services3_components_node_1.Counter("MyCounter", pip_services3_components_node_2.CounterType.Increment);
+        let counter = new pip_services4_observability_node_1.Counter("MyCounter", pip_services4_observability_node_1.CounterType.Increment);
         counter.average = 2,
             counter.min = 1,
             counter.max = 3,
             counter.count = 2,
             counter.last = 3,
-            counter.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, null, null);
         const expected = "# TYPE mycounter gauge\nmycounter 2\n";
@@ -169,13 +168,13 @@ suite('PrometheusCounterConverter', () => {
     });
     test('SingleIncrement_SourceInstance', () => {
         let counters = new Array();
-        let counter = new pip_services3_components_node_1.Counter("MyCounter", pip_services3_components_node_2.CounterType.Increment);
+        let counter = new pip_services4_observability_node_1.Counter("MyCounter", pip_services4_observability_node_1.CounterType.Increment);
         counter.average = 2,
             counter.min = 1,
             counter.max = 3,
             counter.count = 2,
             counter.last = 3,
-            counter.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE mycounter gauge\nmycounter{source=\"MyApp\",instance=\"MyInstance\"} 2\n";
@@ -183,15 +182,15 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiIncrement_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyCounter1", pip_services3_components_node_2.CounterType.Increment);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyCounter1", pip_services4_observability_node_1.CounterType.Increment);
         counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyCounter2", pip_services3_components_node_2.CounterType.Increment);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyCounter2", pip_services4_observability_node_1.CounterType.Increment);
         counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE mycounter1 gauge\nmycounter1{source=\"MyApp\",instance=\"MyInstance\"} 2\n"
@@ -200,15 +199,15 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiIncrement_ExecWithOnlyTwo_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyCounter1.exec_time", pip_services3_components_node_2.CounterType.Increment);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyCounter1.exec_time", pip_services4_observability_node_1.CounterType.Increment);
         counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyCounter2.exec_time", pip_services3_components_node_2.CounterType.Increment);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyCounter2.exec_time", pip_services4_observability_node_1.CounterType.Increment);
         counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE mycounter1_exec_time gauge\nmycounter1_exec_time{source=\"MyApp\",instance=\"MyInstance\"} 2\n"
@@ -217,15 +216,15 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiIncrement_Exec_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services3_components_node_2.CounterType.Increment);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services4_observability_node_1.CounterType.Increment);
         counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services3_components_node_2.CounterType.Increment);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services4_observability_node_1.CounterType.Increment);
         counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE exec_time gauge\nexec_time{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"} 2\n"
@@ -234,21 +233,21 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiInterval_Exec_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services3_components_node_2.CounterType.Interval);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services4_observability_node_1.CounterType.Interval);
         counter1.min = 1,
             counter1.max = 3,
             counter1.average = 2,
             counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services3_components_node_2.CounterType.Interval);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services4_observability_node_1.CounterType.Interval);
         counter2.min = 2,
             counter2.max = 4,
             counter2.average = 3,
             counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE exec_time_max gauge\nexec_time_max{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"} 3\n"
@@ -263,21 +262,21 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiStatistics_Exec_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services3_components_node_2.CounterType.Statistics);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services4_observability_node_1.CounterType.Statistics);
         counter1.min = 1,
             counter1.max = 3,
             counter1.average = 2,
             counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services3_components_node_2.CounterType.Statistics);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services4_observability_node_1.CounterType.Statistics);
         counter2.min = 2,
             counter2.max = 4,
             counter2.average = 3,
             counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE exec_time_max gauge\nexec_time_max{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"} 3\n"
@@ -292,15 +291,15 @@ suite('PrometheusCounterConverter', () => {
     });
     test('MultiLastValue_Exec_SourceInstance', () => {
         let counters = new Array();
-        let counter1 = new pip_services3_components_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services3_components_node_2.CounterType.LastValue);
+        let counter1 = new pip_services4_observability_node_1.Counter("MyService1.MyCommand1.exec_time", pip_services4_observability_node_1.CounterType.LastValue);
         counter1.count = 2,
             counter1.last = 3,
-            counter1.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter1.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter1);
-        let counter2 = new pip_services3_components_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services3_components_node_2.CounterType.LastValue);
+        let counter2 = new pip_services4_observability_node_1.Counter("MyService2.MyCommand2.exec_time", pip_services4_observability_node_1.CounterType.LastValue);
         counter2.count = 5,
             counter2.last = 10,
-            counter2.time = pip_services3_commons_node_1.RandomDateTime.nextDateTime(new Date());
+            counter2.time = pip_services4_data_node_1.RandomDateTime.nextDateTime(new Date());
         counters.push(counter2);
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, "MyApp", "MyInstance");
         const expected = "# TYPE exec_time gauge\nexec_time{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"} 3\n"

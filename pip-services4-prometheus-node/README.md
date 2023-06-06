@@ -2,12 +2,12 @@
 
 This module is a part of the [Pip.Services](http://pipservices.org) polyglot microservices toolkit.
 
-The module contains components for working with meters in the Prometheus service. The PrometheusCounters and PrometheusMetricsService components allow you to work both in client mode through PushGateway, and as a service.
+The module contains components for working with meters in the Prometheus controller. The PrometheusCounters and PrometheusMetricsController components allow you to work both in client mode through PushGateway, and as a controller.
 
 The module contains the following packages:
 - **Build** - the default factories for constructing components.
 - **Count** - components of counters (metrics) with sending data to Prometheus via PushGateway
-- **Services** - components of the service for reading counters (metrics) by the Prometheus service
+- **Controllers** - components of the controller for reading counters (metrics) by the Prometheus controller
 
 <a name="links"></a> Quick links:
 

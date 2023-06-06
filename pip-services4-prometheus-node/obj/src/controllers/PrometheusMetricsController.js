@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PrometheusMetricsService = void 0;
+exports.PrometheusMetricsController = void 0;
 /** @module services */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const PrometheusCounterConverter_1 = require("../count/PrometheusCounterConverter");
+const pip_services4_http_node_1 = require("pip-services4-http-node");
 /**
- * Service that exposes the <code>"/metrics"</code> and <code>"/metricsandreset"</code> routes for Prometheus to scap performance metrics.
+ * Controller that exposes the <code>"/metrics"</code> and <code>"/metricsandreset"</code> routes for Prometheus to scap performance metrics.
  *
  * ### Configuration parameters ###
  *
@@ -24,33 +24,33 @@ const PrometheusCounterConverter_1 = require("../count/PrometheusCounterConverte
  *
  * - <code>\*:logger:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
- * - <code>\*:endpoint:http:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.httpendpoint.html HttpEndpoint]] reference to expose REST operation
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
+ * - <code>\*:endpoint:http:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.httpendpoint.html HttpEndpoint]] reference to expose REST operation
  * - <code>\*:counters:prometheus:\*:1.0</code>    [[PrometheusCounters]] reference to retrieve collected metrics
  *
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.restservice.html RestService]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.restcontroller.html RestController]]
  * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/clients.restclient.html RestClient]]
  *
  * ### Example ###
  *
- *     let service = new PrometheusMetricsService();
- *     service.configure(ConfigParams.fromTuples(
+ *     let controller = new PrometheusMetricsController();
+ *     controller.configure(ConfigParams.fromTuples(
  *         "connection.protocol", "http",
  *         "connection.host", "localhost",
  *         "connection.port", 8080
  *     ));
  *
- *     await service.open("123");
- *     console.log("The Prometheus metrics service is accessible at http://+:8080/metrics");
+ *     await controller.open("123");
+ *     console.log("The Prometheus metrics controller is accessible at http://+:8080/metrics");
  */
-class PrometheusMetricsService extends pip_services3_rpc_node_1.RestService {
+class PrometheusMetricsController extends pip_services4_http_node_1.RestController {
     /**
-     * Creates a new instance of this service.
+     * Creates a new instance of this controller.
      */
     constructor() {
         super();
-        this._dependencyResolver.put("cached-counters", new pip_services3_commons_node_1.Descriptor("pip-services", "counters", "cached", "*", "1.0"));
-        this._dependencyResolver.put("prometheus-counters", new pip_services3_commons_node_1.Descriptor("pip-services", "counters", "prometheus", "*", "1.0"));
+        this._dependencyResolver.put("cached-counters", new pip_services4_components_node_1.Descriptor("pip-services", "counters", "cached", "*", "1.0"));
+        this._dependencyResolver.put("prometheus-counters", new pip_services4_components_node_1.Descriptor("pip-services", "counters", "prometheus", "*", "1.0"));
     }
     /**
      * Sets references to dependent components.
@@ -62,7 +62,7 @@ class PrometheusMetricsService extends pip_services3_rpc_node_1.RestService {
         this._cachedCounters = this._dependencyResolver.getOneOptional("prometheus-counters");
         if (this._cachedCounters == null)
             this._cachedCounters = this._dependencyResolver.getOneOptional("cached-counters");
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        let contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && (this._source == "" || this._source == undefined)) {
             this._source = contextInfo.name;
         }
@@ -71,7 +71,7 @@ class PrometheusMetricsService extends pip_services3_rpc_node_1.RestService {
         }
     }
     /**
-     * Registers all service routes in HTTP endpoint.
+     * Registers all controllers routes in HTTP endpoint.
      */
     register() {
         this.registerRoute("get", "metrics", null, (req, res) => { this.metrics(req, res); });
@@ -108,5 +108,5 @@ class PrometheusMetricsService extends pip_services3_rpc_node_1.RestService {
         res.end(body);
     }
 }
-exports.PrometheusMetricsService = PrometheusMetricsService;
-//# sourceMappingURL=PrometheusMetricsService.js.map
+exports.PrometheusMetricsController = PrometheusMetricsController;
+//# sourceMappingURL=PrometheusMetricsController.js.map

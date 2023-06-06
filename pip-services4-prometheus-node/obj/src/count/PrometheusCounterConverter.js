@@ -1,15 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrometheusCounterConverter = void 0;
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+/** @module count */
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const CounterType_1 = require("pip-services4-observability-node/obj/src/count/CounterType");
 /**
  * Helper class that converts performance counter values into
- * a response from Prometheus metrics service.
+ * a response from Prometheus metrics controller.
  */
 class PrometheusCounterConverter {
     /**
-     * Converts the given counters to a string that is returned by Prometheus metrics service.
+     * Converts the given counters to a string that is returned by Prometheus metrics controller.
      *
      * @param counters  a list of counters to convert.
      * @param source    a source (context) name.
@@ -23,33 +24,33 @@ class PrometheusCounterConverter {
             let counterName = this.parseCounterName(counter);
             let labels = this.generateCounterLabel(counter, source, instance);
             switch (counter.type) {
-                case pip_services3_components_node_1.CounterType.Increment:
+                case CounterType_1.CounterType.Increment:
                     builder += "# TYPE " + counterName + " gauge\n";
-                    builder += counterName + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.count) + "\n";
+                    builder += counterName + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.count) + "\n";
                     break;
-                case pip_services3_components_node_1.CounterType.Interval:
+                case CounterType_1.CounterType.Interval:
                     builder += "# TYPE " + counterName + "_max gauge\n";
-                    builder += counterName + "_max" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.max) + "\n";
+                    builder += counterName + "_max" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.max) + "\n";
                     builder += "# TYPE " + counterName + "_min gauge\n";
-                    builder += counterName + "_min" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.min) + "\n";
+                    builder += counterName + "_min" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.min) + "\n";
                     builder += "# TYPE " + counterName + "_average gauge\n";
-                    builder += counterName + "_average" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.average) + "\n";
+                    builder += counterName + "_average" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.average) + "\n";
                     builder += "# TYPE " + counterName + "_count gauge\n";
-                    builder += counterName + "_count" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.count) + "\n";
+                    builder += counterName + "_count" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.count) + "\n";
                     break;
-                case pip_services3_components_node_1.CounterType.LastValue:
+                case CounterType_1.CounterType.LastValue:
                     builder += "# TYPE " + counterName + " gauge\n";
-                    builder += counterName + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.last) + "\n";
+                    builder += counterName + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.last) + "\n";
                     break;
-                case pip_services3_components_node_1.CounterType.Statistics:
+                case CounterType_1.CounterType.Statistics:
                     builder += "# TYPE " + counterName + "_max gauge\n";
-                    builder += counterName + "_max" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.max) + "\n";
+                    builder += counterName + "_max" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.max) + "\n";
                     builder += "# TYPE " + counterName + "_min gauge\n";
-                    builder += counterName + "_min" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.min) + "\n";
+                    builder += counterName + "_min" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.min) + "\n";
                     builder += "# TYPE " + counterName + "_average gauge\n";
-                    builder += counterName + "_average" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.average) + "\n";
+                    builder += counterName + "_average" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.average) + "\n";
                     builder += "# TYPE " + counterName + "_count gauge\n";
-                    builder += counterName + "_count" + labels + " " + pip_services3_commons_node_1.StringConverter.toString(counter.count) + "\n";
+                    builder += counterName + "_count" + labels + " " + pip_services4_commons_node_1.StringConverter.toString(counter.count) + "\n";
                     break;
                 //case CounterType.Timestamp: // Prometheus doesn't support non-numeric metrics
                 //builder += "# TYPE " + counterName + " untyped\n";
@@ -104,7 +105,7 @@ class PrometheusCounterConverter {
             return "";
         let nameParts = counter.name.split('.');
         // If there are other predictable names from which we can parse labels, we can add them below
-        // Rest Service Labels
+        // Rest Controller Labels
         if (nameParts.length >= 3 && nameParts[2] == "exec_count") {
             return nameParts[2];
         }

@@ -13,15 +13,14 @@ exports.PrometheusCounters = void 0;
 /** @module count */
 /** @hidden */
 let os = require('os');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
-const pip_services3_rpc_node_1 = require("pip-services4-rpc-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 const PrometheusCounterConverter_1 = require("./PrometheusCounterConverter");
 /**
- * Performance counters that send their metrics to Prometheus service.
+ * Performance counters that send their metrics to Prometheus controller.
  *
- * The component is normally used in passive mode conjunction with [[PrometheusMetricsService]].
+ * The component is normally used in passive mode conjunction with [[PrometheusMetricsController]].
  * Alternatively when connection parameters are set it can push metrics to Prometheus PushGateway.
  *
  * ### Configuration parameters ###
@@ -41,10 +40,10 @@ const PrometheusCounterConverter_1 = require("./PrometheusCounterConverter");
  *
  * - <code>\*:logger:\*:\*:1.0</code>           (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
  *
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.restservice.html RestService]]
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.commandablehttpservice.html CommandableHttpService]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.restcontroller.html RestController]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.commandablehttpcontroller.html CommandableHttpController]]
  *
  * ### Example ###
  *
@@ -67,14 +66,14 @@ const PrometheusCounterConverter_1 = require("./PrometheusCounterConverter");
  *
  *     counters.dump();
  */
-class PrometheusCounters extends pip_services3_components_node_1.CachedCounters {
+class PrometheusCounters extends pip_services4_observability_node_1.CachedCounters {
     /**
      * Creates a new instance of the performance counters.
      */
     constructor() {
         super();
-        this._logger = new pip_services3_components_node_2.CompositeLogger();
-        this._connectionResolver = new pip_services3_rpc_node_1.HttpConnectionResolver();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
+        this._connectionResolver = new pip_services4_config_node_1.HttpConnectionResolver();
         this._opened = false;
     }
     /**
@@ -97,7 +96,7 @@ class PrometheusCounters extends pip_services3_components_node_1.CachedCounters 
     setReferences(references) {
         this._logger.setReferences(references);
         this._connectionResolver.setReferences(references);
-        let contextInfo = references.getOneOptional(new pip_services3_commons_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+        let contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
         }
@@ -164,7 +163,7 @@ class PrometheusCounters extends pip_services3_components_node_1.CachedCounters 
         let body = PrometheusCounterConverter_1.PrometheusCounterConverter.toString(counters, null, null);
         this._client.put(this._requestRoute, body, (err, req, res, data) => {
             if (err || res.statusCode >= 400)
-                this._logger.error("prometheus-counters", err, "Failed to push metrics to prometheus");
+                this._logger.error(pip_services4_components_node_1.Context.fromTraceId("prometheus-counters"), err, "Failed to push metrics to prometheus");
         });
     }
 }

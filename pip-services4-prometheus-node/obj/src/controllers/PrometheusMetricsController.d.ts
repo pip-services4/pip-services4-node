@@ -1,7 +1,8 @@
-import { IReferences } from 'pip-services4-commons-node';
-import { RestService } from 'pip-services4-rpc-node';
+/** @module services */
+import { IReferences } from 'pip-services4-components-node';
+import { RestController } from 'pip-services4-http-node';
 /**
- * Service that exposes the <code>"/metrics"</code> and <code>"/metricsandreset"</code> routes for Prometheus to scap performance metrics.
+ * Controller that exposes the <code>"/metrics"</code> and <code>"/metricsandreset"</code> routes for Prometheus to scap performance metrics.
  *
  * ### Configuration parameters ###
  *
@@ -19,31 +20,31 @@ import { RestService } from 'pip-services4-rpc-node';
  *
  * - <code>\*:logger:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/log.ilogger.html ILogger]] components to pass log messages
  * - <code>\*:counters:\*:\*:1.0</code>         (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/count.icounters.html ICounters]] components to pass collected measurements
- * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
- * - <code>\*:endpoint:http:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.httpendpoint.html HttpEndpoint]] reference to expose REST operation
+ * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services4-node.github.io/pip-services4-components-node/interfaces/connect.idiscovery.html IDiscovery]] controllers to resolve connection
+ * - <code>\*:endpoint:http:\*:1.0</code>          (optional) [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.httpendpoint.html HttpEndpoint]] reference to expose REST operation
  * - <code>\*:counters:prometheus:\*:1.0</code>    [[PrometheusCounters]] reference to retrieve collected metrics
  *
- * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/services.restservice.html RestService]]
+ * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/controllers.restcontroller.html RestController]]
  * @see [[https://pip-services4-node.github.io/pip-services4-rpc-node/classes/clients.restclient.html RestClient]]
  *
  * ### Example ###
  *
- *     let service = new PrometheusMetricsService();
- *     service.configure(ConfigParams.fromTuples(
+ *     let controller = new PrometheusMetricsController();
+ *     controller.configure(ConfigParams.fromTuples(
  *         "connection.protocol", "http",
  *         "connection.host", "localhost",
  *         "connection.port", 8080
  *     ));
  *
- *     await service.open("123");
- *     console.log("The Prometheus metrics service is accessible at http://+:8080/metrics");
+ *     await controller.open("123");
+ *     console.log("The Prometheus metrics controller is accessible at http://+:8080/metrics");
  */
-export declare class PrometheusMetricsService extends RestService {
+export declare class PrometheusMetricsController extends RestController {
     private _cachedCounters;
     private _source;
     private _instance;
     /**
-     * Creates a new instance of this service.
+     * Creates a new instance of this controller.
      */
     constructor();
     /**
@@ -53,7 +54,7 @@ export declare class PrometheusMetricsService extends RestService {
      */
     setReferences(references: IReferences): void;
     /**
-     * Registers all service routes in HTTP endpoint.
+     * Registers all controllers routes in HTTP endpoint.
      */
     register(): void;
     /**

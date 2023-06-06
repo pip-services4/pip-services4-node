@@ -1,5 +1,4 @@
-import { ConfigParams } from 'pip-services4-commons-node';
-
+import { ConfigParams } from 'pip-services4-components-node';
 import { PrometheusCounters } from '../../src/count/PrometheusCounters';
 import { CountersFixture } from '../fixtures/CountersFixture';
 

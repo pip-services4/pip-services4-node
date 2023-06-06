@@ -1,16 +1,16 @@
 /** @module count */
-import { Counter } from 'pip-services4-components-node';
-import { CounterType } from 'pip-services4-components-node';
 import { StringConverter } from 'pip-services4-commons-node';
+import { Counter } from 'pip-services4-observability-node';
+import { CounterType } from 'pip-services4-observability-node/obj/src/count/CounterType';
 
 /**
  * Helper class that converts performance counter values into
- * a response from Prometheus metrics service.
+ * a response from Prometheus metrics controller.
  */
 export class PrometheusCounterConverter {
 
     /**
-     * Converts the given counters to a string that is returned by Prometheus metrics service.
+     * Converts the given counters to a string that is returned by Prometheus metrics controller.
      * 
      * @param counters  a list of counters to convert.
      * @param source    a source (context) name.
@@ -119,7 +119,7 @@ export class PrometheusCounterConverter {
         let nameParts = counter.name.split('.');
 
         // If there are other predictable names from which we can parse labels, we can add them below
-        // Rest Service Labels
+        // Rest Controller Labels
         if (nameParts.length >= 3 && nameParts[2] == "exec_count") { return nameParts[2]; }
         if (nameParts.length >= 3 && nameParts[2] == "exec_time") { return nameParts[2]; }
         if (nameParts.length >= 3 && nameParts[2] == "exec_errors") { return nameParts[2]; }

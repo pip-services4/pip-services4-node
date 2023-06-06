@@ -5,11 +5,11 @@ import { Factory } from 'pip-services4-components-node';
  *
  * @see [[https://pip-services4-node.github.io/pip-services4-components-node/classes/build.factory.html Factory]]
  * @see [[PrometheusCounters]]
- * @see [[PrometheusMetricsService]]
+ * @see [[PrometheusMetricsController]]
  */
 export declare class DefaultPrometheusFactory extends Factory {
     private static readonly PrometheusCountersDescriptor;
-    private static readonly PrometheusMetricsServiceDescriptor;
+    private static readonly PrometheusMetricsControllerDescriptor;
     /**
      * Create a new instance of the factory.
      */
