@@ -1,8 +1,7 @@
 /** @module connect */
-import { ConfigParams, IConfigurable, IOpenable, IReferenceable, IReferences } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
-import { CompositeLogger, ConnectionParams } from 'pip-services4-components-node';
-import { IDiscovery } from 'pip-services4-components-node';
+import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IDiscovery, ConnectionParams } from "pip-services4-config-node";
+import { CompositeLogger } from "pip-services4-observability-node";
 /**
  * Discovery service that keeps connections in memory.
  *

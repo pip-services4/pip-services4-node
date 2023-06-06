@@ -1,9 +1,10 @@
 /** @module auth */
-import { ApplicationException, ConfigException, ConfigParams, ConnectionException, IConfigurable, IOpenable, IReferenceable, IReferences } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
 
-import { CompositeLogger, ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver, MemoryCredentialStore } from 'pip-services4-components-node';
-import { ICredentialStore } from 'pip-services4-components-node';
+import { ICredentialStore, ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
+import { ConfigException, ApplicationException, ConnectionException } from "pip-services4-commons-node";
+import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { CompositeLogger } from "pip-services4-observability-node";
+
 
 /**
  * Credential store that keeps credentials in memory.
@@ -48,18 +49,18 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
     private _credentialResolver: CredentialResolver = new CredentialResolver();
 
     //connection params
-    private _proxy_enable: boolean = false;
+    private _proxy_enable = false;
     private _proxy_port: number;
     private _proxy_host: string;
 
     // credentials
-    private _auth_type: string = "userpass"
+    private _auth_type = "userpass"
     private _file_cert: string;
     private _file_key: string;
     private _file_cacert: string;
 
     // options
-    private _timeout: number = 5000;
+    private _timeout = 5000;
     private _root_path: string;
     private _namespace: string;
 
@@ -113,7 +114,7 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
         // check configuration
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "Connection is not configured"
             );
@@ -121,7 +122,7 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
 
         if (credential == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CREDENTIAL",
                 "Credentials is not configured"
             );
@@ -146,32 +147,32 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
     private composeUri(context: IContext, connection: ConnectionParams): string {
 
         if (connection.getUri() != null) {
-            let uri = connection.getUri();
+            const uri = connection.getUri();
             if (uri) return uri;
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
         }
 
-        let protocol = connection.getProtocol();
+        const protocol = connection.getProtocol();
         if (protocol == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -188,20 +189,20 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
     * @param rewrite   rewrite flag if key exists
     */
     public async loadVaultCredentials(config: ConfigParams, rewrite?: boolean): Promise<void> {
-        let items: Map<string, CredentialParams> = new Map();
+        const items: Map<string, CredentialParams> = new Map();
 
         if (config.length() > 0) {
-            let connectionSections: string[] = config.getSectionNames();
+            const connectionSections: string[] = config.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let key = connectionSections[index]
-                let value: ConfigParams = config.getSection(key);
+                const key = connectionSections[index]
+                const value: ConfigParams = config.getSection(key);
 
                 items.set(key, new CredentialParams(value));
             }
         }
 
         // Register all credentials in vault
-        for (let key of items.keys()) {
+        for (const key of items.keys()) {
             if (!rewrite) {
                 try {
                     await this._client.readKVSecret(this._token, key);
@@ -225,11 +226,11 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
      */
     public async open(context: IContext): Promise<void> {
 
-        let connection = await this._connectionResolver.resolve(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connection = await this._connectionResolver.resolve(context);
+        const credential = await this._credentialResolver.lookup(context);
         this.resolveConfig(context, connection, credential);
 
-        let options: any =
+        const options: any =
         {
             https: connection.getProtocol() === "https",
             baseUrl: this.composeUri(context, connection),
@@ -270,18 +271,19 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
             password = credential.getPassword();
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const Vault = require('hashi-vault-js');
         this._client = new Vault(options);
         const status = await this._client.healthCheck();
 
         // resolve status
         if (status.isVaultError || status.response) {
-            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
             this._logger.error(context, err, status.vaultHelpMessage, status.response)
             this._client = null;
             throw err;
         } else if (status.sealed) {
-            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!")
+            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!")
             this._logger.error(context, err, "Vault server is sealed!")
             this._client = null;
             throw err // TODO: Decide, does need to throw error?
@@ -318,7 +320,7 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
                 }
             }
         } catch (ex) {
-            let err = new ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+            const err = new ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
             this._logger.error(context, ex, "Can't login to Vault server")
             this._client = null;
             throw err
@@ -350,14 +352,14 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
         if (this.isOpen()) {
             
             try {
-                let credentials = [credential.getAsObject()];
+                const credentials = [credential.getAsObject()];
                 let version = 0;
                 try {
-                    let res = await this._client.readKVSecret(this._token, key);
+                    const res = await this._client.readKVSecret(this._token, key);
                     version = res.metadata.version;
                     if (res.data.credentials) {
                         // Check if connection already exists
-                        for (let conn of res.data.credentials) {
+                        for (const conn of res.data.credentials) {
                             if (credential.getUsername() == (conn.username ?? conn.user) && credential.getPassword() == (conn.password ?? conn.pass)) {
                                 this._logger.info(context, 'Credential already exists via key ' + key + ': ' + credential);
                                 return;
@@ -397,7 +399,7 @@ export class VaultCredentialStore implements ICredentialStore, IReconfigurable, 
     public async lookup(context: IContext, key: string): Promise<CredentialParams> {
         if (this.isOpen()) {
             try {
-                let res = await this._client.readKVSecret(this._token, key);
+                const res = await this._client.readKVSecret(this._token, key);
                 let credential: CredentialParams;
                 if (res.data && res.data.credentials && res.data.credentials.length > 0)
                     credential = new CredentialParams(res.data.credentials[0]);

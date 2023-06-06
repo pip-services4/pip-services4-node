@@ -1,3 +1,4 @@
+/** @module auth */
 import { Factory } from 'pip-services4-components-node';
 /**
  * Creates [[ICredentialStore]] components by their descriptors.

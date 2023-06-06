@@ -1,7 +1,5 @@
 /** @module auth */
-import { Descriptor } from 'pip-services4-commons-node';
-
-import { Factory } from 'pip-services4-components-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 import { VaultCredentialStore } from '../auth/VaultCredentialStore';
 import { VaultDiscovery } from '../connect/VaultDiscovery';
 

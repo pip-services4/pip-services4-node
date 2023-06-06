@@ -1,4 +1,5 @@
 "use strict";
+/** @module auth */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VaultCredentialStore = void 0;
-/** @module auth */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Credential store that keeps credentials in memory.
  *
@@ -53,8 +54,8 @@ const pip_services3_components_node_1 = require("pip-services4-components-node")
  */
 class VaultCredentialStore {
     constructor() {
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
-        this._credentialResolver = new pip_services3_components_node_1.CredentialResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         //connection params
         this._proxy_enable = false;
         // credentials
@@ -65,7 +66,7 @@ class VaultCredentialStore {
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -104,10 +105,10 @@ class VaultCredentialStore {
     resolveConfig(context, connection, credential) {
         // check configuration
         if (connection == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Connection is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Connection is not configured");
         }
         if (credential == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CREDENTIAL", "Credentials is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CREDENTIAL", "Credentials is not configured");
         }
         // resolve additional credential params
         this._auth_type = credential.getAsStringWithDefault("auth_type", "userpass");
@@ -124,21 +125,21 @@ class VaultCredentialStore {
      */
     composeUri(context, connection) {
         if (connection.getUri() != null) {
-            let uri = connection.getUri();
+            const uri = connection.getUri();
             if (uri)
                 return uri;
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
-        let protocol = connection.getProtocol();
+        const protocol = connection.getProtocol();
         if (protocol == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         return protocol + '://' + host + ':' + port + '/v1';
     }
@@ -151,17 +152,17 @@ class VaultCredentialStore {
     */
     loadVaultCredentials(config, rewrite) {
         return __awaiter(this, void 0, void 0, function* () {
-            let items = new Map();
+            const items = new Map();
             if (config.length() > 0) {
-                let connectionSections = config.getSectionNames();
+                const connectionSections = config.getSectionNames();
                 for (let index = 0; index < connectionSections.length; index++) {
-                    let key = connectionSections[index];
-                    let value = config.getSection(key);
-                    items.set(key, new pip_services3_components_node_1.CredentialParams(value));
+                    const key = connectionSections[index];
+                    const value = config.getSection(key);
+                    items.set(key, new pip_services4_config_node_1.CredentialParams(value));
                 }
             }
             // Register all credentials in vault
-            for (let key of items.keys()) {
+            for (const key of items.keys()) {
                 if (!rewrite) {
                     try {
                         yield this._client.readKVSecret(this._token, key);
@@ -188,10 +189,10 @@ class VaultCredentialStore {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const connection = yield this._connectionResolver.resolve(context);
+            const credential = yield this._credentialResolver.lookup(context);
             this.resolveConfig(context, connection, credential);
-            let options = {
+            const options = {
                 https: connection.getProtocol() === "https",
                 baseUrl: this.composeUri(context, connection),
                 timeout: this._timeout,
@@ -224,18 +225,19 @@ class VaultCredentialStore {
                 username = credential.getUsername();
                 password = credential.getPassword();
             }
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const Vault = require('hashi-vault-js');
             this._client = new Vault(options);
             const status = yield this._client.healthCheck();
             // resolve status
             if (status.isVaultError || status.response) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
                 this._logger.error(context, err, status.vaultHelpMessage, status.response);
                 this._client = null;
                 throw err;
             }
             else if (status.sealed) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!");
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!");
                 this._logger.error(context, err, "Vault server is sealed!");
                 this._client = null;
                 throw err; // TODO: Decide, does need to throw error?
@@ -271,7 +273,7 @@ class VaultCredentialStore {
                 }
             }
             catch (ex) {
-                let err = new pip_services3_commons_node_1.ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
                 this._logger.error(context, ex, "Can't login to Vault server");
                 this._client = null;
                 throw err;
@@ -305,14 +307,14 @@ class VaultCredentialStore {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
-                    let credentials = [credential.getAsObject()];
+                    const credentials = [credential.getAsObject()];
                     let version = 0;
                     try {
-                        let res = yield this._client.readKVSecret(this._token, key);
+                        const res = yield this._client.readKVSecret(this._token, key);
                         version = res.metadata.version;
                         if (res.data.credentials) {
                             // Check if connection already exists
-                            for (let conn of res.data.credentials) {
+                            for (const conn of res.data.credentials) {
                                 if (credential.getUsername() == ((_a = conn.username) !== null && _a !== void 0 ? _a : conn.user) && credential.getPassword() == ((_b = conn.password) !== null && _b !== void 0 ? _b : conn.pass)) {
                                     this._logger.info(context, 'Credential already exists via key ' + key + ': ' + credential);
                                     return;
@@ -354,10 +356,10 @@ class VaultCredentialStore {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
-                    let res = yield this._client.readKVSecret(this._token, key);
+                    const res = yield this._client.readKVSecret(this._token, key);
                     let credential;
                     if (res.data && res.data.credentials && res.data.credentials.length > 0)
-                        credential = new pip_services3_components_node_1.CredentialParams(res.data.credentials[0]);
+                        credential = new pip_services4_config_node_1.CredentialParams(res.data.credentials[0]);
                     this._logger.debug(context, 'KVs for ' + key + ': ', credential);
                     return credential;
                 }

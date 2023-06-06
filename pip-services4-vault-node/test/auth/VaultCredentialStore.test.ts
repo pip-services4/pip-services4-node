@@ -1,8 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CredentialParams } from 'pip-services4-components-node';
-
+import { ConfigParams, Context } from 'pip-services4-components-node';
+import { CredentialParams } from 'pip-services4-config-node';
 import { VaultCredentialStore } from '../../src/auth/VaultCredentialStore';
 
 
@@ -36,8 +35,9 @@ suite('VaultCredentialStore', ()=> {
     });
 
     test('Lookup and store test', async () => {
-        let cred1 = await credentialStore.lookup('123', 'credKey1');
-        let cred2 = await credentialStore.lookup('123', 'credKey2');
+        const context = Context.fromTraceId('123');
+        let cred1 = await credentialStore.lookup(context, 'credKey1');
+        let cred2 = await credentialStore.lookup(context, 'credKey2');
 
         assert.equal(cred1.getUsername(), "user1");
         assert.equal(cred1.getPassword(), "pass1");
@@ -52,7 +52,7 @@ suite('VaultCredentialStore', ()=> {
 
         await credentialStore.store(null, 'credKey3', credConfig);
 
-        let cred3 = await credentialStore.lookup('123', 'credKey3');
+        let cred3 = await credentialStore.lookup(context, 'credKey3');
 
         assert.equal(cred3.getUsername(), "user3");
         assert.equal(cred3.getPassword(), "pass3");
@@ -66,7 +66,7 @@ suite('VaultCredentialStore', ()=> {
 
         await credentialStore.store(null, 'credKey1', credConfig);
 
-        cred1 = await credentialStore.lookup('123', 'credKey1');
+        cred1 = await credentialStore.lookup(context, 'credKey1');
 
         assert.equal(cred1.getUsername(), "new_user");
         assert.equal(cred1.getPassword(), "new_pass");

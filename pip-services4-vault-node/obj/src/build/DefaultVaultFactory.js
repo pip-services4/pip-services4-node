@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultVaultFactory = void 0;
 /** @module auth */
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const VaultCredentialStore_1 = require("../auth/VaultCredentialStore");
 const VaultDiscovery_1 = require("../connect/VaultDiscovery");
 /**
@@ -13,7 +12,7 @@ const VaultDiscovery_1 = require("../connect/VaultDiscovery");
  * @see [[ICredentialStore]]
  * @see [[MemoryCredentialStore]]
  */
-class DefaultVaultFactory extends pip_services3_components_node_1.Factory {
+class DefaultVaultFactory extends pip_services4_components_node_1.Factory {
     /**
      * Create a new instance of the factory.
      */
@@ -24,6 +23,6 @@ class DefaultVaultFactory extends pip_services3_components_node_1.Factory {
     }
 }
 exports.DefaultVaultFactory = DefaultVaultFactory;
-DefaultVaultFactory.VaultCredentialStoreDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "credential-store", "hashicorp-vault", "*", "1.0");
-DefaultVaultFactory.VaultDiscoveryDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "discovery", "hashicorp-vault", "*", "1.0");
+DefaultVaultFactory.VaultCredentialStoreDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "credential-store", "hashicorp-vault", "*", "1.0");
+DefaultVaultFactory.VaultDiscoveryDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "discovery", "hashicorp-vault", "*", "1.0");
 //# sourceMappingURL=DefaultVaultFactory.js.map

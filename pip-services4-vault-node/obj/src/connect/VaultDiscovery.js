@@ -11,8 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VaultDiscovery = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Discovery service that keeps connections in memory.
  *
@@ -51,8 +52,8 @@ const pip_services3_components_node_1 = require("pip-services4-components-node")
  */
 class VaultDiscovery {
     constructor() {
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
-        this._credentialResolver = new pip_services3_components_node_1.CredentialResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
         //connection params
         this._proxy_enable = false;
         // credentials
@@ -63,7 +64,7 @@ class VaultDiscovery {
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
     }
     /**
     * Configures component by passing configuration parameters.
@@ -87,20 +88,20 @@ class VaultDiscovery {
     loadVaultCredentials(config, rewrite) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let items = new Map();
+            const items = new Map();
             if (config.length() > 0) {
-                let connectionSections = config.getSectionNames();
+                const connectionSections = config.getSectionNames();
                 for (let index = 0; index < connectionSections.length; index++) {
-                    let key = connectionSections[index];
-                    let value = config.getSection(key);
-                    let connectionsList = (_a = items.get(key)) !== null && _a !== void 0 ? _a : [];
-                    connectionsList.push(new pip_services3_components_node_1.ConnectionParams(value));
+                    const key = connectionSections[index];
+                    const value = config.getSection(key);
+                    const connectionsList = (_a = items.get(key)) !== null && _a !== void 0 ? _a : [];
+                    connectionsList.push(new pip_services4_config_node_1.ConnectionParams(value));
                     items.set(key, connectionsList);
                 }
             }
             // Register all connections in vault
-            for (let key of items.keys()) {
-                for (let conn of items.get(key)) {
+            for (const key of items.keys()) {
+                for (const conn of items.get(key)) {
                     if (!rewrite) {
                         try {
                             yield this._client.readKVSecret(this._token, key);
@@ -145,10 +146,10 @@ class VaultDiscovery {
     resolveConfig(context, connection, credential) {
         // check configuration
         if (connection == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Connection is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Connection is not configured");
         }
         if (credential == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CREDENTIAL", "Credentials is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CREDENTIAL", "Credentials is not configured");
         }
         // resolve additional credential params
         this._auth_type = credential.getAsStringWithDefault("auth_type", "userpass");
@@ -165,21 +166,21 @@ class VaultDiscovery {
      */
     composeUri(context, connection) {
         if (connection.getUri() != null) {
-            let uri = connection.getUri();
+            const uri = connection.getUri();
             if (uri)
                 return uri;
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
         }
-        let protocol = connection.getProtocol();
+        const protocol = connection.getProtocol();
         if (protocol == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         return protocol + '://' + host + ':' + port + '/v1';
     }
@@ -190,10 +191,10 @@ class VaultDiscovery {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
-            let credential = yield this._credentialResolver.lookup(context);
+            const connection = yield this._connectionResolver.resolve(context);
+            const credential = yield this._credentialResolver.lookup(context);
             this.resolveConfig(context, connection, credential);
-            let options = {
+            const options = {
                 https: connection.getProtocol() === "https",
                 baseUrl: this.composeUri(context, connection),
                 timeout: this._timeout,
@@ -226,18 +227,19 @@ class VaultDiscovery {
                 username = credential.getUsername();
                 password = credential.getPassword();
             }
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const Vault = require('hashi-vault-js');
             this._client = new Vault(options);
             const status = yield this._client.healthCheck();
             // resolve status
             if (status.isVaultError || status.response) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
                 this._logger.error(context, err, status.vaultHelpMessage, status.response);
                 this._client = null;
                 throw err;
             }
             else if (status.sealed) {
-                let err = new pip_services3_commons_node_1.ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!");
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!");
                 this._logger.error(context, err, "Vault server is sealed!");
                 this._client = null;
                 throw err; // TODO: Decide, does need to throw error?
@@ -273,7 +275,7 @@ class VaultDiscovery {
                 }
             }
             catch (ex) {
-                let err = new pip_services3_commons_node_1.ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
                 this._logger.error(context, ex, "Can't login to Vault server");
                 this._client = null;
                 throw err;
@@ -308,21 +310,21 @@ class VaultDiscovery {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
-                    let connections = [];
+                    const connections = [];
                     let version = 0;
                     try {
-                        let res = yield this._client.readKVSecret(this._token, key);
+                        const res = yield this._client.readKVSecret(this._token, key);
                         version = res.metadata.version;
                         // Check if connection already exists
                         if (res.data && res.data.connections) {
-                            for (let conn of res.data.connections) {
+                            for (const conn of res.data.connections) {
                                 if (connection.getHost() == conn.host && connection.getPort() == ((_a = conn.port) !== null && _a !== void 0 ? _a : 0)) {
                                     this._logger.info(context, 'Connection already exists via key ' + key + ': ' + connection);
                                     return connection;
                                 }
                             }
-                            for (let conn of res.data.connections)
-                                connections.push(new pip_services3_components_node_1.ConnectionParams(conn).getAsObject());
+                            for (const conn of res.data.connections)
+                                connections.push(new pip_services4_config_node_1.ConnectionParams(conn).getAsObject());
                         }
                     }
                     catch (ex) {
@@ -360,11 +362,11 @@ class VaultDiscovery {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
-                    let res = yield this._client.readKVSecret(this._token, key);
+                    const res = yield this._client.readKVSecret(this._token, key);
                     this._logger.debug(context, 'Resolved connection for ' + key + ': ', res);
                     let connection;
                     if (res.data && res.data.connections && res.data.connections.length > 0)
-                        connection = new pip_services3_components_node_1.ConnectionParams(res.data.connections[0]);
+                        connection = new pip_services4_config_node_1.ConnectionParams(res.data.connections[0]);
                     return connection;
                 }
                 catch (ex) {
@@ -384,11 +386,11 @@ class VaultDiscovery {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isOpen()) {
                 try {
-                    let res = yield this._client.readKVSecret(this._token, key);
+                    const res = yield this._client.readKVSecret(this._token, key);
                     this._logger.debug(context, 'Resolved connections for ' + key + ': ', res);
-                    let connections = [];
-                    for (let conn of res.data.connections)
-                        connections.push(new pip_services3_components_node_1.ConnectionParams(conn));
+                    const connections = [];
+                    for (const conn of res.data.connections)
+                        connections.push(new pip_services4_config_node_1.ConnectionParams(conn));
                     return connections;
                 }
                 catch (ex) {

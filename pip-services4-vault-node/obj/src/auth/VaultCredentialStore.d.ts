@@ -1,8 +1,7 @@
 /** @module auth */
-import { ConfigParams, IConfigurable, IOpenable, IReferenceable, IReferences } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
-import { CompositeLogger, CredentialParams } from 'pip-services4-components-node';
-import { ICredentialStore } from 'pip-services4-components-node';
+import { ICredentialStore, CredentialParams } from "pip-services4-config-node";
+import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { CompositeLogger } from "pip-services4-observability-node";
 /**
  * Credential store that keeps credentials in memory.
  *

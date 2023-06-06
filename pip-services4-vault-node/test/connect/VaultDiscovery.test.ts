@@ -1,8 +1,7 @@
 const assert = require('chai').assert;
 
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-
+import { ConfigParams, Context } from 'pip-services4-components-node';
+import { ConnectionParams } from 'pip-services4-config-node';
 import { VaultDiscovery } from '../../src/connect/VaultDiscovery';
 
 
@@ -36,13 +35,15 @@ suite('VaultDiscovery', ()=> {
     });
 
     test('Resolve connections', async () => {
+        const context = Context.fromTraceId('123');
+
         // Resolve one
-        let connection = await discovery.resolveOne("123", "connKey1");
+        let connection = await discovery.resolveOne(context, "connKey1");
 
         assert.equal("10.1.1.100", connection.getHost());
         assert.equal(8080, connection.getPort());        
 
-        connection = await discovery.resolveOne("123", "connKey2");
+        connection = await discovery.resolveOne(context, "connKey2");
 
         assert.equal("10.1.1.101", connection.getHost());
         assert.equal(8082, connection.getPort());      
@@ -52,7 +53,7 @@ suite('VaultDiscovery', ()=> {
             ConnectionParams.fromTuples("host", "10.3.3.151")
         );
 
-        let connections = await discovery.resolveAll("123", "connKey1");
+        let connections = await discovery.resolveAll(context, "connKey1");
         
         assert.isTrue(connections.length > 1);
 
@@ -60,7 +61,7 @@ suite('VaultDiscovery', ()=> {
             ConnectionParams.fromTuples("host", "15.7.7.1", "port", "8053")
         );
 
-        connections = await discovery.resolveAll("123", "connKey2");
+        connections = await discovery.resolveAll(context, "connKey2");
 
         assert.isTrue(connections.length > 1);
 
@@ -68,7 +69,7 @@ suite('VaultDiscovery', ()=> {
             ConnectionParams.fromTuples("host", "7.7.0.0", "port", "8585")
         );
 
-        connections = await discovery.resolveAll("123", "connKey3");
+        connections = await discovery.resolveAll(context, "connKey3");
 
         assert.isTrue(connections.length == 1);
 

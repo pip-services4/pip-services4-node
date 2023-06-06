@@ -1,10 +1,9 @@
 /** @module connect */
 
-import { ApplicationException, ConfigException, ConfigParams, ConnectionException, IConfigurable, IOpenable, IReferenceable, IReferences } from 'pip-services4-commons-node';
-import { IReconfigurable } from 'pip-services4-commons-node';
-
-import { CompositeLogger, ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver, MemoryDiscovery } from 'pip-services4-components-node';
-import { IDiscovery } from 'pip-services4-components-node';
+import { ConfigException, ApplicationException, ConnectionException } from "pip-services4-commons-node";
+import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IDiscovery, ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
+import { CompositeLogger } from "pip-services4-observability-node";
 
 /**
  * Discovery service that keeps connections in memory.
@@ -47,18 +46,18 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     private _credentialResolver: CredentialResolver = new CredentialResolver();
 
     //connection params
-    private _proxy_enable: boolean = false;
+    private _proxy_enable = false;
     private _proxy_port: number;
     private _proxy_host: string;
 
     // credentials
-    private _auth_type: string = "userpass";
+    private _auth_type = "userpass";
     private _file_cert: string;
     private _file_key: string;
     private _file_cacert: string;
 
     // options
-    private _timeout: number = 5000;
+    private _timeout = 5000;
     private _root_path: string;
     private _namespace: string;
 
@@ -92,23 +91,23 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     * @param rewrite   rewrite flag if key exists
     */
     public async loadVaultCredentials(config: ConfigParams, rewrite?: boolean): Promise<void> {
-        let items: Map<string, ConnectionParams[]> = new Map();
+        const items: Map<string, ConnectionParams[]> = new Map();
 
         if (config.length() > 0) {
-            let connectionSections: string[] = config.getSectionNames();
+            const connectionSections: string[] = config.getSectionNames();
             for (let index = 0; index < connectionSections.length; index++) {
-                let key = connectionSections[index]
-                let value: ConfigParams = config.getSection(key);
+                const key = connectionSections[index]
+                const value: ConfigParams = config.getSection(key);
 
-                let connectionsList = items.get(key) ?? [];
+                const connectionsList = items.get(key) ?? [];
                 connectionsList.push(new ConnectionParams(value));
                 items.set(key, connectionsList);
             }
         }
 
         // Register all connections in vault
-        for (let key of items.keys()) {
-            for (let conn of items.get(key)) {
+        for (const key of items.keys()) {
+            for (const conn of items.get(key)) {
                 if (!rewrite) {
                     try {
                         await this._client.readKVSecret(this._token, key);
@@ -153,7 +152,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         // check configuration
         if (connection == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CONNECTION",
                 "Connection is not configured"
             );
@@ -161,7 +160,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
 
         if (credential == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_CREDENTIAL",
                 "Credentials is not configured"
             );
@@ -185,32 +184,32 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     private composeUri(context: IContext, connection: ConnectionParams): string {
 
         if (connection.getUri() != null) {
-            let uri = connection.getUri();
+            const uri = connection.getUri();
             if (uri) return uri;
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
         }
 
-        let protocol = connection.getProtocol();
+        const protocol = connection.getProtocol();
         if (protocol == null) {
             throw new ConfigException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -226,11 +225,11 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
      */
     public async open(context: IContext): Promise<void> {
 
-        let connection = await this._connectionResolver.resolve(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connection = await this._connectionResolver.resolve(context);
+        const credential = await this._credentialResolver.lookup(context);
         this.resolveConfig(context, connection, credential);
 
-        let options: any =
+        const options: any =
         {
             https: connection.getProtocol() === "https",
             baseUrl: this.composeUri(context, connection),
@@ -271,18 +270,19 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
             password = credential.getPassword();
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const Vault = require('hashi-vault-js');
         this._client = new Vault(options);
         const status = await this._client.healthCheck();
 
         // resolve status
         if (status.isVaultError || status.response) {
-            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", status.vaultHelpMessage);
+            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
             this._logger.error(context, err, status.vaultHelpMessage, status.response)
             this._client = null;
             throw err;
         } else if (status.sealed) {
-            let err = new ApplicationException("ERROR", context, "OPEN_ERROR", "Vault server is sealed!")
+            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!")
             this._logger.error(context, err, "Vault server is sealed!")
             this._client = null;
             throw err // TODO: Decide, does need to throw error?
@@ -319,7 +319,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                 }
             }
         } catch (ex) {
-            let err = new ConnectionException(context, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+            const err = new ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
             this._logger.error(context, ex, "Can't login to Vault server")
             this._client = null;
             throw err
@@ -351,21 +351,21 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     public async register(context: IContext, key: string, connection: ConnectionParams): Promise<ConnectionParams> {
         if (this.isOpen()) {
             try {
-                let connections = [];
+                const connections = [];
                 let version = 0;
                 try {
-                    let res = await this._client.readKVSecret(this._token, key);
+                    const res = await this._client.readKVSecret(this._token, key);
                     version = res.metadata.version;
                     // Check if connection already exists
                     if (res.data && res.data.connections) {
-                        for (let conn of res.data.connections) {
+                        for (const conn of res.data.connections) {
                             if (connection.getHost() == conn.host && connection.getPort() == (conn.port ?? 0)) {
                                 this._logger.info(context, 'Connection already exists via key ' + key + ': ' + connection);
                                 return connection;
                             }
                         }
                     
-                        for (let conn of res.data.connections)
+                        for (const conn of res.data.connections)
                             connections.push(new ConnectionParams(conn).getAsObject());
                     }
                 } catch (ex) {
@@ -403,7 +403,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     public async resolveOne(context: IContext, key: string): Promise<ConnectionParams> {
         if (this.isOpen()) {
             try {
-                let res = await this._client.readKVSecret(this._token, key);
+                const res = await this._client.readKVSecret(this._token, key);
                 this._logger.debug(context, 'Resolved connection for ' + key + ': ', res);
                 let connection: ConnectionParams;
                 if (res.data && res.data.connections && res.data.connections.length > 0)
@@ -426,12 +426,12 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
     public async resolveAll(context: IContext, key: string): Promise<ConnectionParams[]> {
         if (this.isOpen()) {
             try {
-                let res = await this._client.readKVSecret(this._token, key)
+                const res = await this._client.readKVSecret(this._token, key)
                 this._logger.debug(context, 'Resolved connections for ' + key + ': ', res);
 
-                let connections: ConnectionParams[] = [];
+                const connections: ConnectionParams[] = [];
 
-                for (let conn of res.data.connections)
+                for (const conn of res.data.connections)
                     connections.push(new ConnectionParams(conn));
                 
                 return connections;

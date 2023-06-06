@@ -1,12 +1,16 @@
 {
     "name": "pip-services4-vault-node",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Enterprise Innovation Consulting",
     "description": "HashiCorp Vault based Credential Store and Discovery Service for Pip.Services in Node.js / ES2017",
     "contributors": [
         {
             "name": "Levichev Dmitry",
             "email": "dlevichev@entinco.com"
+        },
+        {
+            "name": "Danil Prisiazhnyi",
+            "email": "judas.priest999@gmail.com"
         }
     ],
     "main": "./obj/src/index.js",
@@ -20,7 +24,8 @@
     "noAnalyze": true,
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:pip-services4-node/pip-services4-vault-node.git"
+        "url": "ssh://git@github.com:pip-services4/pip-services4-node.git",
+        "directory": "pip-services4-vault-node"
     },
     "license": "MIT",
     "engines": {
@@ -31,20 +36,29 @@
         "build": "tsc",
         "watch": "tsc --watch",
         "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
-        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "lint": "eslint .  --ext .ts",
+        "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "js-yaml": "^4.1.0",
         "hashi-vault-js": "^0.4.13",
-        "pip-services4-commons-node": "^1.0.4",
-        "pip-services4-components-node": "^1.4.3",
-        "pip-services4-expressions-node": "^1.0.4"
+        "js-yaml": "^4.1.0",
+        "pip-services4-commons-node": "^0.0.2",
+        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-config-node": "0.0.4",
+        "pip-services4-expressions-node": "^0.0.2",
+        "pip-services4-observability-node": "0.0.2"
     },
     "devDependencies": {
-        "@types/chai": "^4.3.5",
+        "@types/chai": "^4.0.0",
+        "@types/js-yaml": "^4.0.5",
         "@types/mocha": "^10.0.1",
         "@types/node": "*",
-        "chai": "^4.3.7",
-        "mocha": "^10.2.0"
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "chai": "^4.3.4",
+        "eslint": "^8.32.0",
+        "mocha": "^10.2.0",
+        "typescript": "*"
     }
 }
