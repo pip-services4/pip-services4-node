@@ -10,8 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NatsMessageQueue = void 0;
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
 const NatsAbstractMessageQueue_1 = require("./NatsAbstractMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Message queue that sends and receives messages via NATS message broker.
  *
@@ -77,7 +78,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      * @param name  (optional) a queue name.
      */
     constructor(name) {
-        super(name, new pip_services3_messaging_node_1.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
+        super(name, new pip_services4_messaging_node_1.MessagingCapabilities(false, true, true, true, true, false, false, false, true));
         this._messages = [];
     }
     /**
@@ -130,7 +131,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
             }
             // Unsubscribe from the topic
             if (this._subscribed) {
-                let subject = this.getSubject();
+                const subject = this.getSubject();
                 yield this._connection.unsubscribe(subject, this);
                 this._subscribed = false;
             }
@@ -144,18 +145,20 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             this._messages = [];
         });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     subscribe(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._subscribed) {
                 return;
             }
             // Subscribe right away
-            let subject = this.getSubject();
+            const subject = this.getSubject();
             yield this._connection.subscribe(subject, { group: this._queueGroup }, this);
             this._subscribed = true;
         });
@@ -188,7 +191,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
                 message = this._messages[0];
             }
             if (message != null) {
-                this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+                this._logger.trace(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
             }
             return message;
         });
@@ -209,7 +212,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
             // Subscribe to topic if needed
             yield this.subscribe(context);
             // Peek a batch of messages
-            let messages = this._messages.slice(0, messageCount);
+            const messages = this._messages.slice(0, messageCount);
             this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
             return messages;
         });
@@ -233,15 +236,17 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
                 return message;
             }
             // Otherwise wait and return
-            let checkInterval = 100;
+            const checkInterval = 100;
             let elapsedTime = 0;
+            // eslint-disable-next-line no-constant-condition
             while (true) {
-                let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+                const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
                 if (!test)
                     break;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 message = yield new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        let message = this._messages.shift();
+                        const message = this._messages.shift();
                         resolve(message);
                     }, checkInterval);
                 });
@@ -256,13 +261,13 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
             return;
         }
         // Deserialize message
-        let message = this.toMessage(msg);
+        const message = this.toMessage(msg);
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
             this.sendMessageToReceiver(this._receiver, message);
@@ -272,7 +277,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
         }
     }
     sendMessageToReceiver(receiver, message) {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? pip_services4_components_node_1.Context.fromTraceId(message.trace_id) : new pip_services4_components_node_1.Context();
         if (message == null || receiver == null) {
             this._logger.warn(context, "NATS message was skipped.");
             return;
@@ -299,7 +304,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
             this._logger.trace(null, "Started listening messages at %s", this.getName());
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -316,6 +321,7 @@ class NatsMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessageQue
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         this._receiver = null;
     }

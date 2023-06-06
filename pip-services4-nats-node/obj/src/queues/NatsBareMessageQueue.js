@@ -10,8 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NatsBareMessageQueue = void 0;
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
 const NatsAbstractMessageQueue_1 = require("./NatsAbstractMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Message queue that sends and receives messages via NATS message broker.
  *
@@ -76,7 +77,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      * @param name  (optional) a queue name.
      */
     constructor(name) {
-        super(name, new pip_services3_messaging_node_1.MessagingCapabilities(false, true, true, false, false, false, false, false, false));
+        super(name, new pip_services4_messaging_node_1.MessagingCapabilities(false, true, true, false, false, false, false, false, false));
     }
     /**
      * Peeks a single incoming message from the queue without removing it.
@@ -85,6 +86,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      * @param context     (optional) a context to trace execution through call chain.
      * @returns a peeked message.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     peek(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -101,6 +103,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     peekBatch(context, messageCount) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -117,7 +120,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
     receive(context, waitTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkOpen(context);
-            let message = yield new Promise((resolve, reject) => {
+            const message = yield new Promise((resolve, reject) => {
                 this._client.subscribe(this.getSubject(), {
                     max: 1,
                     timeout: waitTimeout,
@@ -126,30 +129,30 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
                             reject(err);
                             return;
                         }
-                        let message = this.toMessage(msg);
+                        const message = this.toMessage(msg);
                         resolve(message);
                     }
                 });
             });
             if (message != null) {
                 this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-                this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+                this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
             }
             return message;
         });
     }
     receiveMessage(msg, receiver) {
         // Deserialize message
-        let message = this.toMessage(msg);
+        const message = this.toMessage(msg);
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
         receiver.receiveMessage(message, this)
             .catch((err) => {
-            this._logger.error(message.trace_id, err, "Failed to process the message");
+            this._logger.error(pip_services4_components_node_1.Context.fromTraceId(message.trace_id), err, "Failed to process the message");
         });
     }
     /**
@@ -181,6 +184,7 @@ class NatsBareMessageQueue extends NatsAbstractMessageQueue_1.NatsAbstractMessag
      *
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     endListen(context) {
         if (this._subscription) {
             this._subscription.unsubscribe();

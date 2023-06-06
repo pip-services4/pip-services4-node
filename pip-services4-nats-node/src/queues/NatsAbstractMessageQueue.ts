@@ -1,25 +1,16 @@
 /** @module queues */
 /** @hidden */
-const nats = require('nats');
+import nats = require('nats');
 
-import { DateTimeConverter } from 'pip-services4-commons-node';
+import { ConnectionException, DateTimeConverter, InvalidStateException } from 'pip-services4-commons-node';
 import { StringConverter } from 'pip-services4-commons-node';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 
 import { NatsConnection } from '../connect/NatsConnection';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, Context } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * Abstract NATS message queue with ability to connect to NATS server.
@@ -122,7 +113,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     }
 
     private createConnection(): NatsConnection {
-        let connection = new NatsConnection();
+        const connection = new NatsConnection();
         
         if (this._config)
             connection.configure(this._config);
@@ -148,7 +139,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -163,7 +154,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "NATS connection is not opened"
             );
@@ -179,13 +170,13 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'NATS connection is missing'
             );
@@ -206,8 +197,8 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     protected fromMessage(message: MessageEnvelope): any {
         if (message == null) return null;
 
-        let data = message.message || nats.Empty;
-        let headers = nats.headers();
+        const data = message.message || nats.Empty;
+        const headers = nats.headers();
         headers.append("message_id", message.message_id);
         headers.append("trace_id", message.trace_id);
         headers.append("message_type", message.message_type);
@@ -222,9 +213,9 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     protected toMessage(msg: any): MessageEnvelope {
         if (msg == null) return null;
 
-        let context = msg.headers.get("trace_id");
-        let messageType = msg.headers.get("message_type");
-        let message = new MessageEnvelope(context, messageType, Buffer.from(msg.data));
+        const context = Context.fromTraceId(msg.headers.get("trace_id"));
+        const messageType = msg.headers.get("message_type");
+        const message = new MessageEnvelope(context, messageType, Buffer.from(msg.data));
         message.message_id = msg.headers.get("message_id");
         message.sent_time = DateTimeConverter.toNullableDateTime(msg.headers.get("sent_time"));
         message.message = msg.data;
@@ -236,6 +227,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         // Not supported
     }
@@ -259,8 +251,8 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
     public async send(context: IContext, message: MessageEnvelope): Promise<void> {
         this.checkOpen(context);
 
-        let subject = this.getName() || this._subject;
-        let msg = this.fromMessage(message);
+        const subject = this.getName() || this._subject;
+        const msg = this.fromMessage(message);
 
         await this._connection.publish(subject, msg);
     }
@@ -274,6 +266,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public async renewLock(message: MessageEnvelope, lockTimeout: number): Promise<void> {
         // Not supported
     }
@@ -286,6 +279,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
      * 
      * @param message   a message to remove.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async complete(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
@@ -300,6 +294,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
      * 
      * @param message   a message to return.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async abandon(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
@@ -311,6 +306,7 @@ export abstract class NatsAbstractMessageQueue extends MessageQueue
      * 
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async moveToDeadLetter(message: MessageEnvelope): Promise<void> {
         // Not supported
     }

@@ -4,6 +4,7 @@ import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 
 import { NatsAbstractMessageQueue } from './NatsAbstractMessageQueue';
+import { Context, IContext } from 'pip-services4-components-node';
 
 /**
  * Message queue that sends and receives messages via NATS message broker.
@@ -81,6 +82,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * @param context     (optional) a context to trace execution through call chain.
      * @returns a peeked message.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async peek(context: IContext): Promise<MessageEnvelope> {
         // Not supported
         return null;
@@ -96,6 +98,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * @param messageCount      a maximum number of messages to peek.
      * @returns a list with peeked messages.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
         // Not supported
         return [];
@@ -111,7 +114,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
     public async receive(context: IContext, waitTimeout: number): Promise<MessageEnvelope> {
         this.checkOpen(context);
         
-        let message = await new Promise<MessageEnvelope>((resolve, reject) => {
+        const message = await new Promise<MessageEnvelope>((resolve, reject) => {
             this._client.subscribe(
                 this.getSubject(),
                 {
@@ -123,7 +126,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
                             return;
                         }
 
-                        let message = this.toMessage(msg);
+                        const message = this.toMessage(msg);
                         resolve(message);
                     }
                 }
@@ -132,7 +135,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
 
         if (message != null) {
             this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-            this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());        
+            this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());        
         }
 
         return message;        
@@ -140,18 +143,18 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
     
     private receiveMessage(msg: any, receiver: IMessageReceiver): void {
         // Deserialize message
-        let message = this.toMessage(msg);
+        const message = this.toMessage(msg);
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
 
         receiver.receiveMessage(message, this)
         .catch((err) => {
-            this._logger.error(message.trace_id, err, "Failed to process the message");
+            this._logger.error(Context.fromTraceId(message.trace_id), err, "Failed to process the message");
         });
     }
 
@@ -188,6 +191,7 @@ export class NatsBareMessageQueue extends NatsAbstractMessageQueue {
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         if (this._subscription) {
             this._subscription.unsubscribe();

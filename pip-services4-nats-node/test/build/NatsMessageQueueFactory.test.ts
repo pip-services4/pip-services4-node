@@ -1,7 +1,6 @@
 const assert = require('chai').assert;
 
-import { Descriptor } from 'pip-services4-commons-node';
-
+import { Descriptor } from 'pip-services4-components-node';
 import { NatsMessageQueueFactory } from '../../src/build/NatsMessageQueueFactory';
 
 suite('NatsMessageQueueFactory', ()=> {

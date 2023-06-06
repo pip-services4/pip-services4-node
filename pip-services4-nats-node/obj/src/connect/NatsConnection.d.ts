@@ -1,13 +1,9 @@
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageQueueConnection } from 'pip-services4-messaging-node';
 import { NatsConnectionResolver } from './NatsConnectionResolver';
 import { INatsMessageListener } from './INatsMessageListener';
 import { NatsSubscription } from './NatsSubscription';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 /**
  * NATS connection using plain driver.
  *

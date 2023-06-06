@@ -12,21 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NatsAbstractMessageQueue = void 0;
 /** @module queues */
 /** @hidden */
-const nats = require('nats');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_messaging_node_1 = require("pip-services4-messaging-node");
-const pip_services3_messaging_node_2 = require("pip-services4-messaging-node");
+const nats = require("nats");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_messaging_node_1 = require("pip-services4-messaging-node");
+const pip_services4_messaging_node_2 = require("pip-services4-messaging-node");
 const NatsConnection_1 = require("../connect/NatsConnection");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Abstract NATS message queue with ability to connect to NATS server.
  */
-class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQueue {
+class NatsAbstractMessageQueue extends pip_services4_messaging_node_1.MessageQueue {
     /**
      * Creates a new instance of the persistence component.
      *
@@ -37,11 +34,11 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_6.DependencyResolver(NatsAbstractMessageQueue._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(NatsAbstractMessageQueue._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -85,7 +82,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
         this._connection = null;
     }
     createConnection() {
-        let connection = new NatsConnection_1.NatsConnection();
+        const connection = new NatsConnection_1.NatsConnection();
         if (this._config)
             connection.configure(this._config);
         if (this._references)
@@ -118,7 +115,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "NATS connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "NATS connection is not opened");
             }
             this._opened = true;
             this._client = this._connection.getConnection();
@@ -135,7 +132,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'NATS connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'NATS connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -150,12 +147,12 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     fromMessage(message) {
         if (message == null)
             return null;
-        let data = message.message || nats.Empty;
-        let headers = nats.headers();
+        const data = message.message || nats.Empty;
+        const headers = nats.headers();
         headers.append("message_id", message.message_id);
         headers.append("trace_id", message.trace_id);
         headers.append("message_type", message.message_type);
-        headers.append("sent_time", pip_services3_commons_node_2.StringConverter.toNullableString(message.sent_time || new Date()));
+        headers.append("sent_time", pip_services4_commons_node_2.StringConverter.toNullableString(message.sent_time || new Date()));
         return {
             data: data,
             headers: headers
@@ -164,11 +161,11 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     toMessage(msg) {
         if (msg == null)
             return null;
-        let context = msg.headers.get("trace_id");
-        let messageType = msg.headers.get("message_type");
-        let message = new pip_services3_messaging_node_2.MessageEnvelope(context, messageType, Buffer.from(msg.data));
+        const context = pip_services4_components_node_1.Context.fromTraceId(msg.headers.get("trace_id"));
+        const messageType = msg.headers.get("message_type");
+        const message = new pip_services4_messaging_node_2.MessageEnvelope(context, messageType, Buffer.from(msg.data));
         message.message_id = msg.headers.get("message_id");
-        message.sent_time = pip_services3_commons_node_1.DateTimeConverter.toNullableDateTime(msg.headers.get("sent_time"));
+        message.sent_time = pip_services4_commons_node_1.DateTimeConverter.toNullableDateTime(msg.headers.get("sent_time"));
         message.message = msg.data;
         return message;
     }
@@ -177,6 +174,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -202,8 +200,8 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     send(context, message) {
         return __awaiter(this, void 0, void 0, function* () {
             this.checkOpen(context);
-            let subject = this.getName() || this._subject;
-            let msg = this.fromMessage(message);
+            const subject = this.getName() || this._subject;
+            const msg = this.fromMessage(message);
             yield this._connection.publish(subject, msg);
         });
     }
@@ -216,6 +214,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renewLock(message, lockTimeout) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -229,6 +228,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
      *
      * @param message   a message to remove.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     complete(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -244,6 +244,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
      *
      * @param message   a message to return.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     abandon(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -256,6 +257,7 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
      *
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     moveToDeadLetter(message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -263,5 +265,5 @@ class NatsAbstractMessageQueue extends pip_services3_messaging_node_1.MessageQue
     }
 }
 exports.NatsAbstractMessageQueue = NatsAbstractMessageQueue;
-NatsAbstractMessageQueue._defaultConfig = pip_services3_commons_node_3.ConfigParams.fromTuples("subject", null, "queue_group", null, "options.serialize_envelop", true, "options.retry_connect", true, "options.connect_timeout", 0, "options.reconnect_timeout", 3000, "options.max_reconnect", 3, "options.flush_timeout", 3000);
+NatsAbstractMessageQueue._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("subject", null, "queue_group", null, "options.serialize_envelop", true, "options.retry_connect", true, "options.connect_timeout", 0, "options.reconnect_timeout", 3000, "options.max_reconnect", 3, "options.flush_timeout", 3000);
 //# sourceMappingURL=NatsAbstractMessageQueue.js.map

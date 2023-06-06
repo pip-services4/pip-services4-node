@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 let process = require('process');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
 const MessageQueueFixture_1 = require("./MessageQueueFixture");
 const NatsMessageQueue_1 = require("../../src/queues/NatsMessageQueue");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 suite('NatsMessageQueue', () => {
     let queue;
     let fixture;
@@ -25,7 +25,7 @@ suite('NatsMessageQueue', () => {
     let brokerUser = process.env['NATS_USER'];
     let brokerPass = process.env['NATS_PASS'];
     let brokerToken = process.env['NATS_TOKEN'];
-    let queueConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('queue', brokerQueue, 'connection.protocol', 'nats', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.token', brokerToken, 'options.autosubscribe', true);
+    let queueConfig = pip_services4_components_node_1.ConfigParams.fromTuples('queue', brokerQueue, 'connection.protocol', 'nats', 'connection.host', brokerHost, 'connection.port', brokerPort, 'credential.username', brokerUser, 'credential.password', brokerPass, 'credential.token', brokerToken, 'options.autosubscribe', true);
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
         queue = new NatsMessageQueue_1.NatsMessageQueue(brokerQueue);
         queue.configure(queueConfig);

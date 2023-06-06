@@ -1,6 +1,5 @@
 /** @module build */
-import { Factory } from 'pip-services4-components-node';
-import { Descriptor } from 'pip-services4-commons-node';
+import { Descriptor, Factory } from 'pip-services4-components-node';
 
 import { NatsMessageQueue } from '../queues/NatsMessageQueue';
 import { NatsBareMessageQueue } from '../queues/NatsBareMessageQueue';
@@ -24,11 +23,11 @@ export class DefaultNatsFactory extends Factory {
 	public constructor() {
         super();
         this.register(DefaultNatsFactory.NatsQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return new NatsMessageQueue(name);
         });
         this.register(DefaultNatsFactory.NatsBareQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return new NatsBareMessageQueue(name);
         });
 		this.registerAsType(DefaultNatsFactory.NatsConnectionDescriptor, NatsConnection);

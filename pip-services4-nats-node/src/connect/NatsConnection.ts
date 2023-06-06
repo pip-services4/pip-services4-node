@@ -1,22 +1,17 @@
 /** @module connect */
 /** @hidden */
-const nats = require('nats');
+import nats = require('nats');
 /** @hidden */
-const os = require('os');
+import os = require('os');
 
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 import { IMessageQueueConnection } from 'pip-services4-messaging-node';
 
 import { NatsConnectionResolver } from './NatsConnectionResolver';
 import { INatsMessageListener } from './INatsMessageListener';
 import { NatsSubscription } from './NatsSubscription';
+import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * NATS connection using plain driver.
@@ -87,15 +82,17 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
     protected _subscriptions: NatsSubscription[] = [];
 
     protected _clientId: string = os.hostname();
-    protected _retryConnect: boolean = true;
-    protected _maxReconnect: number = 3;
-    protected _reconnectTimeout: number = 3000;
-    protected _flushTimeout: number = 3000;
+    protected _retryConnect = true;
+    protected _maxReconnect = 3;
+    protected _reconnectTimeout = 3000;
+    protected _flushTimeout = 3000;
 
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -143,10 +140,10 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
             return;
         }
 
-        let config = await this._connectionResolver.resolve(context);
+        const config = await this._connectionResolver.resolve(context);
 
         try {
-            let options: any = {
+            const options: any = {
                 "name": this._clientId,
                 "reconnect": this._retryConnect,
                 "maxReconnectAttempts": this._maxReconnect,
@@ -157,13 +154,13 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
             servers = servers.split(",");
             options["servers"] = servers;
 
-            let username = config.getAsString("username");
-            let password = config.getAsString("password");
+            const username = config.getAsString("username");
+            const password = config.getAsString("password");
             if (username != null) {
                 options["username"] = username;
                 options["password"] = password;
             }
-            let token = config.getAsString("token");
+            const token = config.getAsString("token");
             if (token != null) {
                 options["token"] = token;
             }                
@@ -173,7 +170,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
             this._logger.debug(context, "Connected to NATS server at "+servers);
         } catch (ex) {
             this._logger.error(context, ex, "Failed to connect to NATS server");
-            let err = new ConnectionException(context, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
+            const err = new ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
             throw err;
         }
     }
@@ -213,6 +210,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be created.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async createQueue(name: string): Promise<void> {
         // Not supported
     }
@@ -222,6 +220,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
       * If connection doesn't support this function it exists without error.
       * @param name the name of the queue to be deleted.
       */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async deleteQueue(name: string): Promise<void> {
         // Not supported
     }
@@ -264,7 +263,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
         this.checkOpen();
 
         // Subscribe to topic
-        let handler = this._connection.subscribe(
+        const handler = this._connection.subscribe(
             subject, 
             {
                 max: options.max,
@@ -277,10 +276,10 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
         );
 
         // Determine if messages shall be filtered (topic without wildcarts)
-        let filter = subject.indexOf("*") < 0;
+        const filter = subject.indexOf("*") < 0;
 
         // Add the subscription
-        let subscription = <NatsSubscription>{
+        const subscription = <NatsSubscription>{
             subject: subject,
             options: options,
             filter: filter,
@@ -297,13 +296,13 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
      */
     public async unsubscribe(subject: string, listener: INatsMessageListener): Promise<void> {
         // Find the subscription index
-        let index = this._subscriptions.findIndex((s) => s.subject == subject && s.listener == listener);
+        const index = this._subscriptions.findIndex((s) => s.subject == subject && s.listener == listener);
         if (index < 0) {
             return;
         }
         
         // Remove the subscription
-        let subscription = this._subscriptions.splice(index, 1)[0];
+        const subscription = this._subscriptions.splice(index, 1)[0];
 
         // Unsubscribe from the topic
         if (this.isOpen() && subscription.handler != null) {

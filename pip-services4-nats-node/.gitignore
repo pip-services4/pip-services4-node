@@ -6,3 +6,5 @@
 /config/config.yaml
 /data/dummies.json
 package-lock.json
+docker/*id_rsa
+docker/.npmrc

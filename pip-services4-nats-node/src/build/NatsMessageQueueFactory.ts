@@ -1,10 +1,10 @@
 /** @module build */
-import { Descriptor } from 'pip-services4-commons-node';
 import { IMessageQueue } from 'pip-services4-messaging-node';
 import { MessageQueueFactory } from 'pip-services4-messaging-node';
 
 import { NatsMessageQueue } from '../queues/NatsMessageQueue';
 import { NatsBareMessageQueue } from '../queues/NatsBareMessageQueue';
+import { Descriptor } from 'pip-services4-components-node';
 
 /**
  * Creates [[NatsMessageQueue]] components by their descriptors.
@@ -23,11 +23,11 @@ export class NatsMessageQueueFactory extends MessageQueueFactory {
     public constructor() {
         super();
         this.register(NatsMessageQueueFactory.NatsQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return this.createQueue(name);
         });
         this.register(NatsMessageQueueFactory.NatsBareQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return this.createBareQueue(name);
         });
     }
@@ -37,7 +37,7 @@ export class NatsMessageQueueFactory extends MessageQueueFactory {
      * @param name a name of the created message queue.
      */
      public createQueue(name: string): IMessageQueue {
-        let queue = new NatsMessageQueue(name);
+        const queue = new NatsMessageQueue(name);
 
         if (this._config != null) {
             queue.configure(this._config);
@@ -54,7 +54,7 @@ export class NatsMessageQueueFactory extends MessageQueueFactory {
      * @param name a name of the created message queue.
      */
      public createBareQueue(name: string): IMessageQueue {
-        let queue = new NatsBareMessageQueue(name);
+        const queue = new NatsBareMessageQueue(name);
 
         if (this._config != null) {
             queue.configure(this._config);

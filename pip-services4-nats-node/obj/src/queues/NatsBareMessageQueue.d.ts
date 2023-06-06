@@ -2,6 +2,7 @@
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { NatsAbstractMessageQueue } from './NatsAbstractMessageQueue';
+import { IContext } from 'pip-services4-components-node';
 /**
  * Message queue that sends and receives messages via NATS message broker.
  *

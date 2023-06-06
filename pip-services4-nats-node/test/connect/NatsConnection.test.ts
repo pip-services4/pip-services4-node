@@ -1,9 +1,9 @@
 const assert = require('chai').assert;
-const process = require('process');
+import process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
 
 import { NatsConnection } from '../../src/connect/NatsConnection';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('NatsConnection', ()=> {
     let connection: NatsConnection;

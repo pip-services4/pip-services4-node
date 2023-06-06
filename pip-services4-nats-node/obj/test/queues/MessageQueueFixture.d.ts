@@ -1,6 +1,7 @@
 import { IMessageQueue } from 'pip-services4-messaging-node';
 export declare class MessageQueueFixture {
     private _queue;
+    private context;
     constructor(queue: IMessageQueue);
     testSendReceiveMessage(): Promise<void>;
     testReceiveSendMessage(): Promise<void>;

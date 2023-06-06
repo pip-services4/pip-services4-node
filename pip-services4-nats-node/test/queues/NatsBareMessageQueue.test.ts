@@ -1,9 +1,8 @@
 let process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
-
 import { MessageQueueFixture } from './MessageQueueFixture';
 import { NatsBareMessageQueue } from '../../src/queues/NatsBareMessageQueue';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('NatsBareMessageQueue', ()=> {
     let queue: NatsBareMessageQueue;

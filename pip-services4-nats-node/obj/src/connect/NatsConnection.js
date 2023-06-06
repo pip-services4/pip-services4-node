@@ -12,14 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NatsConnection = void 0;
 /** @module connect */
 /** @hidden */
-const nats = require('nats');
+const nats = require("nats");
 /** @hidden */
-const os = require('os');
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const os = require("os");
 const NatsConnectionResolver_1 = require("./NatsConnectionResolver");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * NATS connection using plain driver.
  *
@@ -56,14 +55,14 @@ class NatsConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "client_id", null, "options.retry_connect", true, "options.connect_timeout", 0, "options.reconnect_timeout", 3000, "options.max_reconnect", 3, "options.flush_timeout", 3000);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -71,7 +70,7 @@ class NatsConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
         /**
          * Topic subscriptions
          */
@@ -81,6 +80,7 @@ class NatsConnection {
         this._maxReconnect = 3;
         this._reconnectTimeout = 3000;
         this._flushTimeout = 3000;
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -124,9 +124,9 @@ class NatsConnection {
             if (this._connection != null) {
                 return;
             }
-            let config = yield this._connectionResolver.resolve(context);
+            const config = yield this._connectionResolver.resolve(context);
             try {
-                let options = {
+                const options = {
                     "name": this._clientId,
                     "reconnect": this._retryConnect,
                     "maxReconnectAttempts": this._maxReconnect,
@@ -135,13 +135,13 @@ class NatsConnection {
                 let servers = config.getAsString("servers");
                 servers = servers.split(",");
                 options["servers"] = servers;
-                let username = config.getAsString("username");
-                let password = config.getAsString("password");
+                const username = config.getAsString("username");
+                const password = config.getAsString("password");
                 if (username != null) {
                     options["username"] = username;
                     options["password"] = password;
                 }
-                let token = config.getAsString("token");
+                const token = config.getAsString("token");
                 if (token != null) {
                     options["token"] = token;
                 }
@@ -150,7 +150,7 @@ class NatsConnection {
             }
             catch (ex) {
                 this._logger.error(context, ex, "Failed to connect to NATS server");
-                let err = new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
+                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
                 throw err;
             }
         });
@@ -190,6 +190,7 @@ class NatsConnection {
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be created.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createQueue(name) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -200,6 +201,7 @@ class NatsConnection {
      * If connection doesn't support this function it exists without error.
      * @param name the name of the queue to be deleted.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deleteQueue(name) {
         return __awaiter(this, void 0, void 0, function* () {
             // Not supported
@@ -212,7 +214,7 @@ class NatsConnection {
     checkOpen() {
         if (this.isOpen())
             return;
-        throw new pip_services3_commons_node_3.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
+        throw new pip_services4_commons_node_1.InvalidStateException(null, "NOT_OPEN", "Connection was not opened");
     }
     /**
      * Publish a message to a specified topic
@@ -238,7 +240,7 @@ class NatsConnection {
             // Check for open connection
             this.checkOpen();
             // Subscribe to topic
-            let handler = this._connection.subscribe(subject, {
+            const handler = this._connection.subscribe(subject, {
                 max: options.max,
                 timeout: options.timeout,
                 queue: options.queue,
@@ -247,9 +249,9 @@ class NatsConnection {
                 }
             });
             // Determine if messages shall be filtered (topic without wildcarts)
-            let filter = subject.indexOf("*") < 0;
+            const filter = subject.indexOf("*") < 0;
             // Add the subscription
-            let subscription = {
+            const subscription = {
                 subject: subject,
                 options: options,
                 filter: filter,
@@ -267,12 +269,12 @@ class NatsConnection {
     unsubscribe(subject, listener) {
         return __awaiter(this, void 0, void 0, function* () {
             // Find the subscription index
-            let index = this._subscriptions.findIndex((s) => s.subject == subject && s.listener == listener);
+            const index = this._subscriptions.findIndex((s) => s.subject == subject && s.listener == listener);
             if (index < 0) {
                 return;
             }
             // Remove the subscription
-            let subscription = this._subscriptions.splice(index, 1)[0];
+            const subscription = this._subscriptions.splice(index, 1)[0];
             // Unsubscribe from the topic
             if (this.isOpen() && subscription.handler != null) {
                 subscription.handler.unsubscribe();

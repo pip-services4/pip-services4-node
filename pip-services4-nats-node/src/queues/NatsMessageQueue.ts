@@ -1,10 +1,10 @@
 /** @module queues */
-import { ConfigParams } from 'pip-services4-commons-node';
 import { IMessageReceiver } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 
 import { NatsAbstractMessageQueue } from './NatsAbstractMessageQueue';
+import { ConfigParams, Context, IContext } from 'pip-services4-components-node';
 
 /**
  * Message queue that sends and receives messages via NATS message broker.
@@ -125,7 +125,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
 
         // Unsubscribe from the topic
         if (this._subscribed) {
-            let subject = this.getSubject();
+            const subject = this.getSubject();
             await this._connection.unsubscribe(subject, this);
             this._subscribed = false;
         }
@@ -141,17 +141,19 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
 	 * 
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async clear(context: IContext): Promise<void> {
         this._messages = [];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async subscribe(context: IContext): Promise<void> {
         if (this._subscribed) {
             return;
         }
 
         // Subscribe right away
-        let subject = this.getSubject();
+        const subject = this.getSubject();
         await this._connection.subscribe(
             subject,
             { group: this._queueGroup },
@@ -190,7 +192,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         }
 
         if (message != null) {
-            this._logger.trace(message.trace_id, "Peeked message %s on %s", message, this.getName());
+            this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this.getName());
         }
     
         return message;
@@ -213,7 +215,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         await this.subscribe(context);
 
         // Peek a batch of messages
-        let messages = this._messages.slice(0, messageCount);
+        const messages = this._messages.slice(0, messageCount);
 
         this._logger.trace(context, "Peeked %d messages on %s", messages.length, this.getName());
 
@@ -242,15 +244,17 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         }
 
         // Otherwise wait and return
-        let checkInterval = 100;
+        const checkInterval = 100;
         let elapsedTime = 0;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
-            let test = this.isOpen() && elapsedTime < waitTimeout && message == null;
+            const test = this.isOpen() && elapsedTime < waitTimeout && message == null;
             if (!test) break;
             
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             message = await new Promise<MessageEnvelope>((resolve, reject) => {
                 setTimeout(() => {
-                    let message = this._messages.shift();
+                    const message = this._messages.shift();
                     resolve(message);
                 }, checkInterval);
             });
@@ -268,14 +272,14 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
         } 
 
         // Deserialize message
-        let message = this.toMessage(msg)
+        const message = this.toMessage(msg)
         if (message == null) {
             this._logger.error(null, null, "Failed to read received message");
             return;
         }
 
         this._counters.incrementOne("queue." + this.getName() + ".received_messages");
-        this._logger.debug(message.trace_id, "Received message %s via %s", message, this.getName());
+        this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this.getName());
 
         // Send message to receiver if its set or put it into the queue
         if (this._receiver != null) {
@@ -286,7 +290,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
     }
 
     private sendMessageToReceiver(receiver: IMessageReceiver, message: MessageEnvelope): void {
-        let context = message != null ? message.trace_id : null;
+        const context = message != null ? Context.fromTraceId(message.trace_id) : new Context();
         if (message == null || receiver == null) {
             this._logger.warn(context, "NATS message was skipped.");
             return;
@@ -317,7 +321,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
 
             // Resend collected messages to receiver
             while (this.isOpen() && this._messages.length > 0) {
-                let message = this._messages.shift();
+                const message = this._messages.shift();
                 if (message != null) {
                     this.sendMessageToReceiver(receiver, message);
                 }
@@ -336,6 +340,7 @@ export class NatsMessageQueue extends NatsAbstractMessageQueue {
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._receiver = null;
     }
