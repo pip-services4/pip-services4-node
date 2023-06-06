@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
-const process = require('process');
+import process = require('process');
 
-import { ConfigParams } from 'pip-services4-commons-node';
 import { PostgresConnection } from '../../src/connect/PostgresConnection';
+import { ConfigParams } from 'pip-services4-components-node';
 
 suite('PostgresConnection', () => {
     let connection: PostgresConnection;

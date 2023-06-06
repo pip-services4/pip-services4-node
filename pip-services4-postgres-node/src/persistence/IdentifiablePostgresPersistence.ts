@@ -1,13 +1,14 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
-import { IdGenerator } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
+import { IdGenerator } from 'pip-services4-data-node';
 
 import { IWriter } from 'pip-services4-persistence-node';
 import { IGetter } from 'pip-services4-persistence-node';
 import { ISetter } from 'pip-services4-persistence-node';
 
 import { PostgresPersistence } from './PostgresPersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in PostgreSQL
@@ -92,7 +93,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
     /**
      * Flag to turn on automated string ID generation
      */
-     protected _autoGenerateId: boolean = true;
+     protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -122,8 +123,8 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
      * @returns                 a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let params = this.generateParameters(ids);
-        let query = "SELECT * FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "SELECT * FROM " + this.quotedTableName()
             + " WHERE \"id\" IN(" + params + ")";
 
         let items = await new Promise<any[]>((resolve, reject) => {
@@ -133,7 +134,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
 
-                let items = result.rows;
+                const items = result.rows;
                 resolve(items);
             });
         });
@@ -152,8 +153,8 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
      * @returns                 a found data item or <code>null</code>.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=$1";
-        let params = [ id ];
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=$1";
+        const params = [ id ];
 
         let item = await new Promise<any>((resolve, reject) => {
             this._client.query(query, params, (err, result) => {
@@ -162,7 +163,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
 
-                let item = result && result.rows ? result.rows[0] || null : null; 
+                const item = result && result.rows ? result.rows[0] || null : null; 
                 resolve(item);
             });
         });
@@ -218,13 +219,13 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
             item.id = <any>IdGenerator.nextLong();
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let setParams = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const setParams = this.generateSetParameters(row);
+        const values = this.generateValues(row);
 
-        let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ")"
+        const query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ")"
             + " VALUES (" + params + ")"
             + " ON CONFLICT (\"id\") DO UPDATE SET " + setParams + " RETURNING *";
 
@@ -235,7 +236,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
             
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });
@@ -259,12 +260,12 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
             return null;
         }
 
-        let row = this.convertFromPublic(item);
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " WHERE \"id\"=$" + values.length + " RETURNING *";
 
         let newItem = await new Promise<any>((resolve, reject) => {
@@ -274,7 +275,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
 
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });
@@ -299,12 +300,12 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
             return null;
         }
 
-        let row = this.convertFromPublicPartial(data.getAsObject());
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublicPartial(data.getAsObject());
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " WHERE \"id\"=$" + values.length + " RETURNING *";
 
         let newItem = await new Promise<any>((resolve, reject) => {
@@ -314,7 +315,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
 
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });
@@ -334,9 +335,9 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
      * @returns                 the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let values = [ id ];
+        const values = [ id ];
 
-        let query = "DELETE FROM " + this.quotedTableName()
+        const query = "DELETE FROM " + this.quotedTableName()
             + " WHERE \"id\"=$1 RETURNING *";
 
         let oldItem = await new Promise<any>((resolve, reject) => {
@@ -346,7 +347,7 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
                     return;
                 }
 
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });
@@ -365,17 +366,17 @@ export class IdentifiablePostgresPersistence<T extends IIdentifiable<K>, K> exte
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let params = this.generateParameters(ids);
-        let query = "DELETE FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "DELETE FROM " + this.quotedTableName()
             + " WHERE \"id\" IN(" + params + ")";
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, ids, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result ? result.rowCount : 0;
+                const count = result ? result.rowCount : 0;
                 resolve(count);
             });
         });

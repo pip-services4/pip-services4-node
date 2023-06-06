@@ -1,13 +1,8 @@
 /** @module connect */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConfigException } from 'pip-services4-commons-node';
-import { ConnectionResolver } from 'pip-services4-components-node';
-import { CredentialResolver } from 'pip-services4-components-node';
-import { ConnectionParams } from 'pip-services4-components-node';
-import { CredentialParams } from 'pip-services4-components-node';
+
+import { ConfigException } from "pip-services4-commons-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 
 /**
  * Helper class that resolves PostgreSQL connection and credential parameters,
@@ -64,59 +59,61 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
     }
     
     private validateConnection(context: IContext, connection: ConnectionParams): void {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) return null;
 
-        let host = connection.getHost();
+        const traceId = context != null ? context.getTraceId() : null;
+
+        const host = connection.getHost();
         if (host == null) {
-            throw new ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new ConfigException(traceId, "NO_HOST", "Connection host is not set");
         }
 
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new ConfigException(traceId, "NO_PORT", "Connection port is not set");
         }
 
-        let database = connection.getAsNullableString("database");
+        const database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new ConfigException(context, "NO_DATABASE", "Connection database is not set");
+            throw new ConfigException(traceId, "NO_DATABASE", "Connection database is not set");
         }
     }
 
     private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
-            throw new ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
 
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
 
     private composeConfig(connections: ConnectionParams[], credential: CredentialParams): any {
-        let config: any = {};
+        const config: any = {};
 
         // Define connection part
-        for (let connection of connections) {
-            let uri = connection.getUri();
+        for (const connection of connections) {
+            const uri = connection.getUri();
             if (uri) config.connectionString = uri;
 
-            let host = connection.getHost();
+            const host = connection.getHost();
             if (host) config.host = host;
 
-            let port = connection.getPort();
+            const port = connection.getPort();
             if (port) config.port = port;
 
-            let database = connection.getAsNullableString("database");
+            const database = connection.getAsNullableString("database");
             if (database) config.database = database;
         }
 
         // Define authentication part
         if (credential) {
-            let username = credential.getUsername();
+            const username = credential.getUsername();
             if (username) config.user = username;
 
-            let password = credential.getPassword();
+            const password = credential.getPassword();
             if (password) config.password = password;
         }
 
@@ -130,14 +127,14 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
      * @returns resolved connection config.
      */
     public async resolve(context: IContext): Promise<any> {
-        let connections = await this._connectionResolver.resolveAll(context);
+        const connections = await this._connectionResolver.resolveAll(context);
         // Validate connections
         this.validateConnections(context, connections);
         
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let config = this.composeConfig(connections, credential);
+        const config = this.composeConfig(connections, credential);
         return config;
     }
 

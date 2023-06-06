@@ -9,11 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const process = require('process');
+const process = require("process");
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const PostgresConnection_1 = require("../../src/connect/PostgresConnection");
 const DummyPersistenceFixture_1 = require("../fixtures/DummyPersistenceFixture");
 const DummyPostgresPersistence_1 = require("./DummyPostgresPersistence");
@@ -31,11 +29,11 @@ suite('DummyPostgresConnection', () => {
         return;
     }
     setup(() => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.uri', postgresUri, 'connection.host', postgresHost, 'connection.port', postgresPort, 'connection.database', postgresDatabase, 'credential.username', postgresUser, 'credential.password', postgresPassword);
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.uri', postgresUri, 'connection.host', postgresHost, 'connection.port', postgresPort, 'connection.database', postgresDatabase, 'credential.username', postgresUser, 'credential.password', postgresPassword);
         connection = new PostgresConnection_1.PostgresConnection();
         connection.configure(dbConfig);
         persistence = new DummyPostgresPersistence_1.DummyPostgresPersistence();
-        persistence.setReferences(pip_services3_commons_node_3.References.fromTuples(new pip_services3_commons_node_2.Descriptor("pip-services", "connection", "postgres", "default", "1.0"), connection));
+        persistence.setReferences(pip_services4_components_node_1.References.fromTuples(new pip_services4_components_node_1.Descriptor("pip-services", "connection", "postgres", "default", "1.0"), connection));
         fixture = new DummyPersistenceFixture_1.DummyPersistenceFixture(persistence);
         yield connection.open(null);
         yield persistence.open(null);

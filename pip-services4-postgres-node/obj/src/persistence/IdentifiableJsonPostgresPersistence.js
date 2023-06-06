@@ -110,10 +110,10 @@ class IdentifiableJsonPostgresPersistence extends IdentifiablePostgresPersistenc
      */
     ensureTable(idType = 'TEXT', dataType = 'JSONB') {
         if (this._schemaName != null) {
-            let query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
+            const query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
             this.ensureSchema(query);
         }
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (\"id\" " + idType + " PRIMARY KEY, \"data\" " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -137,7 +137,7 @@ class IdentifiableJsonPostgresPersistence extends IdentifiablePostgresPersistenc
     convertFromPublic(value) {
         if (value == null)
             return null;
-        let result = {
+        const result = {
             id: value.id,
             data: value
         };
@@ -156,15 +156,15 @@ class IdentifiableJsonPostgresPersistence extends IdentifiablePostgresPersistenc
             if (data == null || id == null) {
                 return null;
             }
-            let query = "UPDATE " + this.quotedTableName() + " SET \"data\"=\"data\"||$2 WHERE \"id\"=$1 RETURNING *";
-            let values = [id, data.getAsObject()];
+            const query = "UPDATE " + this.quotedTableName() + " SET \"data\"=\"data\"||$2 WHERE \"id\"=$1 RETURNING *";
+            const values = [id, data.getAsObject()];
             let newItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });

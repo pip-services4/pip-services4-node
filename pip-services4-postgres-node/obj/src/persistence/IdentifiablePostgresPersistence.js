@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentifiablePostgresPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const PostgresPersistence_1 = require("./PostgresPersistence");
 /**
  * Abstract persistence component that stores data in PostgreSQL
@@ -122,8 +122,8 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "SELECT * FROM " + this.quotedTableName()
+            const params = this.generateParameters(ids);
+            const query = "SELECT * FROM " + this.quotedTableName()
                 + " WHERE \"id\" IN(" + params + ")";
             let items = yield new Promise((resolve, reject) => {
                 this._client.query(query, ids, (err, result) => {
@@ -131,7 +131,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                         reject(err);
                         return;
                     }
-                    let items = result.rows;
+                    const items = result.rows;
                     resolve(items);
                 });
             });
@@ -149,15 +149,15 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=$1";
-            let params = [id];
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=$1";
+            const params = [id];
             let item = yield new Promise((resolve, reject) => {
                 this._client.query(query, params, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows ? result.rows[0] || null : null;
+                    const item = result && result.rows ? result.rows[0] || null : null;
                     resolve(item);
                 });
             });
@@ -190,7 +190,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
             let newItem = item;
             if (newItem.id == null && this._autoGenerateId) {
                 newItem = Object.assign({}, newItem);
-                newItem.id = item.id || pip_services3_commons_node_1.IdGenerator.nextLong();
+                newItem.id = item.id || pip_services4_data_node_1.IdGenerator.nextLong();
             }
             return yield _super.create.call(this, context, newItem);
         });
@@ -211,14 +211,14 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
             // Assign unique id
             if (item.id == null && this._autoGenerateId) {
                 item = Object.assign({}, item);
-                item.id = pip_services3_commons_node_1.IdGenerator.nextLong();
+                item.id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let setParams = this.generateSetParameters(row);
-            let values = this.generateValues(row);
-            let query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ")"
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const setParams = this.generateSetParameters(row);
+            const values = this.generateValues(row);
+            const query = "INSERT INTO " + this.quotedTableName() + " (" + columns + ")"
                 + " VALUES (" + params + ")"
                 + " ON CONFLICT (\"id\") DO UPDATE SET " + setParams + " RETURNING *";
             let newItem = yield new Promise((resolve, reject) => {
@@ -227,7 +227,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });
@@ -249,11 +249,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
             if (item == null || item.id == null) {
                 return null;
             }
-            let row = this.convertFromPublic(item);
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublic(item);
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(item.id);
-            let query = "UPDATE " + this.quotedTableName()
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " WHERE \"id\"=$" + values.length + " RETURNING *";
             let newItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
@@ -261,7 +261,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });
@@ -284,11 +284,11 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
             if (data == null || id == null) {
                 return null;
             }
-            let row = this.convertFromPublicPartial(data.getAsObject());
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const row = this.convertFromPublicPartial(data.getAsObject());
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(id);
-            let query = "UPDATE " + this.quotedTableName()
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " WHERE \"id\"=$" + values.length + " RETURNING *";
             let newItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
@@ -296,7 +296,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });
@@ -315,8 +315,8 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let values = [id];
-            let query = "DELETE FROM " + this.quotedTableName()
+            const values = [id];
+            const query = "DELETE FROM " + this.quotedTableName()
                 + " WHERE \"id\"=$1 RETURNING *";
             let oldItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
@@ -324,7 +324,7 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });
@@ -342,16 +342,16 @@ class IdentifiablePostgresPersistence extends PostgresPersistence_1.PostgresPers
      */
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "DELETE FROM " + this.quotedTableName()
+            const params = this.generateParameters(ids);
+            const query = "DELETE FROM " + this.quotedTableName()
                 + " WHERE \"id\" IN(" + params + ")";
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.query(query, ids, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result ? result.rowCount : 0;
+                    const count = result ? result.rowCount : 0;
                     resolve(count);
                 });
             });

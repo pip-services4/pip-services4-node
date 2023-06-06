@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require('chai').assert;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const PostgresConnectionResolver_1 = require("../../src/connect/PostgresConnectionResolver");
 suite('PostgresConnectionResolver', () => {
     test('Connection Config', () => __awaiter(void 0, void 0, void 0, function* () {
-        let dbConfig = pip_services3_commons_node_1.ConfigParams.fromTuples('connection.host', 'localhost', 'connection.port', 5432, 'connection.database', 'test', 'connection.ssl', true, 'credential.username', 'postgres', 'credential.password', 'postgres');
+        let dbConfig = pip_services4_components_node_1.ConfigParams.fromTuples('connection.host', 'localhost', 'connection.port', 5432, 'connection.database', 'test', 'connection.ssl', true, 'credential.username', 'postgres', 'credential.password', 'postgres');
         let resolver = new PostgresConnectionResolver_1.PostgresConnectionResolver();
         resolver.configure(dbConfig);
         let config = yield resolver.resolve(null);

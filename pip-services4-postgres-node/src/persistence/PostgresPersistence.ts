@@ -1,20 +1,9 @@
 /** @module persistence */
-import { captureRejectionSymbol } from 'node:events';
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { LongConverter } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { InvalidStateException, ConnectionException, LongConverter } from 'pip-services4-commons-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { PagingParams, DataPage } from 'pip-services4-data-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { PostgresConnection } from '../connect/PostgresConnection';
 
 /**
@@ -159,7 +148,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     /**
      * Maximum number of objects in data pages
      */
-    protected _maxPageSize: number = 100;
+    protected _maxPageSize = 100;
 
     /**
      * Creates a new instance of the persistence component.
@@ -219,7 +208,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     }
 
     private createConnection(): PostgresConnection {
-        let connection = new PostgresConnection();
+        const connection = new PostgresConnection();
         
         if (this._config)
             connection.configure(this._config);
@@ -255,10 +244,10 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         }
 
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "") fields += ", ";
             fields += key
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc) fields += " DESC";
         }
 
@@ -344,7 +333,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	if (this._opened) {
+        if (this._opened) {
             return;
         }
         
@@ -359,7 +348,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context,
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION',
                 'PostgreSQL connection is missing'
             );
@@ -367,7 +356,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "PostgreSQL connection is not opened"
             );
@@ -395,13 +384,13 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (!this._opened) {
+        if (!this._opened) {
             return;
         }
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context, 
+                context != null ? context.getTraceId() : null,
                 'NO_CONNECTION', 
                 'Postgres connection is missing'
             );
@@ -426,13 +415,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             throw new Error('Table name is not defined');
         }
 
-        let query = "DELETE FROM " + this.quotedTableName();
+        const query = "DELETE FROM " + this.quotedTableName();
 
         return new Promise((resolve, reject) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             this._client.query(query, (err, result) => {
                 if (err) {
                     err = new ConnectionException(
-                        context,
+                        context != null ? context.getTraceId() : null,
                         "CONNECT_FAILED",
                         "Connection to postgres failed"
                     ).withCause(err);
@@ -452,14 +442,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     
         // Check if table exist to determine weither to auto create objects
         // Todo: Add support for schema
-        let query = "SELECT to_regclass('" + this._tableName + "')";
-        let exist = await new Promise<boolean>((resolve, reject) => {
+        const query = "SELECT to_regclass('" + this._tableName + "')";
+        const exist = await new Promise<boolean>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let exist = result != null && result.rows
+                const exist = result != null && result.rows
                     && result.rows.length > 0 && result.rows[0].to_regclass != null;
                 resolve(exist);
             });
@@ -472,8 +462,9 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         try {
             // Run all DML commands
-            for (let dml of this._schemaStatements) {
+            for (const dml of this._schemaStatements) {
                 await new Promise<void>((resolve, reject) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     this._client.query(dml, (err, result) => {
                         if (err) {
                             reject(err);
@@ -498,7 +489,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
         values = !Array.isArray(values) ? Object.keys(values) : values;
 
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(value);
         }
@@ -516,7 +507,8 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "") result += ",";
             result += "$" + index;
             index++;
@@ -533,7 +525,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
     protected generateSetParameters(values: any): string {
         let result = "";
         let index = 1;
-        for (let column in values) {
+        for (const column in values) {
             if (result != "") result += ",";
             result += this.quoteIdentifier(column) + "=$" + index;
             index++;
@@ -572,9 +564,9 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         // Adjust max item count based on configuration
         paging = paging || new PagingParams();
-        let skip = paging.getSkip(-1);
-        let take = paging.getTake(this._maxPageSize);
-        let pagingEnabled = paging.total;
+        const skip = paging.getSkip(-1);
+        const take = paging.getTake(this._maxPageSize);
+        const pagingEnabled = paging.total;
 
         if (filter && filter != "") {
             query += " WHERE " + filter;
@@ -611,14 +603,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
                 query += " WHERE " + filter;
             }
 
-            let count = await new Promise<number>((resolve, reject) => {
+            const count = await new Promise<number>((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err) {
                         reject(err);
                         return;
                     }
                         
-                    let count = result.rows && result.rows.length == 1 
+                    const count = result.rows && result.rows.length == 1 
                         ? LongConverter.toLong(result.rows[0].count) : 0;
                     resolve(count);
                 });
@@ -647,14 +639,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
 
-                let count = result.rows && result.rows.length == 1 
+                const count = result.rows && result.rows.length == 1 
                     ? LongConverter.toLong(result.rows[0].count) : 0;
                 resolve(count);
             });
@@ -699,7 +691,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
                     return;
                 }
 
-                let items = result.rows;
+                const items = result.rows;
                 resolve(items);
             });
         });
@@ -725,13 +717,13 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
-                let count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
+                const count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
                 resolve(count);
             });
         });
@@ -741,7 +733,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             query += " WHERE " + filter;
         }
     
-        let pos = Math.trunc(Math.random() * count);
+        const pos = Math.trunc(Math.random() * count);
         query += " OFFSET " + pos + " LIMIT 1";
     
         let item = await new Promise<any>((resolve, reject) => {
@@ -750,8 +742,8 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
                     reject(err);
                     return;
                 }
-                let items = result.rows;
-                let item = (items != null && items.length > 0) ? items[0] : null;
+                const items = result.rows;
+                const item = (items != null && items.length > 0) ? items[0] : null;
                 resolve(item);
             });
         });
@@ -778,12 +770,12 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             return;
         }
 
-        let row = this.convertFromPublic(item);
-        let columns = this.generateColumns(row);
-        let params = this.generateParameters(row);
-        let values = this.generateValues(row);
+        const row = this.convertFromPublic(item);
+        const columns = this.generateColumns(row);
+        const params = this.generateParameters(row);
+        const values = this.generateValues(row);
 
-        let query = "INSERT INTO " + this.quotedTableName()
+        const query = "INSERT INTO " + this.quotedTableName()
             + " (" + columns + ") VALUES (" + params + ") RETURNING *";
 
         let newItem = await new Promise<any>((resolve, reject) => {
@@ -792,7 +784,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
                     reject(err);
                     return;
                 }
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });
@@ -819,14 +811,14 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             query += " WHERE " + filter;
         }
 
-        let count = await new Promise<number>((resolve, reject) => {
+        const count = await new Promise<number>((resolve, reject) => {
             this._client.query(query, (err, result) => {
                 if (err != null) {
                     reject(err);
                     return;
                 }
 
-                let count = result ? result.rowCount : 0;
+                const count = result ? result.rowCount : 0;
                 resolve(count);
             });
         });

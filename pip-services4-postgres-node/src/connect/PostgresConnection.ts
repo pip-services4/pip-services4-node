@@ -1,13 +1,9 @@
 /** @module persistence */
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { ConnectionException } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
 
+import { ConnectionException } from 'pip-services4-commons-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
 import { PostgresConnectionResolver } from './PostgresConnectionResolver';
+import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
  * PostgreSQL connection using plain driver.
@@ -74,7 +70,9 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
     /**
      * Creates a new instance of the connection component.
      */
-    public constructor() {}
+    public constructor() {
+        //
+    }
 
     /**
      * Configures component by passing configuration parameters.
@@ -109,11 +107,11 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
     }
 
     private composeSettings(): any {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
 
-        let settings: any = {
+        const settings: any = {
             max: maxPoolSize,
             connectionTimeoutMillis: connectTimeoutMS,
             idleTimeoutMillis: idleTimeoutMS
@@ -128,24 +126,25 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-        let config = await this._connectionResolver.resolve(context);
+        const config = await this._connectionResolver.resolve(context);
 
         this._logger.debug(context, "Connecting to postgres");
 
         try {
-            let settings = this.composeSettings();
-            let options = Object.assign(settings, config);
+            const settings = this.composeSettings();
+            const options = Object.assign(settings, config);
 
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { Pool } = require('pg');
 
-            let pool = new Pool(options);
+            const pool = new Pool(options);
 
             // Try to connect
             return new Promise((resolve, reject) => {
                 pool.connect((err, client, release) => {
                     if (err != null || client == null) {
                         err = new ConnectionException(
-                            context,
+                            context != null ? context.getTraceId() : null,
                             "CONNECT_FAILED",
                             "Connection to postgres failed"
                         ).withCause(err);
@@ -163,7 +162,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             });
         } catch (ex) {
             throw new ConnectionException(
-                context,
+                context != null ? context.getTraceId() : null,
                 "CONNECT_FAILED",
                 "Connection to postgres failed"
             ).withCause(ex);
@@ -184,7 +183,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             this._connection.end((err) => {
                 if (err) {
                     err = new ConnectionException(
-                        context,
+                        context != null ? context.getTraceId() : null,
                         'DISCONNECT_FAILED',
                         'Disconnect from postgres failed: '
                     ) .withCause(err);

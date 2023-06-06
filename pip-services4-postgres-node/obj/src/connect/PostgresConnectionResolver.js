@@ -1,4 +1,5 @@
 "use strict";
+/** @module connect */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresConnectionResolver = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
-const pip_services3_components_node_2 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves PostgreSQL connection and credential parameters,
  * validates them and generates a connection URI.
@@ -42,11 +42,11 @@ class PostgresConnectionResolver {
         /**
          * The connections resolver.
          */
-        this._connectionResolver = new pip_services3_components_node_1.ConnectionResolver();
+        this._connectionResolver = new pip_services4_config_node_1.ConnectionResolver();
         /**
          * The credentials resolver.
          */
-        this._credentialResolver = new pip_services3_components_node_2.CredentialResolver();
+        this._credentialResolver = new pip_services4_config_node_1.CredentialResolver();
     }
     /**
      * Configures component by passing configuration parameters.
@@ -67,53 +67,54 @@ class PostgresConnectionResolver {
         this._credentialResolver.setReferences(references);
     }
     validateConnection(context, connection) {
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null)
             return null;
-        let host = connection.getHost();
+        const traceId = context != null ? context.getTraceId() : null;
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getPort();
+        const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_PORT", "Connection port is not set");
         }
-        let database = connection.getAsNullableString("database");
+        const database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_DATABASE", "Connection database is not set");
         }
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services3_commons_node_1.ConfigException(context, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
         }
-        for (let connection of connections) {
+        for (const connection of connections) {
             this.validateConnection(context, connection);
         }
     }
     composeConfig(connections, credential) {
-        let config = {};
+        const config = {};
         // Define connection part
-        for (let connection of connections) {
-            let uri = connection.getUri();
+        for (const connection of connections) {
+            const uri = connection.getUri();
             if (uri)
                 config.connectionString = uri;
-            let host = connection.getHost();
+            const host = connection.getHost();
             if (host)
                 config.host = host;
-            let port = connection.getPort();
+            const port = connection.getPort();
             if (port)
                 config.port = port;
-            let database = connection.getAsNullableString("database");
+            const database = connection.getAsNullableString("database");
             if (database)
                 config.database = database;
         }
         // Define authentication part
         if (credential) {
-            let username = credential.getUsername();
+            const username = credential.getUsername();
             if (username)
                 config.user = username;
-            let password = credential.getPassword();
+            const password = credential.getPassword();
             if (password)
                 config.password = password;
         }
@@ -127,12 +128,12 @@ class PostgresConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connections = yield this._connectionResolver.resolveAll(context);
+            const connections = yield this._connectionResolver.resolveAll(context);
             // Validate connections
             this.validateConnections(context, connections);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let config = this.composeConfig(connections, credential);
+            const config = this.composeConfig(connections, credential);
             return config;
         });
     }

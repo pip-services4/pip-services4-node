@@ -1,14 +1,7 @@
-import { IReferenceable } from 'pip-services4-commons-node';
-import { IUnreferenceable } from 'pip-services4-commons-node';
-import { IReferences } from 'pip-services4-commons-node';
-import { IConfigurable } from 'pip-services4-commons-node';
-import { IOpenable } from 'pip-services4-commons-node';
-import { ICleanable } from 'pip-services4-commons-node';
-import { ConfigParams } from 'pip-services4-commons-node';
-import { PagingParams } from 'pip-services4-commons-node';
-import { DataPage } from 'pip-services4-commons-node';
-import { DependencyResolver } from 'pip-services4-commons-node';
-import { CompositeLogger } from 'pip-services4-components-node';
+/** @module persistence */
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { PagingParams, DataPage } from 'pip-services4-data-node';
+import { CompositeLogger } from 'pip-services4-observability-node';
 import { PostgresConnection } from '../connect/PostgresConnection';
 /**
  * Abstract persistence component that stores data in PostgreSQL using plain driver.

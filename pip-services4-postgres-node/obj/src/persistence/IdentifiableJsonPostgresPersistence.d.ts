@@ -1,7 +1,8 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 import { IdentifiablePostgresPersistence } from './IdentifiablePostgresPersistence';
+import { IContext } from 'pip-services4-components-node';
 /**
  * Abstract persistence component that stores data in PostgreSQL in JSON or JSONB fields
  * and implements a number of CRUD operations over data items with unique ids.

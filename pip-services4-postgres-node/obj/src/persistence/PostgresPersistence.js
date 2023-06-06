@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,14 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_commons_node_3 = require("pip-services4-commons-node");
-const pip_services3_commons_node_4 = require("pip-services4-commons-node");
-const pip_services3_commons_node_5 = require("pip-services4-commons-node");
-const pip_services3_commons_node_6 = require("pip-services4-commons-node");
-const pip_services3_commons_node_7 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const PostgresConnection_1 = require("../connect/PostgresConnection");
 /**
  * Abstract persistence component that stores data in PostgreSQL using plain driver.
@@ -116,11 +113,11 @@ class PostgresPersistence {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services3_commons_node_6.DependencyResolver(PostgresPersistence._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver(PostgresPersistence._defaultConfig);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * Maximum number of objects in data pages
          */
@@ -169,7 +166,7 @@ class PostgresPersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new PostgresConnection_1.PostgresConnection();
+        const connection = new PostgresConnection_1.PostgresConnection();
         if (this._config)
             connection.configure(this._config);
         if (this._references)
@@ -196,11 +193,11 @@ class PostgresPersistence {
             builder += " " + options.type;
         }
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "")
                 fields += ", ";
             fields += key;
-            let asc = keys[key];
+            const asc = keys[key];
             if (!asc)
                 fields += " DESC";
         }
@@ -287,10 +284,10 @@ class PostgresPersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'PostgreSQL connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'PostgreSQL connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "PostgreSQL connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "PostgreSQL connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -314,7 +311,7 @@ class PostgresPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services3_commons_node_5.InvalidStateException(context, 'NO_CONNECTION', 'Postgres connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Postgres connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -334,11 +331,12 @@ class PostgresPersistence {
             if (this._tableName == null) {
                 throw new Error('Table name is not defined');
             }
-            let query = "DELETE FROM " + this.quotedTableName();
+            const query = "DELETE FROM " + this.quotedTableName();
             return new Promise((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.query(query, (err, result) => {
                     if (err) {
-                        err = new pip_services3_commons_node_4.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                         reject(err);
                         return;
                     }
@@ -354,14 +352,14 @@ class PostgresPersistence {
             }
             // Check if table exist to determine weither to auto create objects
             // Todo: Add support for schema
-            let query = "SELECT to_regclass('" + this._tableName + "')";
-            let exist = yield new Promise((resolve, reject) => {
+            const query = "SELECT to_regclass('" + this._tableName + "')";
+            const exist = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let exist = result != null && result.rows
+                    const exist = result != null && result.rows
                         && result.rows.length > 0 && result.rows[0].to_regclass != null;
                     resolve(exist);
                 });
@@ -372,8 +370,9 @@ class PostgresPersistence {
             this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             try {
                 // Run all DML commands
-                for (let dml of this._schemaStatements) {
+                for (const dml of this._schemaStatements) {
                     yield new Promise((resolve, reject) => {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         this._client.query(dml, (err, result) => {
                             if (err) {
                                 reject(err);
@@ -398,7 +397,7 @@ class PostgresPersistence {
     generateColumns(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(value);
@@ -414,7 +413,8 @@ class PostgresPersistence {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += "$" + index;
@@ -430,7 +430,7 @@ class PostgresPersistence {
     generateSetParameters(values) {
         let result = "";
         let index = 1;
-        for (let column in values) {
+        for (const column in values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(column) + "=$" + index;
@@ -464,10 +464,10 @@ class PostgresPersistence {
             select = select != null ? select : "*";
             let query = "SELECT " + select + " FROM " + this.quotedTableName();
             // Adjust max item count based on configuration
-            paging = paging || new pip_services3_commons_node_2.PagingParams();
-            let skip = paging.getSkip(-1);
-            let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            paging = paging || new pip_services4_data_node_1.PagingParams();
+            const skip = paging.getSkip(-1);
+            const take = paging.getTake(this._maxPageSize);
+            const pagingEnabled = paging.total;
             if (filter && filter != "") {
                 query += " WHERE " + filter;
             }
@@ -496,21 +496,21 @@ class PostgresPersistence {
                 if (filter != null && filter != "") {
                     query += " WHERE " + filter;
                 }
-                let count = yield new Promise((resolve, reject) => {
+                const count = yield new Promise((resolve, reject) => {
                     this._client.query(query, (err, result) => {
                         if (err) {
                             reject(err);
                             return;
                         }
-                        let count = result.rows && result.rows.length == 1
-                            ? pip_services3_commons_node_7.LongConverter.toLong(result.rows[0].count) : 0;
+                        const count = result.rows && result.rows.length == 1
+                            ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
                         resolve(count);
                     });
                 });
-                return new pip_services3_commons_node_3.DataPage(items, count);
+                return new pip_services4_data_node_1.DataPage(items, count);
             }
             else {
-                return new pip_services3_commons_node_3.DataPage(items);
+                return new pip_services4_data_node_1.DataPage(items);
             }
         });
     }
@@ -530,14 +530,14 @@ class PostgresPersistence {
             if (filter && filter != "") {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result.rows && result.rows.length == 1
-                        ? pip_services3_commons_node_7.LongConverter.toLong(result.rows[0].count) : 0;
+                    const count = result.rows && result.rows.length == 1
+                        ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
                     resolve(count);
                 });
             });
@@ -574,7 +574,7 @@ class PostgresPersistence {
                         reject(err);
                         return;
                     }
-                    let items = result.rows;
+                    const items = result.rows;
                     resolve(items);
                 });
             });
@@ -599,13 +599,13 @@ class PostgresPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
+                    const count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
                     resolve(count);
                 });
             });
@@ -613,7 +613,7 @@ class PostgresPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let pos = Math.trunc(Math.random() * count);
+            const pos = Math.trunc(Math.random() * count);
             query += " OFFSET " + pos + " LIMIT 1";
             let item = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
@@ -621,8 +621,8 @@ class PostgresPersistence {
                         reject(err);
                         return;
                     }
-                    let items = result.rows;
-                    let item = (items != null && items.length > 0) ? items[0] : null;
+                    const items = result.rows;
+                    const item = (items != null && items.length > 0) ? items[0] : null;
                     resolve(item);
                 });
             });
@@ -648,11 +648,11 @@ class PostgresPersistence {
             if (item == null) {
                 return;
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let values = this.generateValues(row);
-            let query = "INSERT INTO " + this.quotedTableName()
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const values = this.generateValues(row);
+            const query = "INSERT INTO " + this.quotedTableName()
                 + " (" + columns + ") VALUES (" + params + ") RETURNING *";
             let newItem = yield new Promise((resolve, reject) => {
                 this._client.query(query, values, (err, result) => {
@@ -660,7 +660,7 @@ class PostgresPersistence {
                         reject(err);
                         return;
                     }
-                    let item = result && result.rows && result.rows.length == 1
+                    const item = result && result.rows && result.rows.length == 1
                         ? result.rows[0] : null;
                     resolve(item);
                 });
@@ -685,13 +685,13 @@ class PostgresPersistence {
             if (filter != null && filter != "") {
                 query += " WHERE " + filter;
             }
-            let count = yield new Promise((resolve, reject) => {
+            const count = yield new Promise((resolve, reject) => {
                 this._client.query(query, (err, result) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    let count = result ? result.rowCount : 0;
+                    const count = result ? result.rowCount : 0;
                     resolve(count);
                 });
             });
@@ -700,7 +700,7 @@ class PostgresPersistence {
     }
 }
 exports.PostgresPersistence = PostgresPersistence;
-PostgresPersistence._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("table", null, "schema", null, "dependencies.connection", "*:connection:postgres:*:1.0", 
+PostgresPersistence._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("table", null, "schema", null, "dependencies.connection", "*:connection:postgres:*:1.0", 
 // connections.*
 // credential.*
 "options.max_pool_size", 2, "options.keep_alive", 1, "options.connect_timeout", 5000, "options.auto_reconnect", true, "options.max_page_size", 100, "options.debug", true);

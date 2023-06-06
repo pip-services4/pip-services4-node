@@ -1,8 +1,9 @@
 /** @module persistence */
 import { AnyValueMap } from 'pip-services4-commons-node';
-import { IIdentifiable } from 'pip-services4-commons-node';
+import { IIdentifiable } from 'pip-services4-data-node';
 
 import { IdentifiablePostgresPersistence } from './IdentifiablePostgresPersistence';
+import { IContext } from 'pip-services4-components-node';
 
 /**
  * Abstract persistence component that stores data in PostgreSQL in JSON or JSONB fields
@@ -102,13 +103,13 @@ export class IdentifiableJsonPostgresPersistence<T extends IIdentifiable<K>, K> 
      * @param idType type of the id column (default: TEXT)
      * @param dataType type of the data column (default: JSONB)
      */
-    protected ensureTable(idType: string = 'TEXT', dataType: string = 'JSONB') {
+    protected ensureTable(idType = 'TEXT', dataType = 'JSONB') {
         if (this._schemaName != null) {
-            let query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
+            const query = "CREATE SCHEMA IF NOT EXISTS " + this.quoteIdentifier(this._schemaName);
             this.ensureSchema(query);
         }
 
-        let query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
+        const query = "CREATE TABLE IF NOT EXISTS " + this.quotedTableName()
             + " (\"id\" " + idType + " PRIMARY KEY, \"data\" " + dataType + ")";
         this.ensureSchema(query);
     }
@@ -132,7 +133,7 @@ export class IdentifiableJsonPostgresPersistence<T extends IIdentifiable<K>, K> 
      */
     protected convertFromPublic(value: any): any {
         if (value == null) return null;
-        let result: any = {
+        const result: any = {
             id: value.id,
             data: value
         };
@@ -152,8 +153,8 @@ export class IdentifiableJsonPostgresPersistence<T extends IIdentifiable<K>, K> 
             return null;
         }
 
-        let query = "UPDATE " + this.quotedTableName() + " SET \"data\"=\"data\"||$2 WHERE \"id\"=$1 RETURNING *";
-        let values = [id, data.getAsObject()];
+        const query = "UPDATE " + this.quotedTableName() + " SET \"data\"=\"data\"||$2 WHERE \"id\"=$1 RETURNING *";
+        const values = [id, data.getAsObject()];
 
         let newItem = await new Promise<any>((resolve, reject) => {
             this._client.query(query, values, (err, result) => {
@@ -162,7 +163,7 @@ export class IdentifiableJsonPostgresPersistence<T extends IIdentifiable<K>, K> 
                     return;
                 }
 
-                let item = result && result.rows && result.rows.length == 1
+                const item = result && result.rows && result.rows.length == 1
                     ? result.rows[0] : null;
                 resolve(item);
             });

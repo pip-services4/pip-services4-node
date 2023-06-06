@@ -1,4 +1,5 @@
 "use strict";
+/** @module persistence */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresConnection = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
-const pip_services3_commons_node_2 = require("pip-services4-commons-node");
-const pip_services3_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const PostgresConnectionResolver_1 = require("./PostgresConnectionResolver");
+const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * PostgreSQL connection using plain driver.
  *
@@ -48,14 +49,14 @@ class PostgresConnection {
      * Creates a new instance of the connection component.
      */
     constructor() {
-        this._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples(
+        this._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples(
         // connections.*
         // credential.*
         "options.connect_timeout", 0, "options.idle_timeout", 10000, "options.max_pool_size", 3);
         /**
          * The logger.
          */
-        this._logger = new pip_services3_components_node_1.CompositeLogger();
+        this._logger = new pip_services4_observability_node_1.CompositeLogger();
         /**
          * The connection resolver.
          */
@@ -63,7 +64,8 @@ class PostgresConnection {
         /**
          * The configuration options.
          */
-        this._options = new pip_services3_commons_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -93,10 +95,10 @@ class PostgresConnection {
         return this._connection != null;
     }
     composeSettings() {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
-        let settings = {
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const settings = {
             max: maxPoolSize,
             connectionTimeoutMillis: connectTimeoutMS,
             idleTimeoutMillis: idleTimeoutMS
@@ -110,18 +112,19 @@ class PostgresConnection {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let config = yield this._connectionResolver.resolve(context);
+            const config = yield this._connectionResolver.resolve(context);
             this._logger.debug(context, "Connecting to postgres");
             try {
-                let settings = this.composeSettings();
-                let options = Object.assign(settings, config);
+                const settings = this.composeSettings();
+                const options = Object.assign(settings, config);
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const { Pool } = require('pg');
-                let pool = new Pool(options);
+                const pool = new Pool(options);
                 // Try to connect
                 return new Promise((resolve, reject) => {
                     pool.connect((err, client, release) => {
                         if (err != null || client == null) {
-                            err = new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                            err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                             reject(err);
                             return;
                         }
@@ -133,7 +136,7 @@ class PostgresConnection {
                 });
             }
             catch (ex) {
-                throw new pip_services3_commons_node_2.ConnectionException(context, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
             }
         });
     }
@@ -150,7 +153,7 @@ class PostgresConnection {
             return new Promise((resolve, reject) => {
                 this._connection.end((err) => {
                     if (err) {
-                        err = new pip_services3_commons_node_2.ConnectionException(context, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
                         reject(err);
                         return;
                     }

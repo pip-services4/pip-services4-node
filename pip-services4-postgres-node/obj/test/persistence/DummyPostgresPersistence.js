@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyPostgresPersistence = void 0;
-const pip_services3_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const IdentifiablePostgresPersistence_1 = require("../../src/persistence/IdentifiablePostgresPersistence");
 class DummyPostgresPersistence extends IdentifiablePostgresPersistence_1.IdentifiablePostgresPersistence {
     constructor() {
@@ -13,7 +13,7 @@ class DummyPostgresPersistence extends IdentifiablePostgresPersistence_1.Identif
         this.ensureIndex(this._tableName + '_key', { key: 1 }, { unique: true });
     }
     getPageByFilter(context, filter, paging) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = "";
         if (key != null)
@@ -21,7 +21,7 @@ class DummyPostgresPersistence extends IdentifiablePostgresPersistence_1.Identif
         return super.getPageByFilter(context, filterCondition, paging, null, null);
     }
     getCountByFilter(context, filter) {
-        filter = filter || new pip_services3_commons_node_1.FilterParams();
+        filter = filter || new pip_services4_data_node_1.FilterParams();
         let key = filter.getAsNullableString('key');
         let filterCondition = "";
         if (key != null)
