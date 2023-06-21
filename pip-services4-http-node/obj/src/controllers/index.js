@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommandableSwaggerDocument = exports.StatusOperations = exports.HeartbeatOperations = exports.AboutOperations = exports.RestOperations = exports.StatusRestController = exports.HeartbeatRestController = exports.CommandableHttpController = exports.HttpRequestDetector = exports.HttpResponseSender = exports.InstrumentTiming = exports.RestController = exports.HttpEndpoint = void 0;
+exports.CommandableSwaggerDocument = exports.StatusOperations = exports.HeartbeatOperations = exports.AboutOperations = exports.RestOperations = exports.StatusRestController = exports.HeartbeatRestController = exports.CommandableHttpController = exports.HttpRequestDetector = exports.HttpResponseSender = exports.RestController = exports.HttpEndpoint = void 0;
 /**
  * @module services
  * @preferred
@@ -9,8 +9,6 @@ var HttpEndpoint_1 = require("./HttpEndpoint");
 Object.defineProperty(exports, "HttpEndpoint", { enumerable: true, get: function () { return HttpEndpoint_1.HttpEndpoint; } });
 var RestController_1 = require("./RestController");
 Object.defineProperty(exports, "RestController", { enumerable: true, get: function () { return RestController_1.RestController; } });
-var InstrumentTiming_1 = require("./InstrumentTiming");
-Object.defineProperty(exports, "InstrumentTiming", { enumerable: true, get: function () { return InstrumentTiming_1.InstrumentTiming; } });
 var HttpResponseSender_1 = require("./HttpResponseSender");
 Object.defineProperty(exports, "HttpResponseSender", { enumerable: true, get: function () { return HttpResponseSender_1.HttpResponseSender; } });
 var HttpRequestDetector_1 = require("./HttpRequestDetector");

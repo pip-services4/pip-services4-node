@@ -21,7 +21,7 @@ const pip_services4_observability_node_2 = require("pip-services4-observability-
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
 const HttpEndpoint_1 = require("./HttpEndpoint");
 const HttpResponseSender_1 = require("./HttpResponseSender");
-const InstrumentTiming_1 = require("./InstrumentTiming");
+const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
 /**
  * Abstract service that receives remove calls via HTTP/REST protocol.
  *
@@ -185,7 +185,7 @@ class RestController {
         this._counters.incrementOne(name + ".exec_count");
         const counterTiming = this._counters.beginTiming(name + ".exec_time");
         const traceTiming = this._tracer.beginTrace(context, name, null);
-        return new InstrumentTiming_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
+        return new pip_services4_rpc_node_1.InstrumentTiming(context, name, "exec", this._logger, this._counters, counterTiming, traceTiming);
     }
     // /**
     //  * Adds instrumentation to error handling.

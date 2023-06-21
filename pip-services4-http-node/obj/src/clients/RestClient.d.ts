@@ -9,7 +9,7 @@ import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
 import { HttpConnectionResolver } from 'pip-services4-config-node';
-import { InstrumentTiming } from '../controllers';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 /**
  * Abstract client that calls remove endpoints using HTTP/REST protocol.
  *

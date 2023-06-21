@@ -4,7 +4,6 @@
  */
 export { HttpEndpoint } from './HttpEndpoint';
 export { RestController } from './RestController';
-export { InstrumentTiming } from './InstrumentTiming';
 export { HttpResponseSender } from './HttpResponseSender';
 export { HttpRequestDetector } from './HttpRequestDetector';
 export { CommandableHttpController } from './CommandableHttpController';

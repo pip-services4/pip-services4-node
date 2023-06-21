@@ -19,7 +19,7 @@ const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const pip_services4_commons_node_3 = require("pip-services4-commons-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
-const controllers_1 = require("../controllers");
+const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
 /**
  * Abstract client that calls remove endpoints using HTTP/REST protocol.
  *
@@ -155,7 +155,7 @@ class RestClient {
         this._counters.incrementOne(name + ".call_count");
         const counterTiming = this._counters.beginTiming(name + ".call_time");
         const traceTiming = this._tracer.beginTrace(context, name, null);
-        return new controllers_1.InstrumentTiming(context, name, "call", this._logger, this._counters, counterTiming, traceTiming);
+        return new pip_services4_rpc_node_1.InstrumentTiming(context, name, "call", this._logger, this._counters, counterTiming, traceTiming);
     }
     // /**
     //  * Adds instrumentation to error handling.

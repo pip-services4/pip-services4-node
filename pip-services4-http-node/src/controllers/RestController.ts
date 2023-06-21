@@ -19,7 +19,7 @@ import { HttpEndpoint } from './HttpEndpoint';
 import { IRegisterable } from './IRegisterable';
 import { ISwaggerController } from './ISwaggerController';
 import { HttpResponseSender } from './HttpResponseSender';
-import { InstrumentTiming } from './InstrumentTiming';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 
 /**
  * Abstract service that receives remove calls via HTTP/REST protocol.

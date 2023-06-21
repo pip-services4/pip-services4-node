@@ -13,8 +13,8 @@ import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { UnknownException } from 'pip-services4-commons-node';
 import { HttpConnectionResolver } from 'pip-services4-config-node';
+import { InstrumentTiming } from 'pip-services4-rpc-node';
 
-import { InstrumentTiming } from '../controllers';
 
 /**
  * Abstract client that calls remove endpoints using HTTP/REST protocol.
