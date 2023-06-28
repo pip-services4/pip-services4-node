@@ -1,7 +1,7 @@
 /** @module controllers */
 
 
-import { Parameters } from 'pip-services4-components-node';
+import { Context, Parameters } from 'pip-services4-components-node';
 import { CommandSet, ICommandable } from 'pip-services4-rpc-node';
 import { LambdaController } from './LambdaController';
 
@@ -75,7 +75,7 @@ export abstract class CommandableLambdaController extends LambdaController {
             const name = command.getName();
 
             this.registerAction(name, null, (params) => {
-                const context = params != null ? params.trace_id : null;
+                const context = params != null ? Context.fromTraceId(params.trace_id) : null;
  
                 const args = Parameters.fromValue(params);
                 args.remove("trace_id");
