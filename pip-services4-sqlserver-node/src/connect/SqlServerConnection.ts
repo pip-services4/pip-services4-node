@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { SqlServerConnectionResolver } from '../connect/SqlServerConnectionResolver';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
@@ -183,7 +183,7 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
             this._databaseName = pool.config.database;
         } catch (ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to SQLServer failed"
             ).withCause(ex);
@@ -217,7 +217,7 @@ export class SqlServerConnection implements IReferenceable, IConfigurable, IOpen
             this._databaseName = null;
     } catch (ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from sqlserver failed: '
             ).withCause(ex);

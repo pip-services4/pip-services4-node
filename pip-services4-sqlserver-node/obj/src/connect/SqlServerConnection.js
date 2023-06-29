@@ -160,7 +160,7 @@ class SqlServerConnection {
                 this._databaseName = pool.config.database;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to SQLServer failed").withCause(ex);
             }
         });
     }
@@ -189,7 +189,7 @@ class SqlServerConnection {
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'DISCONNECT_FAILED', 'Disconnect from sqlserver failed: ').withCause(ex);
             }
         });
     }

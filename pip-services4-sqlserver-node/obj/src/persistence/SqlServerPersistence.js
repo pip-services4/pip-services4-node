@@ -271,7 +271,7 @@ class SqlServerPersistence {
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "SQLServer connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "SQLServer connection is not opened");
             }
             this._client = this._connection.getConnection();
             this._databaseName = this._connection.getDatabaseName();
@@ -296,7 +296,7 @@ class SqlServerPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'SQLServer connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'SQLServer connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
