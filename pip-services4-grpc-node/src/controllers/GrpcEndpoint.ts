@@ -2,7 +2,7 @@
 /** @hidden */
 import fs = require('fs');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -221,7 +221,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             this._server = null;
 
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CANNOT_CONNECT",
                 "Opening GRPC service failed"
             ).wrap(ex).withDetails("url", this._uri);

@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GrpcController = void 0;
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+/** @module controllers */
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_components_node_2 = require("pip-services4-components-node");
+const pip_services4_components_node_3 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
@@ -94,7 +96,7 @@ class GrpcController {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services4_components_node_2.DependencyResolver(GrpcController._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_3.DependencyResolver(GrpcController._defaultConfig);
         /**
          * The logger.
          */
@@ -243,7 +245,7 @@ class GrpcController {
                 return;
             }
             if (this._endpoint == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_ENDPOINT', 'GRPC endpoint is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_ENDPOINT', 'GRPC endpoint is missing');
             }
             if (this._localEndpoint) {
                 yield this._endpoint.close(context);
@@ -391,5 +393,5 @@ class GrpcController {
     }
 }
 exports.GrpcController = GrpcController;
-GrpcController._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("dependencies.endpoint", "*:endpoint:grpc:*:1.0");
+GrpcController._defaultConfig = pip_services4_components_node_2.ConfigParams.fromTuples("dependencies.endpoint", "*:endpoint:grpc:*:1.0");
 //# sourceMappingURL=GrpcController.js.map

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DummyGrpcClient = void 0;
 const GrpcClient_1 = require("../../src/clients/GrpcClient");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     constructor() {
         super(__dirname + "../../../../test/protos/dummies.proto", "dummies.Dummies");
@@ -18,7 +19,7 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
             this.instrument(context, 'dummy.get_page_by_filter');
-            return yield this.call('get_dummies', context != null ? context.getTraceId() : null, {
+            return yield this.call('get_dummies', context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, {
                 filter: filter,
                 paging: paging
             });
@@ -27,7 +28,7 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
             this.instrument(context, 'dummy.get_one_by_id');
-            let result = yield this.call('get_dummy_by_id', context != null ? context.getTraceId() : null, {
+            let result = yield this.call('get_dummy_by_id', context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, {
                 dummy_id: dummyId
             });
             if (result && result.id == "" && result.key == "") {
@@ -39,7 +40,7 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
             this.instrument(context, 'dummy.create');
-            let result = yield this.call('create_dummy', context != null ? context.getTraceId() : null, {
+            let result = yield this.call('create_dummy', context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, {
                 dummy: dummy
             });
             if (result && result.id == "" && result.key == "") {
@@ -51,7 +52,7 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
             this.instrument(context, 'dummy.update');
-            let result = yield this.call('update_dummy', context != null ? context.getTraceId() : null, {
+            let result = yield this.call('update_dummy', context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, {
                 dummy: dummy
             });
             if (result && result.id == "" && result.key == "") {
@@ -63,7 +64,7 @@ class DummyGrpcClient extends GrpcClient_1.GrpcClient {
     deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
             this.instrument(context, 'dummy.delete_by_id');
-            let result = yield this.call('delete_dummy_by_id', context != null ? context.getTraceId() : null, {
+            let result = yield this.call('delete_dummy_by_id', context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, {
                 dummy_id: dummyId
             });
             if (result && result.id == "" && result.key == "") {

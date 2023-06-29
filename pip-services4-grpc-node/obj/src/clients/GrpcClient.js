@@ -238,7 +238,7 @@ class GrpcClient {
             }
             catch (ex) {
                 this._client = null;
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Opening GRPC client failed").wrap(ex).withDetails("url", this._uri);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CANNOT_CONNECT", "Opening GRPC client failed").wrap(ex).withDetails("url", this._uri);
             }
         });
     }

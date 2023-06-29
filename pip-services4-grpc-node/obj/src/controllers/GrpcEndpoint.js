@@ -14,6 +14,7 @@ exports.GrpcEndpoint = void 0;
 /** @hidden */
 const fs = require("fs");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
@@ -181,7 +182,7 @@ class GrpcEndpoint {
             }
             catch (ex) {
                 this._server = null;
-                throw new pip_services4_commons_node_2.ConnectionException(context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Opening GRPC service failed").wrap(ex).withDetails("url", this._uri);
+                throw new pip_services4_commons_node_2.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CANNOT_CONNECT", "Opening GRPC service failed").wrap(ex).withDetails("url", this._uri);
             }
         });
     }
@@ -316,5 +317,5 @@ class GrpcEndpoint {
     }
 }
 exports.GrpcEndpoint = GrpcEndpoint;
-GrpcEndpoint._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "credential.ssl_key_file", null, "credential.ssl_crt_file", null, "credential.ssl_ca_file", null, "options.maintenance_enabled", false, "options.request_max_size", 1024 * 1024, "options.file_max_size", 200 * 1024 * 1024, "options.connect_timeout", 60000, "options.debug", true);
+GrpcEndpoint._defaultConfig = pip_services4_components_node_2.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "credential.ssl_key_file", null, "credential.ssl_crt_file", null, "credential.ssl_ca_file", null, "options.maintenance_enabled", false, "options.request_max_size", 1024 * 1024, "options.file_max_size", 200 * 1024 * 1024, "options.connect_timeout", 60000, "options.debug", true);
 //# sourceMappingURL=GrpcEndpoint.js.map

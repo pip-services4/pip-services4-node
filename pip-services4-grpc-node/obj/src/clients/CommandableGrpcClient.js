@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandableGrpcClient = void 0;
+/** @module clients */
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const GrpcClient_1 = require("./GrpcClient");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
@@ -86,7 +88,7 @@ class CommandableGrpcClient extends GrpcClient_1.GrpcClient {
         return __awaiter(this, void 0, void 0, function* () {
             const method = this._name + '.' + name;
             const timing = this.instrument(context, method);
-            const traceId = context != null ? context.getTraceId() : null;
+            const traceId = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
             const request = {
                 method: method,
                 trace_id: traceId,

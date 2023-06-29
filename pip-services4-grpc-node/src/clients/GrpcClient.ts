@@ -2,7 +2,7 @@
 /** @hidden */
 import fs = require('fs');
 import { ConnectionException } from 'pip-services4-commons-node';
-import { IOpenable, IConfigurable, IReferenceable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IOpenable, IConfigurable, IReferenceable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { HttpConnectionResolver } from 'pip-services4-config-node';
 import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
@@ -279,7 +279,7 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         } catch (ex) {
             this._client = null;
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CANNOT_CONNECT",
                 "Opening GRPC client failed"
             ).wrap(ex).withDetails("url", this._uri);

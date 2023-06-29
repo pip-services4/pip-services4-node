@@ -1,5 +1,5 @@
 /** @module clients */
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { GrpcClient } from './GrpcClient';
 
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
@@ -83,7 +83,7 @@ export class CommandableGrpcClient extends GrpcClient {
     protected async callCommand<T>(name: string, context: IContext, params: any): Promise<T> {
         const method = this._name + '.' + name;
         const timing = this.instrument(context, method);
-        const traceId = context != null ? context.getTraceId() : null;
+        const traceId = context != null ? ContextResolver.getTraceId(context) : null;
         const request = {
             method: method,
             trace_id: traceId,

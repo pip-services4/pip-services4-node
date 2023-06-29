@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-grpc-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "GRPC Communication Components in Node.js / ES2017",
     "contributors": [
@@ -45,11 +45,11 @@
         "@grpc/proto-loader": "^0.7.5",
         "google-protobuf": "^3.7.1",
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4",
-        "pip-services4-config-node": "^0.0.4",
+        "pip-services4-components-node": "^0.0.5",
+        "pip-services4-config-node": "^0.0.5",
         "pip-services4-data-node": "^0.0.4",
-        "pip-services4-observability-node": "^0.0.2",
-        "pip-services4-rpc-node": "^0.0.1"
+        "pip-services4-observability-node": "^0.0.3",
+        "pip-services4-rpc-node": "^0.0.2"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

@@ -1,7 +1,7 @@
 let services = require('../../../test/protos/dummies_grpc_pb');
 let messages = require('../../../test/protos/dummies_pb');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';
 import { PagingParams } from 'pip-services4-data-node';
 import { DataPage } from 'pip-services4-data-node';
@@ -37,7 +37,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.get_page_by_filter');
 
         let result = await this.call<any>('get_dummies',
-            context != null ? context.getTraceId() : null,
+            context != null ? ContextResolver.getTraceId(context) : null,
             request
         );
 
@@ -57,7 +57,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.get_one_by_id');
 
         let result = await this.call<any>('get_dummy_by_id',
-            context != null ? context.getTraceId() : null,
+            context != null ? ContextResolver.getTraceId(context) : null,
             request
         );
 
@@ -81,7 +81,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.create');
 
         let result = await this.call<any>('create_dummy',
-            context != null ? context.getTraceId() : null,
+            context != null ? ContextResolver.getTraceId(context) : null,
             request
         );
 
@@ -105,7 +105,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.update');
 
         let result = await this.call<any>('update_dummy',
-            context != null ? context.getTraceId() : null,
+            context != null ? ContextResolver.getTraceId(context) : null,
             request
         );
 
@@ -124,7 +124,7 @@ export class DummyGrpcClient2 extends GrpcClient implements IDummyClient {
         this.instrument(context, 'dummy.delete_by_id');
 
         let result = await this.call<any>('delete_dummy_by_id',
-            context != null ? context.getTraceId() : null,
+            context != null ? ContextResolver.getTraceId(context) : null,
             request
         );
 
