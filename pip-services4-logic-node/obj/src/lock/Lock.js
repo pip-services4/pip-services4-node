@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Lock = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
  * Abstract lock that implements default lock acquisition routine.
@@ -57,7 +58,7 @@ class Lock {
                 // When timeout expires return false
                 const now = new Date().getTime();
                 if (now > retryTime) {
-                    throw new pip_services4_commons_node_1.ConflictException(context != null ? context.getTraceId() : null, "LOCK_TIMEOUT", "Acquiring lock " + key + " failed on timeout").withDetails("key", key);
+                    throw new pip_services4_commons_node_1.ConflictException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "LOCK_TIMEOUT", "Acquiring lock " + key + " failed on timeout").withDetails("key", key);
                 }
                 ok = yield this.tryAcquireLock(context, key, ttl);
             }

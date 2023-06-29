@@ -1,6 +1,6 @@
 /** @module lock */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { IReconfigurable } from 'pip-services4-components-node';
 import { ConflictException } from 'pip-services4-commons-node';
@@ -75,7 +75,7 @@ export abstract class Lock implements ILock, IReconfigurable {
             const now = new Date().getTime();
             if (now > retryTime) {
                 throw new ConflictException(
-                    context != null ? context.getTraceId() : null,
+                    context != null ? ContextResolver.getTraceId(context) : null,
                     "LOCK_TIMEOUT",
                     "Acquiring lock " + key + " failed on timeout"
                 ).withDetails("key", key);

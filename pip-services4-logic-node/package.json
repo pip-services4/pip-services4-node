@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-logic-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "Business Logic Components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4"
+        "pip-services4-components-node": "^0.0.5"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
