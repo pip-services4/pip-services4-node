@@ -1,6 +1,7 @@
 /** @module refer */
 import { InternalException } from 'pip-services4-commons-node';
 import { IContext } from '../context/IContext';
+import { ContextResolver } from '../context';
 
 /**
  * Error when required component dependency cannot be found.
@@ -14,7 +15,7 @@ export class ReferenceException extends InternalException {
      * @param locator             the locator to find reference to dependent component.
      */
     public constructor(context: IContext, locator: any) {
-        super(context != null ? context.getTraceId() : null, "REF_ERROR", "Failed to obtain reference to " + locator);
+        super(context != null ? ContextResolver.getTraceId(context) : null, "REF_ERROR", "Failed to obtain reference to " + locator);
         this.withDetails("locator", locator);
     }
 

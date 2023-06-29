@@ -10,5 +10,6 @@
  */
 export { IContext } from './IContext';
 export { Context } from './Context';
+export { ContextResolver } from './ContextResolver';
 export { ContextInfo } from './ContextInfo';
 export { DefaultContextFactory } from './DefaultContextFactory';

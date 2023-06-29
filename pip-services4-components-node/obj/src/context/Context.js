@@ -30,32 +30,6 @@ class Context {
         this._values = new pip_services4_commons_node_1.AnyValueMap(values);
     }
     /**
-     * Gets a trace (correlation) id.
-     *
-     * @returns  a trace id or <code>null</code> if it is not defined.
-     */
-    getTraceId() {
-        const context = this.get("trace_id") || this.get("trace_id");
-        return context != null ? "" + context : null;
-    }
-    /**
-     * Gets a client name.
-     *
-     * @returns  a client name or <code>null</code> if it is not defined.
-     */
-    getClient() {
-        const client = this.get("client");
-        return client != null ? "" + client : null;
-    }
-    /**
-     * Gets a reference to user object.
-     *
-     * @returns  a user reference or <code>null</code> if it is not defined.
-     */
-    getUser() {
-        return this.get("user");
-    }
-    /**
      * Converts this map to JSON object.
      *
      * @returns    a JSON representation of this map.

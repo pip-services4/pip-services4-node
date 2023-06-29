@@ -36,35 +36,6 @@ export class Context implements IContext {
     }
 
     /**
-     * Gets a trace (correlation) id.
-     * 
-     * @returns  a trace id or <code>null</code> if it is not defined.
-     */
-    public getTraceId(): string {
-        const context = this.get("trace_id") || this.get("trace_id");
-        return context != null ? "" + context : null;
-    }
-
-    /**
-     * Gets a client name.
-     * 
-     * @returns  a client name or <code>null</code> if it is not defined.
-     */
-    public getClient(): string {
-        const client = this.get("client");
-        return client != null ? "" + client : null;
-    }
-
-    /**
-     * Gets a reference to user object.
-     * 
-     * @returns  a user reference or <code>null</code> if it is not defined.
-     */
-    public getUser(): any {
-        return this.get("user");
-    }
-
-    /**
      * Converts this map to JSON object.
      * 
      * @returns    a JSON representation of this map.

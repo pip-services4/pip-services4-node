@@ -23,24 +23,6 @@ export declare class Context implements IContext {
      */
     constructor(values?: any);
     /**
-     * Gets a trace (correlation) id.
-     *
-     * @returns  a trace id or <code>null</code> if it is not defined.
-     */
-    getTraceId(): string;
-    /**
-     * Gets a client name.
-     *
-     * @returns  a client name or <code>null</code> if it is not defined.
-     */
-    getClient(): string;
-    /**
-     * Gets a reference to user object.
-     *
-     * @returns  a user reference or <code>null</code> if it is not defined.
-     */
-    getUser(): any;
-    /**
      * Converts this map to JSON object.
      *
      * @returns    a JSON representation of this map.
