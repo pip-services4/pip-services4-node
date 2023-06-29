@@ -1,7 +1,7 @@
 /** @module cache */
 
 import { ConfigException, InvalidStateException } from "pip-services4-commons-node";
-import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { ConnectionResolver } from "pip-services4-config-node";
 
 /**
@@ -118,7 +118,7 @@ export class MemcachedCache implements IConfigurable, IReferenceable, IOpenable 
         const connections = await this._connectionResolver.resolveAll(context);
         if (connections.length == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -163,7 +163,7 @@ export class MemcachedCache implements IConfigurable, IReferenceable, IOpenable 
     private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NOT_OPENED',
                 'Connection is not opened'
             );

@@ -13,6 +13,7 @@ exports.MemcachedLock = void 0;
 /** @module lock */
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 const pip_services4_logic_node_1 = require("pip-services4-logic-node");
 /**
@@ -124,7 +125,7 @@ class MemcachedLock extends pip_services4_logic_node_1.Lock {
         return __awaiter(this, void 0, void 0, function* () {
             const connections = yield this._connectionResolver.resolveAll(context);
             if (connections.length == 0) {
-                throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Connection is not configured');
             }
             const servers = [];
             for (const connection of connections) {
@@ -163,7 +164,7 @@ class MemcachedLock extends pip_services4_logic_node_1.Lock {
     }
     checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     /**

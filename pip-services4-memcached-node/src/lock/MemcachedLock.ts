@@ -1,7 +1,7 @@
 /** @module lock */
 import { InvalidStateException } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { ConnectionResolver } from 'pip-services4-config-node';
 import { Lock } from 'pip-services4-logic-node';
 
@@ -119,7 +119,7 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
         const connections = await this._connectionResolver.resolveAll(context);
         if (connections.length == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -164,7 +164,7 @@ export class MemcachedLock extends Lock implements IConfigurable, IReferenceable
     private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
