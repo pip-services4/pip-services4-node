@@ -11,7 +11,7 @@ import { KafkaConnectionResolver } from './KafkaConnectionResolver';
 import { IKafkaMessageListener } from './IKafkaMessageListener';
 import { KafkaSubscription } from './KafkaSubscription';
 import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
@@ -208,7 +208,7 @@ export class KafkaConnection implements IMessageQueueConnection, IReferenceable,
         } catch (ex) {
             this._logger.error(context, ex, "Failed to connect to Kafka server");
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to Kafka service failed"
             ).withCause(ex);

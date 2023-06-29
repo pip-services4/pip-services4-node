@@ -6,7 +6,7 @@ import { MessageEnvelope } from 'pip-services4-messaging-node';
 
 import { KafkaConnection } from '../connect/KafkaConnection';
 import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, Reference, Descriptor, References, IContext, Context } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, Reference, Descriptor, References, IContext, Context, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
@@ -237,7 +237,7 @@ export class KafkaMessageQueue extends MessageQueue
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Kafka connection is not opened"
             );
@@ -268,7 +268,7 @@ export class KafkaMessageQueue extends MessageQueue
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Kafka connection is missing'
             );
