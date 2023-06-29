@@ -1,7 +1,7 @@
 /** @module connect */
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { ConfigParams, IContext } from 'pip-services4-components-node';
+import { ConfigParams, ContextResolver, IContext } from 'pip-services4-components-node';
 import { CredentialParams, ConnectionParams } from 'pip-services4-config-node';
 
 /**
@@ -165,7 +165,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (uri === null && (appName === null || functionName === null || protocol === null)) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION_URI",
                 "No uri, app_name and function_name is configured in Auzre function uri"
             );
@@ -173,7 +173,7 @@ export class AzureFunctionConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+                context != null ? ContextResolver.getTraceId(context) : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }

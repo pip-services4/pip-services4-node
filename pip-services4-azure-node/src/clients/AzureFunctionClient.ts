@@ -5,7 +5,7 @@ import { InstrumentTiming } from "pip-services4-rpc-node";
 import { AzureFunctionConnectionParams } from '../connect/AzureFunctionConnectionParams';
 import { AzureFunctionConnectionResolver } from '../connect/AzureFunctionConnectionResolver';
 import { ConnectionException, UnknownException, ApplicationExceptionFactory } from "pip-services4-commons-node";
-import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { CompositeLogger, CompositeCounters, CompositeTracer } from "pip-services4-observability-node";
 import { IdGenerator } from "pip-services4-data-node";
 
@@ -205,7 +205,7 @@ export abstract class AzureFunctionClient implements IOpenable, IConfigurable, I
             this._client = null;
 
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Connection to Azure function controller failed"
+                context != null ? ContextResolver.getTraceId(context) : null, "CANNOT_CONNECT", "Connection to Azure function controller failed"
             ).wrap(err).withDetails("url", this._uri);
         }
     }

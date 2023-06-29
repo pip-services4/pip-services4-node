@@ -153,10 +153,10 @@ class AzureFunctionConnectionParams extends pip_services4_components_node_1.Conf
         const appName = this.getAppName();
         const functionName = this.getFunctionName();
         if (uri === null && (appName === null || functionName === null || protocol === null)) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION_URI", "No uri, app_name and function_name is configured in Auzre function uri");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION_URI", "No uri, app_name and function_name is configured in Auzre function uri");
         }
         if (protocol != null && "http" != protocol && "https" != protocol) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection")
                 .withDetails("protocol", protocol);
         }
     }
