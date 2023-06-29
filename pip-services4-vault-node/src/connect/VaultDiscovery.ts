@@ -1,7 +1,7 @@
 /** @module connect */
 
 import { ConfigException, ApplicationException, ConnectionException } from "pip-services4-commons-node";
-import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReconfigurable, IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { IDiscovery, ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 import { CompositeLogger } from "pip-services4-observability-node";
 
@@ -152,7 +152,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         // check configuration
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "Connection is not configured"
             );
@@ -160,7 +160,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
 
         if (credential == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CREDENTIAL",
                 "Credentials is not configured"
             );
@@ -191,7 +191,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -200,7 +200,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -209,7 +209,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
         const protocol = connection.getProtocol();
         if (protocol == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -277,12 +277,12 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
 
         // resolve status
         if (status.isVaultError || status.response) {
-            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
+            const err = new ApplicationException("ERROR", context != null ? ContextResolver.getTraceId(context) : null, "OPEN_ERROR", status.vaultHelpMessage);
             this._logger.error(context, err, status.vaultHelpMessage, status.response)
             this._client = null;
             throw err;
         } else if (status.sealed) {
-            const err = new ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!")
+            const err = new ApplicationException("ERROR", context != null ? ContextResolver.getTraceId(context) : null, "OPEN_ERROR", "Vault server is sealed!")
             this._logger.error(context, err, "Vault server is sealed!")
             this._client = null;
             throw err // TODO: Decide, does need to throw error?
@@ -319,7 +319,7 @@ export class VaultDiscovery implements IDiscovery, IReconfigurable, IReferenceab
                 }
             }
         } catch (ex) {
-            const err = new ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+            const err = new ConnectionException(context != null ? ContextResolver.getTraceId(context) : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
             this._logger.error(context, ex, "Can't login to Vault server")
             this._client = null;
             throw err

@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VaultCredentialStore = void 0;
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
  * Credential store that keeps credentials in memory.
@@ -105,10 +106,10 @@ class VaultCredentialStore {
     resolveConfig(context, connection, credential) {
         // check configuration
         if (connection == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Connection is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "Connection is not configured");
         }
         if (credential == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CREDENTIAL", "Credentials is not configured");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CREDENTIAL", "Credentials is not configured");
         }
         // resolve additional credential params
         this._auth_type = credential.getAsStringWithDefault("auth_type", "userpass");
@@ -131,15 +132,15 @@ class VaultCredentialStore {
         }
         const host = connection.getHost();
         if (host == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_HOST", "Connection host is not set");
         }
         const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PORT", "Connection port is not set");
         }
         const protocol = connection.getProtocol();
         if (protocol == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         return protocol + '://' + host + ':' + port + '/v1';
     }
@@ -231,13 +232,13 @@ class VaultCredentialStore {
             const status = yield this._client.healthCheck();
             // resolve status
             if (status.isVaultError || status.response) {
-                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", status.vaultHelpMessage);
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "OPEN_ERROR", status.vaultHelpMessage);
                 this._logger.error(context, err, status.vaultHelpMessage, status.response);
                 this._client = null;
                 throw err;
             }
             else if (status.sealed) {
-                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? context.getTraceId() : null, "OPEN_ERROR", "Vault server is sealed!");
+                const err = new pip_services4_commons_node_1.ApplicationException("ERROR", context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "OPEN_ERROR", "Vault server is sealed!");
                 this._logger.error(context, err, "Vault server is sealed!");
                 this._client = null;
                 throw err; // TODO: Decide, does need to throw error?
@@ -273,7 +274,7 @@ class VaultCredentialStore {
                 }
             }
             catch (ex) {
-                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
+                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "LOGIN_ERROR", "Can't login to Vault server").withCause(ex);
                 this._logger.error(context, ex, "Can't login to Vault server");
                 this._client = null;
                 throw err;

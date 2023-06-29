@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-vault-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "HashiCorp Vault based Credential Store and Discovery Service for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -44,10 +44,10 @@
         "hashi-vault-js": "^0.4.13",
         "js-yaml": "^4.1.0",
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4",
-        "pip-services4-config-node": "0.0.4",
-        "pip-services4-expressions-node": "^0.0.2",
-        "pip-services4-observability-node": "0.0.2"
+        "pip-services4-components-node": "^0.0.5",
+        "pip-services4-config-node": "^0.0.5",
+        "pip-services4-expressions-node": "^0.0.3",
+        "pip-services4-observability-node": "^0.0.3"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

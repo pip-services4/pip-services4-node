@@ -36,15 +36,6 @@ export class Context implements IContext {
     }
 
     /**
-     * Converts this map to JSON object.
-     * 
-     * @returns    a JSON representation of this map.
-     */
-    public toJson(): string {
-        return JsonConverter.toJson(this._values);
-    }
-    
-    /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      * 
      * @param value        an object with key-value pairs used to initialize a new Parameters.
@@ -65,19 +56,6 @@ export class Context implements IContext {
      */
     public static fromTuples(...tuples: any[]): Context {
         const map = AnyValueMap.fromTuples(...tuples);
-        return new Context(map);
-    }
-    
-    /**
-     * Creates new Context from JSON object.
-     * 
-     * @param json     a JSON string containing parameters.
-     * @returns a new Context object.
-     * 
-     * @see [[JsonConverter.toNullableMap]]
-     */
-    public static fromJson(json: string): Context {
-        const map = JsonConverter.toNullableMap(json);
         return new Context(map);
     }
     

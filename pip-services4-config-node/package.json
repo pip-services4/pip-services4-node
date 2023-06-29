@@ -40,7 +40,7 @@
         "js-yaml": "^4.0.0",
         "pip-services4-commons-node": "^0.0.2",
         "pip-services4-components-node": "^0.0.5",
-        "pip-services4-expressions-node": "^0.0.2"
+        "pip-services4-expressions-node": "^0.0.3"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
