@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CachedTracer = void 0;
+/** @module trace */
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const TraceTiming_1 = require("./TraceTiming");
 /**
@@ -51,7 +53,7 @@ class CachedTracer {
      * @param references     references to locate the component dependencies.
      */
     setReferences(references) {
-        const contextInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
+        const contextInfo = references.getOneOptional(new pip_services4_components_node_2.Descriptor("pip-services", "context-info", "*", "*", "1.0"));
         if (contextInfo != null && this._source == null) {
             this._source = contextInfo.name;
         }
@@ -82,7 +84,7 @@ class CachedTracer {
             source: this._source,
             component: component,
             operation: operation,
-            trace_id: context != null ? context.getTraceId() : null,
+            trace_id: context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null,
             duration: duration,
             error: errorDesc
         };

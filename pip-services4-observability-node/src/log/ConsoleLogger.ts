@@ -1,6 +1,6 @@
 /** @module log */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { StringConverter } from 'pip-services4-commons-node';
 
 import { LogLevel } from './LogLevel';
@@ -53,7 +53,7 @@ export class ConsoleLogger extends Logger {
         if (this.getLevel() < level) return;
 
         let result = '[';
-        result += context != null ? context.getTraceId() : "---";
+        result += context != null ? ContextResolver.getTraceId(context) : "---";
         result += ':';
         result += LogLevelConverter.toString(level);
         result += ':';

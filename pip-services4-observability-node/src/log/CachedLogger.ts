@@ -1,5 +1,5 @@
 /** @module log */
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { ErrorDescription } from 'pip-services4-commons-node';
 import { ErrorDescriptionFactory } from 'pip-services4-commons-node';
@@ -57,7 +57,7 @@ export abstract class CachedLogger extends Logger {
             time: new Date(),
             level: LogLevelConverter.toString(level),
             source: this._source,
-            trace_id: context != null ? context.getTraceId() : null,
+            trace_id: context != null ? ContextResolver.getTraceId(context) : null,
             error: errorDesc,
             message: message
         };

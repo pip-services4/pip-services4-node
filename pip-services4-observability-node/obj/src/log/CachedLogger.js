@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CachedLogger = void 0;
+/** @module log */
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const Logger_1 = require("./Logger");
 const LogLevelConverter_1 = require("./LogLevelConverter");
@@ -50,7 +52,7 @@ class CachedLogger extends Logger_1.Logger {
             time: new Date(),
             level: LogLevelConverter_1.LogLevelConverter.toString(level),
             source: this._source,
-            trace_id: context != null ? context.getTraceId() : null,
+            trace_id: context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null,
             error: errorDesc,
             message: message
         };

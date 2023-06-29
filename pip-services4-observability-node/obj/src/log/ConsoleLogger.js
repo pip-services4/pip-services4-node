@@ -2,6 +2,7 @@
 /** @module log */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConsoleLogger = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const LogLevel_1 = require("./LogLevel");
 const Logger_1 = require("./Logger");
@@ -50,7 +51,7 @@ class ConsoleLogger extends Logger_1.Logger {
         if (this.getLevel() < level)
             return;
         let result = '[';
-        result += context != null ? context.getTraceId() : "---";
+        result += context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : "---";
         result += ':';
         result += LogLevelConverter_1.LogLevelConverter.toString(level);
         result += ':';

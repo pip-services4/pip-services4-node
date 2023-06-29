@@ -1,5 +1,5 @@
 /** @module trace */
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ContextInfo } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -98,7 +98,7 @@ export abstract class CachedTracer implements ITracer, IReconfigurable, IReferen
             source: this._source,
             component: component, 
             operation: operation,
-            trace_id: context != null ? context.getTraceId() : null,
+            trace_id: context != null ? ContextResolver.getTraceId(context) : null,
             duration: duration,
             error: errorDesc
         };

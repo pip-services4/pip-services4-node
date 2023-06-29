@@ -17,5 +17,5 @@ var CounterType;
     CounterType[CounterType["Timestamp"] = 3] = "Timestamp";
     /** Counter that increment counters */
     CounterType[CounterType["Increment"] = 4] = "Increment";
-})(CounterType = exports.CounterType || (exports.CounterType = {}));
+})(CounterType || (exports.CounterType = CounterType = {}));
 //# sourceMappingURL=CounterType.js.map

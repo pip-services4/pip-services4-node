@@ -25,5 +25,5 @@ var LogLevel;
     LogLevel[LogLevel["Debug"] = 5] = "Debug";
     /** Log everything. */
     LogLevel[LogLevel["Trace"] = 6] = "Trace";
-})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+})(LogLevel || (exports.LogLevel = LogLevel = {}));
 //# sourceMappingURL=LogLevel.js.map
