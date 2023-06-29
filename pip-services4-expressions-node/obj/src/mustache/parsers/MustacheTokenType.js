@@ -16,5 +16,5 @@ var MustacheTokenType;
     MustacheTokenType[MustacheTokenType["SectionEnd"] = 6] = "SectionEnd";
     MustacheTokenType[MustacheTokenType["Partial"] = 7] = "Partial";
     MustacheTokenType[MustacheTokenType["Comment"] = 8] = "Comment";
-})(MustacheTokenType = exports.MustacheTokenType || (exports.MustacheTokenType = {}));
+})(MustacheTokenType || (exports.MustacheTokenType = MustacheTokenType = {}));
 //# sourceMappingURL=MustacheTokenType.js.map

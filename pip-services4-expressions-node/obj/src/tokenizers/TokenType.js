@@ -21,5 +21,5 @@ var TokenType;
     TokenType[TokenType["Whitespace"] = 11] = "Whitespace";
     TokenType[TokenType["Comment"] = 12] = "Comment";
     TokenType[TokenType["Special"] = 13] = "Special";
-})(TokenType = exports.TokenType || (exports.TokenType = {}));
+})(TokenType || (exports.TokenType = TokenType = {}));
 //# sourceMappingURL=TokenType.js.map

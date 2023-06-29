@@ -1,7 +1,7 @@
 /** @module calculator */
 
 import { BadRequestException } from "pip-services4-commons-node";
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 
 /**
  * Exception that can be thrown by Expression Parser.
@@ -12,6 +12,6 @@ export class SyntaxException extends BadRequestException {
         if (line != 0 || column != 0) {
             message = message + " at line " + line + " and column " + column;
         }
-        super(context != null ? context.getTraceId() : null, code, message);
+        super(context != null ? ContextResolver.getTraceId(context) : null, code, message);
     }
 }

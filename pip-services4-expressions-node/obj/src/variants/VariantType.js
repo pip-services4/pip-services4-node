@@ -18,5 +18,5 @@ var VariantType;
     VariantType[VariantType["TimeSpan"] = 8] = "TimeSpan";
     VariantType[VariantType["Object"] = 9] = "Object";
     VariantType[VariantType["Array"] = 10] = "Array";
-})(VariantType = exports.VariantType || (exports.VariantType = {}));
+})(VariantType || (exports.VariantType = VariantType = {}));
 //# sourceMappingURL=VariantType.js.map
