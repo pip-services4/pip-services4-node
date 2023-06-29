@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-swagger-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "Swagger UI for HTTP/REST Communication Components in Node.js / ES2017",
     "contributors": [
@@ -39,10 +39,10 @@
     },
     "dependencies": {
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4",
-        "pip-services4-rpc-node": "^0.0.1",
+        "pip-services4-components-node": "^0.0.5",
+        "pip-services4-rpc-node": "^0.0.2",
         "pip-services4-data-node": "^0.0.4",
-        "pip-services4-http-node": "^0.0.2"
+        "pip-services4-http-node": "^0.0.4"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
