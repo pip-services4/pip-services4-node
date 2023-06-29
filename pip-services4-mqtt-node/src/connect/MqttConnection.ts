@@ -11,7 +11,7 @@ import { InvalidStateException } from 'pip-services4-commons-node';
 import { MqttConnectionResolver } from '../connect/MqttConnectionResolver';
 import { IMqttMessageListener } from './IMqttMessageListener';
 import { MqttSubscription } from './MqttSubscription';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
@@ -173,7 +173,7 @@ export class MqttConnection implements IMessageQueueConnection, IReferenceable, 
             
             client.on('error', (err) => {
                 this._logger.error(context, err, "Failed to connect to MQTT broker at "+options.uri);
-                err = new ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
+                err = new ConnectionException(context != null ? ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
                 reject(err);
             });
         });

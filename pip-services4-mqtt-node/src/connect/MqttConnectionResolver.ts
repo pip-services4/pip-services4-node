@@ -1,7 +1,7 @@
 /** @module connect */
 
 import { ConfigException } from "pip-services4-commons-node";
-import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 
 /**
@@ -58,7 +58,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "MQTT connection is not set"
             );
@@ -72,7 +72,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         const protocol = connection.getAsStringWithDefault("protocol", "mqtt");
         if (protocol == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
@@ -81,7 +81,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -90,7 +90,7 @@ export class MqttConnectionResolver implements IReferenceable, IConfigurable {
         const port = connection.getAsIntegerWithDefault("port", 1883);
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );

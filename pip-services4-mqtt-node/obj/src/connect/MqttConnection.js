@@ -151,7 +151,7 @@ class MqttConnection {
                 });
                 client.on('error', (err) => {
                     this._logger.error(context, err, "Failed to connect to MQTT broker at " + options.uri);
-                    err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
+                    err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to MQTT broker failed").withCause(err);
                     reject(err);
                 });
             });

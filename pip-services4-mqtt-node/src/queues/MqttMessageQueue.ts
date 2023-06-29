@@ -6,7 +6,7 @@ import { MessageEnvelope } from 'pip-services4-messaging-node';
 
 import { MqttConnection } from '../connect/MqttConnection';
 import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, Context } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, Context, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
@@ -212,7 +212,7 @@ export class MqttMessageQueue extends MessageQueue
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "MQTT connection is not opened"
             );
@@ -238,7 +238,7 @@ export class MqttMessageQueue extends MessageQueue
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'MQTT connection is missing'
             );
