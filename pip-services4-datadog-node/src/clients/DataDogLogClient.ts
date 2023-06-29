@@ -2,7 +2,7 @@
 
 
 import { ConfigException, StringConverter } from 'pip-services4-commons-node';
-import { ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { RestClient } from 'pip-services4-http-node';
 import { DataDogLogMessage } from './DataDogLogMessage';
 import { CredentialResolver } from 'pip-services4-config-node';
@@ -39,7 +39,7 @@ export class DataDogLogClient extends RestClient {
 
         if (credential == null || credential.getAccessKey() == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_ACCESS_KEY",
                 "Missing access key in credentials"
             );

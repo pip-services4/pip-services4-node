@@ -40,7 +40,7 @@ class DataDogLogClient extends pip_services4_http_node_1.RestClient {
         return __awaiter(this, void 0, void 0, function* () {
             const credential = yield this._credentialResolver.lookup(context);
             if (credential == null || credential.getAccessKey() == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_KEY", "Missing access key in credentials");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? ContextResolver.getTraceId(context) : null, "NO_ACCESS_KEY", "Missing access key in credentials");
             }
             this._headers = this._headers || {};
             this._headers['DD-API-KEY'] = credential.getAccessKey();
