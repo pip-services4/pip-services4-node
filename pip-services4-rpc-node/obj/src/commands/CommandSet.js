@@ -224,7 +224,7 @@ class CommandSet {
     execute(context, commandName, args) {
         return __awaiter(this, void 0, void 0, function* () {
             const cref = this.findCommand(commandName);
-            let traceId = context != null ? context.getTraceId() : null;
+            let traceId = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
             if (cref == null) {
                 throw new pip_services4_commons_node_1.BadRequestException(traceId, "CMD_NOT_FOUND", "Request command does not exist")
                     .withDetails("command", commandName);

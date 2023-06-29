@@ -1,6 +1,6 @@
 /** @module commands */
 
-import { Context, IContext } from 'pip-services4-components-node';
+import { Context, ContextResolver, IContext } from 'pip-services4-components-node';
 import { Parameters } from 'pip-services4-components-node';
 import { BadRequestException } from 'pip-services4-commons-node';
 import { ValidationException } from 'pip-services4-data-node';
@@ -238,7 +238,7 @@ export class CommandSet {
      */
     public async execute(context: IContext, commandName: string, args: Parameters): Promise<any> {
         const cref = this.findCommand(commandName);
-        let traceId = context != null ? context.getTraceId() : null;
+        let traceId = context != null ? ContextResolver.getTraceId(context) : null;
         if (cref == null) {
             throw new BadRequestException(
                 traceId,

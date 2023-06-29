@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Command = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
  * Concrete implementation of [[ICommand ICommand]] interface. Command allows to call a method
@@ -86,13 +87,13 @@ class Command {
     execute(context, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._schema) {
-                this._schema.validateAndThrowException(context != null ? context.getTraceId() : null, args);
+                this._schema.validateAndThrowException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, args);
             }
             try {
                 return yield this._action(context, args);
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, "EXEC_FAILED", "Execution " + this.getName() + " failed: " + ex).withDetails("command", this.getName()).wrap(ex);
+                throw new pip_services4_commons_node_1.InvocationException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "EXEC_FAILED", "Execution " + this.getName() + " failed: " + ex).withDetails("command", this.getName()).wrap(ex);
             }
         });
     }

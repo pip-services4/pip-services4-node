@@ -1,6 +1,6 @@
 /** @module clients */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -176,7 +176,7 @@ export abstract class DirectClient<T> implements IConfigurable, IReferenceable, 
         }
         
         if (this._service == null) {
-            throw new ConnectionException(context != null ? context.getTraceId() : null, 'NO_CONTROLLER', 'Service reference is missing');
+            throw new ConnectionException(context != null ? ContextResolver.getTraceId(context) : null, 'NO_CONTROLLER', 'Service reference is missing');
         } 
 
         this._opened = true;

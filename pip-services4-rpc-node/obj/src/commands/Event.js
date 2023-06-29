@@ -2,6 +2,7 @@
 /** @module commands */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Event = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 /**
  * Concrete implementation of [[IEvent IEvent]] interface.
@@ -84,7 +85,7 @@ class Event {
                 listener.onEvent(context, this, args);
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, "EXEC_FAILED", "Raising event " + this.getName() + " failed: " + ex)
+                throw new pip_services4_commons_node_1.InvocationException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "EXEC_FAILED", "Raising event " + this.getName() + " failed: " + ex)
                     .withDetails("event", this.getName())
                     .wrap(ex);
             }

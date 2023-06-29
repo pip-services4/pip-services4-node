@@ -1,6 +1,6 @@
 /** @module commands */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { Parameters } from 'pip-services4-components-node';
 import { InvocationException } from 'pip-services4-commons-node';
 import { IExecutable } from 'pip-services4-components-node';
@@ -97,14 +97,14 @@ export class Command implements ICommand {
      */
     public async execute(context: IContext, args: Parameters): Promise<any> {
         if (this._schema) {
-            this._schema.validateAndThrowException(context != null ? context.getTraceId() : null, args);
+            this._schema.validateAndThrowException(context != null ? ContextResolver.getTraceId(context) : null, args);
         }
 
         try {
             return await this._action(context, args);
         } catch (ex) {
             throw new InvocationException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "EXEC_FAILED",
                 "Execution " + this.getName() + " failed: " + ex
             ).withDetails("command", this.getName()).wrap(ex);

@@ -1,4 +1,4 @@
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';
 import { PagingParams } from 'pip-services4-data-node';
 import { DataPage } from 'pip-services4-data-node';
@@ -87,6 +87,6 @@ export class DummyService implements IDummyService, ICommandable {
     }
 
     public async checkTraceId(context: IContext): Promise<string> {
-        return context != null ? context.getTraceId() : null;
+        return context != null ? ContextResolver.getTraceId(context) : null;
     }
 }

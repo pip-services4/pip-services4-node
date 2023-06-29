@@ -1,6 +1,6 @@
 /** @module commands */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { Parameters } from 'pip-services4-components-node';
 import { InvocationException } from 'pip-services4-commons-node';
 
@@ -98,7 +98,7 @@ export class Event implements IEvent {
                 listener.onEvent(context, this, args);
             } catch (ex) {
                 throw new InvocationException(
-                    context != null ? context.getTraceId() : null,
+                    context != null ? ContextResolver.getTraceId(context) : null,
                     "EXEC_FAILED",
                     "Raising event " + this.getName() + " failed: " + ex)
                     .withDetails("event", this.getName())

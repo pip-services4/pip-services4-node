@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DirectClient = void 0;
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
@@ -91,7 +92,7 @@ class DirectClient {
         /**
          * The dependency resolver to get service reference.
          */
-        this._dependencyResolver = new pip_services4_components_node_1.DependencyResolver();
+        this._dependencyResolver = new pip_services4_components_node_2.DependencyResolver();
         this._dependencyResolver.put('service', 'none');
     }
     /**
@@ -165,7 +166,7 @@ class DirectClient {
                 return;
             }
             if (this._service == null) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'NO_CONTROLLER', 'Service reference is missing');
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONTROLLER', 'Service reference is missing');
             }
             this._opened = true;
             this._logger.info(context, "Opened direct client");

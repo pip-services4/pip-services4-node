@@ -10,10 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandExec = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 class CommandExec {
     execute(context, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (context != null && context.getTraceId() == "wrongId") {
+            if (context != null && pip_services4_components_node_1.ContextResolver.getTraceId(context) == "wrongId") {
                 throw new Error("Test error");
             }
             return 0;
