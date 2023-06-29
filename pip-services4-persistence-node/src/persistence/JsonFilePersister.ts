@@ -2,7 +2,7 @@
 /** @hidden */
 import fs = require('fs');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { ConfigException } from 'pip-services4-commons-node';
@@ -79,7 +79,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
     public async load(context: IContext): Promise<T[]> {
         if (this._path == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PATH",
                 "Data file path is not set"
             );
@@ -96,7 +96,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
             return arr;
         } catch (ex) {
             throw new FileException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "READ_FAILED",
                 "Failed to read data file: " + this._path
             ).withCause(ex);
@@ -115,7 +115,7 @@ export class JsonFilePersister<T> implements ILoader<T>, ISaver<T>, IConfigurabl
             fs.writeFileSync(this._path, json);
         } catch (ex) {
             throw new FileException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "WRITE_FAILED",
                 "Failed to write data file: " + this._path
             ).withCause(ex);

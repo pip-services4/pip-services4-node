@@ -13,6 +13,7 @@ exports.JsonFilePersister = void 0;
 /** @module persistence */
 /** @hidden */
 const fs = require("fs");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const pip_services4_commons_node_3 = require("pip-services4-commons-node");
@@ -77,7 +78,7 @@ class JsonFilePersister {
     load(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._path == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PATH", "Data file path is not set");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PATH", "Data file path is not set");
             }
             if (!fs.existsSync(this._path)) {
                 return [];
@@ -89,7 +90,7 @@ class JsonFilePersister {
                 return arr;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_2.FileException(context != null ? context.getTraceId() : null, "READ_FAILED", "Failed to read data file: " + this._path).withCause(ex);
+                throw new pip_services4_commons_node_2.FileException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "READ_FAILED", "Failed to read data file: " + this._path).withCause(ex);
             }
         });
     }
@@ -106,7 +107,7 @@ class JsonFilePersister {
                 fs.writeFileSync(this._path, json);
             }
             catch (ex) {
-                throw new pip_services4_commons_node_2.FileException(context != null ? context.getTraceId() : null, "WRITE_FAILED", "Failed to write data file: " + this._path).withCause(ex);
+                throw new pip_services4_commons_node_2.FileException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "WRITE_FAILED", "Failed to write data file: " + this._path).withCause(ex);
             }
         });
     }
