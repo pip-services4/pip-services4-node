@@ -154,7 +154,7 @@ class MySqlConnection {
                 connection.release();
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
             }
         });
     }
@@ -183,7 +183,7 @@ class MySqlConnection {
                 this._databaseName = null;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'DISCONNECT_FAILED', 'Disconnect from MySQL failed: ').withCause(ex);
             }
         });
     }

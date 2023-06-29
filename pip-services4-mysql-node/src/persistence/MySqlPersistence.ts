@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { ConnectionException, InvalidStateException, LongConverter } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, ContextResolver } from 'pip-services4-components-node';
 import { PagingParams, DataPage } from 'pip-services4-data-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { MySqlConnection } from '../connect/MySqlConnection';
@@ -334,7 +334,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "MySQL connection is not opened"
             );
@@ -359,7 +359,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
         } catch (ex) {
             this._client == null;
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to MySQL failed"
             ).withCause(ex);    
@@ -378,7 +378,7 @@ export class MySqlPersistence<T> implements IReferenceable, IUnreferenceable, IC
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'MySql connection is missing'
             );

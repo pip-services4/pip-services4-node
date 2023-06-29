@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { MySqlConnectionResolver } from './MySqlConnectionResolver';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
@@ -176,7 +176,7 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
             connection.release();
         } catch (ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to MySQL failed"
             ).withCause(ex);
@@ -210,7 +210,7 @@ export class MySqlConnection implements IReferenceable, IConfigurable, IOpenable
             this._databaseName = null;    
         } catch(ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'DISCONNECT_FAILED',
                 'Disconnect from MySQL failed: '
             ) .withCause(ex);

@@ -1,7 +1,7 @@
 /** @module connect */
 
 import { ConfigException } from "pip-services4-commons-node";
-import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 
 /**
@@ -65,7 +65,7 @@ export class MySqlConnectionResolver implements IReferenceable, IConfigurable {
         const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -74,7 +74,7 @@ export class MySqlConnectionResolver implements IReferenceable, IConfigurable {
         const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -83,7 +83,7 @@ export class MySqlConnectionResolver implements IReferenceable, IConfigurable {
         const database = connection.getAsNullableString("database");
         if (database == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_DATABASE",
                 "Connection database is not set"
             );
@@ -93,7 +93,7 @@ export class MySqlConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnections(context: IContext, connections: ConnectionParams[]): any {
         if (connections == null || connections.length == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "Database connection is not set"
             );

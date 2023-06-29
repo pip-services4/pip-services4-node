@@ -271,7 +271,7 @@ class MySqlPersistence {
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "MySQL connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "MySQL connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -286,7 +286,7 @@ class MySqlPersistence {
             }
             catch (ex) {
                 this._client == null;
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to MySQL failed").withCause(ex);
             }
         });
     }
@@ -301,7 +301,7 @@ class MySqlPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MySql connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'MySql connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
