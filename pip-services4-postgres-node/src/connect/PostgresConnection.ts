@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { PostgresConnectionResolver } from './PostgresConnectionResolver';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
@@ -144,7 +144,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
                 pool.connect((err, client, release) => {
                     if (err != null || client == null) {
                         err = new ConnectionException(
-                            context != null ? context.getTraceId() : null,
+                            context != null ? ContextResolver.getTraceId(context) : null,
                             "CONNECT_FAILED",
                             "Connection to postgres failed"
                         ).withCause(err);
@@ -162,7 +162,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             });
         } catch (ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to postgres failed"
             ).withCause(ex);
@@ -183,7 +183,7 @@ export class PostgresConnection implements IReferenceable, IConfigurable, IOpena
             this._connection.end((err) => {
                 if (err) {
                     err = new ConnectionException(
-                        context != null ? context.getTraceId() : null,
+                        context != null ? ContextResolver.getTraceId(context) : null,
                         'DISCONNECT_FAILED',
                         'Disconnect from postgres failed: '
                     ) .withCause(err);

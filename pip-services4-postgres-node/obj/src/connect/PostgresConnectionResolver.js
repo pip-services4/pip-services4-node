@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresConnectionResolver = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Helper class that resolves PostgreSQL connection and credential parameters,
@@ -70,7 +71,7 @@ class PostgresConnectionResolver {
         const uri = connection.getUri();
         if (uri != null)
             return null;
-        const traceId = context != null ? context.getTraceId() : null;
+        const traceId = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
         const host = connection.getHost();
         if (host == null) {
             throw new pip_services4_commons_node_1.ConfigException(traceId, "NO_HOST", "Connection host is not set");
@@ -86,7 +87,7 @@ class PostgresConnectionResolver {
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "Database connection is not set");
         }
         for (const connection of connections) {
             this.validateConnection(context, connection);

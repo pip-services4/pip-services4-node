@@ -124,7 +124,7 @@ class PostgresConnection {
                 return new Promise((resolve, reject) => {
                     pool.connect((err, client, release) => {
                         if (err != null || client == null) {
-                            err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                            err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                             reject(err);
                             return;
                         }
@@ -136,7 +136,7 @@ class PostgresConnection {
                 });
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(ex);
             }
         });
     }
@@ -153,7 +153,7 @@ class PostgresConnection {
             return new Promise((resolve, reject) => {
                 this._connection.end((err) => {
                     if (err) {
-                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'DISCONNECT_FAILED', 'Disconnect from postgres failed: ').withCause(err);
                         reject(err);
                         return;
                     }

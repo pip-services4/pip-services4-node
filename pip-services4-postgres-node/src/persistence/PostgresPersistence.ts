@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { InvalidStateException, ConnectionException, LongConverter } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, ContextResolver } from 'pip-services4-components-node';
 import { PagingParams, DataPage } from 'pip-services4-data-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { PostgresConnection } from '../connect/PostgresConnection';
@@ -348,7 +348,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'PostgreSQL connection is missing'
             );
@@ -356,7 +356,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "PostgreSQL connection is not opened"
             );
@@ -390,7 +390,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION', 
                 'Postgres connection is missing'
             );
@@ -422,7 +422,7 @@ export class PostgresPersistence<T> implements IReferenceable, IUnreferenceable,
             this._client.query(query, (err, result) => {
                 if (err) {
                     err = new ConnectionException(
-                        context != null ? context.getTraceId() : null,
+                        context != null ? ContextResolver.getTraceId(context) : null,
                         "CONNECT_FAILED",
                         "Connection to postgres failed"
                     ).withCause(err);

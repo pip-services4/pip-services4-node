@@ -1,7 +1,7 @@
 /** @module connect */
 
 import { ConfigException } from "pip-services4-commons-node";
-import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from "pip-services4-config-node";
 
 /**
@@ -62,7 +62,7 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
         const uri = connection.getUri();
         if (uri != null) return null;
 
-        const traceId = context != null ? context.getTraceId() : null;
+        const traceId = context != null ? ContextResolver.getTraceId(context) : null;
 
         const host = connection.getHost();
         if (host == null) {
@@ -82,7 +82,7 @@ export class PostgresConnectionResolver implements IReferenceable, IConfigurable
 
     private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
-            throw new ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
+            throw new ConfigException(context != null ? ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "Database connection is not set");
         }
 
         for (const connection of connections) {

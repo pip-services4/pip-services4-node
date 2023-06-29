@@ -284,10 +284,10 @@ class PostgresPersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'PostgreSQL connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'PostgreSQL connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "PostgreSQL connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "PostgreSQL connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -311,7 +311,7 @@ class PostgresPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Postgres connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Postgres connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -336,7 +336,7 @@ class PostgresPersistence {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 this._client.query(query, (err, result) => {
                     if (err) {
-                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to postgres failed").withCause(err);
                         reject(err);
                         return;
                     }
