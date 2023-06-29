@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GcpConnectionParams = void 0;
+/** @module connect */
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
@@ -49,7 +51,7 @@ const pip_services4_config_node_2 = require("pip-services4-config-node");
  *     const projectId = connection.getProjectId();         // Result: 'my_test_project'
  *     const authToken = connection.getAuthToken();         // Result: '123'
  */
-class GcpConnectionParams extends pip_services4_components_node_1.ConfigParams {
+class GcpConnectionParams extends pip_services4_components_node_2.ConfigParams {
     /**
      * Creates an new instance of the connection parameters.
      *
@@ -209,10 +211,10 @@ class GcpConnectionParams extends pip_services4_components_node_1.ConfigParams {
         const region = this.getRegion();
         const projectId = this.getProjectId();
         if (uri == null && (projectId == null || region == null || functionName == null || protocol == null)) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION_URI", "No uri, project_id, region and function is configured in Google function uri");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION_URI", "No uri, project_id, region and function is configured in Google function uri");
         }
         if (protocol != null && "http" != protocol && "https" != protocol) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection").withDetails("protocol", protocol);
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection").withDetails("protocol", protocol);
         }
     }
     /**
@@ -242,7 +244,7 @@ class GcpConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @returns			a new ConfigParams object.
      */
     static fromTuples(...tuples) {
-        const config = pip_services4_components_node_1.ConfigParams.fromTuples(...tuples);
+        const config = pip_services4_components_node_2.ConfigParams.fromTuples(...tuples);
         return GcpConnectionParams.fromConfig(config);
     }
     /**
@@ -255,7 +257,7 @@ class GcpConnectionParams extends pip_services4_components_node_1.ConfigParams {
      * @see [[fromConfig]]
      */
     static mergeConfigs(...configs) {
-        const config = pip_services4_components_node_1.ConfigParams.mergeConfigs(...configs);
+        const config = pip_services4_components_node_2.ConfigParams.mergeConfigs(...configs);
         return new GcpConnectionParams(config);
     }
 }

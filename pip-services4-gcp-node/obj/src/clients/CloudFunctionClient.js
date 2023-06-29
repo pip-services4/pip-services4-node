@@ -197,7 +197,7 @@ class CloudFunctionClient {
             }
             catch (err) {
                 this._client = null;
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Connection to Google function controller failed").wrap(err).withDetails("url", this._uri);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CANNOT_CONNECT", "Connection to Google function controller failed").wrap(err).withDetails("url", this._uri);
             }
         });
     }
@@ -235,7 +235,7 @@ class CloudFunctionClient {
     invoke(cmd, context, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (cmd == null) {
-                throw new pip_services4_commons_node_3.UnknownException(context != null ? context.getTraceId() : null, 'NO_COMMAND', 'Cmd parameter is missing');
+                throw new pip_services4_commons_node_3.UnknownException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_COMMAND', 'Cmd parameter is missing');
             }
             args = Object.assign({}, args);
             args.cmd = cmd;

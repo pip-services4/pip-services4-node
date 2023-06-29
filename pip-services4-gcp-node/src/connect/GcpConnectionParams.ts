@@ -1,5 +1,5 @@
 /** @module connect */
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
@@ -230,7 +230,7 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (uri == null && (projectId == null ||  region == null || functionName == null || protocol == null)) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION_URI",
                 "No uri, project_id, region and function is configured in Google function uri"
             );
@@ -238,7 +238,7 @@ export class GcpConnectionParams extends ConfigParams {
 
         if (protocol != null && "http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "WRONG_PROTOCOL",
                 "Protocol is not supported by REST connection"
             ).withDetails("protocol", protocol);

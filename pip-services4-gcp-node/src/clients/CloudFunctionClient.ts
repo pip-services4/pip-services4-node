@@ -1,5 +1,5 @@
 /** @module clients */
-import { DependencyResolver, IContext} from 'pip-services4-components-node';
+import { ContextResolver, DependencyResolver, IContext} from 'pip-services4-components-node';
 import { IOpenable} from 'pip-services4-components-node';
 import { ConnectionException } from 'pip-services4-commons-node';
 import { ApplicationExceptionFactory } from 'pip-services4-commons-node';
@@ -217,7 +217,7 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
             this._client = null;
 
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CANNOT_CONNECT",
                 "Connection to Google function controller failed"
             ).wrap(err).withDetails("url", this._uri);
@@ -257,7 +257,7 @@ export abstract class CloudFunctionClient implements IOpenable, IConfigurable, I
     protected async invoke<T>(cmd: string, context: IContext, args: any): Promise<T> {
         if (cmd == null) {
             throw new UnknownException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_COMMAND',
                 'Cmd parameter is missing'
             );
