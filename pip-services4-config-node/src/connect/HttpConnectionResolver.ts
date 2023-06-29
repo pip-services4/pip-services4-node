@@ -87,7 +87,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         connection: ConnectionParams, credential: CredentialParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "HTTP connection is not set"
             );
@@ -99,7 +99,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         const protocol: string = connection.getProtocolWithDefault("http");
         if ("http" != protocol && "https" != protocol) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "WRONG_PROTOCOL",
                 "Protocol is not supported by REST connection"
             ).withDetails("protocol", protocol);
@@ -108,7 +108,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -117,7 +117,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         const port = connection.getPort();
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -128,7 +128,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
             // Check for credential
             if (credential == null) {
                 throw new ConfigException(
-                    context != null ? context.getTraceId() : null,
+                    context != null ? ContextResolver.getTraceId(context) : null,
                     "NO_CREDENTIAL",
                     "SSL certificates are not configured for HTTPS protocol"
                 );
@@ -139,13 +139,13 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
                 if (credential.getAsNullableString("internal_network") == null) {
                     if (credential.getAsNullableString('ssl_key_file') == null) {
                         throw new ConfigException(
-                            context != null ? context.getTraceId() : null,
+                            context != null ? ContextResolver.getTraceId(context) : null,
                             "NO_SSL_KEY_FILE",
                             "SSL key file is not configured in credentials"
                         );
                     } else if (credential.getAsNullableString('ssl_crt_file') == null) {
                         throw new ConfigException(
-                            context != null ? context.getTraceId() : null,
+                            context != null ? ContextResolver.getTraceId(context) : null,
                             "NO_SSL_CRT_FILE",
                             "SSL crt file is not configured in credentials"
                         );

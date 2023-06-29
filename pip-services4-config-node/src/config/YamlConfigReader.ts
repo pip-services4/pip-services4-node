@@ -59,7 +59,7 @@ export class YamlConfigReader extends FileConfigReader {
     public readObject(context: IContext, parameters: ConfigParams): any {
         if (super.getPath() == null)
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PATH",
                 "Missing config file path"
             );
@@ -71,7 +71,7 @@ export class YamlConfigReader extends FileConfigReader {
             return data;
         } catch (e) {
             throw new FileException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "READ_FAILED",
                 "Failed reading configuration " + super.getPath() + ": " + e
             )

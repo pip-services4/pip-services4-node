@@ -107,7 +107,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
                 // Validate if cluster (multiple connections) is supported
                 if (connections.length > 0 && !this._clusterSupported) {
                     throw new ConfigException(
-                        context != null ? context.getTraceId() : null, 
+                        context != null ? ContextResolver.getTraceId(context) : null, 
                         "MULTIPLE_CONNECTIONS_NOT_SUPPORTED",
                         "Multiple (cluster) connections are not supported"
                     );
@@ -167,7 +167,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
     protected validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "Connection parameters are not set is not set"
             );
@@ -182,14 +182,14 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         const protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
         }
         if (this._supportedProtocols != null && this._supportedProtocols.indexOf(protocol) < 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "UNSUPPORTED_PROTOCOL",
                 "The protocol "+protocol+" is not supported"
             );
@@ -198,7 +198,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
@@ -207,7 +207,7 @@ export class CompositeConnectionResolver implements IReferenceable, IConfigurabl
         const port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );

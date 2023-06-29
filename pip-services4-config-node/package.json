@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-config-node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Enterprise Innovation Consulting",
     "description": "Config Components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -39,7 +39,7 @@
     "dependencies": {
         "js-yaml": "^4.0.0",
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4",
+        "pip-services4-components-node": "^0.0.5",
         "pip-services4-expressions-node": "^0.0.2"
     },
     "devDependencies": {
