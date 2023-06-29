@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FluentdLogger = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 /**
@@ -108,7 +109,7 @@ class FluentdLogger extends pip_services4_observability_node_1.CachedLogger {
             }
             const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Connection is not configured');
             }
             const host = connection.getAsString("host");
             const port = connection.getAsIntegerWithDefault("port", 24224);

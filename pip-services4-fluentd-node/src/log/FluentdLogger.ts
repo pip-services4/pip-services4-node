@@ -1,7 +1,7 @@
 /** @module log */
 
 import { ConfigException } from "pip-services4-commons-node";
-import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { HttpConnectionResolver } from "pip-services4-config-node";
 import { CachedLogger, LogMessage } from "pip-services4-observability-node";
 
@@ -110,7 +110,7 @@ export class FluentdLogger extends CachedLogger implements IReferenceable, IOpen
         const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
