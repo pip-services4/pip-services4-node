@@ -2,7 +2,7 @@
 
 import { DataPage, PagingParams } from 'pip-services4-data-node';
 import { InvalidStateException, ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CouchbaseConnection } from '../connect/CouchbaseConnection';
 import { IdGenerator } from 'pip-services4-data-node/obj/src/keys';
@@ -289,7 +289,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
@@ -297,7 +297,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Couchbase connection is not opened"
             );
@@ -326,7 +326,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Couchbase connection is missing'
             );
@@ -357,7 +357,7 @@ export class CouchbasePersistence<T> implements IReferenceable, IUnreferenceable
             this._bucket.manager().flush((err) => {
                 if (err != null) {
                     err = new ConnectionException(
-                        context != null ? context.getTraceId() : null,
+                        context != null ? ContextResolver.getTraceId(context) : null,
                         "FLUSH_FAILED",
                         "Couchbase bucket flush failed"
                     ).withCause(err);

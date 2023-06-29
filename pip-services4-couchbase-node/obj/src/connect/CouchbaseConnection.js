@@ -171,7 +171,7 @@ class CouchbaseConnection {
             catch (ex) {
                 this._connection = null;
                 this._bucket = null;
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to couchbase failed").withCause(ex);
             }
         });
     }

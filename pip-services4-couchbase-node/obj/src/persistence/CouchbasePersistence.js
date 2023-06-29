@@ -236,10 +236,10 @@ class CouchbasePersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Couchbase connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Couchbase connection is not opened");
             }
             this._cluster = this._connection.getConnection();
             this._bucket = this._connection.getBucket();
@@ -261,7 +261,7 @@ class CouchbasePersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Couchbase connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Couchbase connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -286,7 +286,7 @@ class CouchbasePersistence {
             yield new Promise((resolve, reject) => {
                 this._bucket.manager().flush((err) => {
                     if (err != null) {
-                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
+                        err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "FLUSH_FAILED", "Couchbase bucket flush failed").withCause(err);
                         reject(err);
                         return;
                     }
