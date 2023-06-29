@@ -7,7 +7,7 @@ import { config } from 'aws-sdk';
 import { AwsConnectionParams } from '../connect/AwsConnectionParams';
 import { AwsConnectionResolver } from '../connect/AwsConnectionResolver';
 import { UnknownException, InvocationException } from 'pip-services4-commons-node';
-import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IOpenable, IConfigurable, IReferenceable, DependencyResolver, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { IdGenerator } from 'pip-services4-data-node';
 import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-services4-observability-node';
 import { InstrumentTiming } from 'pip-services4-rpc-node';
@@ -231,7 +231,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
                     result = JSON.parse(result);
                 } catch (err) {
                     throw new InvocationException(
-                        context != null ? context.getTraceId() : null,
+                        context != null ? ContextResolver.getTraceId(context) : null,
                         'DESERIALIZATION_FAILED',
                         'Failed to deserialize result'
                     ).withCause(err);
@@ -240,7 +240,7 @@ export abstract class LambdaClient implements IOpenable, IConfigurable, IReferen
             return result;
         } catch (err) {
             throw new InvocationException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'CALL_FAILED',
                 'Failed to invoke lambda function'
             ).withCause(err);
