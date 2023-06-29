@@ -16,7 +16,7 @@ export class ContextResolver {
      * @see [[IContext]]
      */
     public static getTraceId(context: IContext): string {
-        const traceId = context.get("trace_id") || context.get("trace_id");
+        const traceId = context.get("trace_id") || context.get("traceId");
         return traceId != null ? "" + traceId : null;
     }
 
