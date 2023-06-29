@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedisCache = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 /**
  * Distributed cache that stores values in Redis in-memory database.
@@ -99,7 +100,7 @@ class RedisCache {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Connection is not configured');
             }
             const credential = yield this._credentialResolver.lookup(context);
             const options = {
@@ -146,7 +147,7 @@ class RedisCache {
     }
     checkOpened(context) {
         if (!this.isOpen()) {
-            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NOT_OPENED', 'Connection is not opened');
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NOT_OPENED', 'Connection is not opened');
         }
     }
     retryStrategy(options) {

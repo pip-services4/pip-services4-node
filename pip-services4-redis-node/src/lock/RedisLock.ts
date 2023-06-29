@@ -1,7 +1,7 @@
 /** @module lock */
 
 import { ConfigException, InvalidStateException } from "pip-services4-commons-node";
-import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IConfigurable, IReferenceable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { ConnectionResolver, CredentialResolver } from "pip-services4-config-node";
 import { Lock } from "pip-services4-logic-node";
 import { IdGenerator } from "pip-services4-data-node";
@@ -97,7 +97,7 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
         const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );
@@ -152,7 +152,7 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
     private checkOpened(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NOT_OPENED',
                 'Connection is not opened'
             );
