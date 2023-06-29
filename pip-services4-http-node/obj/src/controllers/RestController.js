@@ -13,9 +13,10 @@ exports.RestController = void 0;
 /** @module controllers */
 /** @hidden */
 const fs = require("fs");
-const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_components_node_2 = require("pip-services4-components-node");
+const pip_services4_components_node_3 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
@@ -99,7 +100,7 @@ class RestController {
         /**
          * The dependency resolver.
          */
-        this._dependencyResolver = new pip_services4_components_node_2.DependencyResolver(RestController._defaultConfig);
+        this._dependencyResolver = new pip_services4_components_node_3.DependencyResolver(RestController._defaultConfig);
         /**
          * The logger.
          */
@@ -244,7 +245,7 @@ class RestController {
                 return;
             }
             if (this._endpoint == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_ENDPOINT', 'HTTP endpoint is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_ENDPOINT', 'HTTP endpoint is missing');
             }
             if (this._localEndpoint) {
                 yield this._endpoint.close(context);
@@ -411,5 +412,5 @@ class RestController {
     }
 }
 exports.RestController = RestController;
-RestController._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("base_route", "", "dependencies.endpoint", "*:endpoint:http:*:1.0", "dependencies.swagger", "*:swagger-controller:*:*:1.0");
+RestController._defaultConfig = pip_services4_components_node_2.ConfigParams.fromTuples("base_route", "", "dependencies.endpoint", "*:endpoint:http:*:1.0", "dependencies.swagger", "*:swagger-controller:*:*:1.0");
 //# sourceMappingURL=RestController.js.map

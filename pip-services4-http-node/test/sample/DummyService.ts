@@ -8,7 +8,7 @@ import { CommandSet } from 'pip-services4-rpc-node';
 import { IDummyService } from './IDummyService';
 import { DummyCommandSet } from './DummyCommandSet';
 import { Dummy } from './Dummy';
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 
 export class DummyService implements IDummyService, ICommandable {
 	private _commandSet: DummyCommandSet;
@@ -87,6 +87,6 @@ export class DummyService implements IDummyService, ICommandable {
 	}
 
 	public async checkTraceId(context: IContext): Promise<string> {
-		return context != null ? context.getTraceId() : null;
+		return context != null ? ContextResolver.getTraceId(context) : null;
 	}
 }

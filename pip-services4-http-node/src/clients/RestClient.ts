@@ -1,6 +1,6 @@
 /** @module clients */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
@@ -247,7 +247,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             this._client = null;
 
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CANNOT_CONNECT",
                 "Connection to REST service failed"
             ).wrap(err).withDetails("url", this._uri);
@@ -288,7 +288,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         }
 
         params = params || {};
-        params.trace_id = context.getTraceId();
+        params.trace_id = ContextResolver.getTraceId(context);
         return params;
     }
 
@@ -370,7 +370,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             params = this.addTraceId(params, context)
         }
         if (this._contextLocation == "headers" || this._contextLocation == "both") {
-            this._headers['trace_id'] = context != null ? context.getTraceId() : null;
+            this._headers['trace_id'] = context != null ? ContextResolver.getTraceId(context) : null;
         }
 
         if (params != null && Object.keys(params).length > 0) {
@@ -400,7 +400,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             else if (method == 'delete') this._client.del(route, action);
             else {
                 const err = new UnknownException(
-                    context != null ? context.getTraceId() : null,
+                    context != null ? ContextResolver.getTraceId(context) : null,
                     'UNSUPPORTED_METHOD',
                     'Method is not supported by REST client'
                 ).withDetails('verb', method);

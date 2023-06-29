@@ -15,6 +15,7 @@ const pip_services4_data_node_2 = require("pip-services4-data-node");
 const pip_services4_data_node_3 = require("pip-services4-data-node");
 const pip_services4_data_node_4 = require("pip-services4-data-node");
 const DummyCommandSet_1 = require("./DummyCommandSet");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 class DummyService {
     constructor() {
         this._entities = [];
@@ -91,7 +92,7 @@ class DummyService {
     }
     checkTraceId(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            return context != null ? context.getTraceId() : null;
+            return context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
         });
     }
 }

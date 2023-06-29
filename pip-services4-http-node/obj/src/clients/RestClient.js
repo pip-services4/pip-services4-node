@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RestClient = void 0;
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
@@ -96,7 +97,7 @@ class RestClient {
         /**
         * The configuration options.
         */
-        this._options = new pip_services4_components_node_1.ConfigParams();
+        this._options = new pip_services4_components_node_2.ConfigParams();
         /**
          * The number of retries.
          */
@@ -214,7 +215,7 @@ class RestClient {
             }
             catch (err) {
                 this._client = null;
-                throw new pip_services4_commons_node_2.ConnectionException(context != null ? context.getTraceId() : null, "CANNOT_CONNECT", "Connection to REST service failed").wrap(err).withDetails("url", this._uri);
+                throw new pip_services4_commons_node_2.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CANNOT_CONNECT", "Connection to REST service failed").wrap(err).withDetails("url", this._uri);
             }
         });
     }
@@ -252,7 +253,7 @@ class RestClient {
             return params;
         }
         params = params || {};
-        params.trace_id = context.getTraceId();
+        params.trace_id = pip_services4_components_node_1.ContextResolver.getTraceId(context);
         return params;
     }
     /**
@@ -322,7 +323,7 @@ class RestClient {
                 params = this.addTraceId(params, context);
             }
             if (this._contextLocation == "headers" || this._contextLocation == "both") {
-                this._headers['trace_id'] = context != null ? context.getTraceId() : null;
+                this._headers['trace_id'] = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
             }
             if (params != null && Object.keys(params).length > 0) {
                 route += '?' + new URLSearchParams(params).toString();
@@ -354,7 +355,7 @@ class RestClient {
                 else if (method == 'delete')
                     this._client.del(route, action);
                 else {
-                    const err = new pip_services4_commons_node_3.UnknownException(context != null ? context.getTraceId() : null, 'UNSUPPORTED_METHOD', 'Method is not supported by REST client').withDetails('verb', method);
+                    const err = new pip_services4_commons_node_3.UnknownException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'UNSUPPORTED_METHOD', 'Method is not supported by REST client').withDetails('verb', method);
                     reject(err);
                 }
             });
@@ -362,5 +363,5 @@ class RestClient {
     }
 }
 exports.RestClient = RestClient;
-RestClient._defaultConfig = pip_services4_components_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "options.request_max_size", 1024 * 1024, "options.connect_timeout", 10000, "options.timeout", 10000, "options.retries", 3, "options.debug", true);
+RestClient._defaultConfig = pip_services4_components_node_2.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "options.request_max_size", 1024 * 1024, "options.connect_timeout", 10000, "options.timeout", 10000, "options.retries", 3, "options.debug", true);
 //# sourceMappingURL=RestClient.js.map

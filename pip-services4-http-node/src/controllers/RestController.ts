@@ -2,7 +2,7 @@
 /** @hidden */
 import fs = require('fs');
 
-import { IContext, IUnreferenceable } from 'pip-services4-components-node';
+import { ContextResolver, IContext, IUnreferenceable } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
 import { InvalidStateException } from 'pip-services4-commons-node';
 import { IConfigurable } from 'pip-services4-components-node';
@@ -286,7 +286,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
 
         if (this._endpoint == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_ENDPOINT',
                 'HTTP endpoint is missing'
             );
