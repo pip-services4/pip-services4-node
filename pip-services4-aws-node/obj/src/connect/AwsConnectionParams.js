@@ -254,13 +254,13 @@ class AwsConnectionParams extends pip_services4_components_node_1.ConfigParams {
     validate(context) {
         const arn = this.getArn();
         if (arn == "arn:aws::::") {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_AWS_CONNECTION", "AWS connection is not set");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_AWS_CONNECTION", "AWS connection is not set");
         }
         if (this.getAccessId() == null) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_ACCESS_ID", "No access_id is configured in AWS credential");
         }
         if (this.getAccessKey() == null) {
-            throw new pip_services4_commons_node_2.ConfigException(context != null ? context.getTraceId() : null, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
+            throw new pip_services4_commons_node_2.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_ACCESS_KEY", "No access_key is configured in AWS credential");
         }
     }
     /**

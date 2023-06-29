@@ -1,7 +1,7 @@
 /** @module connect */
 import { StringValueMap } from 'pip-services4-commons-node';
 import { ConfigException } from 'pip-services4-commons-node';
-import { ConfigParams, IContext } from 'pip-services4-components-node';
+import { ConfigParams, ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConnectionParams, CredentialParams } from 'pip-services4-config-node';
 
 
@@ -274,7 +274,7 @@ export class AwsConnectionParams extends ConfigParams {
         const arn = this.getArn();
         if (arn == "arn:aws::::") {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_AWS_CONNECTION",
                 "AWS connection is not set"
             );
@@ -282,7 +282,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessId() == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_ACCESS_ID",
                 "No access_id is configured in AWS credential"
             );
@@ -290,7 +290,7 @@ export class AwsConnectionParams extends ConfigParams {
 
         if (this.getAccessKey() == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_ACCESS_KEY", 
                 "No access_key is configured in AWS credential"
             );

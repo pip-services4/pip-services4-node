@@ -215,13 +215,13 @@ class LambdaClient {
                         result = JSON.parse(result);
                     }
                     catch (err) {
-                        throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
+                        throw new pip_services4_commons_node_1.InvocationException(context != null ? ContextResolver.getTraceId(context) : null, 'DESERIALIZATION_FAILED', 'Failed to deserialize result').withCause(err);
                     }
                 }
                 return result;
             }
             catch (err) {
-                throw new pip_services4_commons_node_1.InvocationException(context != null ? context.getTraceId() : null, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
+                throw new pip_services4_commons_node_1.InvocationException(context != null ? ContextResolver.getTraceId(context) : null, 'CALL_FAILED', 'Failed to invoke lambda function').withCause(err);
             }
         });
     }

@@ -69,7 +69,7 @@ class CommandableLambdaController extends LambdaController_1.LambdaController {
             const command = commands[index];
             const name = command.getName();
             this.registerAction(name, null, (params) => {
-                const context = params != null ? params.trace_id : null;
+                const context = params != null ? pip_services4_components_node_1.Context.fromTraceId(params.trace_id) : null;
                 const args = pip_services4_components_node_1.Parameters.fromValue(params);
                 args.remove("trace_id");
                 const timing = this.instrument(context, name);
