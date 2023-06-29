@@ -1,7 +1,7 @@
 /** @module log */
 import * as moment from 'moment';
 
-import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext, Context } from 'pip-services4-components-node';
+import { IReferenceable, IOpenable, ConfigParams, IReferences, IContext, Context, ContextResolver } from 'pip-services4-components-node';
 import { CachedLogger, LogMessage } from 'pip-services4-observability-node';
 import { IdGenerator } from 'pip-services4-data-node';
 import { HttpConnectionResolver } from 'pip-services4-config-node';
@@ -132,7 +132,7 @@ export class ElasticSearchLogger extends CachedLogger implements IReferenceable,
         const connection = await this._connectionResolver.resolve(context);
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Connection is not configured'
             );

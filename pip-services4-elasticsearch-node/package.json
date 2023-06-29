@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-elasticsearch-node",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Enterprise Innovation Consulting",
     "description": "ElasticSearch components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -41,12 +41,12 @@
         "elasticsearch": "^16.7.2",
         "moment": "^2.24.0",
         "pip-services4-commons-node": "^0.0.2",
-        "pip-services4-components-node": "^0.0.4",
-        "pip-services4-config-node": "0.0.4",
-        "pip-services4-data-node": "0.0.4",
-        "pip-services4-http-node": "0.0.2",
-        "pip-services4-observability-node": "0.0.2",
-        "pip-services4-rpc-node": "^0.0.1"
+        "pip-services4-components-node": "^0.0.5",
+        "pip-services4-config-node": "^0.0.5",
+        "pip-services4-data-node": "^0.0.4",
+        "pip-services4-http-node": "^0.0.4",
+        "pip-services4-observability-node": "^0.0.3",
+        "pip-services4-rpc-node": "^0.0.2"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",

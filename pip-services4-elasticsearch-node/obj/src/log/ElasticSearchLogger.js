@@ -130,7 +130,7 @@ class ElasticSearchLogger extends pip_services4_observability_node_1.CachedLogge
             }
             const connection = yield this._connectionResolver.resolve(context);
             if (connection == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Connection is not configured');
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Connection is not configured');
             }
             const uri = connection.getAsString("uri");
             const options = {
