@@ -23,7 +23,7 @@ class MessageEnvelope {
      * @param message           the data being sent/received.
      */
     constructor(context, messageType, message) {
-        this.trace_id = context != null ? context.getTraceId() : null;
+        this.trace_id = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
         this.message_type = messageType;
         if (message instanceof Buffer)
             this.message = message;

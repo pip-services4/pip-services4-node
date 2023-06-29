@@ -1,7 +1,7 @@
 /** @module queues */
 import { StringConverter } from 'pip-services4-commons-node';
 import { DateTimeConverter } from 'pip-services4-commons-node';
-import { Context, IContext } from 'pip-services4-components-node';
+import { Context, ContextResolver, IContext } from 'pip-services4-components-node';
 import { IdGenerator } from 'pip-services4-data-node';
 
 /**
@@ -23,7 +23,7 @@ export class MessageEnvelope {
      * @param message           the data being sent/received.
      */
     public constructor(context: IContext, messageType: string, message: any) {
-        this.trace_id = context != null ? context.getTraceId() : null;
+        this.trace_id = context != null ? ContextResolver.getTraceId(context) : null;
         this.message_type = messageType;
 
         if (message instanceof Buffer)

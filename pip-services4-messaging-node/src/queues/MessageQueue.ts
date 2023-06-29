@@ -4,7 +4,7 @@ import { IMessageReceiver } from './IMessageReceiver';
 import { MessagingCapabilities } from './MessagingCapabilities';
 import { MessageEnvelope } from './MessageEnvelope';
 import { InvalidStateException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, ConfigParams, NameResolver, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, ConfigParams, NameResolver, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { ConnectionResolver, CredentialResolver, ConnectionParams, CredentialParams } from 'pip-services4-config-node';
 import { CompositeLogger, CompositeCounters } from 'pip-services4-observability-node';
 
@@ -133,7 +133,7 @@ export abstract class MessageQueue implements IMessageQueue, IReferenceable, ICo
     protected checkOpen(context: IContext): void {
         if (!this.isOpen()) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NOT_OPENED",
                 "The queue is not opened"
             );

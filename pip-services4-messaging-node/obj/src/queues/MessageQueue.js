@@ -124,7 +124,7 @@ class MessageQueue {
      */
     checkOpen(context) {
         if (!this.isOpen()) {
-            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, "NOT_OPENED", "The queue is not opened");
+            throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NOT_OPENED", "The queue is not opened");
         }
     }
     /**
