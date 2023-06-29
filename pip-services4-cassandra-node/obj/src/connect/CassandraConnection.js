@@ -65,6 +65,7 @@ class CassandraConnection {
          * The configuration options.
          */
         this._options = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -94,28 +95,31 @@ class CassandraConnection {
         return this._connection != null;
     }
     composeOptions(config) {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
-        let host = config.getAsStringWithDefault("host", "");
-        let datacenter = config.getAsNullableString("datacenter");
-        let options = {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const idleTimeoutMS = this._options.getAsNullableInteger("idle_timeout");
+        const host = config.getAsStringWithDefault("host", "");
+        const datacenter = config.getAsNullableString("datacenter");
+        const options = {
             contactPoints: host.split(','),
             localDataCenter: datacenter
         };
-        let keyspace = config.getAsNullableString("keyspace");
+        const keyspace = config.getAsNullableString("keyspace");
         if (keyspace != null) {
             options.keyspace = keyspace;
         }
-        let username = config.getAsNullableString("username");
-        let password = config.getAsNullableString("password");
+        const username = config.getAsNullableString("username");
+        const password = config.getAsNullableString("password");
         if (username != null) {
             options.credentials = {
                 username: username,
                 password: password
             };
         }
-        let port = config.getAsIntegerWithDefault("port", 9042);
+        const port = config.getAsIntegerWithDefault("port", 9042);
         options.protocolOptions = {
             port: port
         };
@@ -128,12 +132,13 @@ class CassandraConnection {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let config = yield this._connectionResolver.resolve(context);
+            const config = yield this._connectionResolver.resolve(context);
             this._logger.debug(context, "Connecting to cassandra");
             try {
-                let options = this.composeOptions(config);
+                const options = this.composeOptions(config);
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const cassandra = require('cassandra-driver');
-                let client = new cassandra.Client(options);
+                const client = new cassandra.Client(options);
                 // Try to connect
                 yield client.connect();
                 this._connection = client;
@@ -141,7 +146,7 @@ class CassandraConnection {
                 this._keyspace = options.keyspace;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to Cassandra failed").withCause(ex);
             }
         });
     }
@@ -161,7 +166,7 @@ class CassandraConnection {
                 this._datacenter = null;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'DISCONNECT_FAILED', 'Disconnect from Cassandra failed: ').withCause(ex);
             }
         });
     }

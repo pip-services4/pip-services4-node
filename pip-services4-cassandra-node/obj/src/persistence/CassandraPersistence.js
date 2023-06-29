@@ -166,7 +166,7 @@ class CassandraPersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new CassandraConnection_1.CassandraConnection();
+        const connection = new CassandraConnection_1.CassandraConnection();
         if (this._config) {
             connection.configure(this._config);
         }
@@ -196,7 +196,7 @@ class CassandraPersistence {
             builder += " " + options.type;
         }
         let fields = "";
-        for (let key in keys) {
+        for (const key in keys) {
             if (fields != "")
                 fields += ", ";
             fields += key;
@@ -292,10 +292,10 @@ class CassandraPersistence {
                 yield this._connection.open(context);
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Cassandra connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Cassandra connection is not opened");
             }
             this._opened = false;
             this._client = this._connection.getConnection();
@@ -319,7 +319,7 @@ class CassandraPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'Cassandra connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'Cassandra connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -333,13 +333,14 @@ class CassandraPersistence {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
             if (this._tableName == null) {
                 throw new Error('Table name is not defined');
             }
-            let query = "TRUNCATE " + this.quotedTableName();
+            const query = "TRUNCATE " + this.quotedTableName();
             yield this._client.execute(query);
         });
     }
@@ -358,7 +359,7 @@ class CassandraPersistence {
                 return;
             }
             catch (ex) {
-                let originalMsg = ex.message;
+                const originalMsg = ex.message;
                 ex.message = ex.message.toLowerCase();
                 if (ex.message && ex.message.indexOf("keyspace") >= 0 && ex.message.indexOf("does not exist") > 0) {
                     keyspaceExist = false;
@@ -382,7 +383,7 @@ class CassandraPersistence {
             this._logger.debug(context, 'Table ' + this._tableName + ' does not exist. Creating database objects...');
             try {
                 // Run all DML commands
-                for (let dml of this._schemaStatements) {
+                for (const dml of this._schemaStatements) {
                     yield this._client.execute(dml);
                 }
             }
@@ -400,7 +401,7 @@ class CassandraPersistence {
     generateColumns(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
         let result = "";
-        for (let value of values) {
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(value);
@@ -414,13 +415,12 @@ class CassandraPersistence {
      */
     generateParameters(values) {
         values = !Array.isArray(values) ? Object.keys(values) : values;
-        let index = 1;
         let result = "";
-        for (let value of values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const value of values) {
             if (result != "")
                 result += ",";
             result += "?";
-            index++;
         }
         return result;
     }
@@ -431,7 +431,7 @@ class CassandraPersistence {
      */
     generateSetParameters(values) {
         let result = "";
-        for (let column in values) {
+        for (const column in values) {
             if (result != "")
                 result += ",";
             result += this.quoteIdentifier(column) + "=?";
@@ -467,7 +467,7 @@ class CassandraPersistence {
             paging = paging || new pip_services4_data_node_1.PagingParams();
             let skip = paging.getSkip(-1);
             let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            const pagingEnabled = paging.total;
             if (filter && filter != "") {
                 query += " WHERE " + filter;
             }
@@ -477,7 +477,7 @@ class CassandraPersistence {
             query += " LIMIT " + (skip + take);
             // Stream for efficiency to quickly skip without retaining rows
             let items = yield new Promise((resolve, reject) => {
-                let items = [];
+                const items = [];
                 this._client.eachRow(query, [], { autoPage: true }, (n, row) => {
                     if (skip > 0) {
                         skip--;
@@ -502,8 +502,8 @@ class CassandraPersistence {
                 if (filter != null && filter != "") {
                     query += " WHERE " + filter;
                 }
-                let result = yield this._client.execute(query);
-                let count = result.rows && result.rows.length == 1
+                const result = yield this._client.execute(query);
+                const count = result.rows && result.rows.length == 1
                     ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
                 return new pip_services4_data_node_1.DataPage(items, count);
             }
@@ -528,8 +528,8 @@ class CassandraPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let result = yield this._client.execute(query);
-            let count = result.rows && result.rows.length == 1
+            const result = yield this._client.execute(query);
+            const count = result.rows && result.rows.length == 1
                 ? pip_services4_commons_node_1.LongConverter.toLong(result.rows[0].count) : 0;
             this._logger.trace(context, "Counted %d items in %s", count, this._tableName);
             return count;
@@ -558,7 +558,7 @@ class CassandraPersistence {
             if (sort != null) {
                 query += " ORDER BY " + sort;
             }
-            let result = yield this._client.execute(query);
+            const result = yield this._client.execute(query);
             let items = result.rows;
             this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
@@ -581,8 +581,8 @@ class CassandraPersistence {
             if (filter != null) {
                 query += " WHERE " + filter;
             }
-            let result = yield this._client.execute(query);
-            let count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
+            const result = yield this._client.execute(query);
+            const count = result.rows && result.rows.length == 1 ? result.rows[0].count : 0;
             query = "SELECT * FROM " + this.quotedTableName();
             if (filter != null) {
                 query += " WHERE " + filter;
@@ -624,11 +624,11 @@ class CassandraPersistence {
             if (item == null) {
                 return;
             }
-            let row = this.convertFromPublic(item);
-            let columns = this.generateColumns(row);
-            let params = this.generateParameters(row);
-            let values = this.generateValues(row);
-            let query = "INSERT INTO " + this.quotedTableName()
+            const row = this.convertFromPublic(item);
+            const columns = this.generateColumns(row);
+            const params = this.generateParameters(row);
+            const values = this.generateValues(row);
+            const query = "INSERT INTO " + this.quotedTableName()
                 + " (" + columns + ") VALUES (" + params + ")";
             yield this._client.execute(query, values);
             this._logger.trace(context, "Created in %s with id = %s", this._tableName, row.id);

@@ -122,10 +122,10 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "SELECT * FROM " + this.quotedTableName()
+            const params = this.generateParameters(ids);
+            const query = "SELECT * FROM " + this.quotedTableName()
                 + " WHERE \"id\" IN(" + params + ")";
-            let result = yield this._client.execute(query, ids);
+            const result = yield this._client.execute(query, ids);
             let items = result.rows;
             this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
             items = items.map(this.convertToPublic);
@@ -141,9 +141,9 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-            let params = [id];
-            let result = yield this._client.execute(query, params);
+            const query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
+            const params = [id];
+            const result = yield this._client.execute(query, params);
             let item = result && result.rows ? result.rows[0] || null : null;
             if (item == null) {
                 this._logger.trace(context, "Nothing found from %s with id = %s", this._tableName, id);
@@ -207,10 +207,10 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
             // Remove id since Cassandra does not allow updating PK
             row = Object.assign({}, row);
             delete row.id;
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(item.id);
-            let query = "UPDATE " + this.quotedTableName()
+            const query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " WHERE \"id\"=?";
             yield this._client.execute(query, values);
             this._logger.trace(context, "Updated in %s with id = %s", this._tableName, item.id);
@@ -234,14 +234,14 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
             // Remove id since Cassandra does not allow updating PK
             row = Object.assign({}, row);
             delete row.id;
-            let params = this.generateSetParameters(row);
-            let values = this.generateValues(row);
+            const params = this.generateSetParameters(row);
+            const values = this.generateValues(row);
             values.push(id);
             let query = "UPDATE " + this.quotedTableName()
                 + " SET " + params + " WHERE \"id\"=?";
             yield this._client.execute(query, values);
             query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-            let result = yield this._client.execute(query, [id]);
+            const result = yield this._client.execute(query, [id]);
             let newItem = result && result.rows && result.rows.length == 1
                 ? result.rows[0] : null;
             this._logger.trace(context, "Updated partially in %s with id = %s", this._tableName, id);
@@ -258,9 +258,9 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let values = [id];
+            const values = [id];
             let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-            let result = yield this._client.execute(query, values);
+            const result = yield this._client.execute(query, values);
             let oldItem = result && result.rows && result.rows.length == 1
                 ? result.rows[0] : null;
             if (oldItem != null) {
@@ -280,8 +280,8 @@ class IdentifiableCassandraPersistence extends CassandraPersistence_1.CassandraP
      */
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let params = this.generateParameters(ids);
-            let query = "DELETE FROM " + this.quotedTableName()
+            const params = this.generateParameters(ids);
+            const query = "DELETE FROM " + this.quotedTableName()
                 + " WHERE \"id\" IN(" + params + ")";
             yield this._client.execute(query, ids);
             // We can't optimally determine how many records were deleted

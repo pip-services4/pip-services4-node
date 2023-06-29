@@ -53,7 +53,7 @@ export class CassandraConnectionResolver extends CompositeConnectionResolver {
         let originalOptions: ConfigParams = connection;
 
         // Process uri if it is set.
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null && uri != "") {
             originalOptions = ConnectionUtils.parseUri(uri, this._defaultProtocol, this._defaultPort);
             originalOptions = ConnectionUtils.rename(originalOptions, "path", "datacenter");
@@ -62,7 +62,7 @@ export class CassandraConnectionResolver extends CompositeConnectionResolver {
         // Rename common parameters
         originalOptions = ConnectionUtils.rename(originalOptions, "database", "datacenter");
 
-        let mergedOptions = ConnectionUtils.concat(options, originalOptions, "host", "port");
+        const mergedOptions = ConnectionUtils.concat(options, originalOptions, "host", "port");
         return mergedOptions;
     }
 

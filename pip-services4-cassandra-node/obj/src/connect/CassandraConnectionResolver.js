@@ -48,14 +48,14 @@ class CassandraConnectionResolver extends pip_services4_config_node_1.CompositeC
     mergeConnection(options, connection) {
         let originalOptions = connection;
         // Process uri if it is set.
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null && uri != "") {
             originalOptions = pip_services4_config_node_1.ConnectionUtils.parseUri(uri, this._defaultProtocol, this._defaultPort);
             originalOptions = pip_services4_config_node_1.ConnectionUtils.rename(originalOptions, "path", "datacenter");
         }
         // Rename common parameters
         originalOptions = pip_services4_config_node_1.ConnectionUtils.rename(originalOptions, "database", "datacenter");
-        let mergedOptions = pip_services4_config_node_1.ConnectionUtils.concat(options, originalOptions, "host", "port");
+        const mergedOptions = pip_services4_config_node_1.ConnectionUtils.concat(options, originalOptions, "host", "port");
         return mergedOptions;
     }
 }

@@ -93,7 +93,7 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
     /**
      * Flag to turn on automated string ID generation
      */
-    protected _autoGenerateId: boolean = true;
+    protected _autoGenerateId = true;
 
     /**
      * Creates a new instance of the persistence component.
@@ -123,11 +123,11 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 a list with requested data items.
      */
     public async getListByIds(context: IContext, ids: K[]): Promise<T[]> {
-        let params = this.generateParameters(ids);
-        let query = "SELECT * FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "SELECT * FROM " + this.quotedTableName()
             + " WHERE \"id\" IN(" + params + ")";
 
-        let result = await this._client.execute(query, ids);
+        const result = await this._client.execute(query, ids);
         let items = result.rows;
 
         this._logger.trace(context, "Retrieved %d from %s", items.length, this._tableName);
@@ -144,10 +144,10 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 a found data item or <code>null</code>.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
-        let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-        let params = [ id ];
+        const query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
+        const params = [ id ];
 
-        let result = await this._client.execute(query, params);
+        const result = await this._client.execute(query, params);
         let item = result && result.rows ? result.rows[0] || null : null; 
 
         if (item == null) {
@@ -213,11 +213,11 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
         row = Object.assign({}, row);
         delete row.id;
 
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(item.id);
 
-        let query = "UPDATE " + this.quotedTableName()
+        const query = "UPDATE " + this.quotedTableName()
             + " SET " + params + " WHERE \"id\"=?";
 
         await this._client.execute(query, values);
@@ -246,8 +246,8 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
         row = Object.assign({}, row);
         delete row.id;
 
-        let params = this.generateSetParameters(row);
-        let values = this.generateValues(row);
+        const params = this.generateSetParameters(row);
+        const values = this.generateValues(row);
         values.push(id);
 
         let query = "UPDATE " + this.quotedTableName()
@@ -255,7 +255,7 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
         await this._client.execute(query, values);
 
         query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-        let result = await this._client.execute(query, [id]);
+        const result = await this._client.execute(query, [id]);
         let newItem = result && result.rows && result.rows.length == 1
             ? result.rows[0] : null;
 
@@ -273,10 +273,10 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
      * @returns                 the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
-        let values = [ id ];
+        const values = [ id ];
 
         let query = "SELECT * FROM " + this.quotedTableName() + " WHERE \"id\"=?";
-        let result = await this._client.execute(query, values);
+        const result = await this._client.execute(query, values);
         let oldItem = result && result.rows && result.rows.length == 1
             ? result.rows[0] : null;
 
@@ -298,8 +298,8 @@ export class IdentifiableCassandraPersistence<T extends IIdentifiable<K>, K> ext
      * @param ids               ids of data items to be deleted.
      */
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
-        let params = this.generateParameters(ids);
-        let query = "DELETE FROM " + this.quotedTableName()
+        const params = this.generateParameters(ids);
+        const query = "DELETE FROM " + this.quotedTableName()
             + " WHERE \"id\" IN(" + params + ")";
 
         await this._client.execute(query, ids);
