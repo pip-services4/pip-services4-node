@@ -21,7 +21,7 @@ export class RabbitMQMessageQueueFactory extends MessageQueueFactory {
     public constructor() {
         super();
         this.register(RabbitMQMessageQueueFactory.MemoryQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return this.createQueue(name);
         });
     }
@@ -31,7 +31,7 @@ export class RabbitMQMessageQueueFactory extends MessageQueueFactory {
      * @param name a name of the created message queue.
      */
      public createQueue(name: string): IMessageQueue {
-        let queue = new RabbitMQMessageQueue(name);
+        const queue = new RabbitMQMessageQueue(name);
 
         if (this._config != null) {
             queue.configure(this._config);

@@ -19,7 +19,7 @@ export class DefaultRabbitMQFactory extends Factory {
 	public constructor() {
         super();
 		this.register(DefaultRabbitMQFactory.RabbitMQMessageQueueDescriptor, (locator: Descriptor) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null; 
+            const name = (typeof locator.getName === "function") ? locator.getName() : null; 
             return new RabbitMQMessageQueue(name);
         });
 		this.registerAsType(DefaultRabbitMQFactory.RabbitMQMessageQueueFactoryDescriptor, RabbitMQMessageQueueFactory);

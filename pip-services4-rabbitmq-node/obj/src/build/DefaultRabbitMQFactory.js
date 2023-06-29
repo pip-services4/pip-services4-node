@@ -17,7 +17,7 @@ class DefaultRabbitMQFactory extends pip_services4_components_node_1.Factory {
     constructor() {
         super();
         this.register(DefaultRabbitMQFactory.RabbitMQMessageQueueDescriptor, (locator) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null;
+            const name = (typeof locator.getName === "function") ? locator.getName() : null;
             return new RabbitMQMessageQueue_1.RabbitMQMessageQueue(name);
         });
         this.registerAsType(DefaultRabbitMQFactory.RabbitMQMessageQueueFactoryDescriptor, RabbitMQMessageQueueFactory_1.RabbitMQMessageQueueFactory);

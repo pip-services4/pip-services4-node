@@ -1,7 +1,7 @@
 /** @module connect */
 
 import { ConfigException } from "pip-services4-commons-node";
-import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 import { CredentialParams, CredentialResolver } from "pip-services4-config-node";
 import { ConnectionResolver, ConnectionParams } from "pip-services4-config-node/obj/src/connect";
 
@@ -59,39 +59,39 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
     private validateConnection(context: IContext, connection: ConnectionParams): void {
         if (connection == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "RabbitMQ connection is not set"
             );
         }
 
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return null;
         }
 
-        let protocol = connection.getAsStringWithDefault("protocol", "amqp");
+        const protocol = connection.getAsStringWithDefault("protocol", "amqp");
         if (protocol == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PROTOCOL",
                 "Connection protocol is not set"
             );
         }
 
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_HOST",
                 "Connection host is not set"
             );
         }
 
-        let port = connection.getAsInteger("port");
+        const port = connection.getAsInteger("port");
         if (port == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PORT",
                 "Connection port is not set"
             );
@@ -102,18 +102,18 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
 
     private composeOptions(connection: ConnectionParams, credential: CredentialParams): ConfigParams {
         // Define additional parameters parameters
-        let options = connection.override(credential);
+        const options = connection.override(credential);
 
         // Compose uri
         if (options.getAsString("uri") == null) {
             let credential = "";
             let uri = "";
 
-            let username = options.getAsNullableString('username');
-            let password = options.getAsNullableString('password');
-            let protocol = connection.getAsStringWithDefault("protocol", 'amqp');
-            let host = connection.getHost();
-            let port = connection.getAsString("port");
+            const username = options.getAsNullableString('username');
+            const password = options.getAsNullableString('password');
+            const protocol = connection.getAsStringWithDefault("protocol", 'amqp');
+            const host = connection.getHost();
+            const port = connection.getAsString("port");
 
             if (username != null && password != null) {
                 credential = username + ":" + password;
@@ -137,14 +137,14 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
      * @returns resolved RabbitMQ connection options.
      */
     public async resolve(context: IContext): Promise<any> {
-        let connection = await this._connectionResolver.resolve(context);
+        const connection = await this._connectionResolver.resolve(context);
         // Validate connections
         this.validateConnection(context, connection);
 
-        let credential = await this._credentialResolver.lookup(context);
+        const credential = await this._credentialResolver.lookup(context);
         // Credentials are not validated right now
 
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 
@@ -160,7 +160,7 @@ export class RabbitMQConnectionResolver implements IReferenceable, IConfigurable
         // Validate connections
         this.validateConnection(context, connection);
 
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 }

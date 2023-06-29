@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RabbitMQConnectionResolver = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 const connect_1 = require("pip-services4-config-node/obj/src/connect");
 /**
@@ -66,38 +67,38 @@ class RabbitMQConnectionResolver {
     }
     validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "RabbitMQ connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "RabbitMQ connection is not set");
         }
-        let uri = connection.getUri();
+        const uri = connection.getUri();
         if (uri != null) {
             return null;
         }
-        let protocol = connection.getAsStringWithDefault("protocol", "amqp");
+        const protocol = connection.getAsStringWithDefault("protocol", "amqp");
         if (protocol == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
-        let host = connection.getHost();
+        const host = connection.getHost();
         if (host == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_HOST", "Connection host is not set");
         }
-        let port = connection.getAsInteger("port");
+        const port = connection.getAsInteger("port");
         if (port == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PORT", "Connection port is not set");
         }
         return;
     }
     composeOptions(connection, credential) {
         // Define additional parameters parameters
-        let options = connection.override(credential);
+        const options = connection.override(credential);
         // Compose uri
         if (options.getAsString("uri") == null) {
             let credential = "";
             let uri = "";
-            let username = options.getAsNullableString('username');
-            let password = options.getAsNullableString('password');
-            let protocol = connection.getAsStringWithDefault("protocol", 'amqp');
-            let host = connection.getHost();
-            let port = connection.getAsString("port");
+            const username = options.getAsNullableString('username');
+            const password = options.getAsNullableString('password');
+            const protocol = connection.getAsStringWithDefault("protocol", 'amqp');
+            const host = connection.getHost();
+            const port = connection.getAsString("port");
             if (username != null && password != null) {
                 credential = username + ":" + password;
             }
@@ -119,12 +120,12 @@ class RabbitMQConnectionResolver {
      */
     resolve(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this._connectionResolver.resolve(context);
+            const connection = yield this._connectionResolver.resolve(context);
             // Validate connections
             this.validateConnection(context, connection);
-            let credential = yield this._credentialResolver.lookup(context);
+            const credential = yield this._credentialResolver.lookup(context);
             // Credentials are not validated right now
-            let options = this.composeOptions(connection, credential);
+            const options = this.composeOptions(connection, credential);
             return options;
         });
     }
@@ -139,7 +140,7 @@ class RabbitMQConnectionResolver {
     compose(context, connection, credential) {
         // Validate connections
         this.validateConnection(context, connection);
-        let options = this.composeOptions(connection, credential);
+        const options = this.composeOptions(connection, credential);
         return options;
     }
 }

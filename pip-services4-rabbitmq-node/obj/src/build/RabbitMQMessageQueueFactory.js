@@ -18,7 +18,7 @@ class RabbitMQMessageQueueFactory extends pip_services4_messaging_node_1.Message
     constructor() {
         super();
         this.register(RabbitMQMessageQueueFactory.MemoryQueueDescriptor, (locator) => {
-            let name = (typeof locator.getName === "function") ? locator.getName() : null;
+            const name = (typeof locator.getName === "function") ? locator.getName() : null;
             return this.createQueue(name);
         });
     }
@@ -27,7 +27,7 @@ class RabbitMQMessageQueueFactory extends pip_services4_messaging_node_1.Message
      * @param name a name of the created message queue.
      */
     createQueue(name) {
-        let queue = new RabbitMQMessageQueue_1.RabbitMQMessageQueue(name);
+        const queue = new RabbitMQMessageQueue_1.RabbitMQMessageQueue(name);
         if (this._config != null) {
             queue.configure(this._config);
         }

@@ -9,7 +9,7 @@ import { MessageQueue } from 'pip-services4-messaging-node';
 import { MessagingCapabilities } from 'pip-services4-messaging-node';
 import { MessageEnvelope } from 'pip-services4-messaging-node';
 import { RabbitMQConnectionResolver } from '../connect';
-import { IConfigurable, IOpenable, ICleanable, ConfigParams, IContext, Context } from 'pip-services4-components-node';
+import { IConfigurable, IOpenable, ICleanable, ConfigParams, IContext, Context, ContextResolver } from 'pip-services4-components-node';
 
 /**
  * Message queue that sends and receives messages via RabbitMQ message broker.
@@ -68,20 +68,20 @@ export class RabbitMQMessageQueue extends MessageQueue
     protected _connection: amqplib.Connection;
     protected _mqChanel: amqplib.Channel;
 
-    private interval: number = 10000;
+    private interval = 10000;
 
-    private _queue: string = "";
-    private _exchange: string = "";
+    private _queue = "";
+    private _exchange = "";
     private _exchangeType: 'direct' | 'topic' | 'headers' | 'fanout' | 'match' | string = "fanout";
-    private _routingKey: string = "";
-    private _persistent: boolean = false;
-    private _exclusive: boolean = false;
-    private _autoCreate: boolean = false;
-    private _autoDelete: boolean = false;
-    private _noQueue: boolean = false;
+    private _routingKey = "";
+    private _persistent = false;
+    private _exclusive = false;
+    private _autoCreate = false;
+    private _autoDelete = false;
+    private _noQueue = false;
 
     private _optionsResolver: RabbitMQConnectionResolver = new RabbitMQConnectionResolver();
-    private _listen: boolean = false;
+    private _listen = false;
 
     /**
      * Creates a new instance of the persistence component.
@@ -119,7 +119,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
     private checkOpened(context: IContext): void {
         if (this._mqChanel == null)
-            throw new InvalidStateException(context != null ? context.getTraceId() : null, "NOT_OPENED", "The queue is not opened");
+            throw new InvalidStateException(context != null ? ContextResolver.getTraceId(context) : null, "NOT_OPENED", "The queue is not opened");
     }
 
     /**
@@ -137,13 +137,13 @@ export class RabbitMQMessageQueue extends MessageQueue
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async open(context: IContext): Promise<void> {
-    	let connection = await this._connectionResolver.resolve(context);
-        let credential = await this._credentialResolver.lookup(context);
+        const connection = await this._connectionResolver.resolve(context);
+        const credential = await this._credentialResolver.lookup(context);
 
-        let options = await this._optionsResolver.compose(context, connection, credential)
+        const options = await this._optionsResolver.compose(context, connection, credential)
 
         if (this._queue == "" && this._exchange == "") {
-            throw new ConfigException(context != null ? context.getTraceId() : null,
+            throw new ConfigException(context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_QUEUE",
                 "Queue or exchange are not defined in connection parameters");
         }
@@ -167,7 +167,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
             if (!this._noQueue) {
                 if (this._queue == "") {
-                    let res = await this._mqChanel.assertQueue(
+                    const res = await this._mqChanel.assertQueue(
                         "",
                         {
                             exclusive: true,
@@ -200,7 +200,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 	 * @param context 	(optional) execution context to trace execution through call chain.
      */
     public async close(context: IContext): Promise<void> {
-    	if (this._mqChanel != null) {
+        if (this._mqChanel != null) {
             await this._mqChanel.close();
         }
 
@@ -226,7 +226,7 @@ export class RabbitMQMessageQueue extends MessageQueue
             return 0;
         }
 
-        let queueInfo = await this._mqChanel.checkQueue(this._queue);
+        const queueInfo = await this._mqChanel.checkQueue(this._queue);
 
         return queueInfo.messageCount;
     }
@@ -234,7 +234,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     protected toMessage(msg: amqplib.Message): MessageEnvelope {
         if (msg == null) return null;
 
-        let message = new MessageEnvelope(Context.fromTraceId(msg.properties.correlationId), msg.properties.type, msg.content.toString());
+        const message = new MessageEnvelope(Context.fromTraceId(msg.properties.correlationId), msg.properties.type, msg.content.toString());
         message.message_type = msg.properties.type;
         message.sent_time = new Date();
         message.setReference(msg);
@@ -251,7 +251,7 @@ export class RabbitMQMessageQueue extends MessageQueue
     public async send(context: IContext, message: MessageEnvelope): Promise<void> {
         this.checkOpen(context);
 
-        let options: Options.Publish = {
+        const options: Options.Publish = {
             contentType: "text/plain"
         };
 
@@ -266,9 +266,9 @@ export class RabbitMQMessageQueue extends MessageQueue
         if (message.message_type)
             options.type = message.message_type;
 
-        let buf = message.message;
+        const buf = message.message;
 
-        let ok = this._mqChanel.publish(this._exchange, this._routingKey, buf, options);
+        const ok = this._mqChanel.publish(this._exchange, this._routingKey, buf, options);
 
         if (ok) {
             this._counters.incrementOne("queue." + this._name + ".sent_messages");
@@ -288,11 +288,11 @@ export class RabbitMQMessageQueue extends MessageQueue
      public async peek(context: IContext): Promise<MessageEnvelope> {
         this.checkOpen(context);
 
-        let envelope = await this._mqChanel.get(this._queue, { noAck: false})
+        const envelope = await this._mqChanel.get(this._queue, { noAck: false})
 
         if (!envelope) return null;
 
-        let message = this.toMessage(envelope);
+        const message = this.toMessage(envelope);
 
         if (message != null) {
             this._logger.trace(Context.fromTraceId(message.trace_id), "Peeked message %s on %s", message, this._name)
@@ -314,13 +314,13 @@ export class RabbitMQMessageQueue extends MessageQueue
     public async peekBatch(context: IContext, messageCount: number): Promise<MessageEnvelope[]> {
         this.checkOpen(context);
 
-        let messages: MessageEnvelope[] = [];
+        const messages: MessageEnvelope[] = [];
 
         for (; messageCount > 0;) {
-            let envelope = await this._mqChanel.get(this._queue, {noAck: false});
+            const envelope = await this._mqChanel.get(this._queue, {noAck: false});
             if (!envelope) break;
 
-            let message = this.toMessage(envelope);
+            const message = this.toMessage(envelope);
             messages.push(message);
             messageCount--;
         }
@@ -342,11 +342,12 @@ export class RabbitMQMessageQueue extends MessageQueue
         let message: MessageEnvelope;
         let timeout = waitTimeout;
         
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if (timeout <= 0) break;
 
             // Read the message and exit if received
-            let env = await this._mqChanel.get(this._queue, {noAck: false});
+            const env = await this._mqChanel.get(this._queue, {noAck: false});
             if (env) {
                 message = this.toMessage(env);
                 break;
@@ -371,6 +372,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * @param message       a message to extend its lock.
      * @param lockTimeout   a locking timeout in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async renewLock(message: MessageEnvelope, lockTimeout: number): Promise<void> {
         // Not supported
     }
@@ -389,7 +391,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         this.checkOpened(null);
 
         // Make the message immediately visible
-        let envelope = message.getReference() as amqplib.GetMessage;
+        const envelope = message.getReference() as amqplib.GetMessage;
         if (envelope != null) {
             this._mqChanel.nack(envelope, false, true);
 
@@ -410,7 +412,7 @@ export class RabbitMQMessageQueue extends MessageQueue
         this.checkOpened(null);
 
         // Make the message immediately visible
-        let envelope = message.getReference() as amqplib.GetMessage;
+        const envelope = message.getReference() as amqplib.GetMessage;
         if (envelope != null) {
             this._mqChanel.ack(envelope, false);
 
@@ -426,6 +428,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * 
      * @param message   a message to be removed.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async moveToDeadLetter(message: MessageEnvelope): Promise<void> {
         // Not supported
     }
@@ -444,7 +447,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         this._logger.debug(context, "Started listening messages at %s", this._name);
         
-        let options = {
+        const options = {
             noLocal: false,
             noAck: false,
             exclusive: false
@@ -459,7 +462,7 @@ export class RabbitMQMessageQueue extends MessageQueue
                     await this._mqChanel.cancel(msg.fields.consumerTag);
                 } else {
                     if (msg != null) {
-                        let message = this.toMessage(msg);
+                        const message = this.toMessage(msg);
                         this._counters.incrementOne("queue." + this._name + ".received_messages");
                         this._logger.debug(Context.fromTraceId(message.trace_id), "Received message %s via %s", message, this._name);
                         await receiver.receiveMessage(message, this);
@@ -477,6 +480,7 @@ export class RabbitMQMessageQueue extends MessageQueue
      * 
      * @param context     (optional) a context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endListen(context: IContext): void {
         this._listen = false;
     }   
@@ -490,7 +494,7 @@ export class RabbitMQMessageQueue extends MessageQueue
 
         let count = 0;
         if (this._queue != "") {
-            let res = await this._mqChanel.purgeQueue(this._queue);
+            const res = await this._mqChanel.purgeQueue(this._queue);
             count = res.messageCount;
         }
 
