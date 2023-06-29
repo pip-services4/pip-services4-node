@@ -115,7 +115,7 @@ class NatsAbstractMessageQueue extends pip_services4_messaging_node_1.MessageQue
                 yield this._connection.open(context);
             }
             if (!this._connection.isOpen()) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "NATS connection is not opened");
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "NATS connection is not opened");
             }
             this._opened = true;
             this._client = this._connection.getConnection();
@@ -132,7 +132,7 @@ class NatsAbstractMessageQueue extends pip_services4_messaging_node_1.MessageQue
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'NATS connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'NATS connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);

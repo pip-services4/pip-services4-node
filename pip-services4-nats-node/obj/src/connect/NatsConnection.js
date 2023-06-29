@@ -150,7 +150,7 @@ class NatsConnection {
             }
             catch (ex) {
                 this._logger.error(context, ex, "Failed to connect to NATS server");
-                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
+                const err = new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
                 throw err;
             }
         });

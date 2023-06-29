@@ -10,7 +10,7 @@ import { NatsConnectionResolver } from './NatsConnectionResolver';
 import { INatsMessageListener } from './INatsMessageListener';
 import { NatsSubscription } from './NatsSubscription';
 import { ConnectionException, InvalidStateException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 /**
@@ -170,7 +170,7 @@ export class NatsConnection implements IMessageQueueConnection, IReferenceable, 
             this._logger.debug(context, "Connected to NATS server at "+servers);
         } catch (ex) {
             this._logger.error(context, ex, "Failed to connect to NATS server");
-            const err = new ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
+            const err = new ConnectionException(context != null ? ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to NATS service failed").withCause(ex);
             throw err;
         }
     }
