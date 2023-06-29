@@ -137,7 +137,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     getListByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let filter = {
+            const filter = {
                 _id: { $in: ids }
             };
             return yield this.getListByFilter(context, filter, null, null);
@@ -152,7 +152,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let filter = { _id: id };
+            const filter = { _id: id };
             let item = yield this._collection.findOne(filter);
             if (item == null) {
                 this._logger.trace(context, "Nothing found from %s with id = %s", this._collectionName, id);
@@ -180,7 +180,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
                 return;
             }
             // Assign unique id
-            let newItem = Object.assign({}, item);
+            const newItem = Object.assign({}, item);
             delete newItem.id;
             newItem._id = item.id;
             // Auto generate id
@@ -212,14 +212,14 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
                 newItem._id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
             newItem = this.convertFromPublic(newItem);
-            let filter = {
+            const filter = {
                 _id: newItem._id
             };
-            let options = {
+            const options = {
                 returnDocument: 'after',
                 upsert: true
             };
-            let result = yield this._collection.findOneAndReplace(filter, newItem, options);
+            const result = yield this._collection.findOneAndReplace(filter, newItem, options);
             if (item != null) {
                 this._logger.trace(context, "Set in %s with id = %s", this._collectionName, item.id);
             }
@@ -242,12 +242,12 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             let newItem = Object.assign({}, item);
             delete newItem.id;
             newItem = this.convertFromPublic(newItem);
-            let filter = { _id: item.id };
-            let update = { $set: newItem };
-            let options = {
+            const filter = { _id: item.id };
+            const update = { $set: newItem };
+            const options = {
                 returnDocument: 'after'
             };
-            let result = yield this._collection.findOneAndUpdate(filter, update, options);
+            const result = yield this._collection.findOneAndUpdate(filter, update, options);
             this._logger.trace(context, "Updated in %s with id = %s", this._collectionName, item.id);
             newItem = result ? this.convertToPublic(result.value) : null;
             return newItem;
@@ -268,12 +268,12 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             }
             let newItem = data.getAsObject();
             newItem = this.convertFromPublicPartial(newItem);
-            let filter = { _id: id };
-            let update = { $set: newItem };
-            let options = {
+            const filter = { _id: id };
+            const update = { $set: newItem };
+            const options = {
                 returnDocument: 'after'
             };
-            let result = yield this._collection.findOneAndUpdate(filter, update, options);
+            const result = yield this._collection.findOneAndUpdate(filter, update, options);
             this._logger.trace(context, "Updated partially in %s with id = %s", this._collectionName, id);
             newItem = result ? this.convertToPublic(result.value) : null;
             return newItem;
@@ -288,10 +288,10 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let filter = { _id: id };
-            let result = yield this._collection.findOneAndDelete(filter);
+            const filter = { _id: id };
+            const result = yield this._collection.findOneAndDelete(filter);
             this._logger.trace(context, "Deleted from %s with id = %s", this._collectionName, id);
-            let oldItem = result ? this.convertToPublic(result.value) : null;
+            const oldItem = result ? this.convertToPublic(result.value) : null;
             return oldItem;
         });
     }
@@ -303,7 +303,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     deleteByIds(context, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            let filter = { _id: { $in: ids } };
+            const filter = { _id: { $in: ids } };
             return yield this.deleteByFilter(context, filter);
         });
     }

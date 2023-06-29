@@ -3,7 +3,7 @@ import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 
 import { MongoDbConnectionResolver } from './MongoDbConnectionResolver';
 import { ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IConfigurable, IOpenable, ConfigParams, IReferences, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
 
@@ -192,7 +192,7 @@ export class MongoDbConnection implements IReferenceable, IConfigurable, IOpenab
             this._databaseName = this._db.databaseName;
         } catch (ex) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to mongodb failed"
             ).withCause(ex);

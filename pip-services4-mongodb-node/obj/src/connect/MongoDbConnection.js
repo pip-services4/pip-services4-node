@@ -74,6 +74,7 @@ class MongoDbConnection {
          * The configuration options.
          */
         this._options = new pip_services4_components_node_1.ConfigParams();
+        //
     }
     /**
      * Configures component by passing configuration parameters.
@@ -103,19 +104,22 @@ class MongoDbConnection {
         return this._connection != null;
     }
     composeSettings() {
-        let maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
-        let keepAlive = this._options.getAsNullableInteger("keep_alive");
-        let connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
-        let socketTimeoutMS = this._options.getAsNullableInteger("socket_timeout");
-        let autoReconnect = this._options.getAsNullableBoolean("auto_reconnect");
-        let reconnectInterval = this._options.getAsNullableInteger("reconnect_interval");
-        let debug = this._options.getAsNullableBoolean("debug");
-        let ssl = this._options.getAsNullableBoolean("ssl");
-        let replicaSet = this._options.getAsNullableString("replica_set");
-        let authSource = this._options.getAsNullableString("auth_source");
-        let authUser = this._options.getAsNullableString("auth_user");
-        let authPassword = this._options.getAsNullableString("auth_password");
-        let settings = {
+        const maxPoolSize = this._options.getAsNullableInteger("max_pool_size");
+        const keepAlive = this._options.getAsNullableInteger("keep_alive");
+        const connectTimeoutMS = this._options.getAsNullableInteger("connect_timeout");
+        const socketTimeoutMS = this._options.getAsNullableInteger("socket_timeout");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const autoReconnect = this._options.getAsNullableBoolean("auto_reconnect");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reconnectInterval = this._options.getAsNullableInteger("reconnect_interval");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const debug = this._options.getAsNullableBoolean("debug");
+        const ssl = this._options.getAsNullableBoolean("ssl");
+        const replicaSet = this._options.getAsNullableString("replica_set");
+        const authSource = this._options.getAsNullableString("auth_source");
+        const authUser = this._options.getAsNullableString("auth_user");
+        const authPassword = this._options.getAsNullableString("auth_password");
+        const settings = {
             maxPoolSize: maxPoolSize,
             keepAliveInitialDelay: keepAlive,
             //autoReconnect: autoReconnect,
@@ -148,17 +152,17 @@ class MongoDbConnection {
      */
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
-            let uri = yield this._connectionResolver.resolve(context);
+            const uri = yield this._connectionResolver.resolve(context);
             this._logger.debug(context, "Connecting to mongodb");
             try {
-                let settings = this.composeSettings();
-                let client = yield new mongodb_1.MongoClient(uri, settings).connect();
+                const settings = this.composeSettings();
+                const client = yield new mongodb_1.MongoClient(uri, settings).connect();
                 this._connection = client;
                 this._db = client.db();
                 this._databaseName = this._db.databaseName;
             }
             catch (ex) {
-                throw new pip_services4_commons_node_1.ConnectionException(context != null ? context.getTraceId() : null, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
+                throw new pip_services4_commons_node_1.ConnectionException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "CONNECT_FAILED", "Connection to mongodb failed").withCause(ex);
             }
         });
     }

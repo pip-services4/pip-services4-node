@@ -4,7 +4,7 @@ import { Collection, Db, Document, FindOptions } from 'mongodb';
 import { MongoDbConnection } from '../connect/MongoDbConnection';
 import { MongoDbIndex } from './MongoDbIndex';
 import { InvalidStateException, ConnectionException } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, ContextResolver } from 'pip-services4-components-node';
 import { PagingParams, DataPage } from 'pip-services4-data-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 
@@ -303,7 +303,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
             await this._connection.open(context);
         }
 
-        const traceId = context != null ? context.getTraceId() : null;
+        const traceId = context != null ? ContextResolver.getTraceId(context) : null;
 
         if (this._connection == null) {
             throw new InvalidStateException(traceId, 'NO_CONNECTION', 'MongoDB connection is missing');
@@ -355,7 +355,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         }
 
         if (this._connection == null) {
-            throw new InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MongoDb connection is missing');
+            throw new InvalidStateException(context != null ? ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'MongoDb connection is missing');
         }
 
         if (this._localConnection) {

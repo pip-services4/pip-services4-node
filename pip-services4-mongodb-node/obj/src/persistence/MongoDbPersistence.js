@@ -155,7 +155,7 @@ class MongoDbPersistence {
         this._connection = null;
     }
     createConnection() {
-        let connection = new MongoDbConnection_1.MongoDbConnection();
+        const connection = new MongoDbConnection_1.MongoDbConnection();
         if (this._config)
             connection.configure(this._config);
         if (this._references)
@@ -242,7 +242,7 @@ class MongoDbPersistence {
             if (this._localConnection) {
                 yield this._connection.open(context);
             }
-            const traceId = context != null ? context.getTraceId() : null;
+            const traceId = context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null;
             if (this._connection == null) {
                 throw new pip_services4_commons_node_1.InvalidStateException(traceId, 'NO_CONNECTION', 'MongoDB connection is missing');
             }
@@ -254,14 +254,14 @@ class MongoDbPersistence {
             this._db = this._connection.getDatabase();
             this._databaseName = this._connection.getDatabaseName();
             try {
-                let collection = this._db.collection(this._collectionName);
+                const collection = this._db.collection(this._collectionName);
                 // Define database schema
                 this.defineSchema();
                 // Recreate indexes
-                for (let index of this._indexes) {
+                for (const index of this._indexes) {
                     yield collection.createIndex(index.keys, index.options);
-                    let options = index.options || {};
-                    let indexName = options.name || Object.keys(index.keys).join(',');
+                    const options = index.options || {};
+                    const indexName = options.name || Object.keys(index.keys).join(',');
                     this._logger.debug(context, "Created index %s for collection %s", indexName, this._collectionName);
                 }
                 this._opened = true;
@@ -286,7 +286,7 @@ class MongoDbPersistence {
                 return;
             }
             if (this._connection == null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, 'NO_CONNECTION', 'MongoDb connection is missing');
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, 'NO_CONNECTION', 'MongoDb connection is missing');
             }
             if (this._localConnection) {
                 yield this._connection.close(context);
@@ -302,6 +302,7 @@ class MongoDbPersistence {
      *
      * @param context 	(optional) execution context to trace execution through call chain.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clear(context) {
         return __awaiter(this, void 0, void 0, function* () {
             // Return error if collection is not set
@@ -328,11 +329,11 @@ class MongoDbPersistence {
         return __awaiter(this, void 0, void 0, function* () {
             // Adjust max item count based on configuration
             paging = paging || new pip_services4_data_node_1.PagingParams();
-            let skip = paging.getSkip(-1);
-            let take = paging.getTake(this._maxPageSize);
-            let pagingEnabled = paging.total;
+            const skip = paging.getSkip(-1);
+            const take = paging.getTake(this._maxPageSize);
+            const pagingEnabled = paging.total;
             // Configure options
-            let options = {};
+            const options = {};
             if (skip >= 0)
                 options.skip = skip;
             options.limit = take;
@@ -363,7 +364,7 @@ class MongoDbPersistence {
      */
     getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            let count = yield this._collection.countDocuments(filter);
+            const count = yield this._collection.countDocuments(filter);
             if (count != null) {
                 this._logger.trace(context, "Counted %d items in %s", count, this._collectionName);
             }
@@ -386,7 +387,7 @@ class MongoDbPersistence {
     getListByFilter(context, filter, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             // Configure options
-            let options = {};
+            const options = {};
             if (sort != null)
                 options.sort = sort;
             let items = yield this._collection.find(filter, options).project(select).toArray();
@@ -410,13 +411,13 @@ class MongoDbPersistence {
      */
     getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            let count = yield this._collection.countDocuments(filter);
-            let pos = Math.trunc(Math.random() * count);
-            let options = {
+            const count = yield this._collection.countDocuments(filter);
+            const pos = Math.trunc(Math.random() * count);
+            const options = {
                 skip: pos >= 0 ? pos : 0,
                 limit: 1,
             };
-            let items = yield this._collection.find(filter, options).toArray();
+            const items = yield this._collection.find(filter, options).toArray();
             let item = (items != null && items.length > 0) ? items[0] : null;
             if (item == null) {
                 this._logger.trace(context, "Random item wasn't found from %s", this._collectionName);
@@ -441,7 +442,7 @@ class MongoDbPersistence {
                 return null;
             }
             let newItem = this.convertFromPublic(item);
-            let result = yield this._collection.insertOne(newItem);
+            const result = yield this._collection.insertOne(newItem);
             this._logger.trace(context, "Created in %s with id = %s", this._collectionName, newItem._id);
             if (result.acknowledged) {
                 newItem = Object.assign({}, item);
@@ -464,8 +465,8 @@ class MongoDbPersistence {
      */
     deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield this._collection.deleteMany(filter);
-            let count = result != null ? result.deletedCount : 0;
+            const result = yield this._collection.deleteMany(filter);
+            const count = result != null ? result.deletedCount : 0;
             this._logger.trace(context, "Deleted %d items from %s", count, this._collectionName);
         });
     }
