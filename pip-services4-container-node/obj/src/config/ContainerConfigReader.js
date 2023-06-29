@@ -2,6 +2,7 @@
 /** @module config */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContainerConfigReader = void 0;
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
 const pip_services4_config_node_2 = require("pip-services4-config-node");
 const ContainerConfig_1 = require("./ContainerConfig");
@@ -21,7 +22,7 @@ class ContainerConfigReader {
      */
     static readFromFile(context, path, parameters) {
         if (path == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PATH", "Missing config file path");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PATH", "Missing config file path");
         }
         const ext = path.split('.').pop();
         if (ext == "json") {

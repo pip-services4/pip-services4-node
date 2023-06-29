@@ -1,6 +1,6 @@
 /** @module core */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { Descriptor } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
@@ -175,7 +175,7 @@ export class Container implements IConfigurable, IReferenceable, IUnreferenceabl
     public async open(context: IContext): Promise<void> {
         if (this._references != null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "ALREADY_OPENED",
                 "Container was already opened"
             );

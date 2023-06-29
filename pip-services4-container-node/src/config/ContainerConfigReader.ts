@@ -1,6 +1,6 @@
 /** @module config */
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { JsonConfigReader } from 'pip-services4-config-node';
 import { YamlConfigReader } from 'pip-services4-config-node';
 import { ConfigParams } from 'pip-services4-components-node';
@@ -25,7 +25,7 @@ export class ContainerConfigReader {
     public static readFromFile(context: IContext, path: string, parameters: ConfigParams): ContainerConfig {
         if (path == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_PATH",
                 "Missing config file path"
             );

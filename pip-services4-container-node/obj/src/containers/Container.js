@@ -12,10 +12,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Container = void 0;
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
-const pip_services4_components_node_2 = require("pip-services4-components-node");
+const pip_services4_components_node_3 = require("pip-services4-components-node");
 const DefaultContainerFactory_1 = require("../build/DefaultContainerFactory");
 const ContainerConfig_1 = require("../config/ContainerConfig");
 const ContainerConfigReader_1 = require("../config/ContainerConfigReader");
@@ -90,7 +91,7 @@ class Container {
         this._logger = new pip_services4_observability_node_1.NullLogger();
         this._factories = new DefaultContainerFactory_1.DefaultContainerFactory();
         // Override in child classes
-        this._info = new pip_services4_components_node_2.ContextInfo(name, description);
+        this._info = new pip_services4_components_node_3.ContextInfo(name, description);
     }
     /**
      * Configures component by passing configuration parameters.
@@ -128,14 +129,14 @@ class Container {
         // Override in child classes
     }
     initReferences(references) {
-        const existingInfo = references.getOneOptional(new pip_services4_components_node_1.Descriptor("*", "context-info", "*", "*", "1.0"));
+        const existingInfo = references.getOneOptional(new pip_services4_components_node_2.Descriptor("*", "context-info", "*", "*", "1.0"));
         if (existingInfo == null) {
-            references.put(new pip_services4_components_node_1.Descriptor("pip-services", "context-info", "default", "default", "1.0"), this._info);
+            references.put(new pip_services4_components_node_2.Descriptor("pip-services", "context-info", "default", "default", "1.0"), this._info);
         }
         else {
             this._info = existingInfo;
         }
-        references.put(new pip_services4_components_node_1.Descriptor("pip-services", "factory", "container", "default", "1.0"), this._factories);
+        references.put(new pip_services4_components_node_2.Descriptor("pip-services", "factory", "container", "default", "1.0"), this._factories);
     }
     /**
      * Adds a factory to the container. The factory is used to create components
@@ -162,7 +163,7 @@ class Container {
     open(context) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._references != null) {
-                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? context.getTraceId() : null, "ALREADY_OPENED", "Container was already opened");
+                throw new pip_services4_commons_node_1.InvalidStateException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "ALREADY_OPENED", "Container was already opened");
             }
             try {
                 this._logger.trace(context, "Starting container.");
@@ -172,7 +173,7 @@ class Container {
                 this._references.putFromConfig(this._config);
                 this.setReferences(this._references);
                 // Get custom description if available
-                const infoDescriptor = new pip_services4_components_node_1.Descriptor("*", "context-info", "*", "*", "*");
+                const infoDescriptor = new pip_services4_components_node_2.Descriptor("*", "context-info", "*", "*", "*");
                 this._info = this._references.getOneOptional(infoDescriptor);
                 yield this._references.open(context);
                 // Get reference to logger
