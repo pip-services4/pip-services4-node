@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqliteConnectionResolver = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const pip_services4_config_node_1 = require("pip-services4-config-node");
+const pip_services4_components_node_1 = require("pip-services4-components-node");
 /**
  * Helper class that resolves SQLite connection and credential parameters,
  * validates them and generates a connection URI.
@@ -64,7 +65,7 @@ class SqliteConnectionResolver {
         const uri = connection.getUri();
         if (uri != null) {
             if (!uri.startsWith("file://")) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Connection protocol must be file://");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "WRONG_PROTOCOL", "Connection protocol must be file://");
             }
             return;
         }
@@ -86,13 +87,13 @@ class SqliteConnectionResolver {
         // }
         const database = connection.getAsNullableString("database");
         if (database == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_DATABASE", "Connection database is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_DATABASE", "Connection database is not set");
         }
         return null;
     }
     validateConnections(context, connections) {
         if (connections == null || connections.length == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Database connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "Database connection is not set");
         }
         for (const connection of connections) {
             this.validateConnection(context, connection);

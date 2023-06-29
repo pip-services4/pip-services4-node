@@ -2,7 +2,7 @@
 
 import { ConfigException } from "pip-services4-commons-node";
 import { ConnectionParams, ConnectionResolver, CredentialParams, CredentialResolver } from "pip-services4-config-node";
-import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext } from "pip-services4-components-node";
+import { IReferenceable, IConfigurable, ConfigParams, IReferences, IContext, ContextResolver } from "pip-services4-components-node";
 
 /**
  * Helper class that resolves SQLite connection and credential parameters,
@@ -57,7 +57,7 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
         if (uri != null) {
             if (!uri.startsWith("file://")) {
                 throw new ConfigException(
-                    context != null ? context.getTraceId() : null,
+                    context != null ? ContextResolver.getTraceId(context) : null,
                     "WRONG_PROTOCOL",
                     "Connection protocol must be file://"
                 );
@@ -86,7 +86,7 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
         const database = connection.getAsNullableString("database");
         if (database == null) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_DATABASE",
                 "Connection database is not set"
             );
@@ -98,7 +98,7 @@ export class SqliteConnectionResolver implements IReferenceable, IConfigurable {
     private validateConnections(context: IContext, connections: ConnectionParams[]): void {
         if (connections == null || connections.length == 0) {
             throw new ConfigException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "NO_CONNECTION",
                 "Database connection is not set"
             );

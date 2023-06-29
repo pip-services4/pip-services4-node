@@ -1,7 +1,7 @@
 /** @module persistence */
 
 import { InvalidStateException, ConnectionException, LongConverter } from 'pip-services4-commons-node';
-import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext } from 'pip-services4-components-node';
+import { IReferenceable, IUnreferenceable, IConfigurable, IOpenable, ICleanable, ConfigParams, IReferences, DependencyResolver, IContext, ContextResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { DataPage, PagingParams } from 'pip-services4-data-node';
 import { SqliteConnection } from '../connect/SqliteConnection';
@@ -342,7 +342,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'SQLite connection is missing'
             );
@@ -350,7 +350,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         if (!this._connection.isOpen()) {
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "SQLite connection is not opened"
             );
@@ -373,7 +373,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
             this._client == null;
 
             throw new ConnectionException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 "CONNECT_FAILED",
                 "Connection to sqlite failed"
             ).withCause(ex);    
@@ -392,7 +392,7 @@ export class SqlitePersistence<T> implements IReferenceable, IUnreferenceable, I
 
         if (this._connection == null) {
             throw new InvalidStateException(
-                context != null ? context.getTraceId() : null,
+                context != null ? ContextResolver.getTraceId(context) : null,
                 'NO_CONNECTION',
                 'Sqlite connection is missing'
             );
