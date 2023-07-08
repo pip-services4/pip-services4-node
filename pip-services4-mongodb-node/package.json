@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-mongodb-node",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "author": "Enterprise Innovation Consulting",
     "description": "MongoDB components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -37,7 +37,7 @@
         "lint-fix": "eslint --fix .  --ext .ts"
     },
     "dependencies": {
-        "mongodb": "^5.0.*",
+        "mongodb": "^5.7.0",
         "pip-services4-commons-node": "^0.0.2",
         "pip-services4-components-node": "^0.0.5",
         "pip-services4-config-node": "^0.0.5",
@@ -46,14 +46,14 @@
         "pip-services4-persistence-node": "^0.0.2"
     },
     "devDependencies": {
-        "@types/chai": "^4.0.0",
+        "@types/chai": "^4.3.5",
         "@types/mocha": "^10.0.1",
-        "@types/node": "*",
-        "@typescript-eslint/eslint-plugin": "^5.49.0",
-        "@typescript-eslint/parser": "^5.49.0",
+        "@types/node": "^20.4.1",
+        "@typescript-eslint/eslint-plugin": "^5.61.0",
+        "@typescript-eslint/parser": "^5.61.0",
         "chai": "^4.3.4",
-        "eslint": "^8.32.0",
+        "eslint": "^8.44.0",
         "mocha": "^10.2.0",
-        "typescript": "*"
+        "typescript": "^5.1.6"
     }
 }
