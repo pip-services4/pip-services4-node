@@ -2,7 +2,7 @@
     "name":  "pip-services4-redis-node",
     "type": "module",
     "language": "node",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "build": 0,
     "registry": "pipdevs",
     "artifacts": [

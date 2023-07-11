@@ -187,10 +187,10 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
      * @param ttl               a lock timeout (time to live) in milliseconds.
      * @returns <code>true</code> if lock was successfully acquired and <code>false</code> otherwise.
      */
-    public tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean> {
+    public async tryAcquireLock(context: IContext, key: string, ttl: number): Promise<boolean> {
         this.checkOpened(context);
 
-        return new Promise<boolean>((resolve, reject) => {
+        return await new Promise<boolean>((resolve, reject) => {
             this._client.set(key, this._lock, 'NX', 'PX', ttl, (err, result) => {
                 if (err != null) {
                     reject(err);
@@ -207,10 +207,10 @@ export class RedisLock extends Lock implements IConfigurable, IReferenceable, IO
      * @param context     (optional) a context to trace execution through call chain.
      * @param key               a unique lock key to release.
      */
-    public releaseLock(context: IContext, key: string): Promise<void> {
+    public async releaseLock(context: IContext, key: string): Promise<void> {
         this.checkOpened(context);
 
-        return new Promise<void>((resolve, reject) => {
+        return await new Promise<void>((resolve, reject) => {
             // Start transaction on key
             this._client.watch(key, (err) => {
                 if (err != null) {

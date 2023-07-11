@@ -177,14 +177,16 @@ class RedisCache {
      * @returns a retrieve cached value or <code>null</code> if nothing was found.
      */
     retrieve(context, key) {
-        this.checkOpened(context);
-        return new Promise((resolve, reject) => {
-            this._client.get(key, (err, value) => {
-                if (err != null) {
-                    reject(err);
-                    return;
-                }
-                resolve(value ? JSON.parse(value) : value);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.checkOpened(context);
+            return yield new Promise((resolve, reject) => {
+                this._client.get(key, (err, value) => {
+                    if (err != null) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(value ? JSON.parse(value) : value);
+                });
             });
         });
     }
@@ -198,14 +200,16 @@ class RedisCache {
      * @returns the stored value.
      */
     store(context, key, value, timeout) {
-        this.checkOpened(context);
-        return new Promise((resolve, reject) => {
-            this._client.set(key, JSON.stringify(value), 'PX', timeout, (err, value) => {
-                if (err != null) {
-                    reject(err);
-                    return;
-                }
-                resolve(value);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.checkOpened(context);
+            return yield new Promise((resolve, reject) => {
+                this._client.set(key, JSON.stringify(value), 'PX', timeout, (err, value) => {
+                    if (err != null) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(value);
+                });
             });
         });
     }
@@ -217,14 +221,16 @@ class RedisCache {
      * @returns the removed value.
      */
     remove(context, key) {
-        this.checkOpened(context);
-        return new Promise((resolve, reject) => {
-            this._client.del(key, (err, value) => {
-                if (err != null) {
-                    reject(err);
-                    return;
-                }
-                resolve(value ? JSON.parse(value) : value);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.checkOpened(context);
+            return yield new Promise((resolve, reject) => {
+                this._client.del(key, (err, value) => {
+                    if (err != null) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(value ? JSON.parse(value) : value);
+                });
             });
         });
     }

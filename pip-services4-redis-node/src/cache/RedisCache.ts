@@ -188,10 +188,10 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * @param key               a unique value key.
      * @returns a retrieve cached value or <code>null</code> if nothing was found.
      */
-    public retrieve(context: IContext, key: string): Promise<any> {
+    public async retrieve(context: IContext, key: string): Promise<any> {
         this.checkOpened(context);
 
-        return new Promise<any>((resolve, reject) => {
+        return await new Promise<any>((resolve, reject) => {
             this._client.get(key, (err, value) => {
                 if (err != null) {
                     reject(err);
@@ -211,10 +211,10 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * @param timeout           expiration timeout in milliseconds.
      * @returns the stored value.
      */
-    public store(context: IContext, key: string, value: any, timeout: number): Promise<any> {
+    public async store(context: IContext, key: string, value: any, timeout: number): Promise<any> {
         this.checkOpened(context);
 
-        return new Promise<any>((resolve, reject) => {
+        return await new Promise<any>((resolve, reject) => {
             this._client.set(key, JSON.stringify(value), 'PX', timeout, (err, value) => {
                 if (err != null) {
                     reject(err);
@@ -232,10 +232,10 @@ export class RedisCache implements ICache, IConfigurable, IReferenceable, IOpena
      * @param key               a unique value key.
      * @returns the removed value.
      */
-    public remove(context: IContext, key: string): Promise<any> {
+    public async remove(context: IContext, key: string): Promise<any> {
         this.checkOpened(context);
 
-        return new Promise<any>((resolve, reject) => {
+        return await new Promise<any>((resolve, reject) => {
             this._client.del(key, (err, value) => {
                 if (err != null) {
                     reject(err);

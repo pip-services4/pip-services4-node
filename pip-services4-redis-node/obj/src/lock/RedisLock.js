@@ -181,14 +181,16 @@ class RedisLock extends pip_services4_logic_node_1.Lock {
      * @returns <code>true</code> if lock was successfully acquired and <code>false</code> otherwise.
      */
     tryAcquireLock(context, key, ttl) {
-        this.checkOpened(context);
-        return new Promise((resolve, reject) => {
-            this._client.set(key, this._lock, 'NX', 'PX', ttl, (err, result) => {
-                if (err != null) {
-                    reject(err);
-                    return;
-                }
-                resolve(result == "OK");
+        return __awaiter(this, void 0, void 0, function* () {
+            this.checkOpened(context);
+            return yield new Promise((resolve, reject) => {
+                this._client.set(key, this._lock, 'NX', 'PX', ttl, (err, result) => {
+                    if (err != null) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(result == "OK");
+                });
             });
         });
     }
@@ -199,40 +201,42 @@ class RedisLock extends pip_services4_logic_node_1.Lock {
      * @param key               a unique lock key to release.
      */
     releaseLock(context, key) {
-        this.checkOpened(context);
-        return new Promise((resolve, reject) => {
-            // Start transaction on key
-            this._client.watch(key, (err) => {
-                if (err != null) {
-                    reject(err);
-                    return;
-                }
-                // Read and check if lock is the same
-                this._client.get(key, (err, result) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.checkOpened(context);
+            return yield new Promise((resolve, reject) => {
+                // Start transaction on key
+                this._client.watch(key, (err) => {
                     if (err != null) {
                         reject(err);
                         return;
                     }
-                    // Remove the lock if it matches
-                    if (result == this._lock) {
-                        this._client.multi()
-                            .del(key)
-                            .exec((err) => {
-                            if (err != null)
-                                reject(err);
-                            else
-                                resolve();
-                        });
-                    }
-                    // Cancel transaction if it doesn't match
-                    else {
-                        this._client.unwatch((err) => {
-                            if (err != null)
-                                reject(err);
-                            else
-                                resolve();
-                        });
-                    }
+                    // Read and check if lock is the same
+                    this._client.get(key, (err, result) => {
+                        if (err != null) {
+                            reject(err);
+                            return;
+                        }
+                        // Remove the lock if it matches
+                        if (result == this._lock) {
+                            this._client.multi()
+                                .del(key)
+                                .exec((err) => {
+                                if (err != null)
+                                    reject(err);
+                                else
+                                    resolve();
+                            });
+                        }
+                        // Cancel transaction if it doesn't match
+                        else {
+                            this._client.unwatch((err) => {
+                                if (err != null)
+                                    reject(err);
+                                else
+                                    resolve();
+                            });
+                        }
+                    });
                 });
             });
         });
