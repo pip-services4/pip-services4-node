@@ -22,6 +22,6 @@ class DefaultMemcachedFactory extends pip_services4_components_node_1.Factory {
     }
 }
 exports.DefaultMemcachedFactory = DefaultMemcachedFactory;
-DefaultMemcachedFactory.MemcachedCacheDescriptor = new pip_services4_components_node_1.Descriptor("pip-services4", "cache", "memcached", "*", "1.0");
-DefaultMemcachedFactory.MemcachedLockDescriptor = new pip_services4_components_node_1.Descriptor("pip-services4", "lock", "memcached", "*", "1.0");
+DefaultMemcachedFactory.MemcachedCacheDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "cache", "memcached", "*", "1.0");
+DefaultMemcachedFactory.MemcachedLockDescriptor = new pip_services4_components_node_1.Descriptor("pip-services", "lock", "memcached", "*", "1.0");
 //# sourceMappingURL=DefaultMemcachedFactory.js.map

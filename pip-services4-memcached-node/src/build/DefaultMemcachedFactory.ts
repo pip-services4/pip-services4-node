@@ -11,8 +11,8 @@ import { MemcachedLock } from '../lock/MemcachedLock';
  * @see [[MemcachedLock]]
  */
 export class DefaultMemcachedFactory extends Factory {
-	private static readonly MemcachedCacheDescriptor = new Descriptor("pip-services4", "cache", "memcached", "*", "1.0");
-	private static readonly MemcachedLockDescriptor = new Descriptor("pip-services4", "lock", "memcached", "*", "1.0");
+	private static readonly MemcachedCacheDescriptor = new Descriptor("pip-services", "cache", "memcached", "*", "1.0");
+	private static readonly MemcachedLockDescriptor = new Descriptor("pip-services", "lock", "memcached", "*", "1.0");
 
 	/**
 	 * Create a new instance of the factory.
