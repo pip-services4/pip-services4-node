@@ -69,7 +69,7 @@ paths:
       parameters:
       - name: trace_id
         in: query
-        description: Correlation ID
+        description: Trace ID
         required: false
         schema:
           type: string
