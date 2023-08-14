@@ -168,4 +168,10 @@ export declare class IdentifiablePostgresPersistence<T extends IIdentifiable<K>,
      * @param ids               ids of data items to be deleted.
      */
     deleteByIds(context: IContext, ids: K[]): Promise<void>;
+    /**
+     * Checks if value is empty
+     * @param value any value
+     * @returns true if value empty, other false
+     */
+    protected isEmpty(value: any): boolean;
 }

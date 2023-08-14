@@ -153,7 +153,7 @@ class IdentifiableJsonPostgresPersistence extends IdentifiablePostgresPersistenc
      */
     updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (data == null || id == null) {
+            if (data == null || this.isEmpty(id)) {
                 return null;
             }
             const query = "UPDATE " + this.quotedTableName() + " SET \"data\"=\"data\"||$2 WHERE \"id\"=$1 RETURNING *";
