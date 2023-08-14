@@ -137,7 +137,7 @@ class IdentifiableJsonSqlitePersistence extends IdentifiableSqlitePersistence_1.
      */
     updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (data == null || id == null) {
+            if (data == null || this.isEmpty(id)) {
                 return null;
             }
             // let row = this.convertFromPublicPartial(data.getAsObject());

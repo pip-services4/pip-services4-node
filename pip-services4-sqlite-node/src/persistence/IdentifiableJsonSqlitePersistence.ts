@@ -132,7 +132,7 @@ export class IdentifiableJsonSqlitePersistence<T extends IIdentifiable<K>, K> ex
      * @returns                 the updated item.
      */
     public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {            
-        if (data == null || id == null) {
+        if (data == null || this.isEmpty(id)) {
             return null;
         }
 
