@@ -160,7 +160,7 @@ export class IdentifiableJsonSqlServerPersistence<T extends IIdentifiable<K>, K>
      * @returns the updated item.
      */
     public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {            
-        if (data == null || id == null) {
+        if (data == null || this.isEmpty(id)) {
             return null;
         }
 
