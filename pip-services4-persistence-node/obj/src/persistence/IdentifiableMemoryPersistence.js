@@ -122,7 +122,7 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
             create: { get: () => super.create }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            if (item.id == null) {
+            if (this.isEmpty(item.id)) {
                 // Clone the object
                 item = Object.assign({}, item);
                 pip_services4_commons_node_1.ObjectWriter.setProperty(item, "id", pip_services4_data_node_1.IdGenerator.nextLong());
@@ -236,6 +236,21 @@ class IdentifiableMemoryPersistence extends MemoryPersistence_1.MemoryPersistenc
             };
             yield this.deleteByFilter(context, filter);
         });
+    }
+    /**
+     * Checks if value is empty
+     * @param value any value
+     * @returns true if value empty, other false
+     */
+    isEmpty(value) {
+        const type = typeof value;
+        if (value !== null && type === 'object' || type === 'function') {
+            const props = Object.keys(value);
+            if (props.length === 0) {
+                return true;
+            }
+        }
+        return !value;
     }
 }
 exports.IdentifiableMemoryPersistence = IdentifiableMemoryPersistence;
