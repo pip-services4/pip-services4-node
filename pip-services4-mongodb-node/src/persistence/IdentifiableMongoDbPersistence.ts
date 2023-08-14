@@ -152,6 +152,8 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the found data item.
      */
     public async getOneById(context: IContext, id: K): Promise<T> {
+        if (this.isEmpty(id))
+            return null;
         const filter = { _id: id };
 
         let item: any = await this._collection.findOne(filter);
@@ -184,7 +186,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         newItem._id = item.id;
 
         // Auto generate id
-        if (newItem._id == null && this._autoGenerateId) {
+        if (this.isEmpty(newItem._id) && this._autoGenerateId) {
             newItem._id = IdGenerator.nextLong();
         }
 
@@ -210,7 +212,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         newItem._id = item.id;
 
         // Auto generate id
-        if (newItem._id == null && this._autoGenerateId) {
+        if (this.isEmpty(newItem._id) && this._autoGenerateId) {
             newItem._id = IdGenerator.nextLong();
         }
 
@@ -243,7 +245,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the updated item.
      */
     public async update(context: IContext, item: T): Promise<T> {
-        if (item == null || item.id == null) {
+        if (item == null || this.isEmpty(item.id)) {
             return null;
         }
 
@@ -274,7 +276,7 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the updated item.
      */
     public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {            
-        if (data == null || id == null) {
+        if (data == null || this.isEmpty(id)) {
             return null;
         }
 
@@ -303,6 +305,9 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
      * @returns                 the deleted item.
      */
     public async deleteById(context: IContext, id: K): Promise<T> {
+        if (this.isEmpty(id))
+            return null;
+
         const filter = { _id: id };
         
         const result = await this._collection.findOneAndDelete(filter);
@@ -322,5 +327,21 @@ export class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
     public async deleteByIds(context: IContext, ids: K[]): Promise<void> {
         const filter = { _id: { $in: ids } };
         return await this.deleteByFilter(context, filter);
+    }
+
+    /**
+     * Checks if value is empty
+     * @param value any value
+     * @returns true if value empty, other false
+     */
+    protected isEmpty(value: any) {
+        const type = typeof value;
+        if (value !== null && type === 'object' || type === 'function') {
+            const props = Object.keys(value);
+                if (props.length === 0) { 
+                    return true;
+                } 
+            } 
+        return !value;
     }
 }

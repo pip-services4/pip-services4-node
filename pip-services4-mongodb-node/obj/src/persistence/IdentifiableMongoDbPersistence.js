@@ -152,6 +152,8 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     getOneById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.isEmpty(id))
+                return null;
             const filter = { _id: id };
             let item = yield this._collection.findOne(filter);
             if (item == null) {
@@ -184,7 +186,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             delete newItem.id;
             newItem._id = item.id;
             // Auto generate id
-            if (newItem._id == null && this._autoGenerateId) {
+            if (this.isEmpty(newItem._id) && this._autoGenerateId) {
                 newItem._id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
             return yield _super.create.call(this, context, newItem);
@@ -208,7 +210,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             delete newItem.id;
             newItem._id = item.id;
             // Auto generate id
-            if (newItem._id == null && this._autoGenerateId) {
+            if (this.isEmpty(newItem._id) && this._autoGenerateId) {
                 newItem._id = pip_services4_data_node_1.IdGenerator.nextLong();
             }
             newItem = this.convertFromPublic(newItem);
@@ -236,7 +238,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     update(context, item) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (item == null || item.id == null) {
+            if (item == null || this.isEmpty(item.id)) {
                 return null;
             }
             let newItem = Object.assign({}, item);
@@ -263,7 +265,7 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (data == null || id == null) {
+            if (data == null || this.isEmpty(id)) {
                 return null;
             }
             let newItem = data.getAsObject();
@@ -288,6 +290,8 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
      */
     deleteById(context, id) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.isEmpty(id))
+                return null;
             const filter = { _id: id };
             const result = yield this._collection.findOneAndDelete(filter);
             this._logger.trace(context, "Deleted from %s with id = %s", this._collectionName, id);
@@ -306,6 +310,21 @@ class IdentifiableMongoDbPersistence extends MongoDbPersistence_1.MongoDbPersist
             const filter = { _id: { $in: ids } };
             return yield this.deleteByFilter(context, filter);
         });
+    }
+    /**
+     * Checks if value is empty
+     * @param value any value
+     * @returns true if value empty, other false
+     */
+    isEmpty(value) {
+        const type = typeof value;
+        if (value !== null && type === 'object' || type === 'function') {
+            const props = Object.keys(value);
+            if (props.length === 0) {
+                return true;
+            }
+        }
+        return !value;
     }
 }
 exports.IdentifiableMongoDbPersistence = IdentifiableMongoDbPersistence;
