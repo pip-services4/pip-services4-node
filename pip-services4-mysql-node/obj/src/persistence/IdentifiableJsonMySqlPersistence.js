@@ -159,7 +159,7 @@ class IdentifiableJsonMySqlPersistence extends IdentifiableMySqlPersistence_1.Id
      */
     updatePartially(context, id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (data == null || id == null) {
+            if (data == null || this.isEmpty(id)) {
                 return null;
             }
             let query = "UPDATE " + this.quotedTableName() + " SET `data`=JSON_MERGE_PATCH(data,?) WHERE id=?";

@@ -154,7 +154,7 @@ export class IdentifiableJsonMySqlPersistence<T extends IIdentifiable<K>, K> ext
      * @returns the updated item.
      */
     public async updatePartially(context: IContext, id: K, data: AnyValueMap): Promise<T> {
-        if (data == null || id == null) {
+        if (data == null || this.isEmpty(id)) {
             return null;
         }
 
