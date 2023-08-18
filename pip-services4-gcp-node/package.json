@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-gcp-node",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "author": "Enterprise Innovation Consulting",
     "description": "Google Cloud Components for Node.js / ES2017",
     "contributors": [
@@ -48,7 +48,7 @@
         "express": "^4.17.2",
         "pip-services4-commons-node": "^0.0.2",
         "pip-services4-components-node": "^0.0.5",
-        "pip-services4-config-node": "^0.0.5",
+        "pip-services4-config-node": "^0.0.6",
         "pip-services4-container-node": "^0.0.2",
         "pip-services4-data-node": "^0.0.4",
         "pip-services4-http-node": "^0.0.4",
