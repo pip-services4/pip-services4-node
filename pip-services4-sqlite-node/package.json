@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-sqlite-node",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "Enterprise Innovation Consulting",
     "description": "SQLite components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -42,7 +42,7 @@
         "pip-services4-components-node": "^0.0.5",
         "pip-services4-config-node": "^0.0.5",
         "pip-services4-observability-node": "^0.0.3",
-        "pip-services4-persistence-node": "^0.0.2",
+        "pip-services4-persistence-node": "^0.0.4",
         "sqlite3": "^5.0.0"
     },
     "devDependencies": {

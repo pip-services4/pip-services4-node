@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-mysql-node",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "Enterprise Innovation Consulting",
     "description": "MySQL components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -43,7 +43,7 @@
         "pip-services4-config-node": "^0.0.5",
         "pip-services4-data-node": "^0.0.4",
         "pip-services4-observability-node": "^0.0.3",
-        "pip-services4-persistence-node": "^0.0.2"
+        "pip-services4-persistence-node": "^0.0.4"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
