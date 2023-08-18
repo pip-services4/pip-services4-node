@@ -4,7 +4,7 @@ import fs = require('fs');
 /** @hidden */ 
 import yaml = require('js-yaml');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { ConfigException, FileException } from 'pip-services4-commons-node';
 

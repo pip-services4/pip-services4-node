@@ -2,7 +2,7 @@
 /** @hidden */
 import url = require('url');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { IConfigurable } from 'pip-services4-components-node';

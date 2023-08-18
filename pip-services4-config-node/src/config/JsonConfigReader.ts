@@ -2,7 +2,7 @@
 /** @hidden */ 
 import fs = require('fs');
 
-import { IContext } from 'pip-services4-components-node';
+import { ContextResolver, IContext } from 'pip-services4-components-node';
 import { ConfigParams } from 'pip-services4-components-node';
 import { ConfigException, FileException } from 'pip-services4-commons-node'
 import { JsonConverter } from 'pip-services4-commons-node'

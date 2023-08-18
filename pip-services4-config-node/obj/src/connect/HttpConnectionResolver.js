@@ -14,6 +14,7 @@ exports.HttpConnectionResolver = void 0;
 /** @hidden */
 const url = require("url");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const ConnectionResolver_1 = require("./ConnectionResolver");
 const CredentialResolver_1 = require("../auth/CredentialResolver");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
@@ -87,28 +88,28 @@ class HttpConnectionResolver {
     }
     validateConnection(context, connection, credential) {
         if (connection == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "HTTP connection is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "HTTP connection is not set");
         }
         const uri = connection.getUri();
         if (uri != null)
             return;
         const protocol = connection.getProtocolWithDefault("http");
         if ("http" != protocol && "https" != protocol) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection").withDetails("protocol", protocol);
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "WRONG_PROTOCOL", "Protocol is not supported by REST connection").withDetails("protocol", protocol);
         }
         const host = connection.getHost();
         if (host == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_HOST", "Connection host is not set");
         }
         const port = connection.getPort();
         if (port == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PORT", "Connection port is not set");
         }
         // Check HTTPS credentials
         if (protocol == "https") {
             // Check for credential
             if (credential == null) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CREDENTIAL", "SSL certificates are not configured for HTTPS protocol");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CREDENTIAL", "SSL certificates are not configured for HTTPS protocol");
             }
             else {
                 // Sometimes when we use https we are on an internal network and do not want to have to deal with security.
@@ -116,17 +117,17 @@ class HttpConnectionResolver {
                 // this flag just has to be present and non null for this functionality to work.
                 if (credential.getAsNullableString("internal_network") == null) {
                     if (credential.getAsNullableString('ssl_key_file') == null) {
-                        throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_SSL_KEY_FILE", "SSL key file is not configured in credentials");
+                        throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_SSL_KEY_FILE", "SSL key file is not configured in credentials");
                     }
                     else if (credential.getAsNullableString('ssl_crt_file') == null) {
-                        throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_SSL_CRT_FILE", "SSL crt file is not configured in credentials");
+                        throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_SSL_CRT_FILE", "SSL crt file is not configured in credentials");
                     }
                 }
             }
         }
     }
     composeConnection(connections, credential) {
-        let connection = pip_services4_components_node_1.ConfigParams.mergeConfigs(...connections);
+        let connection = pip_services4_components_node_2.ConfigParams.mergeConfigs(...connections);
         let uri = connection.getAsString("uri");
         if (uri == null || uri == "") {
             const protocol = connection.getAsStringWithDefault("protocol", "http");

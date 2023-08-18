@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompositeConnectionResolver = void 0;
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const CredentialParams_1 = require("../auth/CredentialParams");
 const CredentialResolver_1 = require("../auth/CredentialResolver");
 const ConnectionResolver_1 = require("./ConnectionResolver");
@@ -99,7 +100,7 @@ class CompositeConnectionResolver {
             connections = connections || [];
             // Validate if cluster (multiple connections) is supported
             if (connections.length > 0 && !this._clusterSupported) {
-                throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "MULTIPLE_CONNECTIONS_NOT_SUPPORTED", "Multiple (cluster) connections are not supported");
+                throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "MULTIPLE_CONNECTIONS_NOT_SUPPORTED", "Multiple (cluster) connections are not supported");
             }
             for (const connection of connections) {
                 this.validateConnection(context, connection);
@@ -145,7 +146,7 @@ class CompositeConnectionResolver {
      */
     validateConnection(context, connection) {
         if (connection == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_CONNECTION", "Connection parameters are not set is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_CONNECTION", "Connection parameters are not set is not set");
         }
         // URI usually contains all information
         const uri = connection.getUri();
@@ -154,18 +155,18 @@ class CompositeConnectionResolver {
         }
         const protocol = connection.getProtocolWithDefault(this._defaultProtocol);
         if (protocol == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PROTOCOL", "Connection protocol is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PROTOCOL", "Connection protocol is not set");
         }
         if (this._supportedProtocols != null && this._supportedProtocols.indexOf(protocol) < 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "UNSUPPORTED_PROTOCOL", "The protocol " + protocol + " is not supported");
         }
         const host = connection.getHost();
         if (host == null) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_HOST", "Connection host is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_HOST", "Connection host is not set");
         }
         const port = connection.getPortWithDefault(this._defaultPort);
         if (port == 0) {
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PORT", "Connection port is not set");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PORT", "Connection port is not set");
         }
     }
     /**
@@ -190,7 +191,7 @@ class CompositeConnectionResolver {
      */
     composeOptions(connections, credential, parameters) {
         // Connection options
-        let options = new pip_services4_components_node_1.ConfigParams();
+        let options = new pip_services4_components_node_2.ConfigParams();
         // Merge connection parameters
         for (const connection of connections) {
             options = this.mergeConnection(options, connection);

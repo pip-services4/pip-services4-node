@@ -16,6 +16,7 @@ const fs = require("fs");
 /** @hidden */
 const yaml = require("js-yaml");
 const pip_services4_components_node_1 = require("pip-services4-components-node");
+const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
 const FileConfigReader_1 = require("./FileConfigReader");
 /**
@@ -64,7 +65,7 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
      */
     readObject(context, parameters) {
         if (super.getPath() == null)
-            throw new pip_services4_commons_node_1.ConfigException(context != null ? context.getTraceId() : null, "NO_PATH", "Missing config file path");
+            throw new pip_services4_commons_node_1.ConfigException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "NO_PATH", "Missing config file path");
         try {
             let content = fs.readFileSync(super.getPath(), 'utf8');
             content = this.parameterize(content, parameters);
@@ -72,7 +73,7 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
             return data;
         }
         catch (e) {
-            throw new pip_services4_commons_node_1.FileException(context != null ? context.getTraceId() : null, "READ_FAILED", "Failed reading configuration " + super.getPath() + ": " + e)
+            throw new pip_services4_commons_node_1.FileException(context != null ? pip_services4_components_node_1.ContextResolver.getTraceId(context) : null, "READ_FAILED", "Failed reading configuration " + super.getPath() + ": " + e)
                 .withDetails("path", super.getPath())
                 .withCause(e);
         }
@@ -87,7 +88,7 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
     readConfig(context, parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const value = this.readObject(context, parameters);
-            const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+            const config = pip_services4_components_node_2.ConfigParams.fromValue(value);
             return config;
         });
     }
@@ -112,7 +113,7 @@ class YamlConfigReader extends FileConfigReader_1.FileConfigReader {
      */
     static readConfig(context, path, parameters) {
         const value = new YamlConfigReader(path).readObject(context, parameters);
-        const config = pip_services4_components_node_1.ConfigParams.fromValue(value);
+        const config = pip_services4_components_node_2.ConfigParams.fromValue(value);
         return config;
     }
 }
