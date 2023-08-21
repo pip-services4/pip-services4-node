@@ -24,31 +24,31 @@ class DummyLambdaFunction extends LambdaFunction_1.LambdaFunction {
     }
     setReferences(references) {
         super.setReferences(references);
-        this._controller = this._dependencyResolver.getOneRequired('service');
+        this._service = this._dependencyResolver.getOneRequired('service');
     }
     getPageByFilter(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.getPageByFilter(params.trace_id, new pip_services4_data_node_1.FilterParams(params.filter), new pip_services4_data_node_1.PagingParams(params.paging));
+            return this._service.getPageByFilter(params.trace_id, new pip_services4_data_node_1.FilterParams(params.filter), new pip_services4_data_node_1.PagingParams(params.paging));
         });
     }
     getOneById(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.getOneById(params.trace_id, params.dummy_id);
+            return this._service.getOneById(params.trace_id, params.dummy_id);
         });
     }
     create(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.create(params.trace_id, params.dummy);
+            return this._service.create(params.trace_id, params.dummy);
         });
     }
     update(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.update(params.trace_id, params.dummy);
+            return this._service.update(params.trace_id, params.dummy);
         });
     }
     deleteById(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._controller.deleteById(params.trace_id, params.dummy_id);
+            return this._service.deleteById(params.trace_id, params.dummy_id);
         });
     }
     register() {

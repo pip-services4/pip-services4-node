@@ -10,7 +10,7 @@ import { Descriptor, IReferences } from 'pip-services4-components-node';
 import { DataPage, FilterParams, PagingParams, ObjectSchema, FilterParamsSchema, PagingParamsSchema } from 'pip-services4-data-node';
 
 export class DummyLambdaFunction extends LambdaFunction {
-    private _controller: IDummyService;
+    private _service: IDummyService;
 
     public constructor() {
         super("dummy", "Dummy lambda function");
@@ -20,11 +20,11 @@ export class DummyLambdaFunction extends LambdaFunction {
 
     public setReferences(references: IReferences): void {
         super.setReferences(references);
-        this._controller = this._dependencyResolver.getOneRequired<IDummyService>('service');
+        this._service = this._dependencyResolver.getOneRequired<IDummyService>('service');
     }
 
     private async getPageByFilter(params: any): Promise<DataPage<Dummy>> {
-        return this._controller.getPageByFilter(
+        return this._service.getPageByFilter(
             params.trace_id,
             new FilterParams(params.filter),
             new PagingParams(params.paging)
@@ -32,28 +32,28 @@ export class DummyLambdaFunction extends LambdaFunction {
     }
 
     private async getOneById(params: any): Promise<Dummy> {
-        return this._controller.getOneById(
+        return this._service.getOneById(
             params.trace_id,
             params.dummy_id
         );
     }
 
     private async create(params: any): Promise<Dummy> {
-        return this._controller.create(
+        return this._service.create(
             params.trace_id,
             params.dummy
         );
     }
 
     private async update(params: any): Promise<Dummy> {
-        return this._controller.update(
+        return this._service.update(
             params.trace_id,
             params.dummy,
         );
     }
 
     private async deleteById(params: any): Promise<Dummy> {
-        return this._controller.deleteById(
+        return this._service.deleteById(
             params.trace_id,
             params.dummy_id,
         );

@@ -22,20 +22,20 @@ import { LambdaFunction } from './LambdaFunction';
  * ### Example ###
  *
  *     class MyLambdaFunction extends CommandableLambdaFunction {
- *         private _controller: IMyController;
+ *         private _service: IMyService;
  *         ...
  *         public constructor() {
  *             base("mygroup", "MyGroup lambda function");
  *             this._dependencyResolver.put(
- *                 "controller",
- *                 new Descriptor("mygroup","controller","*","*","1.0")
+ *                 "service",
+ *                 new Descriptor("mygroup","service","*","*","1.0")
  *             );
  *         }
  *     }
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await controller.run();
+ *     await container.run();
  *     console.log("MyLambdaFunction is started");
  */
 export declare abstract class CommandableLambdaFunction extends LambdaFunction {

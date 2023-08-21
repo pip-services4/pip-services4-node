@@ -26,26 +26,26 @@ import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-service
  * ### Example ###
  *
  *     class MyLambdaController extends LambdaController {
- *        private _controller: IMyController;
+ *        private _service: IMyService;
  *        ...
  *        public constructor() {
- *           base('v1.myservice');
+ *           base('v1.mycontroller');
  *           this._dependencyResolver.put(
- *               "controller",
- *               new Descriptor("mygroup","controller","*","*","1.0")
+ *               "service",
+ *               new Descriptor("mygroup","service","*","*","1.0")
  *           );
  *        }
  *
  *        public setReferences(references: IReferences): void {
  *           base.setReferences(references);
- *           this._controller = this._dependencyResolver.getRequired<IMyController>("controller");
+ *           this._service = this._dependencyResolver.getRequired<IMyService>("service");
  *        }
  *
  *        public register(): void {
  *            registerAction("get_mydata", null, async (params) => {
  *                let context = params.trace_id;
  *                let id = params.id;
- *                return await this._controller.getMyData(context, id);
+ *                return await this._service.getMyData(context, id);
  *            });
  *            ...
  *        }
@@ -58,7 +58,7 @@ import { CompositeLogger, CompositeCounters, CompositeTracer } from 'pip-service
  *         "connection.port", 8080
  *     ));
  *     controller.setReferences(References.fromTuples(
- *        new Descriptor("mygroup","controller","default","default","1.0"), controller
+ *        new Descriptor("mygroup","service","default","default","1.0"), service
  *     ));
  *
  *     controller.open("123");

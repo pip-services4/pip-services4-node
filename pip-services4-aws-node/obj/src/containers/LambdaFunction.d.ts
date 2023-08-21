@@ -32,7 +32,7 @@ import { Schema } from 'pip-services4-data-node';
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await controller.run();
+ *     await container.run();
  *     console.log("MyLambdaFunction is started");
  */
 export declare abstract class LambdaFunction extends Container {

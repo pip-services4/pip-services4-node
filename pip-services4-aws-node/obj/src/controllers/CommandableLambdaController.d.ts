@@ -30,15 +30,15 @@ import { LambdaController } from './LambdaController';
  *        public constructor() {
  *           base();
  *           this._dependencyResolver.put(
- *               "controller",
- *               new Descriptor("mygroup","controller","*","*","1.0")
+ *               "service",
+ *               new Descriptor("mygroup","service","*","*","1.0")
  *           );
  *        }
  *     }
  *
  *     let controller = new MyCommandableLambdaController();
  *     controller.setReferences(References.fromTuples(
- *        new Descriptor("mygroup","service","default","default","1.0"), controller
+ *        new Descriptor("mygroup","service","default","default","1.0"), service
  *     ));
  *
  *     await controller.open("123");

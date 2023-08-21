@@ -47,7 +47,7 @@ const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
  *
  *     let lambda = new MyLambdaFunction();
  *
- *     await controller.run();
+ *     await container.run();
  *     console.log("MyLambdaFunction is started");
  */
 class LambdaFunction extends pip_services4_container_node_1.Container {
