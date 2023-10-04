@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
-const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const Parameters_1 = require("../exec/Parameters");
 /**
  * Basic implementation of an execution context.
@@ -30,14 +29,6 @@ class Context {
         this._values = new pip_services4_commons_node_1.AnyValueMap(values);
     }
     /**
-     * Converts this map to JSON object.
-     *
-     * @returns    a JSON representation of this map.
-     */
-    toJson() {
-        return pip_services4_commons_node_2.JsonConverter.toJson(this._values);
-    }
-    /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      *
      * @param value        an object with key-value pairs used to initialize a new Parameters.
@@ -57,18 +48,6 @@ class Context {
      */
     static fromTuples(...tuples) {
         const map = pip_services4_commons_node_1.AnyValueMap.fromTuples(...tuples);
-        return new Context(map);
-    }
-    /**
-     * Creates new Context from JSON object.
-     *
-     * @param json     a JSON string containing parameters.
-     * @returns a new Context object.
-     *
-     * @see [[JsonConverter.toNullableMap]]
-     */
-    static fromJson(json) {
-        const map = pip_services4_commons_node_2.JsonConverter.toNullableMap(json);
         return new Context(map);
     }
     /**

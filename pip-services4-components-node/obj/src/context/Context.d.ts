@@ -23,12 +23,6 @@ export declare class Context implements IContext {
      */
     constructor(values?: any);
     /**
-     * Converts this map to JSON object.
-     *
-     * @returns    a JSON representation of this map.
-     */
-    toJson(): string;
-    /**
      * Creates a new Parameters object filled with key-value pairs from specified object.
      *
      * @param value        an object with key-value pairs used to initialize a new Parameters.
@@ -45,15 +39,6 @@ export declare class Context implements IContext {
      * @see [[AnyValueMap.fromTuplesArray]]
      */
     static fromTuples(...tuples: any[]): Context;
-    /**
-     * Creates new Context from JSON object.
-     *
-     * @param json     a JSON string containing parameters.
-     * @returns a new Context object.
-     *
-     * @see [[JsonConverter.toNullableMap]]
-     */
-    static fromJson(json: string): Context;
     /**
      * Creates new Context from ConfigMap object.
      *

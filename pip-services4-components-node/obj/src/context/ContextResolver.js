@@ -16,7 +16,9 @@ class ContextResolver {
      * @see [[IContext]]
      */
     static getTraceId(context) {
-        const traceId = context.get("trace_id") || context.get("trace_id");
+        if (context == null)
+            return null;
+        const traceId = context.get("trace_id") || context.get("traceId");
         return traceId != null ? "" + traceId : null;
     }
     /**
@@ -27,6 +29,8 @@ class ContextResolver {
      * @see [[IContext]]
      */
     static getClient(context) {
+        if (context == null)
+            return null;
         const client = context.get("client");
         return client != null ? "" + client : null;
     }
@@ -38,6 +42,8 @@ class ContextResolver {
      * @see [[IContext]]
      */
     static getUser(context) {
+        if (context == null)
+            return null;
         return context.get("user");
     }
 }

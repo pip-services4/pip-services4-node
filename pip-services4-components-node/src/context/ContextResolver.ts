@@ -16,6 +16,8 @@ export class ContextResolver {
      * @see [[IContext]]
      */
     public static getTraceId(context: IContext): string {
+        if (context == null) 
+            return null;
         const traceId = context.get("trace_id") || context.get("traceId");
         return traceId != null ? "" + traceId : null;
     }
@@ -28,6 +30,8 @@ export class ContextResolver {
      * @see [[IContext]]
      */
     public static getClient(context: IContext): string {
+        if (context == null) 
+            return null;
         const client = context.get("client");
         return client != null ? "" + client : null;
     }
@@ -40,6 +44,8 @@ export class ContextResolver {
      * @see [[IContext]]
      */
     public static getUser(context: IContext): string {
+        if (context == null) 
+            return null;
         return context.get("user");
     }
     
