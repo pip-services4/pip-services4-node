@@ -17,7 +17,7 @@ class DummyCommandableCloudClient extends CommandableCloudFunctionClient_1.Comma
     }
     getDummies(context, filter, paging) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.callCommand('dummies.get_dummies', context, {
+            return this.callCommand('get_dummies', context, {
                 filter: filter,
                 paging: paging
             });
@@ -25,7 +25,7 @@ class DummyCommandableCloudClient extends CommandableCloudFunctionClient_1.Comma
     }
     getDummyById(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.callCommand('dummies.get_dummy_by_id', context, {
+            const response = yield this.callCommand('get_dummy_by_id', context, {
                 dummy_id: dummyId
             });
             if (response == null || Object.keys(response).length === 0) {
@@ -36,21 +36,21 @@ class DummyCommandableCloudClient extends CommandableCloudFunctionClient_1.Comma
     }
     createDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.callCommand('dummies.create_dummy', context, {
+            return this.callCommand('create_dummy', context, {
                 dummy: dummy
             });
         });
     }
     updateDummy(context, dummy) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.callCommand('dummies.update_dummy', context, {
+            return this.callCommand('update_dummy', context, {
                 dummy: dummy
             });
         });
     }
     deleteDummy(context, dummyId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.callCommand('dummies.delete_dummy', context, {
+            return this.callCommand('delete_dummy', context, {
                 dummy_id: dummyId
             });
         });

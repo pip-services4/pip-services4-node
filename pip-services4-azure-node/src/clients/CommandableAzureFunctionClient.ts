@@ -78,9 +78,10 @@ export class CommandableAzureFunctionClient extends AzureFunctionClient {
      * @return {any}            action result.
      */
     public async callCommand<T>(cmd: string, context: IContext, params: any): Promise<T> {
-        const timing = this.instrument(context, this._name + '.' + cmd);
+        const command = this._name + '.' + cmd;
+        const timing = this.instrument(context, command);
         try {
-            const result = await this.call<T>(cmd, context, params);
+            const result = await this.call<T>(command, context, params);
             timing.endTiming();
             return result;
         } catch (err) {

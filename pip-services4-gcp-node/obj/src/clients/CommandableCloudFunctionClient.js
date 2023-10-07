@@ -89,9 +89,10 @@ class CommandableCloudFunctionClient extends CloudFunctionClient_1.CloudFunction
      */
     callCommand(cmd, context, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const timing = this.instrument(context, this._name + '.' + cmd);
+            const command = this._name + '.' + cmd;
+            const timing = this.instrument(context, command);
             try {
-                const result = yield this.call(cmd, context, params);
+                const result = yield this.call(command, context, params);
                 timing.endTiming();
                 return result;
             }

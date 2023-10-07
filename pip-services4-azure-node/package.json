@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-azure-node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Enterprise Innovation Consulting",
     "description": "Azure-specific components for Pip.Services in Node.js / ES2017",
     "contributors": [
