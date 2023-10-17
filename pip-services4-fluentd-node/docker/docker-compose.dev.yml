@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   fluentd:
-    image: fluent/fluentd
+    image: fluentd:v1.16-1
     # container_name: fluentd
     # # volumes:
     # #   - ./logs:/fluentd/log
