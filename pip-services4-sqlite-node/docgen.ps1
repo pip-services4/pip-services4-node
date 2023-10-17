@@ -5,9 +5,7 @@ $ErrorActionPreference = "Stop"
 
 # Get component metadata and set necessary variables
 $component = Get-Content -Path "$PSScriptRoot/component.json" | ConvertFrom-Json
-$imageName = If ([bool]$component.psobject.Properties["product"] -and $component.product -ne "") `
-{ "$($component.product)-$($component.name)" } Else { "$($component.name)" }
-$docsImage = "$($component.registry)/$imageName`:$($component.version)-$($component.build)-docs"
+$docsImage = "$($component.registry)/$($component.name):$($component.version)-$($component.build)-docs"
 $container = $component.name
 
 # Remove documentation files
@@ -16,7 +14,7 @@ if (Test-Path -Path "$PSScriptRoot/docs") {
 }
 
 # Build docker image
-docker build -f "$PSScriptRoot/docker/Dockerfile.docs" -t $docsImage .
+docker build -f "$PSScriptRoot/docker/Dockerfile.docs" -t $docsImage $PSScriptRoot
 
 # Create and copy compiled files, then destroy
 docker create --name $container $docsImage
