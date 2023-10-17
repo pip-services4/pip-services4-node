@@ -1,7 +1,8 @@
 version: "3.8"
+
 services:
   vault-server:
-    image: vault:latest
+    image: vault:vault:1.12.7
     command: sh ./data/configure-vault.sh
     volumes:
       - ./vault:/data

@@ -1,4 +1,6 @@
 version: "3.8"
+
+
 services:
 
   test:
@@ -13,7 +15,7 @@ services:
       - vault
 
   vault:
-    image: vault:latest
+    image: vault:1.12.7
     command: sh ./data/configure-vault.sh
     volumes:
       - ./vault:/data
