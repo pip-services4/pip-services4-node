@@ -15,7 +15,7 @@ if (Test-Path -Path "$PSScriptRoot/src/protos") {
 }
 
 # Build docker image
-docker build -f "$PSScriptRoot/docker/Dockerfile.proto" -t $protosImage .
+docker build -f "$PSScriptRoot/docker/Dockerfile.proto" -t $protosImage $PSScriptRoot
 
 # Create and copy compiled files, then destroy
 docker create --name $container $protosImage

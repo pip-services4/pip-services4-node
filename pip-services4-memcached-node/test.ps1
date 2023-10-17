@@ -15,12 +15,10 @@ if (-not (Test-Path -Path "$PSScriptRoot/docker/id_rsa")) {
     if (-not [string]::IsNullOrEmpty($env:GIT_PRIVATE_KEY)) {
         Write-Host "Creating docker/id_rsa from environment variable..."
         Set-Content -Path "$PSScriptRoot/docker/id_rsa" -Value $env:GIT_PRIVATE_KEY
-    }
-    elseif (Test-Path -Path "~/.ssh/id_rsa") {
+    } elseif (Test-Path -Path "~/.ssh/id_rsa") {
         Write-Host "Copying ~/.ssh/id_rsa to docker..."
         Copy-Item -Path "~/.ssh/id_rsa" -Destination "docker"
-    }
-    else {
+    } else {
         Write-Host "Missing ~/.ssh/id_rsa file..."
         Set-Content -Path "$PSScriptRoot/docker/id_rsa" -Value ""
     }
@@ -34,8 +32,7 @@ try {
 
     # Save the result to avoid overwriting it with the "down" command below
     $exitCode = $LastExitCode 
-}
-finally {
+} finally {
     # Workaround to remove dangling images
     docker-compose -f "$PSScriptRoot/docker/docker-compose.test.yml" down
 }
