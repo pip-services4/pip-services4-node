@@ -10,6 +10,9 @@ on:
     - 'pip-services4-aws-node/!README.md'
   workflow_dispatch:
 
+env:
+  IS_MONOREPO: true
+
 jobs:
   # Setup job
   setup:
@@ -104,6 +107,6 @@ jobs:
 
     - name: Execute measure script
       env:
-        name: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
-      run: pip-services4-aws-node/script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.AWS_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }}
+        NAME: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
+      run: pip-services4-aws-node/script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} ${{ env.NAME }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.AWS_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash
