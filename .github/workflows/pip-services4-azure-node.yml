@@ -1,4 +1,4 @@
-name: Pip.Services AWS Node Delivery
+name: Pip.Services Azure Node Delivery
 
 # Configure trigger rules
 on: 
@@ -6,8 +6,8 @@ on:
     branches:
       - main
     paths:
-    - '**'
-    - '!README.md'
+    - 'pip-services4-azure-node/**'
+    - 'pip-services4-azure-node/!README.md'
   workflow_dispatch:
 
 jobs:
@@ -23,24 +23,24 @@ jobs:
     - name: Pull delivery scripts
       shell: bash
       run: |
-        rm -rf script-delivery-ps
+        rm -rf pip-services4-azure-node/script-delivery-ps
         git clone ${{ secrets.SCRIPTS_DELIVERY_PS_GIT_URL }} eic-templates-cicd-ps
-        cp -r eic-templates-cicd-ps/script-delivery-ps script-delivery-ps
+        cp -r eic-templates-cicd-ps/script-delivery-ps pip-services4-azure-node/script-delivery-ps
 
     - name: Execute increment script
       shell: bash
-      run: ./script-delivery-ps/setup/increment/increment.ps1
+      run: pip-services4-azure-node/script-delivery-ps/setup/increment/increment.ps1
 
     - name: Execute prerequisites script
       shell: bash
-      run: ./script-delivery-ps/setup/prereqs/prereqs.ps1
+      run: pip-services4-azure-node/script-delivery-ps/setup/prereqs/prereqs.ps1
 
     - name: Cache intermediate data
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-ps
-          component*.json
+          pip-services4-azure-node/script-delivery-ps
+          pip-services4-azure-node/component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
   # Authoring job
@@ -56,36 +56,36 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-ps
-          component*.json
+          pip-services4-azure-node/script-delivery-ps
+          pip-services4-azure-node/component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute build script
       shell: bash
-      run: script-delivery-ps/authoring/build/build.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/build/build.ps1
 
     - name: Execute test script
       shell: bash
-      run: ./script-delivery-ps/authoring/test/test.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/test/test.ps1
 
     - name: Execute package script
       shell: bash
-      run: ./script-delivery-ps/authoring/package/package.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/package/package.ps1
 
     - name: Execute publish script
       shell: bash
-      run: ./script-delivery-ps/authoring/publish/publish.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/publish/publish.ps1
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Execute tag script
       shell: bash
-      run: ./script-delivery-ps/authoring/tag/tag.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/tag/tag.ps1
 
     - name: Execute clean script
       if: always()
       shell: bash
-      run: ./script-delivery-ps/authoring/clean/clean.ps1
+      run: pip-services4-azure-node/script-delivery-ps/authoring/clean/clean.ps1
 
   # Measure job
   measure:
@@ -98,12 +98,12 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          script-delivery-ps
-          component*.json
+          pip-services4-azure-node/script-delivery-ps
+          pip-services4-azure-node/component*.json
         key: delivery-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Execute measure script
       env:
         name: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
-      run: ./script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.AWS_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }}
+      run: pip-services4-azure-node/script-delivery-ps/measure/measure.ps1 ${{ github.repository_owner }} ${{ env.name }} ${{ secrets.azure_ACCESS_KEY_ID }} ${{ secrets.azure_SECRET_ACCESS_KEY }} ${{ secrets.azure_S3_BUCKET }} ${{ secrets.azure_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }}
       shell: bash
