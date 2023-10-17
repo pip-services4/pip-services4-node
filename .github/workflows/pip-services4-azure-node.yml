@@ -106,5 +106,5 @@ jobs:
       env:
         org: $(echo '${{ github.repository }}' | awk -F '/' '{print $2}')
         name: $(cat pip-services4-azure-node/component.json | jq '.name')
-      run: pip-services4-azure-node/script-delivery-ps/measure/measure.ps1 ${{ env.org }} ${{ env.name }} ${{ secrets.azure_ACCESS_KEY_ID }} ${{ secrets.azure_SECRET_ACCESS_KEY }} ${{ secrets.azure_S3_BUCKET }} ${{ secrets.azure_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }} 
+      run: pip-services4-azure-node/script-delivery-ps/measure/measure.ps1 ${{ env.org }} ${{ env.name }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_S3_BUCKET }} ${{ secrets.AWS_S3_BUCKET_FOLDER }} ${{ secrets.GITHUB_TOKEN }} 
       shell: bash
