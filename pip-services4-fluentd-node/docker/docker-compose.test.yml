@@ -13,7 +13,7 @@ services:
       - FLUENTD_SERVICE_PORT=24224
     
   fluentd:
-    image: fluent/fluentd
+    image: fluentd:v1.16-1
     # container_name: fluentd
     # # volumes:
     # #   - ./logs:/fluentd/log
