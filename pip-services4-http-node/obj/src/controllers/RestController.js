@@ -20,6 +20,7 @@ const pip_services4_components_node_3 = require("pip-services4-components-node")
 const pip_services4_observability_node_1 = require("pip-services4-observability-node");
 const pip_services4_observability_node_2 = require("pip-services4-observability-node");
 const pip_services4_observability_node_3 = require("pip-services4-observability-node");
+const pip_services4_data_node_1 = require("pip-services4-data-node");
 const HttpEndpoint_1 = require("./HttpEndpoint");
 const HttpResponseSender_1 = require("./HttpResponseSender");
 const pip_services4_rpc_node_1 = require("pip-services4-rpc-node");
@@ -409,6 +410,36 @@ class RestController {
         if (this._swaggerController != null) {
             this._swaggerController.registerOpenApiSpec(this._baseRoute, this._swaggerRoute);
         }
+    }
+    /**
+     * Returns FilterParams object from query request
+     * @param req request
+     * @returns FilterParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getFilterParams(req) {
+        const value = Object.assign({}, req.query);
+        delete value.skip;
+        delete value.take;
+        delete value.total;
+        delete value.correlation_id;
+        const filter = pip_services4_data_node_1.FilterParams.fromValue(value);
+        return filter;
+    }
+    /**
+     * Returns PagingParams object from query request
+     * @param req request
+     * @returns PagingParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getPagingParams(req) {
+        const value = {
+            skip: req.query.skip,
+            take: req.query.take,
+            total: req.query.total
+        };
+        const paging = pip_services4_data_node_1.PagingParams.fromValue(value);
+        return paging;
     }
 }
 exports.RestController = RestController;

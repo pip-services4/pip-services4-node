@@ -8,7 +8,7 @@ import { DependencyResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
-import { Schema } from 'pip-services4-data-node';
+import { FilterParams, PagingParams, Schema } from 'pip-services4-data-node';
 import { HttpEndpoint } from './HttpEndpoint';
 import { IRegisterable } from './IRegisterable';
 import { ISwaggerController } from './ISwaggerController';
@@ -256,4 +256,16 @@ export declare abstract class RestController implements IOpenable, IConfigurable
      * in child classes.
      */
     abstract register(): void;
+    /**
+     * Returns FilterParams object from query request
+     * @param req request
+     * @returns FilterParams object from request
+     */
+    protected getFilterParams(req: any): FilterParams;
+    /**
+     * Returns PagingParams object from query request
+     * @param req request
+     * @returns PagingParams object from request
+     */
+    protected getPagingParams(req: any): PagingParams;
 }

@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-http-node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Enterprise Innovation Consulting",
     "description": "HTTP/REST Communication Components in Node.js / ES2017",
     "contributors": [

@@ -13,7 +13,7 @@ import { DependencyResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
-import { Schema } from 'pip-services4-data-node';
+import { FilterParams, PagingParams, Schema } from 'pip-services4-data-node';
 
 import { HttpEndpoint } from './HttpEndpoint';
 import { IRegisterable } from './IRegisterable';
@@ -490,4 +490,37 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
      * in child classes.
      */
      public abstract register(): void;
+
+
+    /**
+     * Returns FilterParams object from query request
+     * @param req request
+     * @returns FilterParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    protected getFilterParams(req: any): FilterParams {
+        const value = Object.assign({}, req.query);
+        delete value.skip;
+        delete value.take;
+        delete value.total;
+        delete value.correlation_id;
+        const filter = FilterParams.fromValue(value);
+        return filter;
+    }
+
+    /**
+     * Returns PagingParams object from query request
+     * @param req request
+     * @returns PagingParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    protected getPagingParams(req: any): PagingParams {
+        const value = {
+            skip: req.query.skip,
+            take: req.query.take,
+            total: req.query.total
+        };
+        const paging = PagingParams.fromValue(value);
+        return paging;
+    }
 }
