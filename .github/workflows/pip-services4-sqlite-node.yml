@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-sqlite-node/**'
-    - 'pip-services4-sqlite-node/!README.md'
+    - '!pip-services4-sqlite-node/README.md'
   workflow_dispatch:
 
 env:

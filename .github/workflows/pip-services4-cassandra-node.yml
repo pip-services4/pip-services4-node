@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-cassandra-node/**'
-    - 'pip-services4-cassandra-node/!README.md'
+    - '!pip-services4-cassandra-node/README.md'
   workflow_dispatch:
 
 env:

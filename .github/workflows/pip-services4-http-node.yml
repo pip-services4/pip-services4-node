@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-http-node/**'
-    - 'pip-services4-http-node/!README.md'
+    - '!pip-services4-http-node/README.md'
   workflow_dispatch:
 
 env:

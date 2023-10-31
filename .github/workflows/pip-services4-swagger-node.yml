@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-swagger-node/**'
-    - 'pip-services4-swagger-node/!README.md'
+    - '!pip-services4-swagger-node/README.md'
   workflow_dispatch:
 
 env:

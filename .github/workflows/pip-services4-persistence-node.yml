@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-persistence-node/**'
-    - 'pip-services4-persistence-node/!README.md'
+    - '!pip-services4-persistence-node/README.md'
   workflow_dispatch:
 
 env:

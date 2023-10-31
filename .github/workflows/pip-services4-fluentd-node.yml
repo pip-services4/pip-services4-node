@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-fluentd-node/**'
-    - 'pip-services4-fluentd-node/!README.md'
+    - '!pip-services4-fluentd-node/README.md'
   workflow_dispatch:
 
 env:

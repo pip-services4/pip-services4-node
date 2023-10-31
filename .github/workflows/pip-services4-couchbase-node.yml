@@ -7,7 +7,7 @@ on:
       - main
     paths:
     - 'pip-services4-couchbase-node/**'
-    - 'pip-services4-couchbase-node/!README.md'
+    - '!pip-services4-couchbase-node/README.md'
   workflow_dispatch:
 
 env:
