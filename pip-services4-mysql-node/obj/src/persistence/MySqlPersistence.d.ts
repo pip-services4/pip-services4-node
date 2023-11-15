@@ -286,5 +286,5 @@ export declare class MySqlPersistence<T> implements IReferenceable, IUnreference
      * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    deleteByFilter(context: IContext, filter: string): Promise<void>;
+    deleteByFilter(context: IContext, filter: any): Promise<void>;
 }
