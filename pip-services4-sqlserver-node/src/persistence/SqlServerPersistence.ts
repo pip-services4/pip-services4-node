@@ -806,7 +806,7 @@ export class SqlServerPersistence<T> implements IReferenceable, IUnreferenceable
      * @param context     (optional) a context to trace execution through call chain.
      * @param filter            (optional) a filter JSON object.
      */
-    public async deleteByFilter(context: IContext, filter: string): Promise<void> {
+    public async deleteByFilter(context: IContext, filter: any): Promise<void> {
         let query = "DELETE FROM " + this.quotedTableName();
         if (filter != null) {
             query += " WHERE " + filter;

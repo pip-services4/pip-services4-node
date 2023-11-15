@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-sqlserver-node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Enterprise Innovation Consulting",
     "description": "SQLServer components for Pip.Services in Node.js / ES2017",
     "contributors": [
