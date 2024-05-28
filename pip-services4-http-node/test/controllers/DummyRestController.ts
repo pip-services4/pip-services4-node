@@ -47,8 +47,8 @@ export class DummyRestController extends RestController {
     private getPageByFilter(req: any, res: any) {
         let promise = this._service.getPageByFilter(
             Context.fromTraceId(this.getTraceId(req)),
-            new FilterParams(req.params),
-            new PagingParams(req.params)
+            this.getFilterParams(req),
+            this.getPagingParams(req)
         );
         this.sendResult(req, res, promise);
     }

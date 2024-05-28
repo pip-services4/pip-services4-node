@@ -68,7 +68,6 @@ suite('DummyRestController', () => {
         assert.isObject(dummy);
         assert.equal(dummy.content, _dummy2.content);
         assert.equal(dummy.key, _dummy2.key);
-        let dummy2 = dummy;
         // Get all dummies
         let dummies = yield new Promise((resolve, reject) => {
             rest.get('/dummies', (err, req, res, result) => {
@@ -80,6 +79,30 @@ suite('DummyRestController', () => {
         });
         assert.isObject(dummies);
         assert.lengthOf(dummies.data, 2);
+        // Get dummy 1 by filter param
+        dummies = yield new Promise((resolve, reject) => {
+            rest.get('/dummies?filter=key=Key%201', (err, req, res, result) => {
+                if (err == null)
+                    resolve(result);
+                else
+                    reject(err);
+            });
+        });
+        assert.isObject(dummies);
+        assert.lengthOf(dummies.data, 1);
+        assert.equal(dummies.data[0].key, _dummy1.key);
+        // Get dummy 2 by query param
+        dummies = yield new Promise((resolve, reject) => {
+            rest.get('/dummies?key=Key%202', (err, req, res, result) => {
+                if (err == null)
+                    resolve(result);
+                else
+                    reject(err);
+            });
+        });
+        assert.isObject(dummies);
+        assert.lengthOf(dummies.data, 1);
+        assert.equal(dummies.data[0].key, _dummy2.key);
         // Update the dummy
         dummy1.content = 'Updated Content 1';
         dummy = yield new Promise((resolve, reject) => {
@@ -103,7 +126,7 @@ suite('DummyRestController', () => {
                     reject(err);
             });
         });
-        // Try to get delete dummy
+        // Try to get deleted dummy
         dummy = yield new Promise((resolve, reject) => {
             rest.get('/dummies/' + dummy1.id, (err, req, res, result) => {
                 if (err == null)

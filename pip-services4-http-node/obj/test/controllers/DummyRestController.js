@@ -13,10 +13,8 @@ exports.DummyRestController = void 0;
 const pip_services4_components_node_1 = require("pip-services4-components-node");
 const pip_services4_components_node_2 = require("pip-services4-components-node");
 const pip_services4_data_node_1 = require("pip-services4-data-node");
-const pip_services4_data_node_2 = require("pip-services4-data-node");
-const pip_services4_data_node_3 = require("pip-services4-data-node");
 const pip_services4_commons_node_1 = require("pip-services4-commons-node");
-const pip_services4_data_node_4 = require("pip-services4-data-node");
+const pip_services4_data_node_2 = require("pip-services4-data-node");
 const DummySchema_1 = require("../sample/DummySchema");
 const RestController_1 = require("../../src/controllers/RestController");
 class DummyRestController extends RestController_1.RestController {
@@ -42,7 +40,7 @@ class DummyRestController extends RestController_1.RestController {
         next();
     }
     getPageByFilter(req, res) {
-        let promise = this._service.getPageByFilter(pip_services4_components_node_1.Context.fromTraceId(this.getTraceId(req)), new pip_services4_data_node_1.FilterParams(req.params), new pip_services4_data_node_2.PagingParams(req.params));
+        let promise = this._service.getPageByFilter(pip_services4_components_node_1.Context.fromTraceId(this.getTraceId(req)), this.getFilterParams(req), this.getPagingParams(req));
         this.sendResult(req, res, promise);
     }
     getOneById(req, res) {
@@ -74,19 +72,19 @@ class DummyRestController extends RestController_1.RestController {
     }
     register() {
         this.registerInterceptor('/dummies$', this.incrementNumberOfCalls);
-        this.registerRoute('get', '/dummies', new pip_services4_data_node_3.ObjectSchema(true)
+        this.registerRoute('get', '/dummies', new pip_services4_data_node_1.ObjectSchema(true)
             .withOptionalProperty("skip", pip_services4_commons_node_1.TypeCode.String)
             .withOptionalProperty("take", pip_services4_commons_node_1.TypeCode.String)
             .withOptionalProperty("total", pip_services4_commons_node_1.TypeCode.String)
-            .withOptionalProperty("body", new pip_services4_data_node_4.FilterParamsSchema()), this.getPageByFilter);
-        this.registerRoute("get", "/dummies/check/trace_id", new pip_services4_data_node_3.ObjectSchema(true), this.checkTraceId);
-        this.registerRoute('get', '/dummies/:dummy_id', new pip_services4_data_node_3.ObjectSchema(true)
+            .withOptionalProperty("body", new pip_services4_data_node_2.FilterParamsSchema()), this.getPageByFilter);
+        this.registerRoute("get", "/dummies/check/trace_id", new pip_services4_data_node_1.ObjectSchema(true), this.checkTraceId);
+        this.registerRoute('get', '/dummies/:dummy_id', new pip_services4_data_node_1.ObjectSchema(true)
             .withRequiredProperty("dummy_id", pip_services4_commons_node_1.TypeCode.String), this.getOneById);
-        this.registerRoute('post', '/dummies', new pip_services4_data_node_3.ObjectSchema(true)
+        this.registerRoute('post', '/dummies', new pip_services4_data_node_1.ObjectSchema(true)
             .withRequiredProperty("body", new DummySchema_1.DummySchema()), this.create);
-        this.registerRoute('put', '/dummies', new pip_services4_data_node_3.ObjectSchema(true)
+        this.registerRoute('put', '/dummies', new pip_services4_data_node_1.ObjectSchema(true)
             .withRequiredProperty("body", new DummySchema_1.DummySchema()), this.update);
-        this.registerRoute('delete', '/dummies/:dummy_id', new pip_services4_data_node_3.ObjectSchema(true)
+        this.registerRoute('delete', '/dummies/:dummy_id', new pip_services4_data_node_1.ObjectSchema(true)
             .withRequiredProperty("dummy_id", pip_services4_commons_node_1.TypeCode.String), this.deleteById);
         if (this._swaggerContent) {
             this.registerOpenApiSpec(this._swaggerContent);

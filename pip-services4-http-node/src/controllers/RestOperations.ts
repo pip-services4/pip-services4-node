@@ -4,7 +4,7 @@ import { ConfigParams } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';
-import { PagingParams } from 'pip-services4-data-node';
+import { PagingParams, SortParams, SortField } from 'pip-services4-data-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { DependencyResolver } from 'pip-services4-components-node';
@@ -13,6 +13,7 @@ import { UnauthorizedException } from 'pip-services4-commons-node';
 import { NotFoundException } from 'pip-services4-commons-node';
 import { ConflictException } from 'pip-services4-commons-node';
 import { UnknownException } from 'pip-services4-commons-node';
+import { BooleanConverter } from 'pip-services4-commons-node';
 import { HttpResponseSender } from './HttpResponseSender';
 
 export abstract class RestOperations implements IConfigurable, IReferenceable {
@@ -43,13 +44,17 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
     }
 
     protected getFilterParams(req: any): FilterParams {
+        let filter;
         const value = Object.assign({}, req.query);
-        delete value.skip;
-        delete value.take;
-        delete value.total;
-        delete value.trace_id;
-
-        const filter = FilterParams.fromValue(value);
+        if (value.filter == null) {
+            delete value.skip;
+            delete value.take;
+            delete value.total;
+            delete value.trace_id;
+            filter = FilterParams.fromValue(value);
+        } else {
+            filter = FilterParams.fromString(value.filter);
+        }
         return filter;
     }
 
@@ -61,6 +66,23 @@ export abstract class RestOperations implements IConfigurable, IReferenceable {
         }        
         const paging = PagingParams.fromValue(value);
         return paging;
+    }
+
+    protected getSortParams(req: any): SortParams {
+        const sort = req.query?.sort || "";
+        const result: SortParams = new SortParams();
+        if (sort != null && sort.length > 0) {
+            const items = sort.split(",");
+            for (const item of items) {
+                const parts = item.split("=");
+                const param: SortField = new SortField(
+                    parts[0],
+                    BooleanConverter.toBoolean(parts[1])
+                );
+                result.push(param);
+            }
+        }
+        return result;
     }
 
     protected sendResult(req: any, res: any, result: any): void {

@@ -315,8 +315,8 @@ class RestClient {
      * @param data              (optional) body object.
      * @returns                 a result object.
      */
-    call(method, route, context, params = {}, data) {
-        return __awaiter(this, void 0, void 0, function* () {
+    call(method_1, route_1, context_1) {
+        return __awaiter(this, arguments, void 0, function* (method, route, context, params = {}, data) {
             method = method.toLowerCase();
             route = this.createRequestRoute(route);
             if (this._contextLocation == "query" || this._contextLocation == "both") {

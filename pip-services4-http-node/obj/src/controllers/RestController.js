@@ -418,12 +418,18 @@ class RestController {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getFilterParams(req) {
+        let filter;
         const value = Object.assign({}, req.query);
-        delete value.skip;
-        delete value.take;
-        delete value.total;
-        delete value.correlation_id;
-        const filter = pip_services4_data_node_1.FilterParams.fromValue(value);
+        if (value.filter == null) {
+            delete value.skip;
+            delete value.take;
+            delete value.total;
+            delete value.trace_id;
+            filter = pip_services4_data_node_1.FilterParams.fromValue(value);
+        }
+        else {
+            filter = pip_services4_data_node_1.FilterParams.fromString(value.filter);
+        }
         return filter;
     }
     /**
@@ -440,6 +446,26 @@ class RestController {
         };
         const paging = pip_services4_data_node_1.PagingParams.fromValue(value);
         return paging;
+    }
+    /**
+     * Returns SortParams object from query request
+     * @param req request
+     * @returns SortParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getSortParams(req) {
+        var _a;
+        const sort = ((_a = req.query) === null || _a === void 0 ? void 0 : _a.sort) || "";
+        const result = new pip_services4_data_node_1.SortParams();
+        if (sort != null && sort.length > 0) {
+            const items = sort.split(",");
+            for (const item of items) {
+                const parts = item.split("=");
+                const param = new pip_services4_data_node_1.SortField(parts[0], pip_services4_commons_node_1.BooleanConverter.toBoolean(parts[1]));
+                result.push(param);
+            }
+        }
+        return result;
     }
 }
 exports.RestController = RestController;

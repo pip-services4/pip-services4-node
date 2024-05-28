@@ -11,6 +11,7 @@ const pip_services4_commons_node_2 = require("pip-services4-commons-node");
 const pip_services4_commons_node_3 = require("pip-services4-commons-node");
 const pip_services4_commons_node_4 = require("pip-services4-commons-node");
 const pip_services4_commons_node_5 = require("pip-services4-commons-node");
+const pip_services4_commons_node_6 = require("pip-services4-commons-node");
 const HttpResponseSender_1 = require("./HttpResponseSender");
 class RestOperations {
     constructor() {
@@ -35,12 +36,18 @@ class RestOperations {
         return context;
     }
     getFilterParams(req) {
+        let filter;
         const value = Object.assign({}, req.query);
-        delete value.skip;
-        delete value.take;
-        delete value.total;
-        delete value.trace_id;
-        const filter = pip_services4_data_node_1.FilterParams.fromValue(value);
+        if (value.filter == null) {
+            delete value.skip;
+            delete value.take;
+            delete value.total;
+            delete value.trace_id;
+            filter = pip_services4_data_node_1.FilterParams.fromValue(value);
+        }
+        else {
+            filter = pip_services4_data_node_1.FilterParams.fromString(value.filter);
+        }
         return filter;
     }
     getPagingParams(req) {
@@ -51,6 +58,20 @@ class RestOperations {
         };
         const paging = pip_services4_data_node_2.PagingParams.fromValue(value);
         return paging;
+    }
+    getSortParams(req) {
+        var _a;
+        const sort = ((_a = req.query) === null || _a === void 0 ? void 0 : _a.sort) || "";
+        const result = new pip_services4_data_node_2.SortParams();
+        if (sort != null && sort.length > 0) {
+            const items = sort.split(",");
+            for (const item of items) {
+                const parts = item.split("=");
+                const param = new pip_services4_data_node_2.SortField(parts[0], pip_services4_commons_node_6.BooleanConverter.toBoolean(parts[1]));
+                result.push(param);
+            }
+        }
+        return result;
     }
     sendResult(req, res, result) {
         return HttpResponseSender_1.HttpResponseSender.sendResult(req, res, result);
