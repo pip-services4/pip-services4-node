@@ -252,7 +252,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
     protected convertToPublic(value: any): any {
         if (value) {
             if (value._id != undefined) {
-                value.id = value._id;
+                value.id = value.id || value._id;
                 delete value._id;
             }
         }

@@ -196,7 +196,7 @@ class MongoDbPersistence {
     convertToPublic(value) {
         if (value) {
             if (value._id != undefined) {
-                value.id = value._id;
+                value.id = value.id || value._id;
                 delete value._id;
             }
         }
