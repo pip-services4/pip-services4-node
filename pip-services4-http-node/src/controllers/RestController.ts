@@ -4,7 +4,7 @@ import fs = require('fs');
 
 import { ContextResolver, IContext, IUnreferenceable } from 'pip-services4-components-node';
 import { IOpenable } from 'pip-services4-components-node';
-import { InvalidStateException } from 'pip-services4-commons-node';
+import { InvalidStateException, BooleanConverter } from 'pip-services4-commons-node';
 import { IConfigurable } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
@@ -13,7 +13,7 @@ import { DependencyResolver } from 'pip-services4-components-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { CompositeTracer } from 'pip-services4-observability-node';
-import { FilterParams, PagingParams, Schema } from 'pip-services4-data-node';
+import { FilterParams, PagingParams, SortParams, SortField, Schema } from 'pip-services4-data-node';
 
 import { HttpEndpoint } from './HttpEndpoint';
 import { IRegisterable } from './IRegisterable';
@@ -217,7 +217,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
         this._logger.trace(context, "Executing %s method", name);
         this._counters.incrementOne(name + ".exec_count");
 
-		const counterTiming = this._counters.beginTiming(name + ".exec_time");
+        const counterTiming = this._counters.beginTiming(name + ".exec_time");
         const traceTiming = this._tracer.beginTrace(context, name, null);
         return new InstrumentTiming(context, name, "exec",
             this._logger, this._counters, counterTiming, traceTiming);
@@ -489,7 +489,7 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
      * This method is called by the controller and must be overriden
      * in child classes.
      */
-     public abstract register(): void;
+    public abstract register(): void;
 
 
     /**
@@ -499,12 +499,17 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected getFilterParams(req: any): FilterParams {
+        let filter;
         const value = Object.assign({}, req.query);
-        delete value.skip;
-        delete value.take;
-        delete value.total;
-        delete value.correlation_id;
-        const filter = FilterParams.fromValue(value);
+        if (value.filter == null) {
+            delete value.skip;
+            delete value.take;
+            delete value.total;
+            delete value.trace_id;
+            filter = FilterParams.fromValue(value);
+        } else {
+            filter = FilterParams.fromString(value.filter);
+        }
         return filter;
     }
 
@@ -522,5 +527,28 @@ export abstract class RestController implements IOpenable, IConfigurable, IRefer
         };
         const paging = PagingParams.fromValue(value);
         return paging;
+    }
+
+    /**
+     * Returns SortParams object from query request
+     * @param req request
+     * @returns SortParams object from request
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    protected getSortParams(req: any): SortParams {
+        const sort = req.query?.sort || "";
+        const result: SortParams = new SortParams();
+        if (sort != null && sort.length > 0) {
+            const items = sort.split(",");
+            for (const item of items) {
+                const parts = item.split("=");
+                const param: SortField = new SortField(
+                    parts[0],
+                    BooleanConverter.toBoolean(parts[1])
+                );
+                result.push(param);
+            }
+        }
+        return result;
     }
 }

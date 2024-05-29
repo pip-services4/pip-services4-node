@@ -214,7 +214,7 @@ class HttpEndpoint {
                     origins = ["*"];
                 }
                 const cors = corsMiddleware({
-                    preflightMaxAge: 5,
+                    preflightMaxAge: 5, //Optional
                     origins: origins,
                     allowHeaders: this._allowedHeaders,
                     exposeHeaders: this._allowedHeaders,

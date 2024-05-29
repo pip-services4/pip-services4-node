@@ -4,7 +4,7 @@ import { ConfigParams } from 'pip-services4-components-node';
 import { IReferences } from 'pip-services4-components-node';
 import { IReferenceable } from 'pip-services4-components-node';
 import { FilterParams } from 'pip-services4-data-node';
-import { PagingParams } from 'pip-services4-data-node';
+import { PagingParams, SortParams } from 'pip-services4-data-node';
 import { CompositeLogger } from 'pip-services4-observability-node';
 import { CompositeCounters } from 'pip-services4-observability-node';
 import { DependencyResolver } from 'pip-services4-components-node';
@@ -18,6 +18,7 @@ export declare abstract class RestOperations implements IConfigurable, IReferenc
     protected getTraceId(req: any): any;
     protected getFilterParams(req: any): FilterParams;
     protected getPagingParams(req: any): PagingParams;
+    protected getSortParams(req: any): SortParams;
     protected sendResult(req: any, res: any, result: any): void;
     protected sendEmptyResult(req: any, res: any): void;
     protected sendCreatedResult(req: any, res: any, result: any): void;
