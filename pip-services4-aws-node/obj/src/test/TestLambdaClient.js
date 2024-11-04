@@ -26,11 +26,11 @@ class TestLambdaClient extends LambdaClient_1.LambdaClient {
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    call(cmd, context, params = {}) {
+    call(cmd_1, context_1) {
         const _super = Object.create(null, {
             call: { get: () => super.call }
         });
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, arguments, void 0, function* (cmd, context, params = {}) {
             return _super.call.call(this, cmd, context, params);
         });
     }
