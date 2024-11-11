@@ -233,8 +233,8 @@ class LambdaClient {
      * @param params            (optional) action parameters.
      * @return {any}            action result.
      */
-    call(cmd, context, params = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    call(cmd_1, context_1) {
+        return __awaiter(this, arguments, void 0, function* (cmd, context, params = {}) {
             return this.invoke('RequestResponse', cmd, context, params);
         });
     }

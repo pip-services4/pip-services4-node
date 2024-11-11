@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-aws-node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Enterprise Innovation Consulting",
     "description": "AWS-specific components for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -49,6 +49,7 @@
         "pip-services4-container-node": "^0.0.4",
         "pip-services4-data-node": "^0.0.4",
         "pip-services4-observability-node": "^0.0.3",
+        "pip-services4-persistence-node": "^0.0.4",
         "pip-services4-rpc-node": "^0.0.2"
     },
     "devDependencies": {
@@ -56,11 +57,11 @@
         "@types/chai": "^4.3.4",
         "@types/mocha": "^10.0.1",
         "@types/node": "^20.2.5",
-        "chai": "^4.3.4",
-        "mocha": "^10.2.0",
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
+        "chai": "^4.3.4",
         "eslint": "^8.32.0",
+        "mocha": "^10.2.0",
         "typescript": "*"
     }
 }
