@@ -1,6 +1,6 @@
 {
     "name": "pip-services4-mongodb-node",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "author": "Enterprise Innovation Consulting",
     "description": "MongoDB components for Pip.Services in Node.js / ES2017",
     "contributors": [

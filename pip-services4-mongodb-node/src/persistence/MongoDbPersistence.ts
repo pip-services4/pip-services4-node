@@ -400,6 +400,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         sort: any, select: any): Promise<DataPage<T>> {
 
         // Adjust max item count based on configuration
+        filter = filter || {};
         paging = paging || new PagingParams();
         const skip = paging.getSkip(-1);
         const take = paging.getTake(this._maxPageSize);
@@ -441,6 +442,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @returns                 a number of filtered items.
      */
     protected async getCountByFilter(context: IContext, filter: any): Promise<number> {
+        filter = filter || {};
         const count = await this._collection.countDocuments(filter);
 
         if (count != null) {
@@ -467,7 +469,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         // Configure options
         const options: FindOptions = {};
         if (sort != null) options.sort = sort;
-
+        filter = filter || {};
         let items: any = await this._collection.find(filter, options).project(select).toArray();
 
         if (items != null) {
@@ -491,6 +493,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @returns                 a random item.
      */
     protected async getOneRandom(context: IContext, filter: any): Promise<T> {
+        filter = filter || {};
         const count = await this._collection.countDocuments(filter);
 
         const pos = Math.trunc(Math.random() * count);
@@ -551,6 +554,7 @@ export class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
      * @param filter            (optional) a filter JSON object.
      */
     public async deleteByFilter(context: IContext, filter: any): Promise<void> {
+        filter = filter || {};
         const result = await this._collection.deleteMany(filter);
 
         const count = result != null ? result.deletedCount : 0;

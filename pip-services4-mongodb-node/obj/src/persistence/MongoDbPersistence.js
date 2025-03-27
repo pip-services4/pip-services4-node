@@ -328,6 +328,7 @@ class MongoDbPersistence {
     getPageByFilter(context, filter, paging, sort, select) {
         return __awaiter(this, void 0, void 0, function* () {
             // Adjust max item count based on configuration
+            filter = filter || {};
             paging = paging || new pip_services4_data_node_1.PagingParams();
             const skip = paging.getSkip(-1);
             const take = paging.getTake(this._maxPageSize);
@@ -364,6 +365,7 @@ class MongoDbPersistence {
      */
     getCountByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
+            filter = filter || {};
             const count = yield this._collection.countDocuments(filter);
             if (count != null) {
                 this._logger.trace(context, "Counted %d items in %s", count, this._collectionName);
@@ -390,6 +392,7 @@ class MongoDbPersistence {
             const options = {};
             if (sort != null)
                 options.sort = sort;
+            filter = filter || {};
             let items = yield this._collection.find(filter, options).project(select).toArray();
             if (items != null) {
                 this._logger.trace(context, "Retrieved %d from %s", items.length, this._collectionName);
@@ -411,6 +414,7 @@ class MongoDbPersistence {
      */
     getOneRandom(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
+            filter = filter || {};
             const count = yield this._collection.countDocuments(filter);
             const pos = Math.trunc(Math.random() * count);
             const options = {
@@ -465,6 +469,7 @@ class MongoDbPersistence {
      */
     deleteByFilter(context, filter) {
         return __awaiter(this, void 0, void 0, function* () {
+            filter = filter || {};
             const result = yield this._collection.deleteMany(filter);
             const count = result != null ? result.deletedCount : 0;
             this._logger.trace(context, "Deleted %d items from %s", count, this._collectionName);
